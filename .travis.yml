@@ -1,0 +1,11 @@
+language: node_js
+before_install:
+  - npm install -g sfdx-cli
+before_script:
+  - echo "$SFDX_AUTH_URL" > /tmp/sfdxurl
+  - sfdx force:auth:sfdxurl:store -f /tmp/sfdxurl -a ci-devhub -d
+after_script:
+  - sfdx force:org:delete --noprompt -u ci-scratch-org
+script:
+  - sfdx force:org:create -f config/project-scratch-def.json -a ci-scratch-org -s
+  - TEST_INTEGRATION=true npm test

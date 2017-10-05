@@ -1,0 +1,7 @@
+node_modules
+coverage
+yarn.lock
+yarn-error.log
+
+.sfdx
+.vscode
