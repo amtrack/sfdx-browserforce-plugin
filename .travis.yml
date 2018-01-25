@@ -9,5 +9,6 @@ before_script:
 after_script:
   - sfdx force:org:delete --noprompt -u ci-scratch-org
 script:
+  - sfdx plugins:link .
   - sfdx force:org:create -f config/project-scratch-def.json -a ci-scratch-org -s
   - TEST_INTEGRATION=true npm test
