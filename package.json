@@ -1,5 +1,5 @@
 {
-  "name": "@amtrack/sfdx-browserforce-plugin",
+  "name": "sfdx-browserforce-plugin",
   "version": "0.1.0",
   "description": "sfdx plugin for executing various tasks using browser automation",
   "author": "Matthias Rolke <mr.amtrack@gmail.com>",

@@ -7,7 +7,7 @@
 ## Installation
 
 ```console
-$ sfdx plugins:install @amtrack/sfdx-browserforce-plugin
+$ sfdx plugins:install sfdx-browserforce-plugin
 ```
 
 ## Usage
