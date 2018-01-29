@@ -66,14 +66,11 @@ Sharing Settings
 
 * `ExternalSharing`
 * `CustomerPortal` (Warning: cannot be disabled once enabled)
+* `SalesforceToSalesforce` (Warning: cannot be disabled once enabled)
 
 ## Planned Features (contributions welcome)
 
 **Org Preferences**
-
-General Settings
-
-* `SalesforceToSalesforce`
 
 Live Agent Settings
 

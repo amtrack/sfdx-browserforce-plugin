@@ -36,7 +36,8 @@ module.exports = {
     // headless: !(process.env.BROWSER_DEBUG === "true");
     const DRIVERS = {
       ExternalSharing: require("../plugins/external-sharing"),
-      CustomerPortal: require("../plugins/customer-portal")
+      CustomerPortal: require("../plugins/customer-portal"),
+      SalesforceToSalesforce: require("../plugins/salesforce-to-salesforce")
     };
 
     const targetUsername = context.flags.targetusername;
