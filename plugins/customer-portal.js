@@ -59,6 +59,7 @@ class CustomerPortal {
       }
     );
     await page.click("input[title='Save']");
+    await page.waitForNavigation();
     await page.close();
   }
 }
