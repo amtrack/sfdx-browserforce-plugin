@@ -9,7 +9,7 @@ describe("Browserforce", () => {
     });
   });
   describe("launch()", () => {
-    it("should retun a browser instance", async function() {
+    it("should return a browser instance", async function() {
       let bf = new Browserforce();
       let browser = await bf.launch();
       assert(browser !== undefined);
