@@ -18,11 +18,16 @@ $ sfdx plugins:link .
 In order to write a new plugin (e.g. `FooBar`),
 you'll need to create/adjust the following files:
 
-* `plugins/foobar.js`
-* `test/foobar.js`
-* `test/fixtures/enable-foobar.js`
-* `test/fixtures/disable-foobar.js`
-* `commands/shape-apply.js` (add to `DRIVERS`)
+**TIP: Simply copy an existing plugin directory**
+
+* `plugins/foo-bar/index.js`
+* `plugins/foo-bar/index.spec.js`
+* `plugins/foo-bar/enable.js`
+* `plugins/foo-bar/disable.js`
+
+To register your plugin, add it to `DRIVERS` in
+
+* `commands/shape-apply.js`
 
 ## Testing
 
@@ -43,7 +48,8 @@ $ sfdx force:org:create -f config/project-scratch-def.json -s
 ```
 
 ```console
-$ TEST_INTEGRATION=true npm test
+$ npm run test:plugins
+$ npm run test:plugins -- -g "FooBar" # will only run your test
 ```
 
 > Note: You can run the tests in non-headless mode (opening a browser) by setting the environment variable `BROWSER_DEBUG=true`.

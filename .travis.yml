@@ -4,11 +4,11 @@ node_js:
 before_install:
   - npm install -g sfdx-cli
 before_script:
-  - echo "$SFDX_AUTH_URL" > /tmp/sfdxurl
-  - sfdx force:auth:sfdxurl:store -f /tmp/sfdxurl -a ci-devhub -d
+  - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then echo "$SFDX_AUTH_URL" > /tmp/sfdxurl; sfdx force:auth:sfdxurl:store -f /tmp/sfdxurl -a ci-devhub -d; fi
 after_script:
-  - sfdx force:org:delete --noprompt -u ci-scratch-org
+  - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then sfdx force:org:delete --noprompt -u ci-scratch-org; fi
 script:
   - sfdx plugins:link .
-  - sfdx force:org:create -f config/project-scratch-def.json -a ci-scratch-org -s
-  - TEST_INTEGRATION=true npm test
+  - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then sfdx force:org:create -f config/project-scratch-def.json -a ci-scratch-org -s; fi
+  - npm test
+  - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then npm run test:plugins; fi
