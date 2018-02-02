@@ -24,7 +24,8 @@
   },
   "scripts": {
     "pretest": "eslint .",
-    "test": "mocha"
+    "test": "mocha",
+    "test:plugins": "mocha plugins/**/*.spec.js"
   },
   "lint-staged": {
     "*.js": [
