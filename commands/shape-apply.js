@@ -37,7 +37,8 @@ module.exports = {
     const DRIVERS = {
       ExternalSharing: require("../plugins/external-sharing"),
       CustomerPortal: require("../plugins/customer-portal"),
-      SalesforceToSalesforce: require("../plugins/salesforce-to-salesforce")
+      SalesforceToSalesforce: require("../plugins/salesforce-to-salesforce"),
+      AdminsCanLogInAsAny: require("../plugins/admins-can-log-in-as-any")
     };
 
     const targetUsername = context.flags.targetusername;
