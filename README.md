@@ -65,8 +65,12 @@ The schema of the `config/browserforce-shape-def.json` is similar to `config/pro
 Sharing Settings
 
 * `ExternalSharing`
+
+General Settings
+
 * `CustomerPortal` (Warning: cannot be disabled once enabled)
 * `SalesforceToSalesforce` (Warning: cannot be disabled once enabled)
+* `AdminsCanLogInAsAny`
 
 ## Planned Features (contributions welcome)
 
