@@ -54,7 +54,7 @@ The schema of the `config/browserforce-shape-def.json` is similar to `config/pro
 
 ```json
 "orgPreferences": {
-    "enabled": [
+    "disabled": [
       "ExternalSharing"
     ]
 }
