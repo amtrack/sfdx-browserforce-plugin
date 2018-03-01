@@ -54,7 +54,7 @@ The schema of the `config/browserforce-shape-def.json` is similar to `config/pro
 
 ```json
 "orgPreferences": {
-    "disabled": [
+    "enabled": [
       "ExternalSharing"
     ]
 }
@@ -64,7 +64,7 @@ The schema of the `config/browserforce-shape-def.json` is similar to `config/pro
 
 Sharing Settings
 
-* `ExternalSharing`
+* `ExternalSharing` ([will be supported officially soon](https://success.salesforce.com/0D53A00003SQizw))
 
 General Settings
 
