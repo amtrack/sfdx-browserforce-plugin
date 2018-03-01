@@ -58,8 +58,10 @@ class Plugin {
         action
       }
     );
-    await page.click("input[title='Save']");
-    await page.waitFor(".message.confirmM3");
+    await Promise.all([
+      page.waitFor(".message.confirmM3"),
+      page.click("input[title='Save']")
+    ]);
     await page.close();
   }
 }

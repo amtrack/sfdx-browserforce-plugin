@@ -43,11 +43,15 @@ class ExternalSharing {
         await dialog.accept();
       });
       if (action.targetValue) {
-        await page.click(ENABLE_SELECTOR);
-        await page.waitFor(DISABLE_SELECTOR);
+        await Promise.all([
+          page.waitFor(DISABLE_SELECTOR),
+          page.click(ENABLE_SELECTOR)
+        ]);
       } else {
-        await page.click(DISABLE_SELECTOR);
-        await page.waitFor(ENABLE_SELECTOR);
+        await Promise.all([
+          page.waitFor(ENABLE_SELECTOR),
+          page.click(DISABLE_SELECTOR)
+        ]);
       }
     } else {
       console.error(`invalid action ${JSON.stringify(action)}`);
