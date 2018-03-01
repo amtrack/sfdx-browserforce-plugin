@@ -58,8 +58,10 @@ class CustomerPortal {
         action
       }
     );
-    await page.click("input[title='Save']");
-    await page.waitForNavigation();
+    await Promise.all([
+      page.waitForNavigation(),
+      page.click("input[title='Save']")
+    ]);
     await page.close();
   }
 }
