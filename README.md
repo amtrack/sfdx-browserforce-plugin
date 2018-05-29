@@ -62,15 +62,15 @@ The schema of the `config/browserforce-shape-def.json` is similar to `config/pro
 
 **Supported Org Preferences**
 
-Sharing Settings
-
-* `ExternalSharing` ([will be supported officially soon](https://success.salesforce.com/0D53A00003SQizw))
-
 General Settings
 
 * `CustomerPortal` (Warning: cannot be disabled once enabled)
 * `SalesforceToSalesforce` (Warning: cannot be disabled once enabled)
 * `AdminsCanLogInAsAny`
+
+Sharing Settings
+
+* `ExternalSharing` ([now officially supported](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_scratch_orgs_def_file_config_values.htm))
 
 ## Planned Features (contributions welcome)
 
