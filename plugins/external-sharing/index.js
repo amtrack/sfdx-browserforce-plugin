@@ -1,8 +1,8 @@
 /* eslint-disable capitalized-comments */
 // const CONTENT_SELECTOR = "#contentWrapper";
 const BASE_SELECTOR = "#externalSharingModelButton";
-const ENABLE_SELECTOR = "input[value='Enable External Sharing Model']";
-const DISABLE_SELECTOR = "input[value='Disable External Sharing Model']";
+const ENABLE_SELECTOR = "input#externalSharingModelButton:not([onclick*='Modal.confirm'])";
+const DISABLE_SELECTOR = "input#externalSharingModelButton[onclick*='Modal.confirm']";
 
 class ExternalSharing {
   constructor(browser, creds) {
@@ -15,9 +15,9 @@ class ExternalSharing {
 
   async getValue(page) {
     const self = this;
-    const buttonValue = await page.$eval(self.baseSelector, el => el.value);
+    const buttonOnclick = await page.$eval(self.baseSelector, el => el.onclick.toString());
     return {
-      enabled: buttonValue !== "Enable External Sharing Model"
+      enabled: buttonOnclick.indexOf("Modal.confirm") >= 0
     };
   }
 
