@@ -60,7 +60,7 @@ class CustomerPortal {
     );
     await Promise.all([
       page.waitForNavigation(),
-      page.click("input[title='Save']")
+      page.click("input[name='save']")
     ]);
     await page.close();
   }

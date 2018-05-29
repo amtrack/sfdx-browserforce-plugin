@@ -60,7 +60,7 @@ class Plugin {
     );
     await Promise.all([
       page.waitFor(".message.confirmM3"),
-      page.click("input[title='Save']")
+      page.click("input[id$=':save']")
     ]);
     await page.close();
   }
