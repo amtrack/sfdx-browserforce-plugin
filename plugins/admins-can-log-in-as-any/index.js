@@ -29,6 +29,7 @@ class Plugin {
 
   async retrieve() {
     let page = await this.browser.newPage();
+    page.setDefaultNavigationTimeout(90000);
     await page.goto(this.getBaseUrl());
     await page.waitFor(Plugin.schema.properties[0].selector);
     let response = {};
@@ -46,6 +47,7 @@ class Plugin {
     }
     let action = actions[0];
     let page = await this.browser.newPage();
+    page.setDefaultNavigationTimeout(90000);
     await page.goto(this.getBaseUrl());
     await page.waitFor(Plugin.schema.properties[0].selector);
     await page.evaluate(
