@@ -23,6 +23,7 @@ class ExternalSharing {
 
   async retrieve() {
     let page = await this.browser.newPage();
+    page.setDefaultNavigationTimeout(90000);
     await page.goto(this.baseUrl);
     await page.waitFor(this.baseSelector);
     let value = await this.getValue(page);
@@ -35,6 +36,7 @@ class ExternalSharing {
       return;
     }
     let page = await this.browser.newPage();
+    page.setDefaultNavigationTimeout(90000);
     await page.goto(this.baseUrl);
     await page.waitFor(this.baseSelector);
     let action = actions[0];

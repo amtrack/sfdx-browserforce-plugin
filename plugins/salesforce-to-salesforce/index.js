@@ -18,6 +18,7 @@ class Plugin {
 
   async retrieve() {
     let page = await this.browser.newPage();
+    page.setDefaultNavigationTimeout(90000);
     await page.goto(this.baseUrl);
     await page.waitFor(this.baseSelector);
     const inputEnable = await page.$(this.property.selector);
@@ -45,6 +46,7 @@ class Plugin {
       return;
     }
     let page = await this.browser.newPage();
+    page.setDefaultNavigationTimeout(90000);
     await page.goto(this.baseUrl);
     await page.waitFor(this.property.selector);
     await page.evaluate(
