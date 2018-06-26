@@ -12,6 +12,11 @@ script:
   - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then sfdx force:org:create -f config/project-scratch-def.json -a ci-scratch-org -s; fi
   - npm test
   - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then npm run test:plugins; fi
-after_success:
-  - npm install --global travis-deploy-once@5 semantic-release@15
-  - travis-deploy-once semantic-release
+jobs:
+  include:
+    - stage: release
+      if: branch = master
+      node_js: "8"
+      script:
+        - npm install --global semantic-release@15
+        - semantic-release
