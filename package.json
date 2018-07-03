@@ -15,10 +15,7 @@
     "sfdx-plugin"
   ],
   "devDependencies": {
-    "eslint": "^5.0.0",
-    "eslint-config-prettier": "^2.9.0",
-    "eslint-config-xo": "^0.23.0",
-    "eslint-plugin-prettier": "^2.6.0",
+ 
     "mocha": "^5.2.0",
     "prettier": "^1.13.2"
   },
