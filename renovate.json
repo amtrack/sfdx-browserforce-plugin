@@ -1,6 +1,10 @@
 {
-  "extends": [
-    "config:base"
-  ],
-  "pinVersions": false
+  "extends": ["config:base"],
+  "rangeStrategy": "bump",
+  "node": {
+    "supportPolicy": ["current"]
+  },
+  "travis": {
+    "enabled": true
+  }
 }
