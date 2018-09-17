@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - "8"
+  - "10"
 before_install:
   - npm install -g sfdx-cli
 before_script:
@@ -16,7 +16,7 @@ jobs:
   include:
     - stage: release
       if: branch = master
-      node_js: "8"
+      node_js: "10"
       script:
         - npm install --global semantic-release@15
         - semantic-release
