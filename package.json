@@ -3,59 +3,66 @@
   "version": "0.0.0-development",
   "description": "sfdx plugin for executing various tasks using browser automation",
   "author": "Matthias Rolke <mr.amtrack@gmail.com>",
+  "dependencies": {
+    "@oclif/command": "^1",
+    "@oclif/config": "^1",
+    "@oclif/errors": "^1",
+    "@salesforce/command": "^0.2.5",
+    "bluebird": "^3.5.2",
+    "puppeteer": "^1.9.0",
+    "tslib": "^1"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1",
+    "@oclif/plugin-help": "^2",
+    "@oclif/test": "^1",
+    "@salesforce/dev-config": "^1.1.5",
+    "@types/bluebird": "^3.5.24",
+    "@types/jsforce": "^1.9.1",
+    "@types/mocha": "^5.2.5",
+    "@types/node": "^10.12.1",
+    "@types/puppeteer": "^1.9.1",
+    "mocha": "^5",
+    "nyc": "^13",
+    "ts-node": "^7",
+    "typescript": "^3.0"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
   "files": [
-    "commands",
-    "lib",
-    "plugins"
+    "/lib",
+    "/messages",
+    "/oclif.manifest.json",
+    "/yarn.lock"
   ],
-  "main": "index.js",
   "keywords": [
     "salesforce",
     "sfdx",
     "sfdx-plugin"
   ],
-  "devDependencies": {
-    "eslint": "^5.6.0",
-    "eslint-config-prettier": "^3.1.0",
-    "eslint-config-xo": "^0.25.0",
-    "eslint-plugin-prettier": "^2.7.0",
-    "mocha": "^5.2.0",
-    "prettier": "^1.14.3"
-  },
-  "scripts": {
-    "pretest": "eslint .",
-    "test": "mocha",
-    "test:plugins": "mocha plugins/**/*.spec.js"
-  },
-  "lint-staged": {
-    "*.js": [
-      "eslint --fix",
-      "git add"
-    ],
-    "*.json": [
-      "prettier --write",
-      "git add"
-    ]
-  },
-  "eslintConfig": {
-    "extends": [
-      "xo",
-      "prettier"
-    ],
-    "env": {
-      "mocha": true,
-      "es6": true,
-      "node": true
+  "license": "MIT",
+  "oclif": {
+    "commands": "./lib/commands",
+    "topics": {
+      "browserforce": {
+        "description": "browser automation"
+      },
+      "browserforce:shape": {
+        "description": "check and apply an org shape"
+      }
     },
-    "plugins": [
-      "prettier"
+    "devPlugins": [
+      "@oclif/plugin-help"
     ]
   },
   "repository": "amtrack/sfdx-browserforce-plugin",
-  "license": "MIT",
-  "dependencies": {
-    "bluebird": "^3.5.2",
-    "puppeteer": "^1.8.0",
-    "salesforce-alm": "^43.12.0"
+  "scripts": {
+    "postpack": "rm -f oclif.manifest.json",
+    "posttest": "tslint -p test -t stylish",
+    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+    "test:e2e": "mocha --forbid-only \"test/**/*.e2e-spec.ts\" \"src/**/*.e2e-spec.ts\"",
+    "version": "oclif-dev readme && git add README.md"
   }
 }
