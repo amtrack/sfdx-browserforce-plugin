@@ -3,6 +3,9 @@
   "version": "0.0.0-development",
   "description": "sfdx plugin for executing various tasks using browser automation",
   "author": "Matthias Rolke <mr.amtrack@gmail.com>",
+  "bin": {
+    "sfdx-browserforce-plugin": "bin/run"
+  },
   "dependencies": {
     "@oclif/command": "^1",
     "@oclif/config": "^1",
@@ -25,12 +28,13 @@
     "mocha": "^5",
     "nyc": "^13",
     "ts-node": "^7",
-    "typescript": "^3.1"
+    "typescript": "^3.1.5"
   },
   "engines": {
     "node": ">=8.0.0"
   },
   "files": [
+    "/bin",
     "/lib",
     "/messages",
     "/oclif.manifest.json",
@@ -43,6 +47,7 @@
   ],
   "license": "MIT",
   "oclif": {
+    "bin": "sfdx-browserforce-plugin",
     "commands": "./lib/commands",
     "topics": {
       "browserforce": {
@@ -61,6 +66,7 @@
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "prepare": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
     "test:e2e": "mocha --forbid-only \"test/**/*.e2e-spec.ts\" \"src/**/*.e2e-spec.ts\"",
     "version": "oclif-dev readme && git add README.md"
