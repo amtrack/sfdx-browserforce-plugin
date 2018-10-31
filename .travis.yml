@@ -8,7 +8,7 @@ jobs:
     - stage: test
       script:
         - npm test
-    - stage: test-plugins
+    - stage: e2e
       if: type != pull_request
       before_install:
         - npm install -g sfdx-cli yarn
@@ -18,7 +18,7 @@ jobs:
       script:
         - sfdx force:org:create -f config/project-scratch-def.json -a ci-scratch-org -s
         - sfdx plugins:link .
-        - npm run test:plugins
+        - npm run test:e2e
       after_script:
         - sfdx force:org:delete --noprompt -u ci-scratch-org
     - stage: release

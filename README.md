@@ -4,138 +4,94 @@
 
 [![Build Status](https://travis-ci.org/amtrack/sfdx-browserforce-plugin.svg?branch=master)](https://travis-ci.org/amtrack/sfdx-browserforce-plugin)
 
-## Installation
+# Installation
 
 ```console
-$ sfdx plugins:install sfdx-browserforce-plugin
+sfdx plugins:install sfdx-browserforce-plugin
 ```
 
-## Usage
+# Usage
 
 ```console
-$ sfdx browserforce --help
-Usage: sfdx browserforce:COMMAND
-
-Help topics, type sfdx help TOPIC for more details:
-
- browserforce:shape  commands for shape
+sfdx browserforce -h
 ```
 
-```console
-$ sfdx browserforce:shape --help
-sfdx browserforce:shape commands: (get help with sfdx help browserforce:shape:COMMAND)
- browserforce:shape:apply  apply an org shape
+# Commands
+
+<!-- commands -->
+* [`sfdx-browserforce-plugin browserforce:shape:apply`](#sfdx-browserforce-plugin-browserforceshapeapply)
+
+## `sfdx-browserforce-plugin browserforce:shape:apply`
+
+check and apply an org shape
+
+```
+USAGE
+  $ sfdx-browserforce-plugin browserforce:shape:apply
+
+OPTIONS
+  -f, --definitionfile=definitionfile             path to a browserforce definition file
+                                                  The schema is similar to the scratch org definition file.
+                                                  See
+                                                  https://github.com/amtrack/sfdx-browserforce-plugin#supported-org-pref
+                                                  erences for supported values.
+
+  -u, --targetusername=targetusername             username or alias for the target org; overrides default target org
+
+  --apiversion=apiversion                         override the api version used for api requests made by this command
+
+  --json                                          format output as json
+
+  --loglevel=(trace|debug|info|warn|error|fatal)  logging level for this command invocation
+
+EXAMPLE
+  $ sfdx browserforce:shape:apply -f ./config/browserforce-shape-def.json --targetusername myOrg@example.com
+     Applying plan file ./config/browserforce-shape-def.json to org myOrg@example.com
+     [AdminsCanLogInAsAny] retrieving state... done
+     [AdminsCanLogInAsAny] changing Enabled from 'false' to 'true'... done
 ```
 
-```console
-$ sfdx browserforce:shape:apply --help
-Usage: sfdx browserforce:shape:apply
+_See code: [src/commands/browserforce/shape/apply.ts](https://github.com/amtrack/sfdx-browserforce-plugin/blob/v0.0.0-development/src/commands/browserforce/shape/apply.ts)_
+<!-- commandsstop -->
 
-apply an org shape
+# Example
 
-Flags:
- -f, --definitionfile DEFINITIONFILE  path to a browserforce definition file
- -u, --targetusername TARGETUSERNAME  username for the target org
-
-help text for browserforce:shape:apply
-```
-
-## Examples
-
-### Org Shape
-
-Check and apply org shape for scratch orgs, sandboxes and production orgs
-
-```console
-$ sfdx browserforce:shape:apply -f config/browserforce-shape-def.json -u myscratchorg
-```
-
-The schema of the `config/browserforce-shape-def.json` is similar to `config/project-scratch-def.json`.
+To enable the feature `AdminsCanLogInAsAny` the config file (here: `./config/browserforce-shape-def.json`) should look like this:
 
 ```json
 "orgPreferences": {
     "enabled": [
-      "ExternalSharing"
+      "AdminsCanLogInAsAny"
     ]
 }
 ```
 
-**Supported Org Preferences**
+# Supported Org Preferences
 
 General Settings
 
-* `CustomerPortal` (Warning: cannot be disabled once enabled)
-* `SalesforceToSalesforce` (Warning: cannot be disabled once enabled)
-* `AdminsCanLogInAsAny`
+- `AdminsCanLogInAsAny`
+- `CustomerPortal` (Warning: cannot be disabled once enabled)
+- `SalesforceToSalesforce` (Warning: cannot be disabled once enabled)
 
 Sharing Settings
 
-* `ExternalSharing` ([now officially supported](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_scratch_orgs_def_file_config_values.htm))
+- `ExternalSharing` ([now officially supported](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_scratch_orgs_def_file_config_values.htm))
 
-## Planned Features (contributions welcome)
+# Supported Environment Variables
 
-**Org Preferences**
+- `BROWSERFORCE_NAVIGATION_TIMEOUT_MS`: adjustable for slow internet connections (default: `90000`)
+- `BROWSER_DEBUG` run in non-headless mode (default: `false`)
 
-Live Agent Settings
-
-* `LiveAgent`
-
-Account Settings
-
-* `AccountSharedAccounts` (Allow users to relate a contact to multiple accounts)
-
-Contact Field History
-
-* `ContactFieldHistory`
-
-Omni-Channel Settings
-
-* `OmniChannel`
-
-Email-to-Case Settings
-
-* `EmailToCase`
-
-Email to Salesforce
-
-* `EmailToSalesforce`
-
-Entitlement Settings
-
-* `MilestoneStoppedTime`
-
-Campaign Influence Settings
-
-* `CampaignInfluence`
-
-**Company Information**
-
-```json
-{
-  "language": "English",
-  "locale": "German.*Germany",
-  "timezone": "Berlin",
-  "workflowUser": "User User"
-}
-```
-
-**Changeset Management**
-
-Create outbound changesets from a given `package.xml`.
-
-```
-$ sfdx browserforce:changeset:create -f src/package.xml -u myscratchorg
-```
-
-## Contributing
+# Contributing
 
 Please see [CONTRIBUTING.md](CONTRIBUTING.md) for getting started.
 
-## Sponsors
+# Sponsors
 
-* [PARX](http://www.parx.com)
-* [IPfolio](http://www.ipfolio.com)
+- [PARX](https://www.parx.com)
+- [IPfolio](https://www.ipfolio.com)
 
-## License
+# License
 
 MIT © [Matthias Rolke](mailto:mr.amtrack@gmail.com)
