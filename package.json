@@ -23,7 +23,7 @@
     "@types/bluebird": "^3.5.24",
     "@types/jsforce": "^1.9.1",
     "@types/mocha": "^5.2.5",
-    "@types/node": "^10.12.1",
+    "@types/node": "^10.12.2",
     "@types/puppeteer": "^1.9.1",
     "mocha": "^5",
     "nyc": "^13",
