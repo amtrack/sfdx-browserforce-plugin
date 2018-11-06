@@ -44,14 +44,12 @@ export default class AdminsCanLogInAsAny extends ShapePlugin {
     const page = await this.getPage();
     await page.goto(this.getBaseUrl());
     await page.waitFor(this.constructor['schema'].properties.enabled.selector);
-    await page.evaluate(
-      data => {
-        const checkbox = document.querySelector(data.action.selector);
-        checkbox.checked = data.action.targetValue;
+    await page.$eval(
+      action.selector,
+      (e: HTMLInputElement, v) => {
+        e.checked = v;
       },
-      {
-        action
-      }
+      action.targetValue
     );
     await Promise.all([
       page.waitFor(this.constructor['SELECTORS'].CONFIRM_MESSAGE),
