@@ -220,10 +220,10 @@
     jsonwebtoken "7.0.0"
     mkdirp "0.5.1"
 
-"@salesforce/dev-config@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@salesforce/dev-config/-/dev-config-1.2.0.tgz#a508b7d35c491a3f18132c8f971797d76be9a4b7"
-  integrity sha512-CE8WiBho3CAmgmnvUh4LGVAf7P5AuT1LmBn2p5mTGJ5eehefebHOO73O3TkqDGsSEh4bcquG4792uBt5wm26Og==
+"@salesforce/dev-config@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@salesforce/dev-config/-/dev-config-1.4.0.tgz#46f14a2743e4045d220ff6cbd113a4eaaa129ff0"
+  integrity sha512-W15xuDhu4laQTtFMgqGO0lKhKxjIhiov7l7sMtkEGODZrLPotvVCToYvhDu/I9QHnynE4eZ3JV3G4N7yObn4VQ==
   dependencies:
     tslint "^5"
     tslint-microsoft-contrib "^5"
