@@ -11,7 +11,7 @@
     "@oclif/config": "^1",
     "@oclif/errors": "^1",
     "@salesforce/command": "^0.2.5",
-    "bluebird": "^3.5.2",
+    "bluebird": "^3.5.3",
     "puppeteer": "^1.10.0",
     "tslib": "^1"
   },
