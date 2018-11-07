@@ -4,13 +4,12 @@
 
 1. Fork this repository and clone your fork:
 
-2. Install dependencies and link the sfdx plugin
+2. Install dependencies
 
 > Note: Make sure to run these commands in your sfdx-browserforce-plugin directory.
 
 ```console
 yarn install
-sfdx plugins:link .
 ```
 
 ## Writing plugins
