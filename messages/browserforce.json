@@ -1,0 +1,7 @@
+{
+  "definitionFileDescription": "path to a browserforce definition file\nThe schema is similar to the scratch org definition file.\nSee https://github.com/amtrack/sfdx-browserforce-plugin#supported-org-preferences for supported values.",
+  "planFileDescription": "path to a browserforce plan file",
+  "stateFileDescription": "path to a browserforce state file",
+  "applyCommandDescription": "apply a plan from a plan file or remote state",
+  "planCommandDescription": "retrieve state and generate plan file"
+}

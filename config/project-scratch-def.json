@@ -1,7 +1,9 @@
 {
-    "orgName": "Browserforce",
-    "edition": "Developer",
-    "orgPreferences" : {
-        "enabled": ["S1DesktopEnabled"]
+  "orgName": "Browserforce",
+  "edition": "Developer",
+  "settings": {
+    "orgPreferenceSettings": {
+      "s1DesktopEnabled": true
     }
+  }
 }

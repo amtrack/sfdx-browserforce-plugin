@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/packages/sharing-settings/schema.json",
+  "title": "Sharing Settings",
+  "type": "object",
+  "properties": {
+    "enableExternalSharingModel": {
+      "$comment": "Enable External Sharing Model",
+      "type": "boolean"
+    }
+  }
+}

@@ -1,36 +1,20 @@
 import { core } from '@salesforce/command';
-import { Browser, Page } from 'puppeteer';
-import { Action } from './plan';
+import * as jsonMergePatch from 'json-merge-patch';
+import Browserforce from './browserforce';
 
-interface ShapeSchema {
-  name: string;
-  description: string;
-  properties: object;
-}
-
-export abstract class ShapePlugin {
-  public static schema: ShapeSchema;
-  protected static PATHS: object;
-  protected browser: Browser;
+export abstract class BrowserforcePlugin {
   protected org: core.Org;
-  protected constructor(browser: Browser, org: core.Org) {
-    this.browser = browser;
+  protected browserforce: Browserforce;
+
+  public constructor(browserforce: Browserforce, org: core.Org) {
+    this.browserforce = browserforce;
     this.org = org;
   }
   // tslint:disable-next-line:no-any
-  public abstract async retrieve(): Promise<any>;
+  public abstract async retrieve(definition?): Promise<any>;
+  public diff(state, definition) {
+    return jsonMergePatch.generate(state, definition);
+  }
   // tslint:disable-next-line:no-any
-  public abstract async apply(actions: Action[]): Promise<any>;
-  protected getBaseUrl() {
-    return `${this.org.getConnection().instanceUrl}${
-      this.constructor['PATHS'].BASE
-    }`;
-  }
-  protected async getPage(): Promise<Page> {
-    const page = await this.browser.newPage();
-    page.setDefaultNavigationTimeout(
-      parseInt(process.env.BROWSERFORCE_NAVIGATION_TIMEOUT_MS, 10) || 90000
-    );
-    return page;
-  }
+  public abstract async apply(plan: JSON): Promise<any>;
 }

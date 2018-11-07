@@ -1,74 +1,75 @@
-import { ShapePlugin } from '../../plugin';
+import { BrowserforcePlugin } from '../../plugin';
+import { removeEmptyValues } from '../utils';
+import CustomerPortalAvailableCustomObjects from './availableCustomObjects';
+import CustomerPortalEnable from './enabled';
+import CustomerPortalSetup from './portals';
 
-export default class CustomerPortal extends ShapePlugin {
-  public static schema = {
-    name: 'CustomerPortal',
-    description: 'Customer Portal',
-    properties: {
-      enabled: {
-        name: 'enabled',
-        label: 'Enabled',
-        selector: '#penabled'
+export default class CustomerPortal extends BrowserforcePlugin {
+  public async retrieve(definition?) {
+    const pluginEnable = new CustomerPortalEnable(this.browserforce, this.org);
+    const response = {
+      enabled: false,
+      portals: [],
+      availableCustomObjects: []
+    };
+    response.enabled = await pluginEnable.retrieve(definition.enabled);
+    if (response.enabled) {
+      if (definition.portals) {
+        const pluginSetup = new CustomerPortalSetup(
+          this.browserforce,
+          this.org
+        );
+        response.portals = await pluginSetup.retrieve(definition.portals);
+      }
+      if (definition.availableCustomObjects) {
+        const pluginAvailableCustomObjects = new CustomerPortalAvailableCustomObjects(
+          this.browserforce,
+          this.org
+        );
+        response.availableCustomObjects = await pluginAvailableCustomObjects.retrieve(
+          definition.availableCustomObjects
+        );
       }
     }
-  };
-  protected static SELECTORS = {
-    SAVE_BUTTON: 'input[name="save"]',
-    ERROR_DIV: '#errorTitle'
-  };
-  protected static PATHS = {
-    BASE: '/_ui/core/portal/CustomerSuccessPortalSetup/e'
-  };
-
-  public async retrieve() {
-    const page = await this.getPage();
-    await page.goto(this.getBaseUrl());
-    await page.waitFor(this.constructor['schema'].properties.enabled.selector);
-    const customerPortalNotAvailable = await page.$(
-      this.constructor['SELECTORS'].ERROR_DIV
-    );
-    if (customerPortalNotAvailable) {
-      await page.close();
-      throw new Error(
-        `${this.constructor['schema'].name} is not available in this org`
-      );
-    }
-    await page.waitFor(this.constructor['schema'].properties.enabled.selector);
-    const response = {};
-    response[
-      this.constructor['schema'].properties.enabled.name
-    ] = await page.$eval(
-      this.constructor['schema'].properties.enabled.selector,
-      (el: HTMLInputElement) => el.checked
-    );
-    await page.close();
     return response;
   }
 
-  public async apply(actions) {
-    if (!actions || !actions.length) {
-      return;
-    }
-    const action = actions[0];
-    if (action.name === 'enabled' && action.targetValue === false) {
-      throw new Error(
-        `${this.constructor['schema'].name} cannot be disabled once enabled`
-      );
-    }
-    const page = await this.getPage();
-    await page.goto(this.getBaseUrl());
-    await page.waitFor(this.constructor['schema'].properties.enabled.selector);
-    await page.$eval(
-      action.selector,
-      (e: HTMLInputElement, v) => {
-        e.checked = v;
-      },
-      action.targetValue
+  public diff(state, definition) {
+    const pluginEnable = new CustomerPortalEnable(null, null);
+    const pluginSetup = new CustomerPortalSetup(null, null);
+    const pluginAvailableCustomObjects = new CustomerPortalAvailableCustomObjects(
+      null,
+      null
     );
-    await Promise.all([
-      page.waitForNavigation(),
-      page.click(this.constructor['SELECTORS'].SAVE_BUTTON)
-    ]);
-    await page.close();
+    const response = {
+      enabled: pluginEnable.diff(state.enabled, definition.enabled),
+      portals: pluginSetup.diff(state.portals, definition.portals),
+      availableCustomObjects: pluginAvailableCustomObjects.diff(
+        state.availableCustomObjects,
+        definition.availableCustomObjects
+      )
+    };
+    return removeEmptyValues(response);
+  }
+
+  public async apply(config) {
+    if (config.enabled !== undefined) {
+      const pluginEnable = new CustomerPortalEnable(
+        this.browserforce,
+        this.org
+      );
+      await pluginEnable.apply(config.enabled);
+    }
+    if (config.portals && config.portals.length) {
+      const pluginSetup = new CustomerPortalSetup(this.browserforce, this.org);
+      await pluginSetup.apply(config.portals);
+    }
+    if (config.availableCustomObjects) {
+      const pluginAvailableCustomObjects = new CustomerPortalAvailableCustomObjects(
+        this.browserforce,
+        this.org
+      );
+      await pluginAvailableCustomObjects.apply(config.availableCustomObjects);
+    }
   }
 }

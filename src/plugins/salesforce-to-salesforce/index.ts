@@ -1,72 +1,52 @@
-import { ShapePlugin } from '../../plugin';
+import { BrowserforcePlugin } from '../../plugin';
 
-export default class SalesforceToSalesforce extends ShapePlugin {
-  public static schema = {
-    name: 'SalesforceToSalesforce',
-    description: 'Salesforce to Salesforce',
-    properties: {
-      enabled: {
-        name: 'enabled',
-        label: 'Enabled',
-        selector: '#penabled'
-      }
-    }
-  };
-  protected static SELECTORS = {
-    BASE: 'table.detailList',
-    SAVE_BUTTON: 'input[name="save"]'
-  };
-  protected static PATHS = {
-    BASE: '/_ui/s2s/ui/PartnerNetworkEnable/e'
-  };
+const PATHS = {
+  BASE: '_ui/s2s/ui/PartnerNetworkEnable/e'
+};
+const SELECTORS = {
+  ENABLED: '#penabled',
+  BASE: 'table.detailList',
+  SAVE_BUTTON: 'input[name="save"]'
+};
 
+export default class SalesforceToSalesforce extends BrowserforcePlugin {
   public async retrieve() {
-    const page = await this.getPage();
-    await page.goto(this.getBaseUrl());
-    await page.waitFor(this.constructor['SELECTORS'].BASE);
-    const inputEnable = await page.$(
-      this.constructor['schema'].properties.enabled.selector
-    );
+    const page = this.browserforce.page;
+    await page.goto(`${this.browserforce.getInstanceUrl()}/${PATHS.BASE}`);
+    await page.waitFor(SELECTORS.BASE);
     const response = {};
+    const inputEnable = await page.$(SELECTORS.ENABLED);
     if (inputEnable) {
-      response[
-        this.constructor['schema'].properties.enabled.name
-      ] = await page.$eval(
-        this.constructor['schema'].properties.enabled.selector,
+      response['enabled'] = await page.$eval(
+        SELECTORS.ENABLED,
         (el: HTMLInputElement) => el.checked
       );
     } else {
       // already enabled
-      response[this.constructor['schema'].properties.enabled.name] = true;
+      response['enabled'] = true;
     }
-    await page.close();
     return response;
   }
 
-  public async apply(actions) {
-    if (!actions || !actions.length) {
-      return;
-    }
-    const action = actions[0];
-    if (action.name === 'enabled' && action.targetValue === false) {
+  public async apply(config) {
+    if (config.enabled === false) {
       throw new Error(
-        `${this.constructor['schema'].name} cannot be disabled once enabled`
+        '`enabled` cannot be disabled once enabled'
       );
     }
-    const page = await this.getPage();
-    await page.goto(this.getBaseUrl());
-    await page.waitFor(this.constructor['schema'].properties.enabled.selector);
+    const page = this.browserforce.page;
+    await page.goto(`${this.browserforce.getInstanceUrl()}/${PATHS.BASE}`);
+    await page.waitFor(SELECTORS.ENABLED);
     await page.$eval(
-      action.selector,
+      SELECTORS.ENABLED,
       (e: HTMLInputElement, v) => {
         e.checked = v;
       },
-      action.targetValue
+      config.enabled
     );
     await Promise.all([
       page.waitForNavigation(),
-      page.click(this.constructor['SELECTORS'].SAVE_BUTTON)
+      page.click(SELECTORS.SAVE_BUTTON)
     ]);
-    await page.close();
   }
 }

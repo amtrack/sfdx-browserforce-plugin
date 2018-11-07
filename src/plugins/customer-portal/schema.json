@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/packages/customer-portal/schema.json",
+  "title": "Customer Portal Settings",
+  "description": "Only available in Salesforce Classic UI",
+  "type": "object",
+  "properties": {
+    "enabled": {
+      "title": "Enable Customer Portal",
+      "description": "Warning: cannot be disabled once enabled",
+      "type": "boolean"
+    },
+    "portals": {
+      "title": "Portals",
+      "type": "array",
+      "items": { "$ref": "#/definitions/portal" },
+      "default": []
+    },
+    "availableCustomObjects": {
+      "title": "Custom Objects available for Customer Portal",
+      "type": "array",
+      "items": { "$ref": "#/definitions/availableCustomObject" },
+      "default": []
+    }
+  },
+  "definitions": {
+    "portal": {
+      "type": "object",
+      "properties": {
+        "adminUser": { "type": "string" },
+        "description": { "type": "string" },
+        "isSelfRegistrationActivated": { "type": "boolean" },
+        "name": { "type": "string" },
+        "oldName": { "type": "string" },
+        "selfRegUserDefaultLicense": { "type": "string" },
+        "selfRegUserDefaultProfile": { "type": "string" },
+        "selfRegUserDefaultRole": { "type": "string" },
+        "portalProfileMemberships": {
+          "type": "array",
+          "description": "Profiles for which this portal should be activated or deactivated",
+          "items": { "$ref": "#/definitions/portalProfileMembership" },
+          "default": []
+        }
+      },
+      "required": ["name"]
+    },
+    "portalProfileMembership": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "active": { "type": "boolean" }
+      }
+    },
+    "availableCustomObject": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "namespacePrefix": { "type": "string" },
+        "available": { "type": "boolean" }
+      },
+      "required": ["name", "available"]
+    }
+  }
+}

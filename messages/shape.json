@@ -1,4 +1,0 @@
-{
-  "definitionFileDescription": "path to a browserforce definition file\nThe schema is similar to the scratch org definition file.\nSee https://github.com/amtrack/sfdx-browserforce-plugin#supported-org-preferences for supported values.",
-  "shapeApplyCommandDescription": "check and apply an org shape"
-}
