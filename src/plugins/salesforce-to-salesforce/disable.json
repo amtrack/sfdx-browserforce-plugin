@@ -1,5 +1,8 @@
 {
-  "orgPreferences": {
-    "disabled": ["SalesforceToSalesforce"]
+  "$schema": "../schema.json",
+  "settings": {
+    "salesforceToSalesforceSettings": {
+      "enableSalesforceToSalesforce": false
+    }
   }
 }

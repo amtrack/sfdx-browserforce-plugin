@@ -6,7 +6,6 @@ export default class Browserforce {
   public browser: puppeteer.Browser;
   constructor(org) {
     this.org = org;
-    this.browser = undefined;
   }
 
   public async login() {

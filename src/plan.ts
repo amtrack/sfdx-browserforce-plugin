@@ -1,34 +1,15 @@
-export interface Action {
-  name: string;
-  label: string;
-  selector: string;
-  oldValue: object;
-  targetValue: object;
-}
+import * as jsonMergePatch from 'json-merge-patch';
 
 export default class Plan {
-  public static debug(actions) {
-    for (const action of actions) {
-      return `changing ${action.label} from '${action.oldValue}' to '${
-        action.targetValue
-      }'`;
+  public static debug(plan) {
+    const messages = [];
+    for (const key of Object.keys(plan)) {
+      messages.push(`changing '${key}' to '${JSON.stringify(plan[key])}'`);
     }
+    return messages.join('\n');
   }
 
-  public static plan(schema, state, target) {
-    const actions = [];
-    for (const key of Object.keys(schema.properties)) {
-      if (
-        Object.prototype.hasOwnProperty.call(state, key) &&
-        Object.prototype.hasOwnProperty.call(target, key) &&
-        state[key] !== target[key]
-      ) {
-        const action = schema.properties[key];
-        action.oldValue = state[key];
-        action.targetValue = target[key];
-        actions.push(action);
-      }
-    }
-    return actions;
+  public static plan(state, target) {
+    return jsonMergePatch.generate(state, target);
   }
 }

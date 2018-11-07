@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/schema.json",
+  "title": "Browserforce Shape Definition Configuration",
+  "description": "The browserforce shape definition file contains the configuration values that determine the shape of the scratch org.",
+  "type": "object",
+  "properties": {
+    "additionalProperties": false,
+    "settings": {
+      "additionalProperties": false,
+      "properties": {
+        "customerPortalSettings": {
+          "$ref": "./customer-portal/schema.json"
+        },
+        "loginAccessPolicies": {
+          "$ref": "./login-access-policies/schema.json"
+        },
+        "salesforceToSalesforceSettings": {
+          "$ref": "./salesforce-to-salesforce/schema.json"
+        },
+        "sharingSettings": {
+          "$ref": "./sharing-settings/schema.json"
+        }
+      }
+    }
+  }
+}

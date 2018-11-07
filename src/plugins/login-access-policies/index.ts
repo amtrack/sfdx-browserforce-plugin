@@ -1,41 +1,31 @@
 import { ShapePlugin } from '../../plugin';
 
-export default class SalesforceToSalesforce extends ShapePlugin {
+export default class LoginAccessPolicies extends ShapePlugin {
   public static schema = require('./schema.json');
   protected static SELECTORS = {
-    ENABLED: '#penabled',
-    BASE: 'table.detailList',
-    SAVE_BUTTON: 'input[name="save"]'
+    ENABLED: 'input[id$="adminsCanLogInAsAny"]',
+    CONFIRM_MESSAGE: '.message.confirmM3',
+    SAVE_BUTTON: 'input[id$=":save"]'
   };
   protected static PATHS = {
-    BASE: '/_ui/s2s/ui/PartnerNetworkEnable/e'
+    BASE: '/partnerbt/loginAccessPolicies.apexp'
   };
 
   public async retrieve() {
     const page = await this.getPage();
     await page.goto(this.getBaseUrl());
-    await page.waitFor(this.constructor['SELECTORS'].BASE);
-    const response = {};
-    const inputEnable = await page.$(this.constructor['SELECTORS'].ENABLED);
-    if (inputEnable) {
-      response['enableSalesforceToSalesforce'] = await page.$eval(
+    await page.waitFor(this.constructor['SELECTORS'].ENABLED);
+    const response = {
+      administratorsCanLogInAsAnyUser: await page.$eval(
         this.constructor['SELECTORS'].ENABLED,
         (el: HTMLInputElement) => el.checked
-      );
-    } else {
-      // already enabled
-      response['enableSalesforceToSalesforce'] = true;
-    }
+      )
+    };
     await page.close();
     return response;
   }
 
   public async apply(config) {
-    if (config.enableSalesforceToSalesforce === false) {
-      throw new Error(
-        `${this.constructor['schema'].name} cannot be disabled once enabled`
-      );
-    }
     const page = await this.getPage();
     await page.goto(this.getBaseUrl());
     await page.waitFor(this.constructor['SELECTORS'].ENABLED);
@@ -44,10 +34,10 @@ export default class SalesforceToSalesforce extends ShapePlugin {
       (e: HTMLInputElement, v) => {
         e.checked = v;
       },
-      config.enableSalesforceToSalesforce
+      config.administratorsCanLogInAsAnyUser
     );
     await Promise.all([
-      page.waitForNavigation(),
+      page.waitFor(this.constructor['SELECTORS'].CONFIRM_MESSAGE),
       page.click(this.constructor['SELECTORS'].SAVE_BUTTON)
     ]);
     await page.close();

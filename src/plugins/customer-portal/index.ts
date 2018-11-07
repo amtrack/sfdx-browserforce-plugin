@@ -1,18 +1,9 @@
 import { ShapePlugin } from '../../plugin';
 
 export default class CustomerPortal extends ShapePlugin {
-  public static schema = {
-    name: 'CustomerPortal',
-    description: 'Customer Portal',
-    properties: {
-      enabled: {
-        name: 'enabled',
-        label: 'Enabled',
-        selector: '#penabled'
-      }
-    }
-  };
+  public static schema = require('./schema.json');
   protected static SELECTORS = {
+    ENABLED: '#penabled',
     SAVE_BUTTON: 'input[name="save"]',
     ERROR_DIV: '#errorTitle'
   };
@@ -23,7 +14,7 @@ export default class CustomerPortal extends ShapePlugin {
   public async retrieve() {
     const page = await this.getPage();
     await page.goto(this.getBaseUrl());
-    await page.waitFor(this.constructor['schema'].properties.enabled.selector);
+    await page.waitFor(this.constructor['SELECTORS'].ENABLED);
     const customerPortalNotAvailable = await page.$(
       this.constructor['SELECTORS'].ERROR_DIV
     );
@@ -33,37 +24,32 @@ export default class CustomerPortal extends ShapePlugin {
         `${this.constructor['schema'].name} is not available in this org`
       );
     }
-    await page.waitFor(this.constructor['schema'].properties.enabled.selector);
-    const response = {};
-    response[
-      this.constructor['schema'].properties.enabled.name
-    ] = await page.$eval(
-      this.constructor['schema'].properties.enabled.selector,
-      (el: HTMLInputElement) => el.checked
-    );
+    await page.waitFor(this.constructor['SELECTORS'].ENABLED);
+    const response = {
+      enableCustomerPortal: await page.$eval(
+        this.constructor['SELECTORS'].ENABLED,
+        (el: HTMLInputElement) => el.checked
+      )
+    };
     await page.close();
     return response;
   }
 
-  public async apply(actions) {
-    if (!actions || !actions.length) {
-      return;
-    }
-    const action = actions[0];
-    if (action.name === 'enabled' && action.targetValue === false) {
+  public async apply(config) {
+    if (config.enableCustomerPortal === false) {
       throw new Error(
         `${this.constructor['schema'].name} cannot be disabled once enabled`
       );
     }
     const page = await this.getPage();
     await page.goto(this.getBaseUrl());
-    await page.waitFor(this.constructor['schema'].properties.enabled.selector);
+    await page.waitFor(this.constructor['SELECTORS'].ENABLED);
     await page.$eval(
-      action.selector,
+      this.constructor['SELECTORS'].ENABLED,
       (e: HTMLInputElement, v) => {
         e.checked = v;
       },
-      action.targetValue
+      config.enableCustomerPortal
     );
     await Promise.all([
       page.waitForNavigation(),

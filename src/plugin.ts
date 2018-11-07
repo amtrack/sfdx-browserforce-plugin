@@ -1,6 +1,5 @@
 import { core } from '@salesforce/command';
 import { Browser, Page } from 'puppeteer';
-import { Action } from './plan';
 
 interface ShapeSchema {
   name: string;
@@ -20,7 +19,7 @@ export abstract class ShapePlugin {
   // tslint:disable-next-line:no-any
   public abstract async retrieve(): Promise<any>;
   // tslint:disable-next-line:no-any
-  public abstract async apply(actions: Action[]): Promise<any>;
+  public abstract async apply(config: JSON): Promise<any>;
   protected getBaseUrl() {
     return `${this.org.getConnection().instanceUrl}${
       this.constructor['PATHS'].BASE

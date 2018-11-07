@@ -19,8 +19,8 @@ export default class ShapeApply extends SfdxCommand {
   public static examples = [
     `$ sfdx browserforce:shape:apply -f ./config/browserforce-shape-def.json --targetusername myOrg@example.com
   Applying plan file ./config/browserforce-shape-def.json to org myOrg@example.com
-  [AdminsCanLogInAsAny] retrieving state... done
-  [AdminsCanLogInAsAny] changing Enabled from 'false' to 'true'... done
+  [LoginAccessPolicies] retrieving state... done
+  [LoginAccessPolicies] changing 'administratorsCanLogInAsAnyUser' to 'true'... done
   `
   ];
 
@@ -54,7 +54,7 @@ export default class ShapeApply extends SfdxCommand {
     for (const setting of settings) {
       const driver = setting.Driver.default;
       const instance = new driver(this.bf.browser, this.org);
-      this.ux.startSpinner(`[${driver.schema.name}] retrieving state`);
+      this.ux.startSpinner(`[${driver.name}] retrieving state`);
       let state;
       try {
         state = await instance.retrieve();
@@ -63,20 +63,22 @@ export default class ShapeApply extends SfdxCommand {
         throw err;
       }
       this.ux.stopSpinner();
-      logger.debug(`generating actions for driver ${driver.schema.name}`);
-      const actions = Plan.plan(driver.schema, state, setting.value);
+      logger.debug(`generating action for driver ${driver.name}`);
+      const action = Plan.plan(state, setting.value);
       this.ux.stopSpinner();
-      if (actions && actions.length) {
-        this.ux.startSpinner(`[${driver.schema.name}] ${Plan.debug(actions)}`);
+      if (action) {
+        this.ux.startSpinner(
+          `[${driver.name}] ${Plan.debug(action)}`
+        );
         try {
-          await instance.apply(actions);
+          await instance.apply(action);
         } catch (err) {
           this.ux.stopSpinner('failed');
           throw err;
         }
         this.ux.stopSpinner();
       } else {
-        this.ux.log(`[${driver.schema.name}] no actions necessary`);
+        this.ux.log(`[${driver.name}] no action necessary`);
       }
     }
     return { success: true };

@@ -1,10 +1,10 @@
-import * as AdminsCanLogInAsAny from './admins-can-log-in-as-any';
-import * as CustomerPortal from './customer-portal';
-import * as ExternalSharing from './external-sharing';
-import * as SalesforceToSalesforce from './salesforce-to-salesforce';
+import * as customerPortalSettings from './customer-portal';
+import * as loginAccessPolicies from './login-access-policies';
+import * as salesforceToSalesforceSettings from './salesforce-to-salesforce';
+import * as sharingSettings from './sharing-settings';
 export {
-  AdminsCanLogInAsAny,
-  CustomerPortal,
-  ExternalSharing,
-  SalesforceToSalesforce
+  customerPortalSettings,
+  loginAccessPolicies,
+  salesforceToSalesforceSettings,
+  sharingSettings
 };

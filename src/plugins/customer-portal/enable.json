@@ -1,5 +1,8 @@
 {
-  "orgPreferences": {
-    "enabled": ["CustomerPortal"]
+  "$schema": "../schema.json",
+  "settings": {
+    "customerPortalSettings": {
+      "enableCustomerPortal": true
+    }
   }
 }

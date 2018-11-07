@@ -47,8 +47,8 @@ OPTIONS
 EXAMPLE
   $ sfdx browserforce:shape:apply -f ./config/browserforce-shape-def.json --targetusername myOrg@example.com
      Applying plan file ./config/browserforce-shape-def.json to org myOrg@example.com
-     [AdminsCanLogInAsAny] retrieving state... done
-     [AdminsCanLogInAsAny] changing Enabled from 'false' to 'true'... done
+     [LoginAccessPolicies] retrieving state... done
+     [LoginAccessPolicies] changing 'administratorsCanLogInAsAnyUser' to 'true'... done
 ```
 
 _See code: [src/commands/browserforce/shape/apply.ts](https://github.com/amtrack/sfdx-browserforce-plugin/blob/v0.0.0-development/src/commands/browserforce/shape/apply.ts)_
