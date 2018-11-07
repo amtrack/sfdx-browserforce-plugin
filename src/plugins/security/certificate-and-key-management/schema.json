@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/packages/customer-portal/schema.json",
+  "title": "Certificate and Key Management",
+  "type": "object",
+  "properties": {
+    "certificates": {
+      "title": "Self-Signed Certificates",
+      "type": "array",
+      "items": { "$ref": "#/definitions/certificate" },
+      "default": []
+    },
+    "importFromKeystore": {
+      "title": "Import Certificate from Keystore",
+      "type": "array",
+      "items": { "$ref": "#/definitions/keystore" },
+      "default": []
+    }
+  },
+  "definitions": {
+    "certificate": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "label": { "type": "string" },
+        "exportable": { "type": "boolean" },
+        "keysize": { "type": "integer" }
+      },
+      "required": ["name", "label"]
+    },
+    "keystore": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Imported certificates have lowercase names. Set this to rename after importing."
+        },
+        "filePath": {
+          "type": "string",
+          "description": "Relative path from current working directory"
+        },
+        "password": { "type": "string" }
+      },
+      "required": ["name", "filePath"]
+    }
+  }
+}

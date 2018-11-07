@@ -1,0 +1,19 @@
+{
+  "$schema": "../../schema.json",
+  "settings": {
+    "security": {
+      "certificateAndKeyManagement": {
+        "certificates": [
+          {
+            "name": "identity_provider",
+            "label": "identity_provider"
+          }
+        ]
+      },
+      "identityProvider": {
+        "enabled": true,
+        "certificate": "identity_provider"
+      }
+    }
+  }
+}
