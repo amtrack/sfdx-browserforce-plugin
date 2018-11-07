@@ -1,5 +1,4 @@
 import { core, flags, SfdxCommand } from '@salesforce/command';
-import * as Bluebird from 'bluebird';
 import * as path from 'path';
 import Browserforce from '../../../browser';
 import Plan from '../../../plan';
@@ -33,82 +32,62 @@ export default class ShapeApply extends SfdxCommand {
   };
 
   protected static requiresUsername = true;
+  private bf: Browserforce;
 
   // tslint:disable-next-line:no-any
   public async run(): Promise<any> {
     const definition = require(path.resolve(this.flags.definitionfile));
     const settings = SchemaParser.parse(DRIVERS, definition);
-    let bf;
-
     const logger = await core.Logger.root();
+    this.ux.log(
+      `Applying plan file ${
+        this.flags.definitionfile
+      } to org ${this.org.getUsername()}`
+    );
+    this.bf = new Browserforce(this.org);
 
-    return Promise.resolve()
-      .then(() => {
-        this.ux.log(
-          `Applying plan file ${
-            this.flags.definitionfile
-          } to org ${this.org.getUsername()}`
-        );
-        bf = new Browserforce(this.org);
-      })
-      .then(() => {
-        logger.debug('logging in');
-        return bf.login();
-      })
-      .then(() => {
-        logger.debug(settings);
-        return Bluebird.mapSeries(settings, setting => {
-          const driver = setting.Driver.default;
-          const instance = new driver(bf.browser, this.org);
-          this.ux.startSpinner(`[${driver.schema.name}] retrieving state`);
-          return instance
-            .retrieve()
-            .then(state => {
-              this.ux.stopSpinner();
-              return state;
-            })
-            .catch(err => {
-              this.ux.stopSpinner('failed');
-              throw err;
-            })
-            .then(state => {
-              logger.debug(
-                `generating actions for driver ${driver.schema.name}`
-              );
-              return Plan.plan(driver.schema, state, setting.value);
-            })
-            .then(actions => {
-              this.ux.stopSpinner();
-              if (actions && actions.length) {
-                this.ux.startSpinner(
-                  `[${driver.schema.name}] ${Plan.debug(actions)}`
-                );
-                return instance
-                  .apply(actions)
-                  .then(() => {
-                    this.ux.stopSpinner();
-                  })
-                  .catch(err => {
-                    this.ux.stopSpinner('failed');
-                    throw err;
-                  });
-              } else {
-                this.ux.log(`[${driver.schema.name}] no actions necessary`);
-              }
-            });
-        });
-      })
-      .then(() => {
-        logger.debug('logging out');
-        return bf.logout();
-      })
-      .then(() => {
-        return { success: true };
-      })
-      .catch(err => {
-        // TODO: exiting with error code does not work currently
-        this.error(err, { exit: 1 });
-        return { success: false };
-      });
+    logger.debug('logging in');
+    await this.bf.login();
+    logger.debug('logged in');
+    logger.debug(settings);
+
+    for (const setting of settings) {
+      const driver = setting.Driver.default;
+      const instance = new driver(this.bf.browser, this.org);
+      this.ux.startSpinner(`[${driver.schema.name}] retrieving state`);
+      let state;
+      try {
+        state = await instance.retrieve();
+      } catch (err) {
+        this.ux.stopSpinner('failed');
+        throw err;
+      }
+      this.ux.stopSpinner();
+      logger.debug(`generating actions for driver ${driver.schema.name}`);
+      const actions = Plan.plan(driver.schema, state, setting.value);
+      this.ux.stopSpinner();
+      if (actions && actions.length) {
+        this.ux.startSpinner(`[${driver.schema.name}] ${Plan.debug(actions)}`);
+        try {
+          await instance.apply(actions);
+        } catch (err) {
+          this.ux.stopSpinner('failed');
+          throw err;
+        }
+        this.ux.stopSpinner();
+      } else {
+        this.ux.log(`[${driver.schema.name}] no actions necessary`);
+      }
+    }
+    return { success: true };
+  }
+
+  // tslint:disable-next-line:no-any
+  public async finally(err: any) {
+    if (this.bf) {
+      this.debug('logging out');
+      await this.bf.logout();
+      this.debug('logged out');
+    }
   }
 }

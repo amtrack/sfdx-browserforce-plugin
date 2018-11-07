@@ -12,8 +12,8 @@ describe(ExternalSharing.name, () => {
       '-f',
       path.resolve(path.join(__dirname, 'enable.json'))
     ]);
-    assert.deepEqual(enableCmd.status, 0, enableCmd.stderr);
-    assert(/to 'true'/.test(enableCmd.stderr.toString()));
+    assert.deepEqual(enableCmd.status, 0, enableCmd.output.toString());
+    assert(/to 'true'/.test(enableCmd.output.toString()));
   });
   it('should disable', function() {
     this.timeout(1000 * 60);
@@ -23,7 +23,7 @@ describe(ExternalSharing.name, () => {
       '-f',
       path.resolve(path.join(__dirname, 'disable.json'))
     ]);
-    assert.deepEqual(disableCmd.status, 0, disableCmd.stderr);
-    assert(/to 'false'/.test(disableCmd.stderr.toString()));
+    assert.deepEqual(disableCmd.status, 0, disableCmd.output.toString());
+    assert(/to 'false'/.test(disableCmd.output.toString()));
   });
 });
