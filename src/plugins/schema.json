@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/schema.json",
+  "title": "Browserforce Definition Configuration",
+  "description": "The browserforce definition file contains the configuration values that defines browser automation tasks for Salesforce orgs.",
+  "type": "object",
+  "properties": {
+    "settings": {
+      "properties": {
+        "customerPortal": {
+          "$ref": "./customer-portal/schema.json"
+        },
+        "homePageLayouts": {
+          "$ref": "./home-page-layouts/schema.json"
+        },
+        "salesforceToSalesforce": {
+          "$ref": "./salesforce-to-salesforce/schema.json"
+        },
+        "security": {
+          "$ref": "./security/schema.json"
+        }
+      }
+    }
+  }
+}
