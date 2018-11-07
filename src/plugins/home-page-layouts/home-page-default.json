@@ -1,0 +1,17 @@
+{
+  "$schema": "../schema.json",
+  "settings": {
+    "homePageLayouts": {
+      "homePageLayoutAssignments": [
+        {
+          "profile": "Standard User",
+          "layout": ""
+        },
+        {
+          "profile": "System Administrator",
+          "layout": ""
+        }
+      ]
+    }
+  }
+}
