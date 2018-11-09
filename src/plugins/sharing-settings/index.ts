@@ -16,16 +16,15 @@ export default class ExternalSharing extends ShapePlugin {
   };
 
   public async retrieve() {
-    const page = await this.getPage();
+    const page = this.browserforce.page;
     await page.goto(this.getBaseUrl());
     await page.waitFor(this.constructor['SELECTORS'].ENABLED);
     const value = await this.getValue(page);
-    await page.close();
     return value;
   }
 
   public async apply(config) {
-    const page = await this.getPage();
+    const page = this.browserforce.page;
     await page.goto(this.getBaseUrl());
     await page.waitFor(this.constructor['SELECTORS'].ENABLED);
     page.on('dialog', async dialog => {
@@ -42,7 +41,6 @@ export default class ExternalSharing extends ShapePlugin {
         page.click(this.constructor['SELECTORS'].DISABLE_BUTTON)
       ]);
     }
-    await page.close();
   }
 
   private async getValue(page) {

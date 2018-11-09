@@ -1,6 +1,6 @@
 import { core } from '@salesforce/command';
 import * as assert from 'assert';
-import Browserforce from '../src/browser';
+import Browserforce from '../src/browserforce';
 
 describe('Browser', () => {
   describe('login()', () => {

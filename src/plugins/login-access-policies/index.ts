@@ -12,7 +12,7 @@ export default class LoginAccessPolicies extends ShapePlugin {
   };
 
   public async retrieve() {
-    const page = await this.getPage();
+    const page = this.browserforce.page;
     await page.goto(this.getBaseUrl());
     await page.waitFor(this.constructor['SELECTORS'].ENABLED);
     const response = {
@@ -21,12 +21,11 @@ export default class LoginAccessPolicies extends ShapePlugin {
         (el: HTMLInputElement) => el.checked
       )
     };
-    await page.close();
     return response;
   }
 
   public async apply(config) {
-    const page = await this.getPage();
+    const page = this.browserforce.page;
     await page.goto(this.getBaseUrl());
     await page.waitFor(this.constructor['SELECTORS'].ENABLED);
     await page.$eval(
@@ -40,6 +39,5 @@ export default class LoginAccessPolicies extends ShapePlugin {
       page.waitFor(this.constructor['SELECTORS'].CONFIRM_MESSAGE),
       page.click(this.constructor['SELECTORS'].SAVE_BUTTON)
     ]);
-    await page.close();
   }
 }

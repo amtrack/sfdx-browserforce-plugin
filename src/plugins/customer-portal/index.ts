@@ -12,16 +12,15 @@ export default class CustomerPortal extends ShapePlugin {
   };
 
   public async retrieve() {
-    const page = await this.getPage();
+    const page = this.browserforce.page;
     await page.goto(this.getBaseUrl());
     await page.waitFor(this.constructor['SELECTORS'].ENABLED);
     const customerPortalNotAvailable = await page.$(
       this.constructor['SELECTORS'].ERROR_DIV
     );
     if (customerPortalNotAvailable) {
-      await page.close();
       throw new Error(
-        `${this.constructor['schema'].name} is not available in this org`
+        `${this.constructor['schema'].title} is not available in this org`
       );
     }
     await page.waitFor(this.constructor['SELECTORS'].ENABLED);
@@ -31,17 +30,16 @@ export default class CustomerPortal extends ShapePlugin {
         (el: HTMLInputElement) => el.checked
       )
     };
-    await page.close();
     return response;
   }
 
   public async apply(config) {
     if (config.enableCustomerPortal === false) {
       throw new Error(
-        `${this.constructor['schema'].name} cannot be disabled once enabled`
+        '`enableCustomerPortal` cannot be disabled once enabled'
       );
     }
-    const page = await this.getPage();
+    const page = this.browserforce.page;
     await page.goto(this.getBaseUrl());
     await page.waitFor(this.constructor['SELECTORS'].ENABLED);
     await page.$eval(
@@ -55,6 +53,5 @@ export default class CustomerPortal extends ShapePlugin {
       page.waitForNavigation(),
       page.click(this.constructor['SELECTORS'].SAVE_BUTTON)
     ]);
-    await page.close();
   }
 }

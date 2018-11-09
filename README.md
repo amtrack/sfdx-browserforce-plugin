@@ -6,14 +6,23 @@
 
 # Installation
 
+Install either globally (and use it via `sfdx browserforce`)
+
 ```console
 sfdx plugins:install sfdx-browserforce-plugin
+```
+
+or in your project as a dev dependency (and use it via `npx sfdx-browserforce-plugin browserforce`).
+
+```console
+npm install --save-dev sfdx-browserforce-plugin
 ```
 
 # Usage
 
 ```console
 sfdx browserforce -h
+npx sfdx-browserforce-plugin browserforce -h
 ```
 
 # Commands
@@ -47,8 +56,10 @@ OPTIONS
 EXAMPLE
   $ sfdx browserforce:shape:apply -f ./config/browserforce-shape-def.json --targetusername myOrg@example.com
      Applying plan file ./config/browserforce-shape-def.json to org myOrg@example.com
+     logging in... done
      [LoginAccessPolicies] retrieving state... done
      [LoginAccessPolicies] changing 'administratorsCanLogInAsAnyUser' to 'true'... done
+     logging out... done
 ```
 
 _See code: [src/commands/browserforce/shape/apply.ts](https://github.com/amtrack/sfdx-browserforce-plugin/blob/v0.0.0-development/src/commands/browserforce/shape/apply.ts)_
@@ -56,29 +67,23 @@ _See code: [src/commands/browserforce/shape/apply.ts](https://github.com/amtrack
 
 # Example
 
-To enable the feature `AdminsCanLogInAsAny` the config file (here: `./config/browserforce-shape-def.json`) should look like this:
+To enable `Login Access Policies -> Administrators Can Log in as Any User`, the config file (here: `./config/browserforce-shape-def.json`) should look like this:
 
 ```json
-"orgPreferences": {
-    "enabled": [
-      "AdminsCanLogInAsAny"
-    ]
+{
+  "settings": {
+    "loginAccessPolicies": {
+      "administratorsCanLogInAsAnyUser": true
+    }
+  }
 }
 ```
 
-# Supported Org Preferences
+# Supported Settings
 
-General Settings
+See the [JSON Schema](src/plugins/schema.json) for supported settings.
 
-- `AdminsCanLogInAsAny`
-- `CustomerPortal` (Warning: cannot be disabled once enabled)
-- `SalesforceToSalesforce` (Warning: cannot be disabled once enabled)
-
-Sharing Settings
-
-- `ExternalSharing` ([now officially supported](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_scratch_orgs_def_file_config_values.htm))
-
-# Supported Environment Variables
+# Environment Variables
 
 - `BROWSERFORCE_NAVIGATION_TIMEOUT_MS`: adjustable for slow internet connections (default: `90000`)
 - `BROWSER_DEBUG` run in non-headless mode (default: `false`)

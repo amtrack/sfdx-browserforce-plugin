@@ -1,6 +1,6 @@
 import { core, flags, SfdxCommand } from '@salesforce/command';
 import * as path from 'path';
-import Browserforce from '../../../browser';
+import Browserforce from '../../../browserforce';
 import Plan from '../../../plan';
 import * as DRIVERS from '../../../plugins';
 import SchemaParser from '../../../schema-parser';
@@ -11,7 +11,7 @@ const messages = core.Messages.loadMessages(
   'shape'
 );
 
-export default class ShapeApply extends SfdxCommand {
+export default class BrowserforceShapeApply extends SfdxCommand {
   public static description = messages.getMessage(
     'shapeApplyCommandDescription'
   );
@@ -19,8 +19,10 @@ export default class ShapeApply extends SfdxCommand {
   public static examples = [
     `$ sfdx browserforce:shape:apply -f ./config/browserforce-shape-def.json --targetusername myOrg@example.com
   Applying plan file ./config/browserforce-shape-def.json to org myOrg@example.com
+  logging in... done
   [LoginAccessPolicies] retrieving state... done
   [LoginAccessPolicies] changing 'administratorsCanLogInAsAnyUser' to 'true'... done
+  logging out... done
   `
   ];
 
@@ -46,14 +48,13 @@ export default class ShapeApply extends SfdxCommand {
     );
     this.bf = new Browserforce(this.org);
 
-    logger.debug('logging in');
+    this.ux.startSpinner('logging in');
     await this.bf.login();
-    logger.debug('logged in');
-    logger.debug(settings);
+    this.ux.stopSpinner();
 
     for (const setting of settings) {
       const driver = setting.Driver.default;
-      const instance = new driver(this.bf.browser, this.org);
+      const instance = new driver(this.bf, this.org);
       this.ux.startSpinner(`[${driver.name}] retrieving state`);
       let state;
       try {
@@ -67,9 +68,7 @@ export default class ShapeApply extends SfdxCommand {
       const action = Plan.plan(state, setting.value);
       this.ux.stopSpinner();
       if (action) {
-        this.ux.startSpinner(
-          `[${driver.name}] ${Plan.debug(action)}`
-        );
+        this.ux.startSpinner(`[${driver.name}] ${Plan.debug(action)}`);
         try {
           await instance.apply(action);
         } catch (err) {
@@ -86,10 +85,11 @@ export default class ShapeApply extends SfdxCommand {
 
   // tslint:disable-next-line:no-any
   public async finally(err: any) {
+    this.ux.stopSpinner();
     if (this.bf) {
-      this.debug('logging out');
+      this.ux.startSpinner('logging out');
       await this.bf.logout();
-      this.debug('logged out');
+      this.ux.stopSpinner();
     }
   }
 }

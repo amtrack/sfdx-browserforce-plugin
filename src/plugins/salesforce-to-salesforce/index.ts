@@ -12,7 +12,7 @@ export default class SalesforceToSalesforce extends ShapePlugin {
   };
 
   public async retrieve() {
-    const page = await this.getPage();
+    const page = this.browserforce.page;
     await page.goto(this.getBaseUrl());
     await page.waitFor(this.constructor['SELECTORS'].BASE);
     const response = {};
@@ -26,17 +26,16 @@ export default class SalesforceToSalesforce extends ShapePlugin {
       // already enabled
       response['enableSalesforceToSalesforce'] = true;
     }
-    await page.close();
     return response;
   }
 
   public async apply(config) {
     if (config.enableSalesforceToSalesforce === false) {
       throw new Error(
-        `${this.constructor['schema'].name} cannot be disabled once enabled`
+        '`enableSalesforceToSalesforce` cannot be disabled once enabled'
       );
     }
-    const page = await this.getPage();
+    const page = this.browserforce.page;
     await page.goto(this.getBaseUrl());
     await page.waitFor(this.constructor['SELECTORS'].ENABLED);
     await page.$eval(
@@ -50,6 +49,5 @@ export default class SalesforceToSalesforce extends ShapePlugin {
       page.waitForNavigation(),
       page.click(this.constructor['SELECTORS'].SAVE_BUTTON)
     ]);
-    await page.close();
   }
 }

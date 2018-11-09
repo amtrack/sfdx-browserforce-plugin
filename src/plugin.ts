@@ -1,5 +1,5 @@
 import { core } from '@salesforce/command';
-import { Browser, Page } from 'puppeteer';
+import Browserforce from './browserforce';
 
 interface ShapeSchema {
   name: string;
@@ -10,10 +10,11 @@ interface ShapeSchema {
 export abstract class ShapePlugin {
   public static schema: ShapeSchema;
   protected static PATHS: object;
-  protected browser: Browser;
   protected org: core.Org;
-  protected constructor(browser: Browser, org: core.Org) {
-    this.browser = browser;
+  protected browserforce: Browserforce;
+
+  protected constructor(browserforce: Browserforce, org: core.Org) {
+    this.browserforce = browserforce;
     this.org = org;
   }
   // tslint:disable-next-line:no-any
@@ -24,12 +25,5 @@ export abstract class ShapePlugin {
     return `${this.org.getConnection().instanceUrl}${
       this.constructor['PATHS'].BASE
     }`;
-  }
-  protected async getPage(): Promise<Page> {
-    const page = await this.browser.newPage();
-    page.setDefaultNavigationTimeout(
-      parseInt(process.env.BROWSERFORCE_NAVIGATION_TIMEOUT_MS, 10) || 90000
-    );
-    return page;
   }
 }
