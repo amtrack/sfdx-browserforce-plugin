@@ -1,7 +1,6 @@
 import { ShapePlugin } from '../../plugin';
 
 export default class CustomerPortal extends ShapePlugin {
-  public static schema = require('./schema.json');
   protected static SELECTORS = {
     ENABLED: '#penabled',
     SAVE_BUTTON: 'input[name="save"]',
@@ -20,7 +19,7 @@ export default class CustomerPortal extends ShapePlugin {
     );
     if (customerPortalNotAvailable) {
       throw new Error(
-        `${this.constructor['schema'].title} is not available in this org`
+        'Customer Portal is not available in this org'
       );
     }
     await page.waitFor(this.constructor['SELECTORS'].ENABLED);

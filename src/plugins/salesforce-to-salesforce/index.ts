@@ -1,7 +1,6 @@
 import { ShapePlugin } from '../../plugin';
 
 export default class SalesforceToSalesforce extends ShapePlugin {
-  public static schema = require('./schema.json');
   protected static SELECTORS = {
     ENABLED: '#penabled',
     BASE: 'table.detailList',

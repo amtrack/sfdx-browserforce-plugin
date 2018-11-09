@@ -1,8 +1,6 @@
 import { ShapePlugin } from '../../plugin';
 
 export default class ExternalSharing extends ShapePlugin {
-  public static schema = require('./schema.json');
-
   protected static SELECTORS = {
     ENABLED: '#externalSharingModelButton',
     ENABLE_BUTTON:

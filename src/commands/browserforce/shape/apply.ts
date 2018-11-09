@@ -1,9 +1,9 @@
 import { core, flags, SfdxCommand } from '@salesforce/command';
 import * as path from 'path';
 import Browserforce from '../../../browserforce';
+import ConfigParser from '../../../config-parser';
 import Plan from '../../../plan';
 import * as DRIVERS from '../../../plugins';
-import SchemaParser from '../../../schema-parser';
 
 core.Messages.importMessagesDirectory(__dirname);
 const messages = core.Messages.loadMessages(
@@ -39,7 +39,7 @@ export default class BrowserforceShapeApply extends SfdxCommand {
   // tslint:disable-next-line:no-any
   public async run(): Promise<any> {
     const definition = require(path.resolve(this.flags.definitionfile));
-    const settings = SchemaParser.parse(DRIVERS, definition);
+    const settings = ConfigParser.parse(DRIVERS, definition);
     const logger = await core.Logger.root();
     this.ux.log(
       `Applying plan file ${

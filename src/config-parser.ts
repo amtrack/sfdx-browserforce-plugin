@@ -1,4 +1,4 @@
-export default class SchemaParser {
+export default class ConfigParser {
   public static parse(drivers, data) {
     const settings = [];
     if (data && data.settings) {

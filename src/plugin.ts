@@ -1,14 +1,7 @@
 import { core } from '@salesforce/command';
 import Browserforce from './browserforce';
 
-interface ShapeSchema {
-  name: string;
-  description: string;
-  properties: object;
-}
-
 export abstract class ShapePlugin {
-  public static schema: ShapeSchema;
   protected static PATHS: object;
   protected org: core.Org;
   protected browserforce: Browserforce;

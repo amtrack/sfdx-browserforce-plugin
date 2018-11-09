@@ -1,7 +1,6 @@
 import { ShapePlugin } from '../../plugin';
 
 export default class LoginAccessPolicies extends ShapePlugin {
-  public static schema = require('./schema.json');
   protected static SELECTORS = {
     ENABLED: 'input[id$="adminsCanLogInAsAny"]',
     CONFIRM_MESSAGE: '.message.confirmM3',
