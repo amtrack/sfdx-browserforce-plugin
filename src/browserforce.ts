@@ -22,9 +22,11 @@ export default class Browserforce {
     const personalInformationPath =
       'setup/personalInformationSetup.apexp?nooverride=1';
     await this.page.goto(
-      `${this.org.getConnection().instanceUrl}/secur/frontdoor.jsp?sid=${
+      `${
+        this.org.getConnection().instanceUrl
+      }/secur/frontdoor.jsp?sid=${encodeURIComponent(
         this.org.getConnection().accessToken
-      }&retURL=${personalInformationPath}`
+      )}&retURL=${encodeURIComponent(personalInformationPath)}`
     );
     await this.page.waitForNavigation();
     const url = await this.page.url();
