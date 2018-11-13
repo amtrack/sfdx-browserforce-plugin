@@ -12,6 +12,9 @@
         "customerPortalSettings": {
           "$ref": "./customer-portal/schema.json"
         },
+        "homePageLayouts": {
+          "$ref": "./home-page-layouts/schema.json"
+        },
         "loginAccessPolicies": {
           "$ref": "./login-access-policies/schema.json"
         },
