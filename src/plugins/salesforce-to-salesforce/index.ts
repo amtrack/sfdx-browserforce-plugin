@@ -1,24 +1,24 @@
 import { ShapePlugin } from '../../plugin';
 
-export default class SalesforceToSalesforce extends ShapePlugin {
-  protected static SELECTORS = {
-    ENABLED: '#penabled',
-    BASE: 'table.detailList',
-    SAVE_BUTTON: 'input[name="save"]'
-  };
-  protected static PATHS = {
-    BASE: '/_ui/s2s/ui/PartnerNetworkEnable/e'
-  };
+const PATHS = {
+  BASE: '_ui/s2s/ui/PartnerNetworkEnable/e'
+};
+const SELECTORS = {
+  ENABLED: '#penabled',
+  BASE: 'table.detailList',
+  SAVE_BUTTON: 'input[name="save"]'
+};
 
+export default class SalesforceToSalesforce extends ShapePlugin {
   public async retrieve() {
     const page = this.browserforce.page;
-    await page.goto(this.getBaseUrl());
-    await page.waitFor(this.constructor['SELECTORS'].BASE);
+    await page.goto(`${this.browserforce.getInstanceUrl()}/${PATHS.BASE}`);
+    await page.waitFor(SELECTORS.BASE);
     const response = {};
-    const inputEnable = await page.$(this.constructor['SELECTORS'].ENABLED);
+    const inputEnable = await page.$(SELECTORS.ENABLED);
     if (inputEnable) {
       response['enableSalesforceToSalesforce'] = await page.$eval(
-        this.constructor['SELECTORS'].ENABLED,
+        SELECTORS.ENABLED,
         (el: HTMLInputElement) => el.checked
       );
     } else {
@@ -35,10 +35,10 @@ export default class SalesforceToSalesforce extends ShapePlugin {
       );
     }
     const page = this.browserforce.page;
-    await page.goto(this.getBaseUrl());
-    await page.waitFor(this.constructor['SELECTORS'].ENABLED);
+    await page.goto(`${this.browserforce.getInstanceUrl()}/${PATHS.BASE}`);
+    await page.waitFor(SELECTORS.ENABLED);
     await page.$eval(
-      this.constructor['SELECTORS'].ENABLED,
+      SELECTORS.ENABLED,
       (e: HTMLInputElement, v) => {
         e.checked = v;
       },
@@ -46,7 +46,7 @@ export default class SalesforceToSalesforce extends ShapePlugin {
     );
     await Promise.all([
       page.waitForNavigation(),
-      page.click(this.constructor['SELECTORS'].SAVE_BUTTON)
+      page.click(SELECTORS.SAVE_BUTTON)
     ]);
   }
 }

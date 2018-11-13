@@ -47,4 +47,8 @@ export default class Browserforce {
     await this.browser.close();
     return this;
   }
+
+  public getInstanceUrl() {
+    return this.org.getConnection().instanceUrl;
+  }
 }
