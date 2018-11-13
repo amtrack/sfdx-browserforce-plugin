@@ -1,6 +1,9 @@
 import { core } from '@salesforce/command';
 import * as puppeteer from 'puppeteer';
 
+const PERSONAL_INFORMATION_PATH =
+  'setup/personalInformationSetup.apexp?nooverride=1';
+
 export default class Browserforce {
   public org: core.Org;
   public browser: puppeteer.Browser;
@@ -19,18 +22,16 @@ export default class Browserforce {
       parseInt(process.env.BROWSERFORCE_NAVIGATION_TIMEOUT_MS, 10) || 90000
     );
     await this.page.setViewport({ width: 1024, height: 768 });
-    const personalInformationPath =
-      'setup/personalInformationSetup.apexp?nooverride=1';
     await this.page.goto(
       `${
         this.org.getConnection().instanceUrl
       }/secur/frontdoor.jsp?sid=${encodeURIComponent(
         this.org.getConnection().accessToken
-      )}&retURL=${encodeURIComponent(personalInformationPath)}`
+      )}&retURL=${encodeURIComponent(PERSONAL_INFORMATION_PATH)}`
     );
     await this.page.waitForNavigation();
     const url = await this.page.url();
-    if (!url.endsWith(personalInformationPath)) {
+    if (!url.endsWith(PERSONAL_INFORMATION_PATH)) {
       console.error(
         `Expected redirection to profile page, but URL was: ${url.replace(
           this.org.getConnection().accessToken,
