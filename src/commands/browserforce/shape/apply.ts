@@ -2,7 +2,6 @@ import { core, flags, SfdxCommand } from '@salesforce/command';
 import * as path from 'path';
 import Browserforce from '../../../browserforce';
 import ConfigParser from '../../../config-parser';
-import Plan from '../../../plan';
 import * as DRIVERS from '../../../plugins';
 
 core.Messages.importMessagesDirectory(__dirname);
@@ -65,10 +64,16 @@ export default class BrowserforceShapeApply extends SfdxCommand {
       }
       this.ux.stopSpinner();
       logger.debug(`generating action for driver ${driver.name}`);
-      const action = Plan.plan(state, setting.value);
+      const action = instance.diff(state, setting.value);
       this.ux.stopSpinner();
       if (action) {
-        this.ux.startSpinner(`[${driver.name}] ${Plan.debug(action)}`);
+        this.ux.startSpinner(
+          `[${driver.name}] ${Object.keys(action)
+            .map(key => {
+              return `changing '${key}' to '${JSON.stringify(action[key])}'`;
+            })
+            .join('\n')}`
+        );
         try {
           await instance.apply(action);
         } catch (err) {
