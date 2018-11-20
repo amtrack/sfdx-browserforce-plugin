@@ -1,0 +1,19 @@
+{
+  "$schema": "../schema.json",
+  "settings": {
+    "customerPortalSettings": {
+      "portals": [
+        {
+          "name": "Foo Portal",
+          "oldName": "Customer Portal",
+          "description": "Foo Portal",
+          "adminUser": "User User",
+          "isSelfRegistrationActivated": true,
+          "selfRegUserDefaultLicense": "Customer Portal Manager Custom",
+          "selfRegUserDefaultRole": "User",
+          "selfRegUserDefaultProfile": "Customer Portal Manager Custom"
+        }
+      ]
+    }
+  }
+}

@@ -66,7 +66,7 @@ export default class BrowserforceShapeApply extends SfdxCommand {
       logger.debug(`generating action for driver ${driver.name}`);
       const action = instance.diff(state, setting.value);
       this.ux.stopSpinner();
-      if (action) {
+      if (action && Object.keys(action).length) {
         this.ux.startSpinner(
           `[${driver.name}] ${Object.keys(action)
             .map(key => {

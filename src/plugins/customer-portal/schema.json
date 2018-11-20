@@ -9,6 +9,28 @@
       "title": "Enable Customer Portal",
       "description": "Warning: cannot be disabled once enabled",
       "type": "boolean"
+    },
+    "portals": {
+      "title": "Portals",
+      "type": "array",
+      "items": { "$ref": "#/definitions/portal" },
+      "default": []
+    }
+  },
+  "definitions": {
+    "portal": {
+      "type": "object",
+      "properties": {
+        "adminUser": { "type": "string" },
+        "description": { "type": "string" },
+        "isSelfRegistrationActivated": { "type": "boolean" },
+        "name": { "type": "string" },
+        "oldName": { "type": "string" },
+        "selfRegUserDefaultLicense": { "type": "string" },
+        "selfRegUserDefaultProfile": { "type": "string" },
+        "selfRegUserDefaultRole": { "type": "string" }
+      },
+      "required": ["name"]
     }
   }
 }
