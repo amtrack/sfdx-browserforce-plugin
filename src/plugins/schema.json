@@ -5,9 +5,7 @@
   "description": "The browserforce shape definition file contains the configuration values that determine the shape of the scratch org.",
   "type": "object",
   "properties": {
-    "additionalProperties": false,
     "settings": {
-      "additionalProperties": false,
       "properties": {
         "customerPortalSettings": {
           "$ref": "./customer-portal/schema.json"
