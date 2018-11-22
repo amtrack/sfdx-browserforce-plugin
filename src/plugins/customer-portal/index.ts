@@ -21,6 +21,9 @@ const SELECTORS = {
 };
 
 const removeNullValues = obj => {
+  if (!obj) {
+    obj = {};
+  }
   Object.entries(obj).forEach(
     ([key, val]) =>
       (val && typeof val === 'object' && removeNullValues(val)) ||

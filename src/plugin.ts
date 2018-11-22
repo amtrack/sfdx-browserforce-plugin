@@ -6,7 +6,7 @@ export abstract class ShapePlugin {
   protected org: core.Org;
   protected browserforce: Browserforce;
 
-  protected constructor(browserforce: Browserforce, org: core.Org) {
+  public constructor(browserforce: Browserforce, org: core.Org) {
     this.browserforce = browserforce;
     this.org = org;
   }
