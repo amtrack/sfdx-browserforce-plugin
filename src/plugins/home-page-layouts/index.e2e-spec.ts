@@ -21,7 +21,7 @@ describe(HomePageLayouts.name, () => {
       assignHomePageDefaultCmd.output.toString()
     );
     assert(
-      /'{"Standard User":"","System Administrator":""}'/.test(
+      /'\[{"profile":"Standard User","layout":""},{"profile":"System Administrator","layout":""}\]'/.test(
         assignHomePageDefaultCmd.output.toString()
       ),
       assignHomePageDefaultCmd.output.toString()
@@ -41,7 +41,7 @@ describe(HomePageLayouts.name, () => {
       assignOrgDefaultCmd.output.toString()
     );
     assert(
-      /'{"Standard User":"DE Default","System Administrator":"DE Default"}'/.test(
+      /'\[{"profile":"Standard User","layout":"DE Default"},{"profile":"System Administrator","layout":"DE Default"}\]'/.test(
         assignOrgDefaultCmd.output.toString()
       ),
       assignOrgDefaultCmd.output.toString()

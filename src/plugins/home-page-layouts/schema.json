@@ -4,10 +4,27 @@
   "title": "Home Page Layouts",
   "type": "object",
   "properties": {
-    "homePageLayoutAssignment": {
+    "homePageLayoutAssignments": {
       "title": "Home Page Layout Assignment",
-      "description": "key: Developer Name of Profile; value: Developer Name of the HomePageLayout or empty string for default layout",
-      "type": "object"
+      "type": "array",
+      "items": { "$ref": "#/definitions/homePageLayoutAssignment" },
+      "default": []
+    }
+  },
+  "definitions": {
+    "homePageLayoutAssignment": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "type": "string",
+          "description": "Developer Name of Profile"
+        },
+        "layout": {
+          "type": "string",
+          "description": "Developer Name of the HomePageLayout or empty string for default layout"
+        }
+      },
+      "required": ["profile", "layout"]
     }
   }
 }

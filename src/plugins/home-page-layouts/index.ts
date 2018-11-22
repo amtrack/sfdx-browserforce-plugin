@@ -46,34 +46,37 @@ export default class HomePageLayouts extends ShapePlugin {
           .map(text => (text === 'Home Page Default' ? '' : text));
       }
     );
-    const homePageLayoutAssignment = {};
+    const homePageLayoutAssignments = [];
     for (let i = 0; i < profiles.length; i++) {
-      homePageLayoutAssignment[profiles[i]] = layouts[i];
+      homePageLayoutAssignments.push({
+        profile: profiles[i],
+        layout: layouts[i]
+      });
     }
     return {
-      homePageLayoutAssignment
+      homePageLayoutAssignments
     };
   }
 
   public diff(source, target) {
-    const profiles = Object.keys(target.homePageLayoutAssignment);
-    for (const key in source.homePageLayoutAssignment) {
-      if (!profiles.includes(key)) {
-        delete source.homePageLayoutAssignment[key];
-      }
-    }
+    const profileNames = target.homePageLayoutAssignments.map(
+      assignment => assignment.profile
+    );
+    source.homePageLayoutAssignments = source.homePageLayoutAssignments.filter(
+      assignment => profileNames.includes(assignment.profile)
+    );
     return jsonMergePatch.generate(source, target);
   }
 
   public async apply(config) {
-    const profilesList = Object.keys(config.homePageLayoutAssignment)
-      .map(profile => {
-        return `'${profile}'`;
+    const profilesList = config.homePageLayoutAssignments
+      .map(assignment => {
+        return `'${assignment.profile}'`;
       })
       .join(',');
-    const layoutsList = Object.values(config.homePageLayoutAssignment)
-      .map(layout => {
-        return `'${layout}'`;
+    const layoutsList = config.homePageLayoutAssignments
+      .map(assignment => {
+        return `'${assignment.layout}'`;
       })
       .join(',');
     const profiles = await this.org
@@ -89,9 +92,9 @@ export default class HomePageLayouts extends ShapePlugin {
     const page = this.browserforce.page;
     await page.goto(`${this.browserforce.getInstanceUrl()}/${PATHS.BASE}`);
     await page.waitFor(SELECTORS.BASE);
-    for (const profileName of Object.keys(config.homePageLayoutAssignment)) {
-      const homePageLayoutName = config.homePageLayoutAssignment[profileName];
-      const profile = profiles.records.find(p => p.Name === profileName);
+    for (const assignment of config.homePageLayoutAssignments) {
+      const homePageLayoutName = assignment.layout;
+      const profile = profiles.records.find(p => p.Name === assignment.profile);
       let homePageLayout = homePageLayouts.records.find(
         l => l.Name === homePageLayoutName
       );
