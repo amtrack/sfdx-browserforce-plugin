@@ -11,7 +11,17 @@
           "isSelfRegistrationActivated": true,
           "selfRegUserDefaultLicense": "Customer Portal Manager Custom",
           "selfRegUserDefaultRole": "User",
-          "selfRegUserDefaultProfile": "Customer Portal Manager Custom"
+          "selfRegUserDefaultProfile": "Customer Portal Manager Custom",
+          "portalProfileMemberships": [
+            {
+              "name": "Customer Portal Manager Standard",
+              "active": false
+            },
+            {
+              "name": "Dummy",
+              "active": true
+            }
+          ]
         }
       ]
     }

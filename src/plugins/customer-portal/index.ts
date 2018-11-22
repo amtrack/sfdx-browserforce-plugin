@@ -12,10 +12,12 @@ const SELECTORS = {
   SAVE_BUTTON: 'input[name="save"]',
   ERROR_DIV: '#errorTitle',
   ERROR_DIVS: 'div.errorMsg',
-  LIST_VIEW_PORTAL_LINKS:
+  LIST_VIEW_PORTAL_LINKS_XPATH:
     '//div[contains(@class,"pbBody")]//th[contains(@class,"dataCell")]//a[starts-with(@href, "/060")]',
   PORTAL_DESCRIPTION: '#Description',
-  PORTAL_ADMIN: '#Admin'
+  PORTAL_ADMIN: '#Admin',
+  PORTAL_PROFILE_MEMBERSHIP_PROFILES: 'th.dataCell',
+  PORTAL_PROFILE_MEMBERSHIP_CHECKBOXES: 'td.dataCell input'
 };
 
 const removeNullValues = obj => {
@@ -48,13 +50,17 @@ export default class CustomerPortal extends ShapePlugin {
       await page.goto(
         `${this.browserforce.getInstanceUrl()}/${PATHS.LIST_VIEW}`
       );
-      await page.waitForXPath(SELECTORS.LIST_VIEW_PORTAL_LINKS);
+      await page.waitForXPath(SELECTORS.LIST_VIEW_PORTAL_LINKS_XPATH);
       const customerPortalLinks = await page.$x(
-        SELECTORS.LIST_VIEW_PORTAL_LINKS
+        SELECTORS.LIST_VIEW_PORTAL_LINKS_XPATH
       );
       response.portals = await page.evaluate((...links) => {
         return links.map((a: HTMLAnchorElement) => {
-          return { id: a.pathname.split('/')[1], name: a.text };
+          return {
+            id: a.pathname.split('/')[1],
+            name: a.text,
+            portalProfileMemberships: []
+          };
         });
       }, ...customerPortalLinks);
       for (const portal of response.portals) {
@@ -68,13 +74,39 @@ export default class CustomerPortal extends ShapePlugin {
           SELECTORS.PORTAL_ADMIN,
           (el: HTMLInputElement) => el.value
         );
+        // portalProfileMemberships
         await page.goto(
           `${this.browserforce.getInstanceUrl()}/${
             PATHS.PORTAL_PROFILE_MEMBERSHIP
           }?portalId=${portal.id}&setupid=CustomerSuccessPortalSettings`
         );
         await page.waitFor('#portalId');
-        portal['profiles'] = [];
+        const profiles = await page.$$eval(
+          SELECTORS.PORTAL_PROFILE_MEMBERSHIP_PROFILES,
+          (ths: HTMLTableHeaderCellElement[]) => {
+            return ths.map(th => th.innerText.trim());
+          }
+        );
+        const checkboxes = await page.$$eval(
+          SELECTORS.PORTAL_PROFILE_MEMBERSHIP_CHECKBOXES,
+          (inputs: HTMLInputElement[]) => {
+            return inputs.map(input => {
+              return {
+                active: input.checked,
+                id: input.id
+              };
+            });
+          }
+        );
+        const portalProfileMemberships = [];
+        for (let i = 0; i < profiles.length; i++) {
+          portalProfileMemberships.push({
+            name: profiles[i],
+            active: checkboxes[i].active,
+            id: checkboxes[i].id
+          });
+        }
+        portal['portalProfileMemberships'] = portalProfileMemberships;
       }
     }
     return response;
@@ -95,14 +127,42 @@ export default class CustomerPortal extends ShapePlugin {
           // fallback to old name of portal
           sourcePortal = source.portals.find(p => p.name === portal.oldName);
         }
+        delete portal['oldName'];
         if (sourcePortal) {
           // rename sourcePortal for generating patch
           sourcePortal.name = portal.name;
           // move id of existing portal to new portal to be retained and used
           portal['id'] = sourcePortal.id;
-          delete sourcePortal.id;
+          delete sourcePortal['id'];
+        }
+        if (
+          sourcePortal.portalProfileMemberships &&
+          portal.portalProfileMemberships
+        ) {
+          for (const member of portal.portalProfileMemberships) {
+            // move id of existing member to new member to be retained and used
+            const sourceMember = sourcePortal.portalProfileMemberships.find(
+              m => m.name === member.name
+            );
+            if (sourceMember) {
+              member['id'] = sourceMember.id;
+              delete sourceMember['id'];
+            }
+          }
+          // remove non-relevant members
+          const profileNames = portal.portalProfileMemberships.map(
+            membership => membership.name
+          );
+          sourcePortal.portalProfileMemberships = sourcePortal.portalProfileMemberships.filter(
+            membership => profileNames.includes(membership.name)
+          );
         }
       }
+      // remove non-relevant portals
+      const portalNames = target.portals.map(portal => portal.name);
+      source.portals = source.portals.filter(portal =>
+        portalNames.includes(portal.name)
+      );
     }
     return removeNullValues(jsonMergePatch.generate(source, target));
   }
@@ -203,6 +263,25 @@ export default class CustomerPortal extends ShapePlugin {
               throw new Error(errorMessages.join(' '));
             }
           }
+          // portalProfileMemberships
+          const membershipUrlAttributes = {};
+          for (const member of portal.portalProfileMemberships) {
+            membershipUrlAttributes[member.id] = member.active ? 1 : 0;
+          }
+          await page.goto(
+            `${this.browserforce.getInstanceUrl()}/${
+              PATHS.PORTAL_PROFILE_MEMBERSHIP
+            }?portalId=${
+              portal.id
+            }&setupid=CustomerSuccessPortalSettings&${queryString.stringify(
+              membershipUrlAttributes
+            )}`
+          );
+          await page.waitFor(SELECTORS.SAVE_BUTTON);
+          await Promise.all([
+            page.waitForNavigation(),
+            page.click(SELECTORS.SAVE_BUTTON)
+          ]);
         }
       }
     }

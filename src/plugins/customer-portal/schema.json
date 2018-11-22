@@ -28,9 +28,22 @@
         "oldName": { "type": "string" },
         "selfRegUserDefaultLicense": { "type": "string" },
         "selfRegUserDefaultProfile": { "type": "string" },
-        "selfRegUserDefaultRole": { "type": "string" }
+        "selfRegUserDefaultRole": { "type": "string" },
+        "portalProfileMemberships": {
+          "type": "array",
+          "description": "Profiles for which this portal should be activated or deactivated",
+          "items": { "$ref": "#/definitions/portalProfileMembership" },
+          "default": []
+        }
       },
       "required": ["name"]
+    },
+    "portalProfileMembership": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "active": { "type": "boolean" }
+      }
     }
   }
 }
