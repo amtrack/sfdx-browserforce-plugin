@@ -1,4 +1,5 @@
 import { core, flags, SfdxCommand } from '@salesforce/command';
+import { fs } from '@salesforce/core';
 import * as path from 'path';
 import Browserforce from '../../../browserforce';
 import ConfigParser from '../../../config-parser';
@@ -37,7 +38,9 @@ export default class BrowserforceShapeApply extends SfdxCommand {
 
   // tslint:disable-next-line:no-any
   public async run(): Promise<any> {
-    const definition = require(path.resolve(this.flags.definitionfile));
+    const definition = await fs.readJson(
+      path.resolve(this.flags.definitionfile)
+    );
     const settings = ConfigParser.parse(DRIVERS, definition);
     const logger = await core.Logger.root();
     this.ux.log(
