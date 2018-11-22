@@ -32,7 +32,9 @@ describe(CustomerPortal.name, () => {
       setupPortalCmd.output.toString()
     );
     assert(
-      /name:"Foo Portal"/.test(setupPortalCmd.output.toString()),
+      /changing 'portals' to '\[{"name":"Foo Portal"/.test(
+        setupPortalCmd.output.toString()
+      ),
       setupPortalCmd.output.toString()
     );
     assert(
@@ -88,7 +90,9 @@ describe(CustomerPortal.name, () => {
       setupPortalCmd.output.toString()
     );
     assert(
-      /name:"Foo Portal"/.test(setupPortalCmd.output.toString()),
+      /changing 'portals' to '\[{"name":"Foo Portal"/.test(
+        setupPortalCmd.output.toString()
+      ),
       setupPortalCmd.output.toString()
     );
   });
