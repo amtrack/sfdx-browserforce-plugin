@@ -32,12 +32,6 @@ export default class Browserforce {
     await this.page.waitForNavigation();
     const url = await this.page.url();
     if (!url.endsWith(PERSONAL_INFORMATION_PATH)) {
-      console.error(
-        `Expected redirection to profile page, but URL was: ${url.replace(
-          this.org.getConnection().accessToken,
-          ''
-        )} (redacted)`
-      );
       throw new Error('login failed');
     }
     return this;
