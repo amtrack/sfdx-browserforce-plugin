@@ -95,6 +95,9 @@ export default class HomePageLayouts extends ShapePlugin {
     for (const assignment of config.homePageLayoutAssignments) {
       const homePageLayoutName = assignment.layout;
       const profile = profiles.records.find(p => p.Name === assignment.profile);
+      if (!profile) {
+        throw new Error(`could not find profile '${assignment.profile}'`);
+      }
       let homePageLayout = homePageLayouts.records.find(
         l => l.Name === homePageLayoutName
       );

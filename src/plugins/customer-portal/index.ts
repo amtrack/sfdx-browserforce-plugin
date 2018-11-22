@@ -130,6 +130,13 @@ export default class CustomerPortal extends ShapePlugin {
           // fallback to old name of portal
           sourcePortal = source.portals.find(p => p.name === portal.oldName);
         }
+        if (!sourcePortal) {
+          throw new Error(
+            `Portal with name '${portal.name} (oldName: ${
+              portal.oldName
+            })' not found. Setting up new Portals is not yet supported.`
+          );
+        }
         delete portal['oldName'];
         if (sourcePortal) {
           // rename sourcePortal for generating patch
@@ -150,6 +157,10 @@ export default class CustomerPortal extends ShapePlugin {
             if (sourceMember) {
               member['id'] = sourceMember.id;
               delete sourceMember['id'];
+            } else {
+              throw new Error(
+                `Could not find portal profile membership for '${member.name}'`
+              );
             }
           }
           // remove non-relevant members
