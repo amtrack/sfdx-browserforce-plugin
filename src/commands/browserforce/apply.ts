@@ -12,9 +12,7 @@ const messages = core.Messages.loadMessages(
 );
 
 export default class BrowserforceApply extends SfdxCommand {
-  public static description = messages.getMessage(
-    'applyCommandDescription'
-  );
+  public static description = messages.getMessage('applyCommandDescription');
 
   public static examples = [
     `$ sfdx browserforce:apply -f ./config/setup-admin-login-as-any.json --targetusername myOrg@example.com
@@ -70,7 +68,7 @@ export default class BrowserforceApply extends SfdxCommand {
       this.ux.startSpinner(`[${driver.name}] retrieving state`);
       let state;
       try {
-        state = await instance.retrieve();
+        state = await instance.retrieve(setting.value);
       } catch (err) {
         this.ux.stopSpinner('failed');
         throw err;

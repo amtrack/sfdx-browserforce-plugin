@@ -12,9 +12,7 @@ const messages = core.Messages.loadMessages(
 );
 
 export default class BrowserforcePlanCommand extends SfdxCommand {
-  public static description = messages.getMessage(
-    'planCommandDescription'
-  );
+  public static description = messages.getMessage('planCommandDescription');
 
   public static examples = [
     `$ sfdx browserforce:plan -f ./config/setup-admin-login-as-any.json -o /tmp/state.json --targetusername myOrg@example.com
@@ -75,7 +73,7 @@ export default class BrowserforcePlanCommand extends SfdxCommand {
       this.ux.startSpinner(`[${driver.name}] retrieving state`);
       let driverState;
       try {
-        driverState = await instance.retrieve();
+        driverState = await instance.retrieve(setting.value);
         state.settings[setting.key] = driverState;
       } catch (err) {
         this.ux.stopSpinner('failed');

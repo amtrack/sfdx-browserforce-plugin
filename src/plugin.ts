@@ -11,10 +11,10 @@ export abstract class BrowserforcePlugin {
     this.org = org;
   }
   // tslint:disable-next-line:no-any
-  public abstract async retrieve(): Promise<any>;
-  public diff(source, target) {
-    return jsonMergePatch.generate(source, target);
+  public abstract async retrieve(definition?: JSON): Promise<any>;
+  public diff(state, definition) {
+    return jsonMergePatch.generate(state, definition);
   }
   // tslint:disable-next-line:no-any
-  public abstract async apply(config: JSON): Promise<any>;
+  public abstract async apply(plan: JSON): Promise<any>;
 }
