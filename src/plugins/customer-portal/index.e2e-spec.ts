@@ -18,13 +18,13 @@ describe(CustomerPortal.name, () => {
       enableCmd.output.toString()
     );
   });
-  it('should fail to setup portal without permset', function() {
+  it('should fail to set portal admin user without permset', function() {
     this.timeout(1000 * 60);
     this.slow(1000 * 15);
     const setupPortalCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:shape:apply',
       '-f',
-      path.resolve(path.join(__dirname, 'setup-portal.json'))
+      path.resolve(path.join(__dirname, 'set-portal-admin.json'))
     ]);
     assert.deepEqual(
       setupPortalCmd.status,
@@ -32,7 +32,7 @@ describe(CustomerPortal.name, () => {
       setupPortalCmd.output.toString()
     );
     assert(
-      /changing 'portals' to '\[{"name":"Foo Portal"/.test(
+      /changing 'portals' to '\[{"name":"Customer Portal"/.test(
         setupPortalCmd.output.toString()
       ),
       setupPortalCmd.output.toString()

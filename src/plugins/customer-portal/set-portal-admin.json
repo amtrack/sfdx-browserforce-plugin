@@ -1,0 +1,13 @@
+{
+  "$schema": "../schema.json",
+  "settings": {
+    "customerPortalSettings": {
+      "portals": [
+        {
+          "name": "Customer Portal",
+          "adminUser": "User User"
+        }
+      ]
+    }
+  }
+}
