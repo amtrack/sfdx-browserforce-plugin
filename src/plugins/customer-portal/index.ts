@@ -1,3 +1,4 @@
+import { SalesforceId } from 'jsforce';
 import * as jsonMergePatch from 'json-merge-patch';
 import * as queryString from 'querystring';
 import { BrowserforcePlugin } from '../../plugin';
@@ -17,8 +18,15 @@ const SELECTORS = {
   PORTAL_DESCRIPTION: '#Description',
   PORTAL_ADMIN: '#Admin',
   PORTAL_PROFILE_MEMBERSHIP_PROFILES: 'th.dataCell',
-  PORTAL_PROFILE_MEMBERSHIP_CHECKBOXES: 'td.dataCell input'
+  PORTAL_PROFILE_MEMBERSHIP_CHECKBOXES: 'td.dataCell input',
+  CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL: '#options_9'
 };
+
+interface CustomObjectRecord {
+  Id: SalesforceId;
+  DeveloperName: string;
+  NamespacePrefix: string;
+}
 
 const removeNullValues = obj => {
   if (!obj) {
@@ -33,7 +41,7 @@ const removeNullValues = obj => {
 };
 
 export default class CustomerPortal extends BrowserforcePlugin {
-  public async retrieve() {
+  public async retrieve(definition?) {
     const page = this.browserforce.page;
     await page.goto(`${this.browserforce.getInstanceUrl()}/${PATHS.EDIT_VIEW}`);
     await page.waitFor(SELECTORS.ENABLED);
@@ -47,7 +55,8 @@ export default class CustomerPortal extends BrowserforcePlugin {
         SELECTORS.ENABLED,
         (el: HTMLInputElement) => el.checked
       ),
-      portals: []
+      portals: [],
+      availableCustomObjects: []
     };
     if (response.enableCustomerPortal) {
       await page.goto(
@@ -110,6 +119,84 @@ export default class CustomerPortal extends BrowserforcePlugin {
           });
         }
         portal['portalProfileMemberships'] = portalProfileMemberships;
+      }
+      // availableCustomObjects
+      if (
+        definition &&
+        definition.availableCustomObjects &&
+        definition.availableCustomObjects.length
+      ) {
+        const availableCustomObjectList = definition.availableCustomObjects
+          .map(customObject => {
+            return `'${customObject.name}'`;
+          })
+          .join(',');
+        const customObjects = await this.org
+          .getConnection()
+          .tooling.query<CustomObjectRecord>(
+            `SELECT Id, DeveloperName, NamespacePrefix FROM CustomObject WHERE DeveloperName IN (${availableCustomObjectList})`
+          );
+        await page.goto(this.browserforce.getInstanceUrl());
+        await page.waitForNavigation({ waitUntil: 'networkidle0' });
+        // new URLs for LEX: https://help.salesforce.com/articleView?id=FAQ-for-the-New-URL-Format-for-Lightning-Experience-and-the-Salesforce-Mobile-App&type=1
+        let isLEX =
+          page.url().indexOf('/one/one.app') >= 0 ||
+          page.url().indexOf('/lightning/') >= 0;
+        for (const availableCustomObject of definition.availableCustomObjects) {
+          const customObject = customObjects.records.find(customObject => {
+            if (availableCustomObject.namespacePrefix === undefined) {
+              availableCustomObject.namespacePrefix = null;
+            }
+            return (
+              customObject.DeveloperName === availableCustomObject.name &&
+              customObject.NamespacePrefix ===
+                availableCustomObject.namespacePrefix
+            );
+          });
+          if (!customObject) {
+            throw new Error(
+              `Could not find CustomObject: {DeveloperName: ${
+                availableCustomObject.name
+              }, NamespacePrefix: ${availableCustomObject.namespacePrefix}`
+            );
+          }
+          const classicUiPath = `${customObject.Id}/e`;
+          if (isLEX) {
+            const availableForCustomerPortalUrl = `${this.browserforce.getInstanceUrl()}/lightning/setup/ObjectManager/${
+              customObject.Id
+            }/edit?nodeId=ObjectManager&address=${encodeURIComponent(
+              `/${classicUiPath}`
+            )}`;
+            await page.goto(availableForCustomerPortalUrl);
+            // maybe use waitForFrame https://github.com/GoogleChrome/puppeteer/issues/1361
+            await page.waitFor('iframe[name^=vfFrameId]', { timeout: 90000 });
+            const frame = await page
+              .frames()
+              .find(f => f.name().startsWith('vfFrameId'));
+            await frame.waitFor(SELECTORS.CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL);
+            response.availableCustomObjects.push({
+              name: customObject.DeveloperName,
+              namespacePrefix: customObject.NamespacePrefix,
+              available: await frame.$eval(
+                SELECTORS.CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL,
+                (el: HTMLInputElement) => el.checked
+              )
+            });
+
+          } else {
+            const availableForCustomerPortalUrl = `${this.browserforce.getInstanceUrl()}/${classicUiPath}`;
+            await page.goto(availableForCustomerPortalUrl);
+            await page.waitFor(SELECTORS.CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL);
+            response.availableCustomObjects.push({
+              name: customObject.DeveloperName,
+              namespacePrefix: customObject.NamespacePrefix,
+              available: await page.$eval(
+                SELECTORS.CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL,
+                (el: HTMLInputElement) => el.checked
+              )
+            });
+          }
+        }
       }
     }
     return response;
@@ -177,6 +264,24 @@ export default class CustomerPortal extends BrowserforcePlugin {
       source.portals = source.portals.filter(portal =>
         portalNames.includes(portal.name)
       );
+
+      if (source.availableCustomObjects && target.availableCustomObjects) {
+        for (const availableCustomObject of target.availableCustomObjects) {
+          const oldCustomObject = source.availableCustomObjects.find(customObject => {
+            if (availableCustomObject.namespacePrefix === undefined) {
+              availableCustomObject.namespacePrefix = null;
+            }
+            return (
+              customObject.DeveloperName === availableCustomObject.name &&
+              customObject.NamespacePrefix ===
+                availableCustomObject.namespacePrefix
+            );
+          });
+          // move id of existing object to new object to be retained and used
+          availableCustomObject['id'] = oldCustomObject.id;
+          delete oldCustomObject['id'];
+        }
+      }
     }
     return removeNullValues(jsonMergePatch.generate(source, target));
   }
@@ -296,6 +401,50 @@ export default class CustomerPortal extends BrowserforcePlugin {
             page.waitForNavigation(),
             page.click(SELECTORS.SAVE_BUTTON)
           ]);
+          // availableCustomObjects
+          if (
+            config.availableCustomObjects &&
+            config.availableCustomObjects.length
+          ) {
+
+          await page.goto(this.browserforce.getInstanceUrl());
+          await page.waitForNavigation({ waitUntil: 'networkidle0' });
+          // new URLs for LEX: https://help.salesforce.com/articleView?id=FAQ-for-the-New-URL-Format-for-Lightning-Experience-and-the-Salesforce-Mobile-App&type=1
+          let isLEX =
+            page.url().indexOf('/one/one.app') >= 0 ||
+            page.url().indexOf('/lightning/') >= 0;
+          for (const customObject of config.availableCustomObjects) {
+            const classicUiPath = `${customObject.Id}/e?options_9=1&retURL=/${
+              customObject.Id
+            }`;
+            if (isLEX) {
+              const availableForCustomerPortalUrl = `${this.browserforce.getInstanceUrl()}/lightning/setup/ObjectManager/${
+                customObject.Id
+              }/edit?nodeId=ObjectManager&address=${encodeURIComponent(
+                `/${classicUiPath}`
+              )}`;
+              await page.goto(availableForCustomerPortalUrl);
+              // maybe use waitForFrame https://github.com/GoogleChrome/puppeteer/issues/1361
+              await page.waitFor('iframe[name^=vfFrameId]', { timeout: 90000 });
+              const frame = await page
+                .frames()
+                .find(f => f.name().startsWith('vfFrameId'));
+              await frame.waitFor(SELECTORS.SAVE_BUTTON);
+              // framenavigated https://github.com/GoogleChrome/puppeteer/issues/2918
+              await Promise.all([
+                new Promise(resolve => page.once('framenavigated', resolve)),
+                frame.click(SELECTORS.SAVE_BUTTON)
+              ]);
+            } else {
+              const availableForCustomerPortalUrl = `${this.browserforce.getInstanceUrl()}/${classicUiPath}`;
+              await page.goto(availableForCustomerPortalUrl);
+              await page.waitFor(SELECTORS.SAVE_BUTTON);
+              await Promise.all([
+                page.waitForNavigation(),
+                page.click(SELECTORS.SAVE_BUTTON)
+              ]);
+            }
+          }
         }
       }
     }

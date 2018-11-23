@@ -11,7 +11,7 @@ export abstract class BrowserforcePlugin {
     this.org = org;
   }
   // tslint:disable-next-line:no-any
-  public abstract async retrieve(definition?: JSON): Promise<any>;
+  public abstract async retrieve(definition?): Promise<any>;
   public diff(state, definition) {
     return jsonMergePatch.generate(state, definition);
   }

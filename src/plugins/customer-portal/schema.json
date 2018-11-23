@@ -15,6 +15,12 @@
       "type": "array",
       "items": { "$ref": "#/definitions/portal" },
       "default": []
+    },
+    "availableCustomObjects": {
+      "title": "Custom Objects available for Customer Portal",
+      "type": "array",
+      "items": { "$ref": "#/definitions/availableCustomObject" },
+      "default": []
     }
   },
   "definitions": {
@@ -44,6 +50,15 @@
         "name": { "type": "string" },
         "active": { "type": "boolean" }
       }
+    },
+    "availableCustomObject": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "namespacePrefix": { "type": "string" },
+        "active": { "type": "boolean" }
+      },
+      "required": ["name", "active"]
     }
   }
 }
