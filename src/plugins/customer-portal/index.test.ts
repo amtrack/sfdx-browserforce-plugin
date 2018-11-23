@@ -63,7 +63,6 @@ const tests = [
     expected: {
       portals: [
         {
-          name: 'Customer Portal',
           description: 'new description',
           id: 'p1'
         }

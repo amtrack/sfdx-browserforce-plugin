@@ -35,10 +35,14 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
       const customObjects = await this.org
         .getConnection()
         .tooling.query<CustomObjectRecord>(
-          `SELECT Id, DeveloperName, NamespacePrefix FROM CustomObject WHERE DeveloperName IN (${availableCustomObjectList})`
+          `SELECT Id, DeveloperName, NamespacePrefix FROM CustomObject WHERE DeveloperName IN (${availableCustomObjectList})`,
+          { scanAll: false }
         );
+      // BUG in jsforce: query acts with scanAll:true and returns deleted CustomObjects.
+      // It cannot be disabled.
+      // This will throw a timeout error waitingFor('#options_9')
       await page.goto(this.browserforce.getInstanceUrl());
-      await page.waitForNavigation({ waitUntil: 'networkidle0' });
+      await page.waitForNavigation();
       // new URLs for LEX: https://help.salesforce.com/articleView?id=FAQ-for-the-New-URL-Format-for-Lightning-Experience-and-the-Salesforce-Mobile-App&type=1
       const isLEX =
         page.url().indexOf('/one/one.app') >= 0 ||
@@ -69,7 +73,7 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
           )}`;
           await page.goto(availableForCustomerPortalUrl);
           // maybe use waitForFrame https://github.com/GoogleChrome/puppeteer/issues/1361
-          await page.waitFor('iframe[name^=vfFrameId]', { timeout: 90000 });
+          await page.waitFor('iframe[name^=vfFrameId]');
           const frame = await page
             .frames()
             .find(f => f.name().startsWith('vfFrameId'));
@@ -135,33 +139,31 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
     const page = this.browserforce.page;
     if (plan && plan.length) {
       await page.goto(this.browserforce.getInstanceUrl());
-      await page.waitForNavigation({ waitUntil: 'networkidle0' });
+      await page.waitForNavigation();
       // new URLs for LEX: https://help.salesforce.com/articleView?id=FAQ-for-the-New-URL-Format-for-Lightning-Experience-and-the-Salesforce-Mobile-App&type=1
       const isLEX =
         page.url().indexOf('/one/one.app') >= 0 ||
         page.url().indexOf('/lightning/') >= 0;
       for (const customObject of plan) {
-        const classicUiPath = `${customObject.Id}/e?options_9=1&retURL=/${
-          customObject.Id
-        }`;
+        const classicUiPath = `${customObject.id}/e?options_9=${
+          customObject.available ? 1 : 0
+        }&retURL=/${customObject.id}`;
         if (isLEX) {
           const availableForCustomerPortalUrl = `${this.browserforce.getInstanceUrl()}/lightning/setup/ObjectManager/${
-            customObject.Id
+            customObject.id
           }/edit?nodeId=ObjectManager&address=${encodeURIComponent(
             `/${classicUiPath}`
           )}`;
           await page.goto(availableForCustomerPortalUrl);
           // maybe use waitForFrame https://github.com/GoogleChrome/puppeteer/issues/1361
-          await page.waitFor('iframe[name^=vfFrameId]', {
-            timeout: 90000
-          });
+          await page.waitFor('iframe[name^=vfFrameId]');
           const frame = await page
             .frames()
             .find(f => f.name().startsWith('vfFrameId'));
           await frame.waitFor(SELECTORS.SAVE_BUTTON);
           // framenavigated https://github.com/GoogleChrome/puppeteer/issues/2918
           await Promise.all([
-            new Promise(resolve => page.once('framenavigated', resolve)),
+            frame.waitForNavigation(),
             frame.click(SELECTORS.SAVE_BUTTON)
           ]);
         } else {

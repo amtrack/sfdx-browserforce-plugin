@@ -5,7 +5,7 @@
       "availableCustomObjects": [
         {
           "name": "Dummy",
-          "active": true
+          "available": true
         }
       ]
     }

@@ -2,18 +2,7 @@ import { BrowserforcePlugin } from '../../plugin';
 import CustomerPortalAvailableCustomObjects from './availableCustomObjects';
 import CustomerPortalEnable from './enableCustomerPortal';
 import CustomerPortalSetup from './portals';
-
-const removeNullValues = obj => {
-  if (!obj) {
-    obj = {};
-  }
-  Object.entries(obj).forEach(
-    ([key, val]) =>
-      (val && typeof val === 'object' && removeNullValues(val)) ||
-      ((val === null || val === undefined) && delete obj[key])
-  );
-  return obj;
-};
+import { removeEmptyValues } from './utils';
 
 export default class CustomerPortal extends BrowserforcePlugin {
   public async retrieve(definition?) {
@@ -24,20 +13,25 @@ export default class CustomerPortal extends BrowserforcePlugin {
       availableCustomObjects: []
     };
     response.enableCustomerPortal = await pluginEnable.retrieve();
-    if (definition.portals) {
-      const pluginSetup = new CustomerPortalSetup(this.browserforce, this.org);
-      response.portals = await pluginSetup.retrieve(definition);
+    if (response.enableCustomerPortal) {
+      if (definition.portals) {
+        const pluginSetup = new CustomerPortalSetup(
+          this.browserforce,
+          this.org
+        );
+        response.portals = await pluginSetup.retrieve(definition.portals);
+      }
+      if (definition.availableCustomObjects) {
+        const pluginAvailableCustomObjects = new CustomerPortalAvailableCustomObjects(
+          this.browserforce,
+          this.org
+        );
+        response.availableCustomObjects = await pluginAvailableCustomObjects.retrieve(
+          definition.availableCustomObjects
+        );
+      }
     }
-    if (definition.availableCustomObjects) {
-      const pluginAvailableCustomObjects = new CustomerPortalAvailableCustomObjects(
-        this.browserforce,
-        this.org
-      );
-      response.availableCustomObjects = await pluginAvailableCustomObjects.retrieve(
-        definition
-      );
-    }
-    return removeNullValues(response);
+    return response;
   }
 
   public diff(state, definition) {
@@ -58,7 +52,7 @@ export default class CustomerPortal extends BrowserforcePlugin {
         definition.availableCustomObjects
       )
     };
-    return response;
+    return removeEmptyValues(response);
   }
 
   public async apply(config) {

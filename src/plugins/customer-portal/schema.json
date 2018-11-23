@@ -56,9 +56,9 @@
       "properties": {
         "name": { "type": "string" },
         "namespacePrefix": { "type": "string" },
-        "active": { "type": "boolean" }
+        "available": { "type": "boolean" }
       },
-      "required": ["name", "active"]
+      "required": ["name", "available"]
     }
   }
 }
