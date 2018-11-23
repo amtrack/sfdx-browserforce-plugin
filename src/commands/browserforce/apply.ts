@@ -1,27 +1,27 @@
 import { core, flags, SfdxCommand } from '@salesforce/command';
 import { fs } from '@salesforce/core';
 import * as path from 'path';
-import Browserforce from '../../../browserforce';
-import ConfigParser from '../../../config-parser';
-import * as DRIVERS from '../../../plugins';
+import Browserforce from '../../browserforce';
+import ConfigParser from '../../config-parser';
+import * as DRIVERS from '../../plugins';
 
 core.Messages.importMessagesDirectory(__dirname);
 const messages = core.Messages.loadMessages(
   'sfdx-browserforce-plugin',
-  'shape'
+  'browserforce'
 );
 
-export default class BrowserforceShapePlanCommand extends SfdxCommand {
+export default class BrowserforceApply extends SfdxCommand {
   public static description = messages.getMessage(
-    'shapePlanCommandDescription'
+    'applyCommandDescription'
   );
 
   public static examples = [
-    `$ sfdx browserforce:shape:plan -f ./config/browserforce-shape-def.json -o /tmp/state.json --targetusername myOrg@example.com
-  Generating plan with definition file ./config/browserforce-shape-def.json from org myOrg@example.com
+    `$ sfdx browserforce:apply -f ./config/setup-admin-login-as-any.json --targetusername myOrg@example.com
+  Applying plan file ./config/setup-admin-login-as-any.json to org myOrg@example.com
   logging in... done
   [LoginAccessPolicies] retrieving state... done
-  [LoginAccessPolicies] generating plan... done
+  [LoginAccessPolicies] changing 'administratorsCanLogInAsAnyUser' to 'true'... done
   logging out... done
   `
   ];
@@ -52,10 +52,11 @@ export default class BrowserforceShapePlanCommand extends SfdxCommand {
       path.resolve(this.flags.definitionfile)
     );
     const settings = ConfigParser.parse(DRIVERS, definition);
+    const logger = await core.Logger.root();
     this.ux.log(
-      `Generating plan with definition file ${
+      `Applying plan file ${
         this.flags.definitionfile
-      } from org ${this.org.getUsername()}`
+      } to org ${this.org.getUsername()}`
     );
     this.bf = new Browserforce(this.org);
 
@@ -63,41 +64,41 @@ export default class BrowserforceShapePlanCommand extends SfdxCommand {
     await this.bf.login();
     this.ux.stopSpinner();
 
-    const state = {
-      settings: {}
-    };
-    const plan = {
-      settings: {}
-    };
     for (const setting of settings) {
       const driver = setting.Driver.default;
       const instance = new driver(this.bf, this.org);
       this.ux.startSpinner(`[${driver.name}] retrieving state`);
-      let driverState;
+      let state;
       try {
-        driverState = await instance.retrieve();
-        state.settings[setting.key] = driverState;
+        state = await instance.retrieve();
       } catch (err) {
         this.ux.stopSpinner('failed');
         throw err;
       }
       this.ux.stopSpinner();
-      this.ux.startSpinner(`[${driver.name}] generating plan`);
-      const driverPlan = instance.diff(driverState, setting.value);
-      plan.settings[setting.key] = driverPlan;
+      logger.debug(`generating action for driver ${driver.name}`);
+      const action = instance.diff(state, setting.value);
       this.ux.stopSpinner();
+      if (action && Object.keys(action).length) {
+        this.ux.startSpinner(
+          `[${driver.name}] ${Object.keys(action)
+            .map(key => {
+              return `changing '${key}' to '${JSON.stringify(action[key])}'`;
+            })
+            .join('\n')}`
+        );
+        try {
+          await instance.apply(action);
+        } catch (err) {
+          this.ux.stopSpinner('failed');
+          throw err;
+        }
+        this.ux.stopSpinner();
+      } else {
+        this.ux.log(`[${driver.name}] no action necessary`);
+      }
     }
-    if (this.flags.statefile) {
-      this.ux.startSpinner('writing state file');
-      await fs.writeJson(path.resolve(this.flags.statefile), state);
-      this.ux.stopSpinner();
-    }
-    if (this.flags.planfile) {
-      this.ux.startSpinner('writing plan file');
-      await fs.writeJson(path.resolve(this.flags.planfile), plan);
-      this.ux.stopSpinner();
-    }
-    return { success: true, plan };
+    return { success: true };
   }
 
   // tslint:disable-next-line:no-any

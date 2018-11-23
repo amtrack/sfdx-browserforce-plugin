@@ -8,7 +8,7 @@ describe(SalesforceToSalesforce.name, () => {
     this.timeout(1000 * 60);
     this.slow(1000 * 15);
     const enableCmd = child.spawnSync(path.resolve('bin', 'run'), [
-      'browserforce:shape:apply',
+      'browserforce:apply',
       '-f',
       path.resolve(path.join(__dirname, 'enable.json'))
     ]);
@@ -22,7 +22,7 @@ describe(SalesforceToSalesforce.name, () => {
     this.timeout(1000 * 60);
     this.slow(1000 * 15);
     const disableCmd = child.spawnSync(path.resolve('bin', 'run'), [
-      'browserforce:shape:apply',
+      'browserforce:apply',
       '-f',
       path.resolve(path.join(__dirname, 'disable.json'))
     ]);

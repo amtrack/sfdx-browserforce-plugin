@@ -1,7 +1,7 @@
 {
   "name": "sfdx-browserforce-plugin",
   "version": "0.0.0-development",
-  "description": "sfdx plugin for executing various tasks using browser automation",
+  "description": "sfdx plugin for browser automation",
   "author": "Matthias Rolke <mr.amtrack@gmail.com>",
   "bin": {
     "sfdx-browserforce-plugin": "bin/run"
@@ -52,9 +52,6 @@
     "topics": {
       "browserforce": {
         "description": "browser automation"
-      },
-      "browserforce:shape": {
-        "description": "check and apply an org shape"
       }
     },
     "devPlugins": [

@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/schema.json",
-  "title": "Browserforce Shape Definition Configuration",
-  "description": "The browserforce shape definition file contains the configuration values that determine the shape of the scratch org.",
+  "title": "Browserforce Definition Configuration",
+  "description": "The browserforce definition file contains the configuration values that defines browser automation tasks for Salesforce orgs.",
   "type": "object",
   "properties": {
     "settings": {

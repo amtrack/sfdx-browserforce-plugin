@@ -10,7 +10,7 @@ describe(HomePageLayouts.name, () => {
     const assignHomePageDefaultCmd = child.spawnSync(
       path.resolve('bin', 'run'),
       [
-        'browserforce:shape:apply',
+        'browserforce:apply',
         '-f',
         path.resolve(path.join(__dirname, 'home-page-default.json'))
       ]
@@ -31,7 +31,7 @@ describe(HomePageLayouts.name, () => {
     this.timeout(1000 * 60);
     this.slow(1000 * 15);
     const assignOrgDefaultCmd = child.spawnSync(path.resolve('bin', 'run'), [
-      'browserforce:shape:apply',
+      'browserforce:apply',
       '-f',
       path.resolve(path.join(__dirname, 'org-default.json'))
     ]);

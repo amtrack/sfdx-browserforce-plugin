@@ -1,4 +1,4 @@
-import { ShapePlugin } from '../../plugin';
+import { BrowserforcePlugin } from '../../plugin';
 
 const PATHS = {
   BASE: 'partnerbt/loginAccessPolicies.apexp'
@@ -9,7 +9,7 @@ const SELECTORS = {
   SAVE_BUTTON: 'input[id$=":save"]'
 };
 
-export default class LoginAccessPolicies extends ShapePlugin {
+export default class LoginAccessPolicies extends BrowserforcePlugin {
   public async retrieve() {
     const page = this.browserforce.page;
     await page.goto(`${this.browserforce.getInstanceUrl()}/${PATHS.BASE}`);

@@ -1,4 +1,4 @@
-import { ShapePlugin } from '../../plugin';
+import { BrowserforcePlugin } from '../../plugin';
 
 const PATHS = {
   BASE: '_ui/s2s/ui/PartnerNetworkEnable/e'
@@ -9,7 +9,7 @@ const SELECTORS = {
   SAVE_BUTTON: 'input[name="save"]'
 };
 
-export default class SalesforceToSalesforce extends ShapePlugin {
+export default class SalesforceToSalesforce extends BrowserforcePlugin {
   public async retrieve() {
     const page = this.browserforce.page;
     await page.goto(`${this.browserforce.getInstanceUrl()}/${PATHS.BASE}`);

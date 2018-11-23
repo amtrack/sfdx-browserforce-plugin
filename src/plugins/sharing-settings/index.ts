@@ -1,4 +1,4 @@
-import { ShapePlugin } from '../../plugin';
+import { BrowserforcePlugin } from '../../plugin';
 
 const PATHS = {
   BASE: 'p/own/OrgSharingDetail'
@@ -11,7 +11,7 @@ const SELECTORS = {
   MODAL_DIALOG: 'Modal.confirm'
 };
 
-export default class ExternalSharing extends ShapePlugin {
+export default class ExternalSharing extends BrowserforcePlugin {
   public async retrieve() {
     const page = this.browserforce.page;
     await page.goto(`${this.browserforce.getInstanceUrl()}/${PATHS.BASE}`);

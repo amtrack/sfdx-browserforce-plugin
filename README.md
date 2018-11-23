@@ -1,6 +1,6 @@
 # sfdx-browserforce-plugin
 
-> sfdx plugin for executing various tasks using browser automation
+> sfdx plugin for browser automation
 
 [![Build Status](https://travis-ci.org/amtrack/sfdx-browserforce-plugin.svg?branch=master)](https://travis-ci.org/amtrack/sfdx-browserforce-plugin)
 
@@ -28,16 +28,16 @@ npx sfdx-browserforce-plugin browserforce -h
 # Commands
 
 <!-- commands -->
-* [`sfdx-browserforce-plugin browserforce:shape:apply`](#sfdx-browserforce-plugin-browserforceshapeapply)
-* [`sfdx-browserforce-plugin browserforce:shape:plan`](#sfdx-browserforce-plugin-browserforceshapeplan)
+* [`sfdx-browserforce-plugin browserforce:apply`](#sfdx-browserforce-plugin-browserforceapply)
+* [`sfdx-browserforce-plugin browserforce:plan`](#sfdx-browserforce-plugin-browserforceplan)
 
-## `sfdx-browserforce-plugin browserforce:shape:apply`
+## `sfdx-browserforce-plugin browserforce:apply`
 
-check and apply an org shape
+apply a plan from a plan file or remote state
 
 ```
 USAGE
-  $ sfdx-browserforce-plugin browserforce:shape:apply
+  $ sfdx-browserforce-plugin browserforce:apply
 
 OPTIONS
   -f, --definitionfile=definitionfile             path to a browserforce definition file
@@ -45,6 +45,10 @@ OPTIONS
                                                   See
                                                   https://github.com/amtrack/sfdx-browserforce-plugin#supported-org-pref
                                                   erences for supported values.
+
+  -p, --planfile=planfile                         path to a browserforce plan file
+
+  -s, --statefile=statefile                       path to a browserforce state file
 
   -u, --targetusername=targetusername             username or alias for the target org; overrides default target org
 
@@ -55,23 +59,23 @@ OPTIONS
   --loglevel=(trace|debug|info|warn|error|fatal)  logging level for this command invocation
 
 EXAMPLE
-  $ sfdx browserforce:shape:apply -f ./config/browserforce-shape-def.json --targetusername myOrg@example.com
-     Applying plan file ./config/browserforce-shape-def.json to org myOrg@example.com
+  $ sfdx browserforce:apply -f ./config/setup-admin-login-as-any.json --targetusername myOrg@example.com
+     Applying plan file ./config/setup-admin-login-as-any.json to org myOrg@example.com
      logging in... done
      [LoginAccessPolicies] retrieving state... done
      [LoginAccessPolicies] changing 'administratorsCanLogInAsAnyUser' to 'true'... done
      logging out... done
 ```
 
-_See code: [src/commands/browserforce/shape/apply.ts](https://github.com/amtrack/sfdx-browserforce-plugin/blob/v0.0.0-development/src/commands/browserforce/shape/apply.ts)_
+_See code: [src/commands/browserforce/apply.ts](https://github.com/amtrack/sfdx-browserforce-plugin/blob/v0.0.0-development/src/commands/browserforce/apply.ts)_
 
-## `sfdx-browserforce-plugin browserforce:shape:plan`
+## `sfdx-browserforce-plugin browserforce:plan`
 
 retrieve state and generate plan file
 
 ```
 USAGE
-  $ sfdx-browserforce-plugin browserforce:shape:plan
+  $ sfdx-browserforce-plugin browserforce:plan
 
 OPTIONS
   -f, --definitionfile=definitionfile             path to a browserforce definition file
@@ -80,7 +84,9 @@ OPTIONS
                                                   https://github.com/amtrack/sfdx-browserforce-plugin#supported-org-pref
                                                   erences for supported values.
 
-  -o, --planfile=planfile                         path to a browserforce plan file
+  -p, --planfile=planfile                         path to a browserforce plan file
+
+  -s, --statefile=statefile                       path to a browserforce state file
 
   -u, --targetusername=targetusername             username or alias for the target org; overrides default target org
 
@@ -91,21 +97,21 @@ OPTIONS
   --loglevel=(trace|debug|info|warn|error|fatal)  logging level for this command invocation
 
 EXAMPLE
-  $ sfdx browserforce:shape:plan -f ./config/browserforce-shape-def.json -o /tmp/state.json --targetusername 
+  $ sfdx browserforce:plan -f ./config/setup-admin-login-as-any.json -o /tmp/state.json --targetusername 
   myOrg@example.com
-     Generating plan with for definition file ./config/browserforce-shape-def.json from org myOrg@example.com
+     Generating plan with definition file ./config/setup-admin-login-as-any.json from org myOrg@example.com
      logging in... done
      [LoginAccessPolicies] retrieving state... done
-     [LoginAccessPolicies] planning 'administratorsCanLogInAsAnyUser' to 'true'... done
+     [LoginAccessPolicies] generating plan... done
      logging out... done
 ```
 
-_See code: [src/commands/browserforce/shape/plan.ts](https://github.com/amtrack/sfdx-browserforce-plugin/blob/v0.0.0-development/src/commands/browserforce/shape/plan.ts)_
+_See code: [src/commands/browserforce/plan.ts](https://github.com/amtrack/sfdx-browserforce-plugin/blob/v0.0.0-development/src/commands/browserforce/plan.ts)_
 <!-- commandsstop -->
 
 # Example
 
-To enable `Login Access Policies -> Administrators Can Log in as Any User`, the config file (here: `./config/browserforce-shape-def.json`) should look like this:
+To enable `Login Access Policies -> Administrators Can Log in as Any User`, the config file (here: `./config/setup-admin-login-as-any.json`) should look like this:
 
 ```json
 {

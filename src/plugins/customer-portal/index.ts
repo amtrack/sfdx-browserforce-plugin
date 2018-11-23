@@ -1,6 +1,6 @@
 import * as jsonMergePatch from 'json-merge-patch';
 import * as queryString from 'querystring';
-import { ShapePlugin } from '../../plugin';
+import { BrowserforcePlugin } from '../../plugin';
 
 const PATHS = {
   LIST_VIEW: '_ui/core/portal/CustomerSuccessPortalSetup/d',
@@ -32,7 +32,7 @@ const removeNullValues = obj => {
   return obj;
 };
 
-export default class CustomerPortal extends ShapePlugin {
+export default class CustomerPortal extends BrowserforcePlugin {
   public async retrieve() {
     const page = this.browserforce.page;
     await page.goto(`${this.browserforce.getInstanceUrl()}/${PATHS.EDIT_VIEW}`);

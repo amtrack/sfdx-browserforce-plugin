@@ -1,6 +1,6 @@
 import { SalesforceId } from 'jsforce';
 import * as jsonMergePatch from 'json-merge-patch';
-import { ShapePlugin } from '../../plugin';
+import { BrowserforcePlugin } from '../../plugin';
 
 const PATHS = {
   BASE: 'setup/ui/assignhomelayoutedit.jsp'
@@ -20,7 +20,7 @@ interface HomePageLayoutRecord {
   Name: string;
 }
 
-export default class HomePageLayouts extends ShapePlugin {
+export default class HomePageLayouts extends BrowserforcePlugin {
   public async retrieve() {
     const page = this.browserforce.page;
     await page.goto(`${this.browserforce.getInstanceUrl()}/${PATHS.BASE}`);
