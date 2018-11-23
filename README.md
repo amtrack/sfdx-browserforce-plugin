@@ -29,6 +29,7 @@ npx sfdx-browserforce-plugin browserforce -h
 
 <!-- commands -->
 * [`sfdx-browserforce-plugin browserforce:shape:apply`](#sfdx-browserforce-plugin-browserforceshapeapply)
+* [`sfdx-browserforce-plugin browserforce:shape:plan`](#sfdx-browserforce-plugin-browserforceshapeplan)
 
 ## `sfdx-browserforce-plugin browserforce:shape:apply`
 
@@ -63,6 +64,43 @@ EXAMPLE
 ```
 
 _See code: [src/commands/browserforce/shape/apply.ts](https://github.com/amtrack/sfdx-browserforce-plugin/blob/v0.0.0-development/src/commands/browserforce/shape/apply.ts)_
+
+## `sfdx-browserforce-plugin browserforce:shape:plan`
+
+retrieve state and generate plan file
+
+```
+USAGE
+  $ sfdx-browserforce-plugin browserforce:shape:plan
+
+OPTIONS
+  -f, --definitionfile=definitionfile             path to a browserforce definition file
+                                                  The schema is similar to the scratch org definition file.
+                                                  See
+                                                  https://github.com/amtrack/sfdx-browserforce-plugin#supported-org-pref
+                                                  erences for supported values.
+
+  -o, --planfile=planfile                         path to a browserforce plan file
+
+  -u, --targetusername=targetusername             username or alias for the target org; overrides default target org
+
+  --apiversion=apiversion                         override the api version used for api requests made by this command
+
+  --json                                          format output as json
+
+  --loglevel=(trace|debug|info|warn|error|fatal)  logging level for this command invocation
+
+EXAMPLE
+  $ sfdx browserforce:shape:plan -f ./config/browserforce-shape-def.json -o /tmp/state.json --targetusername 
+  myOrg@example.com
+     Generating plan with for definition file ./config/browserforce-shape-def.json from org myOrg@example.com
+     logging in... done
+     [LoginAccessPolicies] retrieving state... done
+     [LoginAccessPolicies] planning 'administratorsCanLogInAsAnyUser' to 'true'... done
+     logging out... done
+```
+
+_See code: [src/commands/browserforce/shape/plan.ts](https://github.com/amtrack/sfdx-browserforce-plugin/blob/v0.0.0-development/src/commands/browserforce/shape/plan.ts)_
 <!-- commandsstop -->
 
 # Example

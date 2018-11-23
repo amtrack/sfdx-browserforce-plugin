@@ -6,6 +6,7 @@ export default class ConfigParser {
         if (drivers[driverName]) {
           settings.push({
             Driver: drivers[driverName],
+            key: driverName,
             value: data.settings[driverName]
           });
         }

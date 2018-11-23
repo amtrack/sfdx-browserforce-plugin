@@ -11,17 +11,17 @@ const messages = core.Messages.loadMessages(
   'shape'
 );
 
-export default class BrowserforceShapeApply extends SfdxCommand {
+export default class BrowserforceShapePlanCommand extends SfdxCommand {
   public static description = messages.getMessage(
-    'shapeApplyCommandDescription'
+    'shapePlanCommandDescription'
   );
 
   public static examples = [
-    `$ sfdx browserforce:shape:apply -f ./config/browserforce-shape-def.json --targetusername myOrg@example.com
-  Applying plan file ./config/browserforce-shape-def.json to org myOrg@example.com
+    `$ sfdx browserforce:shape:plan -f ./config/browserforce-shape-def.json -o /tmp/state.json --targetusername myOrg@example.com
+  Generating plan with definition file ./config/browserforce-shape-def.json from org myOrg@example.com
   logging in... done
   [LoginAccessPolicies] retrieving state... done
-  [LoginAccessPolicies] changing 'administratorsCanLogInAsAnyUser' to 'true'... done
+  [LoginAccessPolicies] generating plan... done
   logging out... done
   `
   ];
@@ -52,11 +52,10 @@ export default class BrowserforceShapeApply extends SfdxCommand {
       path.resolve(this.flags.definitionfile)
     );
     const settings = ConfigParser.parse(DRIVERS, definition);
-    const logger = await core.Logger.root();
     this.ux.log(
-      `Applying plan file ${
+      `Generating plan with definition file ${
         this.flags.definitionfile
-      } to org ${this.org.getUsername()}`
+      } from org ${this.org.getUsername()}`
     );
     this.bf = new Browserforce(this.org);
 
@@ -64,41 +63,41 @@ export default class BrowserforceShapeApply extends SfdxCommand {
     await this.bf.login();
     this.ux.stopSpinner();
 
+    const state = {
+      settings: {}
+    };
+    const plan = {
+      settings: {}
+    };
     for (const setting of settings) {
       const driver = setting.Driver.default;
       const instance = new driver(this.bf, this.org);
       this.ux.startSpinner(`[${driver.name}] retrieving state`);
-      let state;
+      let driverState;
       try {
-        state = await instance.retrieve();
+        driverState = await instance.retrieve();
+        state.settings[setting.key] = driverState;
       } catch (err) {
         this.ux.stopSpinner('failed');
         throw err;
       }
       this.ux.stopSpinner();
-      logger.debug(`generating action for driver ${driver.name}`);
-      const action = instance.diff(state, setting.value);
+      this.ux.startSpinner(`[${driver.name}] generating plan`);
+      const driverPlan = instance.diff(driverState, setting.value);
+      plan.settings[setting.key] = driverPlan;
       this.ux.stopSpinner();
-      if (action && Object.keys(action).length) {
-        this.ux.startSpinner(
-          `[${driver.name}] ${Object.keys(action)
-            .map(key => {
-              return `changing '${key}' to '${JSON.stringify(action[key])}'`;
-            })
-            .join('\n')}`
-        );
-        try {
-          await instance.apply(action);
-        } catch (err) {
-          this.ux.stopSpinner('failed');
-          throw err;
-        }
-        this.ux.stopSpinner();
-      } else {
-        this.ux.log(`[${driver.name}] no action necessary`);
-      }
     }
-    return { success: true };
+    if (this.flags.statefile) {
+      this.ux.startSpinner('writing state file');
+      await fs.writeJson(path.resolve(this.flags.statefile), state);
+      this.ux.stopSpinner();
+    }
+    if (this.flags.planfile) {
+      this.ux.startSpinner('writing plan file');
+      await fs.writeJson(path.resolve(this.flags.planfile), plan);
+      this.ux.stopSpinner();
+    }
+    return { success: true, plan };
   }
 
   // tslint:disable-next-line:no-any
