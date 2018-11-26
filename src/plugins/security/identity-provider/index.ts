@@ -1,5 +1,7 @@
 import { SalesforceId } from 'jsforce';
+import * as jsonMergePatch from 'json-merge-patch';
 import { BrowserforcePlugin } from '../../../plugin';
+import { removeNullValues, retry } from '../../utils';
 
 const PATHS = {
   EDIT_VIEW: 'setup/secur/idp/IdpPage.apexp'
@@ -37,37 +39,74 @@ export default class IdentityProvider extends BrowserforcePlugin {
     return response;
   }
 
+  public diff(state, definition) {
+    return removeNullValues(jsonMergePatch.generate(state, definition));
+  }
+
   public async apply(plan) {
     const page = this.browserforce.page;
-    await page.goto(`${this.browserforce.getInstanceUrl()}/${PATHS.EDIT_VIEW}`);
-    await page.waitFor(SELECTORS.EDIT_BUTTON);
-    if (plan.enabled) {
-      const certsResponse = await this.org
-        .getConnection()
-        .tooling.query<CertificateRecord>(
-          `SELECT Id, DeveloperName FROM Certificate WHERE DeveloperName = '${
-            plan.certificate
-          }'`
-        );
-      if (!certsResponse.records.length) {
-        throw new Error(`Could not find Certificate '${plan.certificate}'`);
-      }
-      const cert = certsResponse.records[0];
-      await Promise.all([
-        page.waitForNavigation(),
-        page.click(SELECTORS.EDIT_BUTTON)
-      ]);
-      await page.waitFor(SELECTORS.CHOOSE_CERT);
-      await page.select(SELECTORS.CHOOSE_CERT, cert.Id.substring(0, 15));
-      page.on('dialog', async dialog => {
-        await dialog.accept();
-      });
-      await page.waitFor(SELECTORS.SAVE_BUTTON);
-      await Promise.all([
-        page.waitForNavigation(),
-        page.click(SELECTORS.SAVE_BUTTON)
-      ]);
+    if (plan.enabled && plan.certificate && plan.certificate !== '') {
+      // wait for cert to become available in Identity Provider UI
+      await retry(
+        async () => {
+          const certsResponse = await this.org
+            .getConnection()
+            .tooling.query<CertificateRecord>(
+              `SELECT Id, DeveloperName FROM Certificate WHERE DeveloperName = '${
+                plan.certificate
+              }'`
+            );
+          if (!certsResponse.records.length) {
+            throw new Error(`Could not find Certificate '${plan.certificate}'`);
+          }
+          await page.goto(
+            `${this.browserforce.getInstanceUrl()}/${PATHS.EDIT_VIEW}`
+          );
+          await page.waitFor(SELECTORS.EDIT_BUTTON);
+          await Promise.all([
+            page.waitForNavigation(),
+            page.click(SELECTORS.EDIT_BUTTON)
+          ]);
+          await page.waitFor(SELECTORS.CHOOSE_CERT);
+          const chooseCertOptions = await page.$$eval(
+            `${SELECTORS.CHOOSE_CERT} option`,
+            (options: HTMLOptionElement[]) => {
+              return options.map(option => {
+                return {
+                  text: option.text,
+                  value: option.value
+                };
+              });
+            }
+          );
+          const chooseCertOption = chooseCertOptions.find(
+            x => x.text === plan.certificate
+          );
+          if (!chooseCertOption) {
+            throw new Error(
+              `Waiting for Certificate '${
+                plan.certificate
+              }' to be available in Identity Provider picklist timed out`
+            );
+          }
+          await page.select(SELECTORS.CHOOSE_CERT, chooseCertOption.value);
+          page.on('dialog', async dialog => {
+            await dialog.accept();
+          });
+          await page.waitFor(SELECTORS.SAVE_BUTTON);
+          await Promise.all([
+            page.waitForNavigation(),
+            page.click(SELECTORS.SAVE_BUTTON)
+          ]);
+        },
+        5,
+        2000
+      );
     } else {
+      await page.goto(
+        `${this.browserforce.getInstanceUrl()}/${PATHS.EDIT_VIEW}`
+      );
+      await page.waitFor(SELECTORS.EDIT_BUTTON);
       await page.$(SELECTORS.DISABLE_BUTTON);
       page.on('dialog', async dialog => {
         await dialog.accept();

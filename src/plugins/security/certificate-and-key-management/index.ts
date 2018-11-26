@@ -4,7 +4,7 @@ import * as jsonMergePatch from 'json-merge-patch';
 import * as path from 'path';
 import * as queryString from 'querystring';
 import { BrowserforcePlugin } from '../../../plugin';
-import { removeEmptyValues, removeNullValues, retry } from '../../utils';
+import { removeEmptyValues } from '../../utils';
 
 const PATHS = {
   CERT_PREFIX: '0P1',
@@ -92,39 +92,24 @@ export default class CertificateAndKeyManagement extends BrowserforcePlugin {
           // create new
           const urlAttributes = {
             DeveloperName: certificate.name,
-            MasterLabel: certificate.label,
-            keySize: certificate.keySize,
-            exp: certificate.exportable ? 1 : 0
+            MasterLabel: certificate.label
           };
+          if (certificate.keySize) {
+            urlAttributes['keySize'] = certificate.keySize;
+          }
+          if (certificate.exportable !== undefined) {
+            urlAttributes['exp'] = certificate.exportable ? 1 : 0;
+          }
           await page.goto(
             `${this.browserforce.getInstanceUrl()}/${
               PATHS.CERT_PREFIX
-            }/e?${queryString.stringify(removeNullValues(urlAttributes))}`
+            }/e?${queryString.stringify(urlAttributes)}`
           );
           await page.waitFor(SELECTORS.SAVE_BUTTON);
           await Promise.all([
             page.waitForNavigation(),
             page.click(SELECTORS.SAVE_BUTTON)
           ]);
-          // wait for cert to become available
-          await retry(
-            async () => {
-              const certsResponse = await this.org
-                .getConnection()
-                .tooling.query<CertificateRecord>(
-                  `SELECT Id, DeveloperName FROM Certificate WHERE DeveloperName = '${
-                    certificate.name
-                  }'`
-                );
-              if (!certsResponse.records.length) {
-                throw new Error(
-                  `Waiting for Certificate '${certificate.name}' timed out`
-                );
-              }
-            },
-            5,
-            2000
-          );
         }
       }
     }
