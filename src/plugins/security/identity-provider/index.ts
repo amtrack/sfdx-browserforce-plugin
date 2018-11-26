@@ -6,6 +6,7 @@ const PATHS = {
 };
 const SELECTORS = {
   CHOOSE_CERT: 'select[id$=":chooseCert"]',
+  CERT_NAME_SPAN: 'span[id$="developer__name"',
   DISABLE_BUTTON: 'input[name$=":disable"]',
   EDIT_BUTTON: 'input[name$=":edit"]',
   SAVE_BUTTON: 'input[name$=":save"]'
@@ -23,10 +24,17 @@ export default class IdentityProvider extends BrowserforcePlugin {
     await page.goto(`${this.browserforce.getInstanceUrl()}/${PATHS.EDIT_VIEW}`);
     await page.waitFor(SELECTORS.EDIT_BUTTON);
     const disableButton = await page.$(SELECTORS.DISABLE_BUTTON);
-    return {
-      enabled: disableButton !== null,
-      certificate: null
+    const certNameHandle = await page.$(SELECTORS.CERT_NAME_SPAN);
+    const response = {
+      enabled: disableButton !== null
     };
+    if (certNameHandle) {
+      response['certificate'] = await page.evaluate(
+        (span: HTMLSpanElement) => span.innerText,
+        certNameHandle
+      );
+    }
+    return response;
   }
 
   public async apply(plan) {
@@ -61,6 +69,9 @@ export default class IdentityProvider extends BrowserforcePlugin {
       ]);
     } else {
       await page.$(SELECTORS.DISABLE_BUTTON);
+      page.on('dialog', async dialog => {
+        await dialog.accept();
+      });
       await Promise.all([
         page.waitForNavigation(),
         page.click(SELECTORS.DISABLE_BUTTON)

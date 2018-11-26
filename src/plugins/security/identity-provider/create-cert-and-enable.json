@@ -9,6 +9,10 @@
             "label": "identity_provider"
           }
         ]
+      },
+      "identityProvider": {
+        "enabled": true,
+        "certificate": "identity_provider"
       }
     }
   }

@@ -4,7 +4,7 @@ import * as jsonMergePatch from 'json-merge-patch';
 import * as path from 'path';
 import * as queryString from 'querystring';
 import { BrowserforcePlugin } from '../../../plugin';
-import { removeEmptyValues, removeNullValues } from '../../utils';
+import { removeEmptyValues, removeNullValues, retry } from '../../utils';
 
 const PATHS = {
   CERT_PREFIX: '0P1',
@@ -106,18 +106,27 @@ export default class CertificateAndKeyManagement extends BrowserforcePlugin {
             page.waitForNavigation(),
             page.click(SELECTORS.SAVE_BUTTON)
           ]);
+          // wait for cert to become available
+          await retry(
+            async () => {
+              const certsResponse = await this.org
+                .getConnection()
+                .tooling.query<CertificateRecord>(
+                  `SELECT Id, DeveloperName FROM Certificate WHERE DeveloperName = '${
+                    certificate.name
+                  }'`
+                );
+              if (!certsResponse.records.length) {
+                throw new Error(
+                  `Waiting for Certificate '${certificate.name}' timed out`
+                );
+              }
+            },
+            5,
+            2000
+          );
         }
       }
-      // TODO: wait for cert to become available
-      // await retry(async () => {
-      //   const certsResponse = await this.org
-      //     .getConnection()
-      //     .tooling.query<CertificateRecord>(
-      //       `SELECT Id, DeveloperName FROM Certificate WHERE DeveloperName = '${
-      //         plan.certificate
-      //       }'`
-      //     );
-      // });
     }
     if (plan.importFromKeystore) {
       for (const certificate of plan.importFromKeystore) {
