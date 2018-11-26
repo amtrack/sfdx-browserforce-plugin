@@ -1,4 +1,4 @@
-import { BrowserforcePlugin } from '../../plugin';
+import { BrowserforcePlugin } from '../../../plugin';
 
 const PATHS = {
   BASE: 'partnerbt/loginAccessPolicies.apexp'
@@ -10,7 +10,7 @@ const SELECTORS = {
 };
 
 export default class LoginAccessPolicies extends BrowserforcePlugin {
-  public async retrieve() {
+  public async retrieve(definition?) {
     const page = this.browserforce.page;
     await page.goto(`${this.browserforce.getInstanceUrl()}/${PATHS.BASE}`);
     await page.waitFor(SELECTORS.ENABLED);

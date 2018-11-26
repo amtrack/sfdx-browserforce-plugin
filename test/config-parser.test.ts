@@ -7,16 +7,15 @@ describe('ConfigParser', () => {
     it('should parse a valid definition file', () => {
       const definition = {
         settings: {
-          loginAccessPolicies: {
-            adminsCanLogInAsAnyUser: true
+          security: {
+            loginAccessPolicies: {
+              adminsCanLogInAsAnyUser: true
+            }
           }
         }
       };
       const result = ConfigParser.parse(DRIVERS, definition);
-      assert.deepEqual(
-        result[0].Driver.default.name,
-        'LoginAccessPolicies'
-      );
+      assert.deepEqual(result[0].Driver.default.name, 'Security');
     });
   });
 });

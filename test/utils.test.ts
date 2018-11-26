@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import retry from '../src/plugins/retry';
+import { retry } from '../src/plugins/utils';
 
 async function sayHello() {
   return 'hi';

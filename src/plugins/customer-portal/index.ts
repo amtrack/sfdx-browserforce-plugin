@@ -1,19 +1,19 @@
 import { BrowserforcePlugin } from '../../plugin';
+import { removeEmptyValues } from '../utils';
 import CustomerPortalAvailableCustomObjects from './availableCustomObjects';
-import CustomerPortalEnable from './enableCustomerPortal';
+import CustomerPortalEnable from './enabled';
 import CustomerPortalSetup from './portals';
-import { removeEmptyValues } from './utils';
 
 export default class CustomerPortal extends BrowserforcePlugin {
   public async retrieve(definition?) {
     const pluginEnable = new CustomerPortalEnable(this.browserforce, this.org);
     const response = {
-      enableCustomerPortal: false,
+      enabled: false,
       portals: [],
       availableCustomObjects: []
     };
-    response.enableCustomerPortal = await pluginEnable.retrieve();
-    if (response.enableCustomerPortal) {
+    response.enabled = await pluginEnable.retrieve(definition.enabled);
+    if (response.enabled) {
       if (definition.portals) {
         const pluginSetup = new CustomerPortalSetup(
           this.browserforce,
@@ -42,10 +42,7 @@ export default class CustomerPortal extends BrowserforcePlugin {
       null
     );
     const response = {
-      enableCustomerPortal: pluginEnable.diff(
-        state.enableCustomerPortal,
-        definition.enableCustomerPortal
-      ),
+      enabled: pluginEnable.diff(state.enabled, definition.enabled),
       portals: pluginSetup.diff(state.portals, definition.portals),
       availableCustomObjects: pluginAvailableCustomObjects.diff(
         state.availableCustomObjects,
@@ -56,12 +53,12 @@ export default class CustomerPortal extends BrowserforcePlugin {
   }
 
   public async apply(config) {
-    if (config.enableCustomerPortal !== undefined) {
+    if (config.enabled !== undefined) {
       const pluginEnable = new CustomerPortalEnable(
         this.browserforce,
         this.org
       );
-      await pluginEnable.apply(config.enableCustomerPortal);
+      await pluginEnable.apply(config.enabled);
     }
     if (config.portals && config.portals.length) {
       const pluginSetup = new CustomerPortalSetup(this.browserforce, this.org);

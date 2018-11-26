@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/packages/customer-portal/schema.json",
+  "title": "Certificate and Key Management",
+  "type": "object",
+  "properties": {
+    "enabled": {
+      "title": "Enable Identity Provider (requires certificate if enabled)",
+      "type": "boolean"
+    },
+    "certificate": {
+      "title": "Developer Name of Certificate to use or empty when disabled",
+      "type": "string"
+    }
+  }
+}

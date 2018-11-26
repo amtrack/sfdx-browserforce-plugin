@@ -17,21 +17,21 @@ export default class SalesforceToSalesforce extends BrowserforcePlugin {
     const response = {};
     const inputEnable = await page.$(SELECTORS.ENABLED);
     if (inputEnable) {
-      response['enableSalesforceToSalesforce'] = await page.$eval(
+      response['enabled'] = await page.$eval(
         SELECTORS.ENABLED,
         (el: HTMLInputElement) => el.checked
       );
     } else {
       // already enabled
-      response['enableSalesforceToSalesforce'] = true;
+      response['enabled'] = true;
     }
     return response;
   }
 
   public async apply(config) {
-    if (config.enableSalesforceToSalesforce === false) {
+    if (config.enabled === false) {
       throw new Error(
-        '`enableSalesforceToSalesforce` cannot be disabled once enabled'
+        '`enabled` cannot be disabled once enabled'
       );
     }
     const page = this.browserforce.page;
@@ -42,7 +42,7 @@ export default class SalesforceToSalesforce extends BrowserforcePlugin {
       (e: HTMLInputElement, v) => {
         e.checked = v;
       },
-      config.enableSalesforceToSalesforce
+      config.enabled
     );
     await Promise.all([
       page.waitForNavigation(),

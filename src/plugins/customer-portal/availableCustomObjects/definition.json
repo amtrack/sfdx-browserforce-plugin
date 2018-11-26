@@ -1,7 +1,7 @@
 {
-  "$schema": "../schema.json",
+  "$schema": "../../schema.json",
   "settings": {
-    "customerPortalSettings": {
+    "customerPortal": {
       "availableCustomObjects": [
         {
           "name": "Dummy",

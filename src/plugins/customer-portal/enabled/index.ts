@@ -9,8 +9,7 @@ const SELECTORS = {
   ERROR_DIV: '#errorTitle'
 };
 
-export default class CustomerPortalEnable extends BrowserforcePlugin
-  implements BrowserforcePlugin {
+export default class CustomerPortalEnable extends BrowserforcePlugin {
   public async retrieve(definition?) {
     const page = this.browserforce.page;
     await page.goto(`${this.browserforce.getInstanceUrl()}/${PATHS.EDIT_VIEW}`);
@@ -35,7 +34,7 @@ export default class CustomerPortalEnable extends BrowserforcePlugin
 
   public async apply(plan) {
     if (plan === false) {
-      throw new Error('`enableCustomerPortal` cannot be disabled once enabled');
+      throw new Error('`enabled` cannot be disabled once enabled');
     }
     const page = this.browserforce.page;
     if (plan) {

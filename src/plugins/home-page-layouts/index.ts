@@ -21,7 +21,7 @@ interface HomePageLayoutRecord {
 }
 
 export default class HomePageLayouts extends BrowserforcePlugin {
-  public async retrieve() {
+  public async retrieve(definition?) {
     const page = this.browserforce.page;
     await page.goto(`${this.browserforce.getInstanceUrl()}/${PATHS.BASE}`);
     await page.waitFor(SELECTORS.BASE);

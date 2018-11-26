@@ -5,7 +5,7 @@ const tests = [
   {
     description: 'should ignore a non-existent target flag',
     source: {
-      enableCustomerPortal: true
+      enabled: true
     },
     target: {},
     expected: {}
@@ -13,29 +13,29 @@ const tests = [
   {
     description: 'should ignore a matching target flag',
     source: {
-      enableCustomerPortal: true
+      enabled: true
     },
     target: {
-      enableCustomerPortal: true
+      enabled: true
     },
     expected: {}
   },
   {
     description: 'should detect a changed flag',
     source: {
-      enableCustomerPortal: false
+      enabled: false
     },
     target: {
-      enableCustomerPortal: true
+      enabled: true
     },
     expected: {
-      enableCustomerPortal: true
+      enabled: true
     }
   },
   {
     description: 'should only return necessary fields',
     source: {
-      enableCustomerPortal: true,
+      enabled: true,
       portals: [
         {
           name: 'Customer Portal',

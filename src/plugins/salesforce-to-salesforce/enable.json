@@ -1,8 +1,8 @@
 {
   "$schema": "../schema.json",
   "settings": {
-    "salesforceToSalesforceSettings": {
-      "enableSalesforceToSalesforce": true
+    "salesforceToSalesforce": {
+      "enabled": true
     }
   }
 }

@@ -1,6 +1,7 @@
 import * as jsonMergePatch from 'json-merge-patch';
 import * as queryString from 'querystring';
 import { BrowserforcePlugin } from '../../../plugin';
+import { removeNullValues } from '../../utils';
 
 const PATHS = {
   LIST_VIEW: '_ui/core/portal/CustomerSuccessPortalSetup/d',
@@ -19,18 +20,6 @@ const SELECTORS = {
   PORTAL_PROFILE_MEMBERSHIP_PROFILES: 'th.dataCell',
   PORTAL_PROFILE_MEMBERSHIP_CHECKBOXES: 'td.dataCell input',
   CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL: '#options_9'
-};
-
-const removeNullValues = obj => {
-  if (!obj) {
-    obj = {};
-  }
-  Object.entries(obj).forEach(
-    ([key, val]) =>
-      (val && typeof val === 'object' && removeNullValues(val)) ||
-      ((val === null || val === undefined) && delete obj[key])
-  );
-  return obj;
 };
 
 export default class CustomerPortalSetup extends BrowserforcePlugin {

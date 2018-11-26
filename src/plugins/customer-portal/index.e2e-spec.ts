@@ -2,11 +2,11 @@ import * as assert from 'assert';
 import * as child from 'child_process';
 import * as path from 'path';
 import CustomerPortalAvailableCustomObjects from './availableCustomObjects';
-import CustomerPortalEnable from './enableCustomerPortal';
+import CustomerPortalEnable from './enabled';
 import CustomerPortalSetup from './portals';
 
 describe(CustomerPortalEnable.name, () => {
-  const dir = path.resolve(path.join(__dirname, 'enableCustomerPortal'));
+  const dir = path.resolve(path.join(__dirname, 'enabled'));
   it('should enable', function() {
     this.timeout(1000 * 60);
     this.slow(1000 * 15);

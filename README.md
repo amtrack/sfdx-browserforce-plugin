@@ -111,13 +111,15 @@ _See code: [src/commands/browserforce/plan.ts](https://github.com/amtrack/sfdx-b
 
 # Example
 
-To enable `Login Access Policies -> Administrators Can Log in as Any User`, the config file (here: `./config/setup-admin-login-as-any.json`) should look like this:
+To enable `Setup -> Security Controls -> Login Access Policies -> Administrators Can Log in as Any User`, the config file (here: `./config/setup-admin-login-as-any.json`) should look like this:
 
 ```json
 {
   "settings": {
-    "loginAccessPolicies": {
-      "administratorsCanLogInAsAnyUser": true
+    "security:" {
+      "loginAccessPolicies": {
+        "administratorsCanLogInAsAnyUser": true
+      }
     }
   }
 }

@@ -7,20 +7,17 @@
   "properties": {
     "settings": {
       "properties": {
-        "customerPortalSettings": {
+        "customerPortal": {
           "$ref": "./customer-portal/schema.json"
         },
         "homePageLayouts": {
           "$ref": "./home-page-layouts/schema.json"
         },
-        "loginAccessPolicies": {
-          "$ref": "./login-access-policies/schema.json"
-        },
-        "salesforceToSalesforceSettings": {
+        "salesforceToSalesforce": {
           "$ref": "./salesforce-to-salesforce/schema.json"
         },
-        "sharingSettings": {
-          "$ref": "./sharing-settings/schema.json"
+        "security": {
+          "$ref": "./security/schema.json"
         }
       }
     }

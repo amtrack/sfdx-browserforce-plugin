@@ -4,7 +4,7 @@
   "title": "Salesforce to Salesforce Settings",
   "type": "object",
   "properties": {
-    "enableSalesforceToSalesforce": {
+    "enabled": {
       "title": "Enable Salesforce to Salesforce",
       "description": "Warning: cannot be disabled once enabled",
       "type": "boolean"

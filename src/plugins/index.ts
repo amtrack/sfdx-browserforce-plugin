@@ -1,12 +1,10 @@
-import * as customerPortalSettings from './customer-portal';
+import * as customerPortal from './customer-portal';
 import * as homePageLayouts from './home-page-layouts';
-import * as loginAccessPolicies from './login-access-policies';
-import * as salesforceToSalesforceSettings from './salesforce-to-salesforce';
-import * as sharingSettings from './sharing-settings';
+import * as salesforceToSalesforce from './salesforce-to-salesforce';
+import * as security from './security';
 export {
-  customerPortalSettings,
+  customerPortal,
   homePageLayouts,
-  loginAccessPolicies,
-  salesforceToSalesforceSettings,
-  sharingSettings
+  salesforceToSalesforce,
+  security
 };

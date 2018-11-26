@@ -5,7 +5,7 @@
   "description": "Only available in Salesforce Classic UI",
   "type": "object",
   "properties": {
-    "enableCustomerPortal": {
+    "enabled": {
       "title": "Enable Customer Portal",
       "description": "Warning: cannot be disabled once enabled",
       "type": "boolean"

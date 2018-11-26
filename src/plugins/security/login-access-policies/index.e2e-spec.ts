@@ -1,9 +1,9 @@
 import * as assert from 'assert';
 import * as child from 'child_process';
 import * as path from 'path';
-import AdminsCanLogInAsAny from '.';
+import LoginAccessPolicies from '.';
 
-describe(AdminsCanLogInAsAny.name, () => {
+describe(LoginAccessPolicies.name, () => {
   it('should enable', function() {
     this.timeout(1000 * 60);
     this.slow(1000 * 15);
@@ -14,7 +14,9 @@ describe(AdminsCanLogInAsAny.name, () => {
     ]);
     assert.deepEqual(enableCmd.status, 0, enableCmd.output.toString());
     assert(
-      /to 'true'/.test(enableCmd.output.toString()),
+      /changing 'loginAccessPolicies' to '{"administratorsCanLogInAsAnyUser":true}'/.test(
+        enableCmd.output.toString()
+      ),
       enableCmd.output.toString()
     );
   });
@@ -28,7 +30,9 @@ describe(AdminsCanLogInAsAny.name, () => {
     ]);
     assert.deepEqual(disableCmd.status, 0, disableCmd.output.toString());
     assert(
-      /to 'false'/.test(disableCmd.output.toString()),
+      /changing 'loginAccessPolicies' to '{"administratorsCanLogInAsAnyUser":false}'/.test(
+        disableCmd.output.toString()
+      ),
       disableCmd.output.toString()
     );
   });

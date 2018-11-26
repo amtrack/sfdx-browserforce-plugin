@@ -1,8 +1,0 @@
-{
-  "$schema": "../schema.json",
-  "settings": {
-    "loginAccessPolicies": {
-      "administratorsCanLogInAsAnyUser": false
-    }
-  }
-}
