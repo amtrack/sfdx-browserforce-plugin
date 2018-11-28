@@ -29,25 +29,32 @@ export default class Browserforce {
       `${instanceUrl}/secur/frontdoor.jsp?sid=${
         this.org.getConnection().accessToken
       }&retURL=${encodeURIComponent(PERSONAL_INFORMATION_PATH)}`,
-      { waitUntil: 'networkidle0' }
+      { waitUntil: ['load', 'domcontentloaded', 'networkidle0'] }
     );
-    if (response.status() === 500) {
-      const errorHandle = await this.page.$(ERROR_DIV_SELECTOR);
-      if (errorHandle) {
-        const errorMsg = this.page.evaluate(div => div.innerText, errorHandle);
-        throw new Error(`login failed [500]: ${errorMsg}`);
-      } else {
-        throw new Error(`login failed [500]: ${response.statusText}`);
+    if (response) {
+      if (response.status() === 500) {
+        const errorHandle = await this.page.$(ERROR_DIV_SELECTOR);
+        if (errorHandle) {
+          const errorMsg = this.page.evaluate(
+            div => div.innerText,
+            errorHandle
+          );
+          throw new Error(`login failed [500]: ${errorMsg}`);
+        } else {
+          throw new Error(`login failed [500]: ${response.statusText()}`);
+        }
       }
-    }
-    if (response.url().indexOf('/?ec=302') > 0) {
-      throw new Error(
-        `login failed [302]: {"instanceUrl": "${instanceUrl}, "url": "${response
-          .url()
-          .split('/')
-          .slice(0, 3)
-          .join('/')}"}"`
-      );
+      if (response.url().indexOf('/?ec=302') > 0) {
+        throw new Error(
+          `login failed [302]: {"instanceUrl": "${instanceUrl}, "url": "${response
+            .url()
+            .split('/')
+            .slice(0, 3)
+            .join('/')}"}"`
+        );
+      }
+    } else {
+      throw new Error('login failed');
     }
     return this;
   }
