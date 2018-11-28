@@ -21,6 +21,20 @@ describe(CustomerPortalEnable.name, () => {
       enableCmd.output.toString()
     );
   });
+  it('should already be enabled', function() {
+    this.timeout(1000 * 60);
+    this.slow(1000 * 15);
+    const enableCmd = child.spawnSync(path.resolve('bin', 'run'), [
+      'browserforce:apply',
+      '-f',
+      path.join(dir, 'enable.json')
+    ]);
+    assert.deepEqual(enableCmd.status, 0, enableCmd.output.toString());
+    assert(
+      /no action necessary/.test(enableCmd.output.toString()),
+      enableCmd.output.toString()
+    );
+  });
   it('should fail to disable', function() {
     this.timeout(1000 * 60);
     this.slow(1000 * 15);
@@ -133,7 +147,7 @@ describe(CustomerPortalAvailableCustomObjects.name, () => {
     const setupPortalCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
-      path.join(dir, 'definition.json')
+      path.join(dir, 'available.json')
     ]);
     assert.deepEqual(
       setupPortalCmd.status,
@@ -169,7 +183,7 @@ describe(CustomerPortalAvailableCustomObjects.name, () => {
     const setupCustomObjectsCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
-      path.join(dir, 'definition.json')
+      path.join(dir, 'available.json')
     ]);
     assert.deepEqual(
       setupCustomObjectsCmd.status,
@@ -180,6 +194,42 @@ describe(CustomerPortalAvailableCustomObjects.name, () => {
       /changing 'availableCustomObjects' to .*"available":true/.test(
         setupCustomObjectsCmd.output.toString()
       ),
+      setupCustomObjectsCmd.output.toString()
+    );
+  });
+  it('should have applied checkbox available for customer portal', function() {
+    this.timeout(1000 * 60);
+    this.slow(1000 * 15);
+    const setupCustomObjectsCmd = child.spawnSync(path.resolve('bin', 'run'), [
+      'browserforce:apply',
+      '-f',
+      path.join(dir, 'available.json')
+    ]);
+    assert.deepEqual(
+      setupCustomObjectsCmd.status,
+      0,
+      setupCustomObjectsCmd.output.toString()
+    );
+    assert(
+      /no action necessary/.test(setupCustomObjectsCmd.output.toString()),
+      setupCustomObjectsCmd.output.toString()
+    );
+  });
+  it('should make custom objects unavailable for customer portal', function() {
+    this.timeout(1000 * 60);
+    this.slow(1000 * 15);
+    const setupCustomObjectsCmd = child.spawnSync(path.resolve('bin', 'run'), [
+      'browserforce:apply',
+      '-f',
+      path.join(dir, 'unavailable.json')
+    ]);
+    assert.deepEqual(
+      setupCustomObjectsCmd.status,
+      0,
+      setupCustomObjectsCmd.output.toString()
+    );
+    assert(
+      /no action necessary/.test(setupCustomObjectsCmd.output.toString()),
       setupCustomObjectsCmd.output.toString()
     );
   });

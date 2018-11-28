@@ -41,12 +41,16 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
       // BUG in jsforce: query acts with scanAll:true and returns deleted CustomObjects.
       // It cannot be disabled.
       // This will throw a timeout error waitingFor('#options_9')
-      await page.goto(this.browserforce.getInstanceUrl());
-      await page.waitForNavigation();
+      const instanceUrlResponse = await page.goto(
+        this.browserforce.getInstanceUrl(),
+        {
+          waitUntil: ['load', 'domcontentloaded', 'networkidle0']
+        }
+      );
       // new URLs for LEX: https://help.salesforce.com/articleView?id=FAQ-for-the-New-URL-Format-for-Lightning-Experience-and-the-Salesforce-Mobile-App&type=1
       const isLEX =
-        page.url().indexOf('/one/one.app') >= 0 ||
-        page.url().indexOf('/lightning/') >= 0;
+        instanceUrlResponse.url().indexOf('/one/one.app') >= 0 ||
+        instanceUrlResponse.url().indexOf('/lightning/') >= 0;
       for (const availableCustomObject of definition) {
         const customObject = customObjects.records.find(co => {
           if (availableCustomObject.namespacePrefix === undefined) {
@@ -71,7 +75,9 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
           }/edit?nodeId=ObjectManager&address=${encodeURIComponent(
             `/${classicUiPath}`
           )}`;
-          await page.goto(availableForCustomerPortalUrl);
+          await page.goto(availableForCustomerPortalUrl, {
+            waitUntil: 'networkidle0'
+          });
           // maybe use waitForFrame https://github.com/GoogleChrome/puppeteer/issues/1361
           await page.waitFor('iframe[name^=vfFrameId]');
           const frame = await page
@@ -127,9 +133,13 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
         // move id of existing object to new object to be retained and used
         availableCustomObject.id = oldCustomObject.id;
         delete oldCustomObject.id;
-        response.push(
-          jsonMergePatch.generate(oldCustomObject, availableCustomObject)
+        const diff = jsonMergePatch.generate(
+          oldCustomObject,
+          availableCustomObject
         );
+        if (diff.available !== undefined) {
+          response.push(diff);
+        }
       }
     }
     return response;
@@ -138,12 +148,16 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
   public async apply(plan) {
     const page = this.browserforce.page;
     if (plan && plan.length) {
-      await page.goto(this.browserforce.getInstanceUrl());
-      await page.waitForNavigation();
+      const instanceUrlResponse = await page.goto(
+        this.browserforce.getInstanceUrl(),
+        {
+          waitUntil: ['load', 'domcontentloaded', 'networkidle0']
+        }
+      );
       // new URLs for LEX: https://help.salesforce.com/articleView?id=FAQ-for-the-New-URL-Format-for-Lightning-Experience-and-the-Salesforce-Mobile-App&type=1
       const isLEX =
-        page.url().indexOf('/one/one.app') >= 0 ||
-        page.url().indexOf('/lightning/') >= 0;
+        instanceUrlResponse.url().indexOf('/one/one.app') >= 0 ||
+        instanceUrlResponse.url().indexOf('/lightning/') >= 0;
       for (const customObject of plan) {
         const classicUiPath = `${customObject.id}/e?options_9=${
           customObject.available ? 1 : 0
@@ -154,7 +168,9 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
           }/edit?nodeId=ObjectManager&address=${encodeURIComponent(
             `/${classicUiPath}`
           )}`;
-          await page.goto(availableForCustomerPortalUrl);
+          await page.goto(availableForCustomerPortalUrl, {
+            waitUntil: 'networkidle0'
+          });
           // maybe use waitForFrame https://github.com/GoogleChrome/puppeteer/issues/1361
           await page.waitFor('iframe[name^=vfFrameId]');
           const frame = await page
