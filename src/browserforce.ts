@@ -4,6 +4,8 @@ import * as puppeteer from 'puppeteer';
 const PERSONAL_INFORMATION_PATH =
   'setup/personalInformationSetup.apexp?nooverride=1';
 
+const ERROR_DIV_SELECTOR = '#errorTitle';
+
 export default class Browserforce {
   public org: core.Org;
   public browser: puppeteer.Browser;
@@ -22,17 +24,26 @@ export default class Browserforce {
       parseInt(process.env.BROWSERFORCE_NAVIGATION_TIMEOUT_MS, 10) || 90000
     );
     await this.page.setViewport({ width: 1024, height: 768 });
-    await this.page.goto(
-      `${
-        this.org.getConnection().instanceUrl
-      }/secur/frontdoor.jsp?sid=${encodeURIComponent(
+    const instanceUrl = this.getInstanceUrl();
+    const response = await this.page.goto(
+      `${instanceUrl}/secur/frontdoor.jsp?sid=${
         this.org.getConnection().accessToken
-      )}&retURL=${encodeURIComponent(PERSONAL_INFORMATION_PATH)}`
+      }&retURL=${encodeURIComponent(PERSONAL_INFORMATION_PATH)}`,
+      { waitUntil: 'networkidle0' }
     );
-    await this.page.waitForNavigation();
-    const url = await this.page.url();
-    if (!url.endsWith(PERSONAL_INFORMATION_PATH)) {
-      throw new Error('login failed');
+    if (response.status() === 500) {
+      const errorHandle = await this.page.$(ERROR_DIV_SELECTOR);
+      if (errorHandle) {
+        const errorMsg = this.page.evaluate(div => div.innerText, errorHandle);
+        throw new Error(`login failed [500]: ${errorMsg}`);
+      } else {
+        throw new Error(`login failed [500]: ${response.statusText}`);
+      }
+    }
+    if (response.url().indexOf('/?ec=302') > 0) {
+      throw new Error(
+        `login failed [302]: {"instanceUrl": "${instanceUrl}, "url": "${response.url()}"}"`
+      );
     }
     return this;
   }
