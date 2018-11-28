@@ -23,10 +23,12 @@ you'll need to create/adjust the following files:
 - `src/plugins/foo-bar/index.e2e-spec.ts`
 - `src/plugins/foo-bar/enable.json`
 - `src/plugins/foo-bar/disable.json`
+- `src/plugins/foo-bar/schema.json`
 
 To register your plugin, add it to `DRIVERS` in
 
 - `src/plugins/index.ts`
+- `src/plugins/schema.ts`
 
 ## Testing
 

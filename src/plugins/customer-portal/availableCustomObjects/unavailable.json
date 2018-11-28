@@ -1,0 +1,13 @@
+{
+  "$schema": "../../schema.json",
+  "settings": {
+    "customerPortal": {
+      "availableCustomObjects": [
+        {
+          "name": "Dummy",
+          "available": false
+        }
+      ]
+    }
+  }
+}

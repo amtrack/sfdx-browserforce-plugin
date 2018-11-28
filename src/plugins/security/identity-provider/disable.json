@@ -1,0 +1,10 @@
+{
+  "$schema": "../../schema.json",
+  "settings": {
+    "security": {
+      "identityProvider": {
+        "enabled": false
+      }
+    }
+  }
+}

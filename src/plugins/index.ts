@@ -1,10 +1,10 @@
-import * as AdminsCanLogInAsAny from './admins-can-log-in-as-any';
-import * as CustomerPortal from './customer-portal';
-import * as ExternalSharing from './external-sharing';
-import * as SalesforceToSalesforce from './salesforce-to-salesforce';
+import * as customerPortal from './customer-portal';
+import * as homePageLayouts from './home-page-layouts';
+import * as salesforceToSalesforce from './salesforce-to-salesforce';
+import * as security from './security';
 export {
-  AdminsCanLogInAsAny,
-  CustomerPortal,
-  ExternalSharing,
-  SalesforceToSalesforce
+  customerPortal,
+  homePageLayouts,
+  salesforceToSalesforce,
+  security
 };

@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/login-access-policies/schema.json",
+  "title": "Login Access Policies",
+  "type": "object",
+  "properties": {
+    "administratorsCanLogInAsAnyUser": {
+      "$comment": "Administrators Can Log in as Any User",
+      "type": "boolean"
+    }
+  }
+}
