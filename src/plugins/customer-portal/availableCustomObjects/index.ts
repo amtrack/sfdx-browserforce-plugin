@@ -41,16 +41,13 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
       // BUG in jsforce: query acts with scanAll:true and returns deleted CustomObjects.
       // It cannot be disabled.
       // This will throw a timeout error waitingFor('#options_9')
-      const instanceUrlResponse = await page.goto(
-        this.browserforce.getInstanceUrl(),
-        {
-          waitUntil: ['load', 'domcontentloaded', 'networkidle0']
-        }
-      );
+      await page.goto(this.browserforce.getInstanceUrl(), {
+        waitUntil: ['load', 'domcontentloaded', 'networkidle0']
+      });
       // new URLs for LEX: https://help.salesforce.com/articleView?id=FAQ-for-the-New-URL-Format-for-Lightning-Experience-and-the-Salesforce-Mobile-App&type=1
       const isLEX =
-        instanceUrlResponse.url().indexOf('/one/one.app') >= 0 ||
-        instanceUrlResponse.url().indexOf('/lightning/') >= 0;
+        page.url().indexOf('/one/one.app') >= 0 ||
+        page.url().indexOf('/lightning/') >= 0;
       for (const availableCustomObject of definition) {
         const customObject = customObjects.records.find(co => {
           if (availableCustomObject.namespacePrefix === undefined) {
@@ -148,16 +145,13 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
   public async apply(plan) {
     const page = this.browserforce.page;
     if (plan && plan.length) {
-      const instanceUrlResponse = await page.goto(
-        this.browserforce.getInstanceUrl(),
-        {
-          waitUntil: ['load', 'domcontentloaded', 'networkidle0']
-        }
-      );
+      await page.goto(this.browserforce.getInstanceUrl(), {
+        waitUntil: ['load', 'domcontentloaded', 'networkidle0']
+      });
       // new URLs for LEX: https://help.salesforce.com/articleView?id=FAQ-for-the-New-URL-Format-for-Lightning-Experience-and-the-Salesforce-Mobile-App&type=1
       const isLEX =
-        instanceUrlResponse.url().indexOf('/one/one.app') >= 0 ||
-        instanceUrlResponse.url().indexOf('/lightning/') >= 0;
+        page.url().indexOf('/one/one.app') >= 0 ||
+        page.url().indexOf('/lightning/') >= 0;
       for (const customObject of plan) {
         const classicUiPath = `${customObject.id}/e?options_9=${
           customObject.available ? 1 : 0

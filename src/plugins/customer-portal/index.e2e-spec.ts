@@ -229,7 +229,9 @@ describe(CustomerPortalAvailableCustomObjects.name, () => {
       setupCustomObjectsCmd.output.toString()
     );
     assert(
-      /no action necessary/.test(setupCustomObjectsCmd.output.toString()),
+      /changing 'availableCustomObjects' to .*"available":false/.test(
+        setupCustomObjectsCmd.output.toString()
+      ),
       setupCustomObjectsCmd.output.toString()
     );
   });
