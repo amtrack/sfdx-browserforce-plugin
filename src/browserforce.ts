@@ -42,7 +42,11 @@ export default class Browserforce {
     }
     if (response.url().indexOf('/?ec=302') > 0) {
       throw new Error(
-        `login failed [302]: {"instanceUrl": "${instanceUrl}, "url": "${response.url()}"}"`
+        `login failed [302]: {"instanceUrl": "${instanceUrl}, "url": "${response
+          .url()
+          .split('/')
+          .slice(0, 3)
+          .join('/')}"}"`
       );
     }
     return this;
