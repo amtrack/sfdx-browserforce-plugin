@@ -5,5 +5,6 @@
     "rootDir": "./src",
     "lib": ["dom", "es2017"]
   },
-  "include": ["./src/**/*"]
+  "include": ["./src/**/*"],
+  "exclude": ["./src/**/*.test.ts", "./src/**/*.e2e-spec.ts"]
 }
