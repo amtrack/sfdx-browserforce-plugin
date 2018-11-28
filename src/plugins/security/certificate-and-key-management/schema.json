@@ -37,7 +37,7 @@
         },
         "filePath": {
           "type": "string",
-          "description": "Relative path to this config file"
+          "description": "Relative path from current working directory"
         },
         "password": { "type": "string" }
       },
