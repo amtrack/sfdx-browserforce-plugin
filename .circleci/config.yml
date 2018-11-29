@@ -1,0 +1,33 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:11
+    steps:
+      - checkout
+      - run: npm install
+      - run: npm run test
+  test-e2e:
+    docker:
+      - image: circleci/node:11
+    steps:
+      - checkout
+      - run: npm install -g sfdx-cli yarn
+      - run: npm install
+        no_output_timeout: 30m
+      - run: echo "$SFDX_AUTH_URL" > /tmp/sfdxurl
+      - run: sfdx force:auth:sfdxurl:store -f /tmp/sfdxurl -a ci-devhub -d
+      - run: sfdx force:org:create -f config/project-scratch-def.json -a ci-scratch-org -s
+      - run: npm run test:e2e
+        no_output_timeout: 30m
+      - run: sfdx force:org:delete --noprompt -u ci-scratch-org
+        when: always
+  # release:
+  #   branches:
+  #     only: master
+  #   docker:
+  #     - image: circleci/node:11
+  #   steps:
+  #     - checkout
+  #     - run: npm install --global semantic-release@15
+  #     - run: semantic-release
