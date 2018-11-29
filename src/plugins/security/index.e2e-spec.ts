@@ -30,7 +30,7 @@ describe(`${CertificateAndKeyManagement.name} and ${
     );
   });
   it('should create a self-signed certificate and enable Identity Provider', function() {
-    this.timeout(1000 * 60);
+    this.timeout(1000 * 120);
     this.slow(1000 * 15);
     const cmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
