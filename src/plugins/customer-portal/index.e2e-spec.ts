@@ -130,9 +130,39 @@ describe(CustomerPortalSetup.name, () => {
         setupPortalCmd.output.toString()
       );
       assert(
-        /changing 'portals' to .*isSelfRegistrationActivated.*portalProfileMemberships/.test(
+        /changing 'portals' to .*"name":"Foo Portal"/.test(
           setupPortalCmd.output.toString()
         ),
+        setupPortalCmd.output.toString()
+      );
+      assert(
+        /changing 'portals' to .*isSelfRegistrationActivated/.test(
+          setupPortalCmd.output.toString()
+        ),
+        setupPortalCmd.output.toString()
+      );
+      assert(
+        /changing 'portals' to .*portalProfileMemberships/.test(
+          setupPortalCmd.output.toString()
+        ),
+        setupPortalCmd.output.toString()
+      );
+    });
+    it('should already be set up', function() {
+      this.timeout(1000 * 60);
+      this.slow(1000 * 15);
+      const setupPortalCmd = child.spawnSync(path.resolve('bin', 'run'), [
+        'browserforce:apply',
+        '-f',
+        path.join(dir, 'setup-portal.json')
+      ]);
+      assert.deepEqual(
+        setupPortalCmd.status,
+        0,
+        setupPortalCmd.output.toString()
+      );
+      assert(
+        /no action necessary/.test(setupPortalCmd.output.toString()),
         setupPortalCmd.output.toString()
       );
     });

@@ -53,3 +53,14 @@ export function removeNullValues(obj) {
   );
   return obj;
 }
+
+// an object only containing an id is semantically empty
+export function semanticallyCleanObject(obj, id = 'id') {
+  if (!obj) {
+    obj = {};
+  }
+  if (Object.keys(obj).length === 1 && Object.keys(obj)[0] === id) {
+    return null;
+  }
+  return obj;
+}

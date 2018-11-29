@@ -69,6 +69,60 @@ const tests = [
         ]
       }
     ]
+  },
+  {
+    description: 'should detect a renamed portal',
+    source: [
+      {
+        name: 'Customer Portal',
+        description: 'Customer Portal',
+        adminUser: 'User User',
+        portalProfileMemberships: [],
+        id: 'p1'
+      }
+    ],
+    target: [
+      {
+        name: 'Foo Portal',
+        oldName: 'Customer Portal'
+      }
+    ],
+    expected: [
+      {
+        id: 'p1',
+        name: 'Foo Portal'
+      }
+    ]
+  },
+  {
+    description: 'should return no change',
+    source: [
+      {
+        name: 'Customer Portal',
+        description: 'Customer Portal',
+        adminUser: 'User User',
+        portalProfileMemberships: [
+          {
+            name: 'Customer Portal Manager Standard',
+            active: true,
+            id: 'a1'
+          }
+        ],
+        id: 'p1'
+      }
+    ],
+    target: [
+      {
+        name: 'Customer Portal',
+        portalProfileMemberships: [
+          {
+            name: 'Customer Portal Manager Standard',
+            active: true
+          }
+        ]
+      }
+    ],
+    expected: []
   }
 ];
 
