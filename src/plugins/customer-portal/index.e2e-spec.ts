@@ -85,7 +85,7 @@ describe(CustomerPortalSetup.name, () => {
       );
     });
     it('should setup user for portal', function() {
-      this.timeout(1000 * 60);
+      this.timeout(1000 * 120);
       this.slow(1000 * 15);
       const sourceDeployCmd = child.spawnSync('sfdx', [
         'force:source:deploy',
@@ -117,7 +117,7 @@ describe(CustomerPortalSetup.name, () => {
       );
     });
     it('should setup portal', function() {
-      this.timeout(1000 * 60);
+      this.timeout(1000 * 120);
       this.slow(1000 * 15);
       const setupPortalCmd = child.spawnSync(path.resolve('bin', 'run'), [
         'browserforce:apply',
@@ -190,7 +190,7 @@ describe(CustomerPortalAvailableCustomObjects.name, () => {
     );
   });
   it('should deploy custom object', function() {
-    this.timeout(1000 * 60);
+    this.timeout(1000 * 120);
     this.slow(1000 * 15);
     const sourceDeployCmd = child.spawnSync('sfdx', [
       'force:source:deploy',
@@ -208,7 +208,7 @@ describe(CustomerPortalAvailableCustomObjects.name, () => {
     );
   });
   it('should make custom objects available for customer portal', function() {
-    this.timeout(1000 * 60);
+    this.timeout(1000 * 120);
     this.slow(1000 * 15);
     const setupCustomObjectsCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
@@ -246,7 +246,7 @@ describe(CustomerPortalAvailableCustomObjects.name, () => {
     );
   });
   it('should make custom objects unavailable for customer portal', function() {
-    this.timeout(1000 * 60);
+    this.timeout(1000 * 120);
     this.slow(1000 * 15);
     const setupCustomObjectsCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
