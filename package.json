@@ -28,7 +28,7 @@
     "mocha": "^5",
     "nyc": "^13",
     "ts-node": "^7",
-    "typescript": "^3.1.6"
+    "typescript": "^3.2.1"
   },
   "engines": {
     "node": ">=8.0.0"
