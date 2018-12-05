@@ -275,10 +275,10 @@
   dependencies:
     "@types/events" "*"
 
-"@types/jsforce@^1.9.1":
-  version "1.9.1"
-  resolved "https://registry.yarnpkg.com/@types/jsforce/-/jsforce-1.9.1.tgz#285058a41a833e6280b865a3faaf2b8a18a7a550"
-  integrity sha512-SR8Ww8n7nA5P1voif7qjMv/vC54gaDR5A4WE414MIe/6gtCX5PMaXwJHcT+mGD2t4NJaulKlLFx2LzEQbmhX/g==
+"@types/jsforce@^1.9.2":
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/@types/jsforce/-/jsforce-1.9.2.tgz#a321866dcb7c9c4c57a1d794d54ec52e3f07ff0b"
+  integrity sha512-ZRRPNf/e44QnFI8VEsPxzrM/+Y5vx/HGsMI8qE4JvBHDkSfoFWAdZ93uW6Oh3sHmcoShexcoTH9gufihTgYBLQ==
 
 "@types/lodash@^4.14.116":
   version "4.14.117"
