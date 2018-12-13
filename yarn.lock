@@ -253,10 +253,10 @@
   resolved "https://registry.yarnpkg.com/@salesforce/ts-types/-/ts-types-0.5.0.tgz#6b36c6ec37230dab53540e2dcdfc862592d6ffc1"
   integrity sha512-yXnMh4d6pmR3UFbLvm2XUZL0eTUov9eXlXMCwvN4Llip0thlt7qRFRG01hsO+VQ/RBUbO8x1cCx3Iyx6MkWUfA==
 
-"@types/bluebird@^3.5.24":
-  version "3.5.24"
-  resolved "https://registry.yarnpkg.com/@types/bluebird/-/bluebird-3.5.24.tgz#11f76812531c14f793b8ecbf1de96f672905de8a"
-  integrity sha512-YeQoDpq4Lm8ppSBqAnAeF/xy1cYp/dMTif2JFcvmAbETMRlvKHT2iLcWu+WyYiJO3b3Ivokwo7EQca/xfLVJmg==
+"@types/bluebird@^3.5.25":
+  version "3.5.25"
+  resolved "https://registry.yarnpkg.com/@types/bluebird/-/bluebird-3.5.25.tgz#59188b871208092e37767e4b3d80c3b3eaae43bd"
+  integrity sha512-yfhIBix+AIFTmYGtkC0Bi+XGjSkOINykqKvO/Wqdz/DuXlAKK7HmhLAXdPIGsV4xzKcL3ev/zYc4yLNo+OvGaw==
 
 "@types/chai@^4.1.4":
   version "4.1.7"
