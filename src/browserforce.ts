@@ -31,18 +31,16 @@ export default class Browserforce {
       }&retURL=${encodeURIComponent(PERSONAL_INFORMATION_PATH)}`,
       { waitUntil: ['load', 'domcontentloaded', 'networkidle0'] }
     );
+    const errorHandle = await this.page.$(ERROR_DIV_SELECTOR);
+    if (errorHandle) {
+      const errorMsg = await this.page.evaluate(div => div.innerText, errorHandle);
+      if (errorMsg) {
+        throw new Error(`login failed: ${errorMsg}`);
+      }
+    }
     if (response) {
       if (response.status() === 500) {
-        const errorHandle = await this.page.$(ERROR_DIV_SELECTOR);
-        if (errorHandle) {
-          const errorMsg = this.page.evaluate(
-            div => div.innerText,
-            errorHandle
-          );
-          throw new Error(`login failed [500]: ${errorMsg}`);
-        } else {
-          throw new Error(`login failed [500]: ${response.statusText()}`);
-        }
+        throw new Error(`login failed [500]: ${response.statusText()}`);
       }
       if (response.url().indexOf('/?ec=302') > 0) {
         throw new Error(
@@ -53,10 +51,10 @@ export default class Browserforce {
             .join('/')}"}"`
         );
       }
+      return this;
     } else {
       throw new Error('login failed');
     }
-    return this;
   }
 
   public async logout() {
