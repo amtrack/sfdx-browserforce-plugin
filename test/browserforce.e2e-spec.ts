@@ -22,7 +22,7 @@ describe('Browser', () => {
       const bf = new Browserforce(fakeOrg);
       await assert.rejects(async () => {
         await bf.login();
-      }, /login failed \[302\]/);
+      }, /login failed: unauthenticated/);
       bf.logout();
     });
   });

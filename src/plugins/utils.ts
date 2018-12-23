@@ -3,13 +3,15 @@ export async function retry(
   fn,
   retriesLeft = 5,
   interval = 1000,
-  exponential = false
+  exponential = false,
+  errorType = 'Error'
 ) {
   try {
     const val = await fn();
     return val;
   } catch (error) {
-    if (retriesLeft) {
+    if (error.constructor.name === errorType && retriesLeft) {
+      console.error(`retrying ${retriesLeft} more times ...`);
       // tslint:disable-next-line no-string-based-set-timeout
       await new Promise(r => setTimeout(r, interval));
       return retry(

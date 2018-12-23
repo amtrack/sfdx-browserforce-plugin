@@ -23,7 +23,7 @@ interface CertificateRecord {
 export default class IdentityProvider extends BrowserforcePlugin {
   public async retrieve(definition?) {
     const page = this.browserforce.page;
-    await page.goto(`${this.browserforce.getInstanceUrl()}/${PATHS.EDIT_VIEW}`);
+    await this.browserforce.goto(PATHS.EDIT_VIEW);
     await page.waitFor(SELECTORS.EDIT_BUTTON);
     const disableButton = await page.$(SELECTORS.DISABLE_BUTTON);
     const certNameHandle = await page.$(SELECTORS.CERT_NAME_SPAN);
@@ -59,9 +59,7 @@ export default class IdentityProvider extends BrowserforcePlugin {
           if (!certsResponse.records.length) {
             throw new Error(`Could not find Certificate '${plan.certificate}'`);
           }
-          await page.goto(
-            `${this.browserforce.getInstanceUrl()}/${PATHS.EDIT_VIEW}`
-          );
+          await this.browserforce.goto(PATHS.EDIT_VIEW);
           await page.waitFor(SELECTORS.EDIT_BUTTON);
           await Promise.all([
             page.waitForNavigation(),
@@ -103,9 +101,7 @@ export default class IdentityProvider extends BrowserforcePlugin {
         2000
       );
     } else {
-      await page.goto(
-        `${this.browserforce.getInstanceUrl()}/${PATHS.EDIT_VIEW}`
-      );
+      await this.browserforce.goto(PATHS.EDIT_VIEW);
       await page.waitFor(SELECTORS.EDIT_BUTTON);
       await page.$(SELECTORS.DISABLE_BUTTON);
       page.on('dialog', async dialog => {

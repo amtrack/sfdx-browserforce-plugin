@@ -12,7 +12,7 @@ const SELECTORS = {
 export default class SalesforceToSalesforce extends BrowserforcePlugin {
   public async retrieve() {
     const page = this.browserforce.page;
-    await page.goto(`${this.browserforce.getInstanceUrl()}/${PATHS.BASE}`);
+    await this.browserforce.goto(PATHS.BASE);
     await page.waitFor(SELECTORS.BASE);
     const response = {};
     const inputEnable = await page.$(SELECTORS.ENABLED);
@@ -30,12 +30,10 @@ export default class SalesforceToSalesforce extends BrowserforcePlugin {
 
   public async apply(config) {
     if (config.enabled === false) {
-      throw new Error(
-        '`enabled` cannot be disabled once enabled'
-      );
+      throw new Error('`enabled` cannot be disabled once enabled');
     }
     const page = this.browserforce.page;
-    await page.goto(`${this.browserforce.getInstanceUrl()}/${PATHS.BASE}`);
+    await this.browserforce.goto(PATHS.BASE);
     await page.waitFor(SELECTORS.ENABLED);
     await page.$eval(
       SELECTORS.ENABLED,

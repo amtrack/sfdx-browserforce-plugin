@@ -3,16 +3,7 @@ import * as jsonMergePatch from 'json-merge-patch';
 import { BrowserforcePlugin } from '../../../plugin';
 
 const SELECTORS = {
-  ENABLED: '#penabled',
   SAVE_BUTTON: 'input[name="save"]',
-  ERROR_DIV: '#errorTitle',
-  ERROR_DIVS: 'div.errorMsg',
-  LIST_VIEW_PORTAL_LINKS_XPATH:
-    '//div[contains(@class,"pbBody")]//th[contains(@class,"dataCell")]//a[starts-with(@href, "/060")]',
-  PORTAL_DESCRIPTION: '#Description',
-  PORTAL_ADMIN: '#Admin',
-  PORTAL_PROFILE_MEMBERSHIP_PROFILES: 'th.dataCell',
-  PORTAL_PROFILE_MEMBERSHIP_CHECKBOXES: 'td.dataCell input',
   CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL: '#options_9',
   IFRAME: 'iframe[name^=vfFrameId]'
 };
@@ -42,7 +33,7 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
       // BUG in jsforce: query acts with scanAll:true and returns deleted CustomObjects.
       // It cannot be disabled.
       // This will throw a timeout error waitingFor('#options_9')
-      await page.goto(this.browserforce.getInstanceUrl(), {
+      await this.browserforce.goto('', {
         waitUntil: ['load', 'domcontentloaded', 'networkidle0']
       });
       // new URLs for LEX: https://help.salesforce.com/articleView?id=FAQ-for-the-New-URL-Format-for-Lightning-Experience-and-the-Salesforce-Mobile-App&type=1
@@ -68,12 +59,12 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
         }
         const classicUiPath = `${customObject.Id}/e`;
         if (isLEX) {
-          const availableForCustomerPortalUrl = `${this.browserforce.getInstanceUrl()}/lightning/setup/ObjectManager/${
+          const availableForCustomerPortalPath = `lightning/setup/ObjectManager/${
             customObject.Id
           }/edit?nodeId=ObjectManager&address=${encodeURIComponent(
             `/${classicUiPath}`
           )}`;
-          await page.goto(availableForCustomerPortalUrl, {
+          await this.browserforce.goto(availableForCustomerPortalPath, {
             waitUntil: ['load', 'domcontentloaded', 'networkidle0']
           });
           // maybe use waitForFrame https://github.com/GoogleChrome/puppeteer/issues/1361
@@ -94,8 +85,7 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
             )
           });
         } else {
-          const availableForCustomerPortalUrl = `${this.browserforce.getInstanceUrl()}/${classicUiPath}`;
-          await page.goto(availableForCustomerPortalUrl);
+          await this.browserforce.goto(classicUiPath);
           await page.waitFor(
             SELECTORS.CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL
           );
@@ -146,7 +136,7 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
   public async apply(plan) {
     const page = this.browserforce.page;
     if (plan && plan.length) {
-      await page.goto(this.browserforce.getInstanceUrl(), {
+      await this.browserforce.goto('', {
         waitUntil: ['load', 'domcontentloaded', 'networkidle0']
       });
       // new URLs for LEX: https://help.salesforce.com/articleView?id=FAQ-for-the-New-URL-Format-for-Lightning-Experience-and-the-Salesforce-Mobile-App&type=1
@@ -158,12 +148,12 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
           customObject.available ? 1 : 0
         }&retURL=/${customObject.id}`;
         if (isLEX) {
-          const availableForCustomerPortalUrl = `${this.browserforce.getInstanceUrl()}/lightning/setup/ObjectManager/${
+          const availableForCustomerPortalPath = `lightning/setup/ObjectManager/${
             customObject.id
           }/edit?nodeId=ObjectManager&address=${encodeURIComponent(
             `/${classicUiPath}`
           )}`;
-          await page.goto(availableForCustomerPortalUrl, {
+          await this.browserforce.goto(availableForCustomerPortalPath, {
             waitUntil: ['load', 'domcontentloaded', 'networkidle0']
           });
           // maybe use waitForFrame https://github.com/GoogleChrome/puppeteer/issues/1361
@@ -178,8 +168,7 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
             frame.click(SELECTORS.SAVE_BUTTON)
           ]);
         } else {
-          const availableForCustomerPortalUrl = `${this.browserforce.getInstanceUrl()}/${classicUiPath}`;
-          await page.goto(availableForCustomerPortalUrl);
+          await this.browserforce.goto(classicUiPath);
           await page.waitFor(SELECTORS.SAVE_BUTTON);
           await Promise.all([
             page.waitForNavigation(),
