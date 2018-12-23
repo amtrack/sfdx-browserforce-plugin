@@ -5,8 +5,8 @@ import Sharing from '.';
 
 describe(Sharing.name, () => {
   it('should enable', function() {
-    this.timeout(1000 * 60);
-    this.slow(1000 * 15);
+    this.timeout(1000 * 90);
+    this.slow(1000 * 30);
     const enableCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
@@ -21,8 +21,8 @@ describe(Sharing.name, () => {
     );
   });
   it('should disable', function() {
-    this.timeout(1000 * 60);
-    this.slow(1000 * 15);
+    this.timeout(1000 * 90);
+    this.slow(1000 * 30);
     const disableCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
