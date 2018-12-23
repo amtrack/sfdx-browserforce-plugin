@@ -5,19 +5,14 @@ const PATHS = {
 };
 const SELECTORS = {
   ENABLED: '#penabled',
-  ERROR_DIV: '#errorTitle',
   SAVE_BUTTON: 'input[name="save"]'
 };
 
 export default class CustomerPortalEnable extends BrowserforcePlugin {
   public async retrieve(definition?) {
-    const page = this.browserforce.page;
-    await page.goto(`${this.browserforce.getInstanceUrl()}/${PATHS.EDIT_VIEW}`);
-    await page.waitFor(SELECTORS.ENABLED);
-    const customerPortalNotAvailable = await page.$(SELECTORS.ERROR_DIV);
-    if (customerPortalNotAvailable) {
-      throw new Error('Customer Portal is not available in this org');
-    }
+    const page = await this.browserforce.openPage(PATHS.EDIT_VIEW, {
+      waitUntil: ['load', 'domcontentloaded', 'networkidle0']
+    });
     await page.waitFor(SELECTORS.ENABLED);
     const response = await page.$eval(
       SELECTORS.ENABLED,
@@ -36,11 +31,9 @@ export default class CustomerPortalEnable extends BrowserforcePlugin {
     if (plan === false) {
       throw new Error('`enabled` cannot be disabled once enabled');
     }
-    const page = this.browserforce.page;
+
     if (plan) {
-      await page.goto(
-        `${this.browserforce.getInstanceUrl()}/${PATHS.EDIT_VIEW}`
-      );
+      const page = await this.browserforce.openPage(PATHS.EDIT_VIEW);
       await page.waitFor(SELECTORS.ENABLED);
       await page.$eval(
         SELECTORS.ENABLED,

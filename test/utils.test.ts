@@ -1,17 +1,10 @@
 import * as assert from 'assert';
 import { retry, semanticallyCleanObject } from '../src/plugins/utils';
 
+class FooError extends Error {}
+
 async function sayHello() {
   return 'hi';
-}
-
-let helloCounter = 0;
-async function sayHelloOnSecondAttempt() {
-  helloCounter++;
-  if (helloCounter >= 2) {
-    return 'hi';
-  }
-  throw new Error('not yet');
 }
 
 describe('retry', () => {
@@ -19,9 +12,66 @@ describe('retry', () => {
     const res = await retry(sayHello);
     assert.deepStrictEqual(res, 'hi');
   });
-  it('should return on second try', async function() {
-    const res = await retry(sayHelloOnSecondAttempt);
+  it('should return on third try', async function() {
+    let helloCounter = 0;
+    const res = await retry(async function() {
+      helloCounter++;
+      if (helloCounter >= 3) {
+        return 'hi';
+      }
+      throw new Error('not yet');
+    });
     assert.deepStrictEqual(res, 'hi');
+    assert.deepEqual(helloCounter, 3);
+  });
+  it('should return on third try for specific error', async function() {
+    let helloCounter = 0;
+    const res = await retry(
+      async function() {
+        helloCounter++;
+        if (helloCounter >= 3) {
+          return 'hi';
+        }
+        throw new FooError('not yet');
+      },
+      5,
+      1000,
+      false,
+      FooError.prototype
+    );
+    assert.deepStrictEqual(res, 'hi');
+    assert.deepEqual(helloCounter, 3);
+  });
+  it('should retry on any Error', async function() {
+    let helloCounter = 0;
+    const res = await retry(
+      async function() {
+        helloCounter++;
+        if (helloCounter >= 3) {
+          return 'hi';
+        }
+        throw new FooError('not yet');
+      },
+      5,
+      1000,
+      false,
+      Error.prototype
+    );
+    assert.deepStrictEqual(res, 'hi');
+    assert.deepEqual(helloCounter, 3);
+  });
+  it('should throw immediately if specific error is not thrown', async function() {
+    await assert.rejects(async () => {
+      await retry(
+        async function() {
+          throw new Error('hi');
+        },
+        5,
+        1000,
+        false,
+        FooError.prototype
+      );
+    }, /hi/);
   });
 });
 

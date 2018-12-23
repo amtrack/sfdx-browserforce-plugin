@@ -1,4 +1,4 @@
-import { core } from '@salesforce/command';
+import { core, UX } from '@salesforce/command';
 import * as assert from 'assert';
 import Browserforce from '../src/browserforce';
 
@@ -8,7 +8,8 @@ describe('Browser', () => {
       this.timeout(1000 * 180);
       this.slow(1000 * 30);
       const defaultScratchOrg = await core.Org.create({});
-      const bf = new Browserforce(defaultScratchOrg);
+      const ux = await UX.create();
+      const bf = new Browserforce(defaultScratchOrg, ux.cli);
       await bf.login();
       await bf.logout();
       assert(true);
@@ -22,7 +23,7 @@ describe('Browser', () => {
       const bf = new Browserforce(fakeOrg);
       await assert.rejects(async () => {
         await bf.login();
-      }, /login failed \[302\]/);
+      }, /login failed/);
       bf.logout();
     });
   });
