@@ -1,5 +1,4 @@
 import { core, flags, SfdxCommand } from '@salesforce/command';
-import { fs } from '@salesforce/core';
 import * as path from 'path';
 import Browserforce from '../../browserforce';
 import ConfigParser from '../../config-parser';
@@ -46,7 +45,7 @@ export default class BrowserforcePlanCommand extends SfdxCommand {
 
   // tslint:disable-next-line:no-any
   public async run(): Promise<any> {
-    const definition = await fs.readJson(
+    const definition = await core.fs.readJson(
       path.resolve(this.flags.definitionfile)
     );
     const settings = ConfigParser.parse(DRIVERS, definition);
@@ -87,12 +86,12 @@ export default class BrowserforcePlanCommand extends SfdxCommand {
     }
     if (this.flags.statefile) {
       this.ux.startSpinner('writing state file');
-      await fs.writeJson(path.resolve(this.flags.statefile), state);
+      await core.fs.writeJson(path.resolve(this.flags.statefile), state);
       this.ux.stopSpinner();
     }
     if (this.flags.planfile) {
       this.ux.startSpinner('writing plan file');
-      await fs.writeJson(path.resolve(this.flags.planfile), plan);
+      await core.fs.writeJson(path.resolve(this.flags.planfile), plan);
       this.ux.stopSpinner();
     }
     return { success: true, plan };

@@ -9,7 +9,7 @@ jobs:
     - stage: e2e
       if: type != pull_request
       before_install:
-        - npm install -g sfdx-cli yarn
+        - npm install -g yarn
       before_script:
         - echo "$SFDX_AUTH_URL" > /tmp/sfdxurl
         - sfdx force:auth:sfdxurl:store -f /tmp/sfdxurl -a ci-devhub -d

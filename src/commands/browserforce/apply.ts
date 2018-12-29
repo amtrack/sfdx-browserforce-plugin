@@ -1,5 +1,4 @@
 import { core, flags, SfdxCommand } from '@salesforce/command';
-import { fs } from '@salesforce/core';
 import * as path from 'path';
 import Browserforce from '../../browserforce';
 import ConfigParser from '../../config-parser';
@@ -46,7 +45,7 @@ export default class BrowserforceApply extends SfdxCommand {
 
   // tslint:disable-next-line:no-any
   public async run(): Promise<any> {
-    const definition = await fs.readJson(
+    const definition = await core.fs.readJson(
       path.resolve(this.flags.definitionfile)
     );
     const settings = ConfigParser.parse(DRIVERS, definition);
