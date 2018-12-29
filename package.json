@@ -22,7 +22,7 @@
     "@salesforce/dev-config": "^1.4.1",
     "@types/mocha": "^5.2.5",
     "@types/node": "^10.12.18",
-    "@types/puppeteer": "^1.11.0",
+    "@types/puppeteer": "^1.11.1",
     "mocha": "^5",
     "nyc": "^13",
     "sfdx-cli": "^6.44.0",
