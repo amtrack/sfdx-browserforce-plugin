@@ -418,14 +418,14 @@
     mkdirp "0.5.1"
     sfdx-faye "^1.0.9"
 
-"@salesforce/dev-config@^1.4.1":
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/@salesforce/dev-config/-/dev-config-1.4.1.tgz#5dfc29bac8c73acfd29f0545a208f1b42b0045a9"
-  integrity sha512-zVEpIXlswea+L11wK8z040RU3QYaf0kAI05IADOuR8EGFTt4PJ0jCeqN4KASTw2SI02Ih0m+imrRO1QITDIkDA==
+"@salesforce/dev-config@^1.4.4":
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/@salesforce/dev-config/-/dev-config-1.4.4.tgz#89f8283781c525491ed4ed8c4e38ea4b94621373"
+  integrity sha512-XDyT4DqAJb+IvD6i1Ly3vuOptwsqSkvC0tnDRkGsVi0R+YinR1HU7dbaJtaw/wSDFW8Me5HKseBqcUN6tu1P3w==
   dependencies:
     tslint "^5"
     tslint-microsoft-contrib "^5"
-    typescript "^3"
+    typescript "3.1.6"
 
 "@salesforce/kit@0.13.3":
   version "0.13.3"
@@ -7765,10 +7765,10 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript@^3:
-  version "3.1.5"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.1.5.tgz#93d8b6864375325a91177372cb370ae0ae3a0703"
-  integrity sha512-muYNWV9j5+3mXoKD6oPONKuGUmYiFX14gfo9lWm9ZXRHOqVDQiB4q1CzFPbF4QLV2E9TZXH6oK55oQ94rn3PpA==
+typescript@3.1.6:
+  version "3.1.6"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.1.6.tgz#b6543a83cfc8c2befb3f4c8fba6896f5b0c9be68"
+  integrity sha512-tDMYfVtvpb96msS1lDX9MEdHrW4yOuZ4Kdc4Him9oU796XldPYF/t2+uKoX0BBa0hXXwDlqYQbXY5Rzjzc5hBA==
 
 typescript@^3.2.2:
   version "3.2.2"
