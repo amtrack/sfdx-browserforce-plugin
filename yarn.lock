@@ -585,11 +585,6 @@
     array-from "^2.1.1"
     lodash.get "^4.4.2"
 
-"@types/bluebird@^3.5.24":
-  version "3.5.24"
-  resolved "https://registry.yarnpkg.com/@types/bluebird/-/bluebird-3.5.24.tgz#11f76812531c14f793b8ecbf1de96f672905de8a"
-  integrity sha512-YeQoDpq4Lm8ppSBqAnAeF/xy1cYp/dMTif2JFcvmAbETMRlvKHT2iLcWu+WyYiJO3b3Ivokwo7EQca/xfLVJmg==
-
 "@types/chai@^4.1.4":
   version "4.1.7"
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.1.7.tgz#1b8e33b61a8c09cbe1f85133071baa0dbf9fa71a"
@@ -616,11 +611,6 @@
   version "1.9.2"
   resolved "https://registry.yarnpkg.com/@types/jsforce/-/jsforce-1.9.2.tgz#a321866dcb7c9c4c57a1d794d54ec52e3f07ff0b"
   integrity sha512-ZRRPNf/e44QnFI8VEsPxzrM/+Y5vx/HGsMI8qE4JvBHDkSfoFWAdZ93uW6Oh3sHmcoShexcoTH9gufihTgYBLQ==
-
-"@types/jsforce@^1.9.1":
-  version "1.9.1"
-  resolved "https://registry.yarnpkg.com/@types/jsforce/-/jsforce-1.9.1.tgz#285058a41a833e6280b865a3faaf2b8a18a7a550"
-  integrity sha512-SR8Ww8n7nA5P1voif7qjMv/vC54gaDR5A4WE414MIe/6gtCX5PMaXwJHcT+mGD2t4NJaulKlLFx2LzEQbmhX/g==
 
 "@types/lodash@^4.14.116":
   version "4.14.117"
