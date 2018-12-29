@@ -340,10 +340,10 @@
     "@salesforce/core" "0.16.13"
     lodash "4.17.4"
 
-"@salesforce/command@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@salesforce/command/-/command-1.1.1.tgz#7da0035a7d1d8d7ccaca4b3f9fac28b1d2dbc95b"
-  integrity sha512-KvC+q+P3FlvkjlC46lo4m4TJpCHFf5jMasqFC6eMi+RFou1+LIxj19MMV8cuoUM2xx8u79853y1YzCjeVJMnuw==
+"@salesforce/command@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@salesforce/command/-/command-1.2.0.tgz#1bfe9b35095a86861aa240d55a9bf712b810ac90"
+  integrity sha512-OVJTLTB1J2DU7BJP8A76fmAvEWl8tKQna5kkEGInIMwXc1vqUCDemxUYTDgircRBulst4Coc/BOvSw7kFXeuaw==
   dependencies:
     "@oclif/command" "^1.5.0"
     "@oclif/errors" "^1.2.0"
@@ -351,8 +351,8 @@
     "@oclif/plugin-help" "^2.1.0"
     "@oclif/test" "^1.2.0"
     "@salesforce/core" "^1.0.0"
-    "@salesforce/kit" "0.13.3"
-    "@salesforce/ts-types" "0.19.3"
+    "@salesforce/kit" "^1.0.0"
+    "@salesforce/ts-types" "^1.0.0"
     chalk "^2.4.0"
     cli-ux "^4.8.0"
 
