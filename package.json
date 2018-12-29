@@ -27,7 +27,7 @@
     "nyc": "^13",
     "sfdx-cli": "^6.44.0",
     "ts-node": "^7",
-    "typescript": "^3.2.1"
+    "typescript": "^3.2.2"
   },
   "engines": {
     "node": ">=8.0.0"
