@@ -20,7 +20,7 @@
     "@oclif/plugin-help": "^2",
     "@oclif/test": "^1",
     "@salesforce/dev-config": "^1.4.4",
-    "@types/mocha": "^5.2.5",
+    "@types/mocha": "^5.2.6",
     "@types/node": "^10.12.18",
     "@types/puppeteer": "^1.11.1",
     "mocha": "^5",
