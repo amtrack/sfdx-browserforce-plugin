@@ -253,21 +253,7 @@
     widest-line "^2.0.0"
     wrap-ansi "^3.0.1"
 
-"@oclif/plugin-help@^2", "@oclif/plugin-help@^2.1.0":
-  version "2.1.3"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-2.1.3.tgz#7ef67a0b520f63c1b4ca54f3a2c117a9852a8699"
-  integrity sha512-PLowyoPv/piB9jb2CF7UExL/uRq+mOKtNqVfJel3uD3NX2n9bKFYzo5Wxqcf9trQx/S/dI883CPRtwv5dLKP0g==
-  dependencies:
-    "@oclif/command" "^1.5.4"
-    chalk "^2.4.1"
-    indent-string "^3.2.0"
-    lodash.template "^4.4.0"
-    string-width "^2.1.1"
-    strip-ansi "^5.0.0"
-    widest-line "^2.0.0"
-    wrap-ansi "^4.0.0"
-
-"@oclif/plugin-help@^2.1.2", "@oclif/plugin-help@^2.1.4":
+"@oclif/plugin-help@^2", "@oclif/plugin-help@^2.1.2", "@oclif/plugin-help@^2.1.4":
   version "2.1.6"
   resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-2.1.6.tgz#ae14cbe2c5cd3eaf5f796d205ffbe66d3e369173"
   integrity sha512-M4kTERpPWNSM1Mga7K/zo9DWHLCVf2FRaIeXPoytmTPd+0kSvG3TR0Vc1bwx9/cxXoYyYGgEejwNlrfayr8FZw==
@@ -279,6 +265,20 @@
     string-width "^3.0.0"
     strip-ansi "^5.0.0"
     widest-line "^2.0.1"
+    wrap-ansi "^4.0.0"
+
+"@oclif/plugin-help@^2.1.0":
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-2.1.3.tgz#7ef67a0b520f63c1b4ca54f3a2c117a9852a8699"
+  integrity sha512-PLowyoPv/piB9jb2CF7UExL/uRq+mOKtNqVfJel3uD3NX2n9bKFYzo5Wxqcf9trQx/S/dI883CPRtwv5dLKP0g==
+  dependencies:
+    "@oclif/command" "^1.5.4"
+    chalk "^2.4.1"
+    indent-string "^3.2.0"
+    lodash.template "^4.4.0"
+    string-width "^2.1.1"
+    strip-ansi "^5.0.0"
+    widest-line "^2.0.0"
     wrap-ansi "^4.0.0"
 
 "@oclif/plugin-not-found@^1.2.0":
