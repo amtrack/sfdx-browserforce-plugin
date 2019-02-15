@@ -12,7 +12,7 @@
     "@oclif/errors": "^1",
     "@salesforce/command": "^1.2.0",
     "json-merge-patch": "^0.2.3",
-    "puppeteer": "^1.11.0",
+    "puppeteer": "^1.12.2",
     "tslib": "^1"
   },
   "devDependencies": {
@@ -22,7 +22,7 @@
     "@salesforce/dev-config": "^1.4.4",
     "@types/mocha": "^5.2.6",
     "@types/node": "^10.12.18",
-    "@types/puppeteer": "^1.11.1",
+    "@types/puppeteer": "^1.12.1",
     "mocha": "^5",
     "nyc": "^13",
     "sfdx-cli": "^6.53.0",
