@@ -26,7 +26,7 @@
     "mocha": "^5",
     "nyc": "^13",
     "sfdx-cli": "^6.53.0",
-    "ts-node": "^7",
+    "ts-node": "^8",
     "typescript": "^3.3.3"
   },
   "engines": {
