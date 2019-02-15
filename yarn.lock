@@ -311,7 +311,14 @@
   resolved "https://registry.yarnpkg.com/@oclif/screen/-/screen-1.0.4.tgz#b740f68609dfae8aa71c3a6cab15d816407ba493"
   integrity sha512-60CHpq+eqnTxLZQ4PGHYNwUX572hgpMHGPtTWMjdTMsAvlm69lZV/4ly6O3sAYkomo4NggGcomrDpBe34rxUqw==
 
-"@oclif/test@^1", "@oclif/test@^1.2.0":
+"@oclif/test@^1":
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/@oclif/test/-/test-1.2.4.tgz#81203074927c00b0804a171e67a45c5968813c01"
+  integrity sha512-c0khMdYBGV7t9L7SNbh84t9PmTqfaTp4Jqf3JbWu80fd+SAM03m9o+dvrgx+qv4YbSTum4GpXBZtXHq4AXsD3Q==
+  dependencies:
+    fancy-test "^1.4.3"
+
+"@oclif/test@^1.2.0":
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/@oclif/test/-/test-1.2.2.tgz#41f531145bf784b28f076d5b9ec9ca6c7bda0284"
   integrity sha512-ig8bwNRQVOqTJL03iSKzkEG0OHp4ai5uDragU1+8RHh1DDs5unF46lyd/zLkIicDZXrmEhlIuAjkBdK1apH6Bw==
@@ -518,7 +525,7 @@
     array-from "^2.1.1"
     lodash.get "^4.4.2"
 
-"@types/chai@^4.1.4":
+"@types/chai@*":
   version "4.1.7"
   resolved "https://registry.yarnpkg.com/@types/chai/-/chai-4.1.7.tgz#1b8e33b61a8c09cbe1f85133071baa0dbf9fa71a"
   integrity sha512-2Y8uPt0/jwjhQ6EiluT0XCri1Dbplr0ZxfFXUz+ye13gaqE8u5gL5ppao1JrUYr9cIip5S6MvQzBS7Kke7U9VA==
@@ -545,32 +552,27 @@
   resolved "https://registry.yarnpkg.com/@types/jsforce/-/jsforce-1.9.2.tgz#a321866dcb7c9c4c57a1d794d54ec52e3f07ff0b"
   integrity sha512-ZRRPNf/e44QnFI8VEsPxzrM/+Y5vx/HGsMI8qE4JvBHDkSfoFWAdZ93uW6Oh3sHmcoShexcoTH9gufihTgYBLQ==
 
-"@types/lodash@^4.14.116":
-  version "4.14.117"
-  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.117.tgz#695a7f514182771a1e0f4345d189052ee33c8778"
-  integrity sha512-xyf2m6tRbz8qQKcxYZa7PA4SllYcay+eh25DN3jmNYY6gSTL7Htc/bttVdkqj2wfJGbeWlQiX8pIyJpKU+tubw==
+"@types/lodash@*":
+  version "4.14.121"
+  resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.121.tgz#9327e20d49b95fc2bf983fc2f045b2c6effc80b9"
+  integrity sha512-ORj7IBWj13iYufXt/VXrCNMbUuCTJfhzme5kx9U/UtcIPdJYuvPDUAlHlbNhz/8lKCLy9XGIZnGrqXOtQbPGoQ==
 
-"@types/mocha@^5.2.5":
-  version "5.2.5"
-  resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-5.2.5.tgz#8a4accfc403c124a0bafe8a9fc61a05ec1032073"
-  integrity sha512-lAVp+Kj54ui/vLUFxsJTMtWvZraZxum3w3Nwkble2dNuV5VnPA+Mi2oGX9XYJAaIvZi3tn3cbjS/qcJXRb6Bww==
-
-"@types/mocha@^5.2.6":
+"@types/mocha@*", "@types/mocha@^5.2.6":
   version "5.2.6"
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-5.2.6.tgz#b8622d50557dd155e9f2f634b7d68fd38de5e94b"
   integrity sha512-1axi39YdtBI7z957vdqXI4Ac25e7YihYQtJa+Clnxg1zTJEaIRbndt71O3sP4GAMgiAm0pY26/b9BrY4MR/PMw==
 
-"@types/nock@^9.3.0":
-  version "9.3.0"
-  resolved "https://registry.yarnpkg.com/@types/nock/-/nock-9.3.0.tgz#9d34358fdcc08afd07144e0784ac9e951d412dd4"
-  integrity sha512-ZHf/X8rTQ5Tb1rHjxIJYqm55uO265agE3G7NoSXVa2ep+EcJXgB2fsme+zBvK7MhrxTwkC/xkB6THyv50u0MGw==
+"@types/nock@*":
+  version "9.3.1"
+  resolved "https://registry.yarnpkg.com/@types/nock/-/nock-9.3.1.tgz#7d761a43a10aebc7ec6bae29d89afc6cbffa5d30"
+  integrity sha512-eOVHXS5RnWOjTVhu3deCM/ruy9E6JCgeix2g7wpFiekQh3AaEAK1cz43tZDukKmtSmQnwvSySq7ubijCA32I7Q==
   dependencies:
     "@types/node" "*"
 
-"@types/node@*", "@types/node@^10.9.4":
-  version "10.12.1"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.12.1.tgz#da61b64a2930a80fa708e57c45cd5441eb379d5b"
-  integrity sha512-i1sl+WCX2OCHeUi9oi7PiCNUtYFrpWhpcx878vpeq/tlZTKzcFdHePlyFHVbWqeuKN0SRPl/9ZFDSTsfv9h7VQ==
+"@types/node@*":
+  version "11.9.4"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-11.9.4.tgz#ceb0048a546db453f6248f2d1d95e937a6f00a14"
+  integrity sha512-Zl8dGvAcEmadgs1tmSPcvwzO1YRsz38bVJQvH1RvRqSR9/5n61Q1ktcDL0ht3FXWR+ZpVmXVwN1LuH4Ax23NsA==
 
 "@types/node@^10.12.18":
   version "10.12.18"
@@ -584,10 +586,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/sinon@^5.0.2":
-  version "5.0.5"
-  resolved "https://registry.yarnpkg.com/@types/sinon/-/sinon-5.0.5.tgz#de600fa07eb1ec9d5f55669d5bac46a75fc88115"
-  integrity sha512-Wnuv66VhvAD2LEJfZkq8jowXGxe+gjVibeLCYcVBp7QLdw0BFx2sRkKzoiiDkYEPGg5VyqO805Rcj0stVjQwCQ==
+"@types/sinon@*":
+  version "7.0.6"
+  resolved "https://registry.yarnpkg.com/@types/sinon/-/sinon-7.0.6.tgz#dbe6c059dd4e2fd2b8e8fc3ed051d4706c84c63e"
+  integrity sha512-ldQl2p7kyCXHhr//5sQCu9jWgSiDbYuCD5dUp53r/z8T8jmgKpANpy4vqjbdho9P2ldFaQC/gpW31hch+oQ0IQ==
 
 abbrev@1:
   version "1.1.1"
@@ -2697,17 +2699,17 @@ extsprintf@^1.2.0:
   resolved "https://registry.yarnpkg.com/extsprintf/-/extsprintf-1.4.0.tgz#e2689f8f356fad62cca65a3a91c5df5f9551692f"
   integrity sha1-4mifjzVvrWLMplo6kcXfX5VRaS8=
 
-fancy-test@^1.4.1:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/fancy-test/-/fancy-test-1.4.1.tgz#c87267e01c71185ef4cd5a9cf508eb7e3adbdc94"
-  integrity sha512-PdE3epBdheFF4T2C1o/w1M0k0VBdw4qOF2juYKbNMg8LCjMBZwBSjdRe0+0d+97MPzjQaCT+87PNdTpT9Fkiiw==
+fancy-test@^1.4.1, fancy-test@^1.4.3:
+  version "1.4.3"
+  resolved "https://registry.yarnpkg.com/fancy-test/-/fancy-test-1.4.3.tgz#c08123504cc48a6dce15ac08a916d6f3e91209af"
+  integrity sha512-Lt3mcQ0jn9Kg9JDmobVb4ZANiyT4e2VC5qbQvuzJVNYXyKjSgFWKn7bZN4BKei33v5jYWx28KlbDgsxuqnBRvg==
   dependencies:
-    "@types/chai" "^4.1.4"
-    "@types/lodash" "^4.14.116"
-    "@types/mocha" "^5.2.5"
-    "@types/nock" "^9.3.0"
-    "@types/node" "^10.9.4"
-    "@types/sinon" "^5.0.2"
+    "@types/chai" "*"
+    "@types/lodash" "*"
+    "@types/mocha" "*"
+    "@types/nock" "*"
+    "@types/node" "*"
+    "@types/sinon" "*"
     lodash "^4.17.11"
     mock-stdin "^0.3.1"
     stdout-stderr "^0.1.9"
