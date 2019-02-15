@@ -47,27 +47,27 @@ export default class CustomerPortalSetup extends BrowserforcePlugin {
     for (const portal of response) {
       await page.goto(`${this.browserforce.getInstanceUrl()}/${portal.id}/e`);
       await page.waitFor(SELECTORS.PORTAL_DESCRIPTION);
-      portal.description = await page.$eval(
+      portal['description'] = await page.$eval(
         SELECTORS.PORTAL_DESCRIPTION,
         (el: HTMLInputElement) => el.value
       );
-      portal.adminUser = await page.$eval(
+      portal['adminUser'] = await page.$eval(
         `#${SELECTORS.PORTAL_ADMIN_ID}`,
         (el: HTMLInputElement) => el.value
       );
-      portal.isSelfRegistrationActivated = await page.$eval(
+      portal['isSelfRegistrationActivated'] = await page.$eval(
         `#${SELECTORS.PORTAL_IS_SELF_REGISTRATION_ACTIVATED_ID}`,
         (el: HTMLInputElement) => el.checked
       );
-      portal.selfRegUserDefaultLicense = await page.$eval(
+      portal['selfRegUserDefaultLicense'] = await page.$eval(
         `#${SELECTORS.PORTAL_SELF_REG_USER_DEFAULT_LICENSE_ID}`,
         (el: HTMLSelectElement) => el.selectedOptions[0].text
       );
-      portal.selfRegUserDefaultRole = await page.$eval(
+      portal['selfRegUserDefaultRole'] = await page.$eval(
         `#${SELECTORS.PORTAL_SELF_REG_USER_DEFAULT_ROLE_ID}`,
         (el: HTMLSelectElement) => el.selectedOptions[0].text
       );
-      portal.selfRegUserDefaultProfile = await page.$eval(
+      portal['selfRegUserDefaultProfile'] = await page.$eval(
         `#${SELECTORS.PORTAL_SELF_REG_USER_DEFAULT_PROFILE_ID}`,
         (el: HTMLSelectElement) => el.selectedOptions[0].text
       );
