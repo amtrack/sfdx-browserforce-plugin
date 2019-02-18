@@ -12,7 +12,7 @@ const SELECTORS = {
 export default class CustomerPortalEnable extends BrowserforcePlugin {
   public async retrieve(definition?) {
     const page = this.browserforce.page;
-    await page.goto(`${this.browserforce.getInstanceUrl()}/${PATHS.EDIT_VIEW}`);
+    await this.browserforce.goto(`${PATHS.EDIT_VIEW}`);
     await page.waitFor(SELECTORS.ENABLED);
     const customerPortalNotAvailable = await page.$(SELECTORS.ERROR_DIV);
     if (customerPortalNotAvailable) {
@@ -38,8 +38,8 @@ export default class CustomerPortalEnable extends BrowserforcePlugin {
     }
     const page = this.browserforce.page;
     if (plan) {
-      await page.goto(
-        `${this.browserforce.getInstanceUrl()}/${PATHS.EDIT_VIEW}`
+      await this.browserforce.goto(
+        `${PATHS.EDIT_VIEW}`
       );
       await page.waitFor(SELECTORS.ENABLED);
       await page.$eval(

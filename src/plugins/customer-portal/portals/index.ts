@@ -30,7 +30,7 @@ const SELECTORS = {
 export default class CustomerPortalSetup extends BrowserforcePlugin {
   public async retrieve(definition?) {
     const page = this.browserforce.page;
-    await page.goto(`${this.browserforce.getInstanceUrl()}/${PATHS.LIST_VIEW}`);
+    await this.browserforce.goto(`${PATHS.LIST_VIEW}`);
     await page.waitForXPath(SELECTORS.LIST_VIEW_PORTAL_LINKS_XPATH);
     const customerPortalLinks = await page.$x(
       SELECTORS.LIST_VIEW_PORTAL_LINKS_XPATH
@@ -45,7 +45,7 @@ export default class CustomerPortalSetup extends BrowserforcePlugin {
       });
     }, ...customerPortalLinks);
     for (const portal of response) {
-      await page.goto(`${this.browserforce.getInstanceUrl()}/${portal.id}/e`);
+      await this.browserforce.goto(`${portal.id}/e`);
       await page.waitFor(SELECTORS.PORTAL_DESCRIPTION);
       portal['description'] = await page.$eval(
         SELECTORS.PORTAL_DESCRIPTION,
@@ -72,8 +72,8 @@ export default class CustomerPortalSetup extends BrowserforcePlugin {
         (el: HTMLSelectElement) => el.selectedOptions[0].text
       );
       // portalProfileMemberships
-      await page.goto(
-        `${this.browserforce.getInstanceUrl()}/${
+      await this.browserforce.goto(
+        `${
           PATHS.PORTAL_PROFILE_MEMBERSHIP
         }?portalId=${portal.id}&setupid=CustomerSuccessPortalSettings`
       );
@@ -192,8 +192,8 @@ export default class CustomerPortalSetup extends BrowserforcePlugin {
             SELECTORS.PORTAL_IS_SELF_REGISTRATION_ACTIVATED_ID
           ] = portal.isSelfRegistrationActivated ? 1 : 0;
         }
-        await page.goto(
-          `${this.browserforce.getInstanceUrl()}/${
+        await this.browserforce.goto(
+          `${
             portal.id
           }/e?${queryString.stringify(urlAttributes)}`
         );
@@ -266,8 +266,8 @@ export default class CustomerPortalSetup extends BrowserforcePlugin {
           for (const member of portal.portalProfileMemberships) {
             membershipUrlAttributes[member.id] = member.active ? 1 : 0;
           }
-          await page.goto(
-            `${this.browserforce.getInstanceUrl()}/${
+          await this.browserforce.goto(
+            `${
               PATHS.PORTAL_PROFILE_MEMBERSHIP
             }?portalId=${
               portal.id
