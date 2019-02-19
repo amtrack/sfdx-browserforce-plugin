@@ -10,8 +10,8 @@ const SELECTORS = {
 
 export default class CustomerPortalEnable extends BrowserforcePlugin {
   public async retrieve(definition?) {
-    const page = this.browserforce.page;
-    await this.browserforce.goto(PATHS.EDIT_VIEW, { waitUntil: ['load', 'domcontentloaded', 'networkidle0'] });
+
+    const page = await this.browserforce.openPage(PATHS.EDIT_VIEW, { waitUntil: ['load', 'domcontentloaded', 'networkidle0'] });
     await page.waitFor(SELECTORS.ENABLED);
     const response = await page.$eval(
       SELECTORS.ENABLED,
@@ -30,9 +30,9 @@ export default class CustomerPortalEnable extends BrowserforcePlugin {
     if (plan === false) {
       throw new Error('`enabled` cannot be disabled once enabled');
     }
-    const page = this.browserforce.page;
+
     if (plan) {
-      await this.browserforce.goto(PATHS.EDIT_VIEW);
+      const page = await this.browserforce.openPage(PATHS.EDIT_VIEW);
       await page.waitFor(SELECTORS.ENABLED);
       await page.$eval(
         SELECTORS.ENABLED,

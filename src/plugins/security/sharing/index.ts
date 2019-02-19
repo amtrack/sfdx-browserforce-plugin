@@ -13,8 +13,8 @@ const SELECTORS = {
 
 export default class Sharing extends BrowserforcePlugin {
   public async retrieve(definition?) {
-    const page = this.browserforce.page;
-    await this.browserforce.goto(PATHS.BASE);
+
+    const page = await this.browserforce.openPage(PATHS.BASE);
     await page.waitFor(SELECTORS.EXTERNAL_SHARING_MODEL_BUTTON);
     const buttonOnclick = await page.$eval(
       SELECTORS.EXTERNAL_SHARING_MODEL_BUTTON,
@@ -27,8 +27,8 @@ export default class Sharing extends BrowserforcePlugin {
   }
 
   public async apply(config) {
-    const page = this.browserforce.page;
-    await this.browserforce.goto(PATHS.BASE);
+
+    const page = await this.browserforce.openPage(PATHS.BASE);
     await page.waitFor(SELECTORS.EXTERNAL_SHARING_MODEL_BUTTON);
     page.on('dialog', async dialog => {
       await dialog.accept();

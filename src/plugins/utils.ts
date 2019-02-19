@@ -18,7 +18,8 @@ export async function retry(
         fn,
         retriesLeft - 1,
         exponential ? interval * 2 : interval,
-        exponential
+        exponential,
+        errorType
       );
     } else throw error;
   }

@@ -24,13 +24,8 @@ export default class Browserforce {
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
       headless: !(process.env.BROWSER_DEBUG === 'true')
     });
-    this.page = await this.browser.newPage();
-    this.page.setDefaultNavigationTimeout(
-      parseInt(process.env.BROWSERFORCE_NAVIGATION_TIMEOUT_MS, 10) || 90000
-    );
-    await this.page.setViewport({ width: 1024, height: 768 });
     try {
-      await this.goto(
+      await this.openPage(
         `secur/frontdoor.jsp?sid=${
           this.org.getConnection().accessToken
         }&retURL=${encodeURIComponent(PERSONAL_INFORMATION_PATH)}`,
@@ -43,7 +38,6 @@ export default class Browserforce {
   }
 
   public async logout() {
-    await this.page.close();
     await this.browser.close();
     return this;
   }
@@ -81,10 +75,10 @@ export default class Browserforce {
     }
   }
 
-  public async throwPageErrors() {
-    const errorHandle = await this.page.$(ERROR_DIV_SELECTOR);
+  public async throwPageErrors(page) {
+    const errorHandle = await page.$(ERROR_DIV_SELECTOR);
     if (errorHandle) {
-      const errorMsg = await this.page.evaluate(
+      const errorMsg = await page.evaluate(
         (div: HTMLDivElement) => div.innerText,
         errorHandle
       );
@@ -93,9 +87,9 @@ export default class Browserforce {
         throw new Error(errorMsg.trim());
       }
     }
-    const errorElements = await this.page.$$(ERROR_DIVS_SELECTOR);
+    const errorElements = await page.$$(ERROR_DIVS_SELECTOR);
     if (errorElements.length) {
-      const errorMessages = await this.page.evaluate((...errorDivs) => {
+      const errorMessages = await page.evaluate((...errorDivs) => {
         return errorDivs.map((div: HTMLDivElement) => div.innerText);
       }, ...errorElements);
       const errorMsg = errorMessages
@@ -109,15 +103,20 @@ export default class Browserforce {
   }
 
   // path instead of url
-  public async goto(urlPath, options?) {
-    await this.resolveDomains();
+  public async openPage(urlPath, options?) {
     return await retry(
       async () => {
+        await this.resolveDomains();
+        const page = await this.browser.newPage();
+        page.setDefaultNavigationTimeout(
+          parseInt(process.env.BROWSERFORCE_NAVIGATION_TIMEOUT_MS, 10) || 90000
+        );
+        await page.setViewport({ width: 1024, height: 768 });
         const url = `${this.getInstanceUrl()}${urlPath}`;
-        const response = await this.page.goto(url, options);
+        const response = await page.goto(url, options);
         await this.throwResponseErrors(response);
-        // await this.throwPageErrors();
-        return response;
+        // await this.throwPageErrors(page);
+        return page;
       }, 5, 2000, true, 'MyDomainError');
   }
 

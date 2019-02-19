@@ -16,7 +16,6 @@ interface CustomObjectRecord {
 
 export default class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
   public async retrieve(definition?) {
-    const page = this.browserforce.page;
     const response = [];
     if (definition) {
       const availableCustomObjectList = definition
@@ -33,7 +32,7 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
       // BUG in jsforce: query acts with scanAll:true and returns deleted CustomObjects.
       // It cannot be disabled.
       // This will throw a timeout error waitingFor('#options_9')
-      await this.browserforce.goto('', {
+      const page = await this.browserforce.openPage('', {
         waitUntil: ['load', 'domcontentloaded', 'networkidle0']
       });
       // new URLs for LEX: https://help.salesforce.com/articleView?id=FAQ-for-the-New-URL-Format-for-Lightning-Experience-and-the-Salesforce-Mobile-App&type=1
@@ -64,12 +63,12 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
           }/edit?nodeId=ObjectManager&address=${encodeURIComponent(
             `/${classicUiPath}`
           )}`;
-          await this.browserforce.goto(availableForCustomerPortalPath, {
+          const lexPage = await this.browserforce.openPage(availableForCustomerPortalPath, {
             waitUntil: ['load', 'domcontentloaded', 'networkidle0']
           });
           // maybe use waitForFrame https://github.com/GoogleChrome/puppeteer/issues/1361
-          await page.waitFor(SELECTORS.IFRAME);
-          const frame = await page
+          await lexPage.waitFor(SELECTORS.IFRAME);
+          const frame = await lexPage
             .frames()
             .find(f => f.name().startsWith('vfFrameId'));
           await frame.waitFor(
@@ -85,15 +84,15 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
             )
           });
         } else {
-          await this.browserforce.goto(classicUiPath);
-          await page.waitFor(
+          const classicPage = await this.browserforce.openPage(classicUiPath);
+          await classicPage.waitFor(
             SELECTORS.CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL
           );
           response.push({
             id: customObject.Id,
             name: customObject.DeveloperName,
             namespacePrefix: customObject.NamespacePrefix,
-            available: await page.$eval(
+            available: await classicPage.$eval(
               SELECTORS.CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL,
               (el: HTMLInputElement) => el.checked
             )
@@ -134,9 +133,9 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
   }
 
   public async apply(plan) {
-    const page = this.browserforce.page;
+
     if (plan && plan.length) {
-      await this.browserforce.goto('', {
+      const page = await this.browserforce.openPage('', {
         waitUntil: ['load', 'domcontentloaded', 'networkidle0']
       });
       // new URLs for LEX: https://help.salesforce.com/articleView?id=FAQ-for-the-New-URL-Format-for-Lightning-Experience-and-the-Salesforce-Mobile-App&type=1
@@ -153,12 +152,12 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
           }/edit?nodeId=ObjectManager&address=${encodeURIComponent(
             `/${classicUiPath}`
           )}`;
-          await this.browserforce.goto(availableForCustomerPortalPath, {
+          const lexPage = await this.browserforce.openPage(availableForCustomerPortalPath, {
             waitUntil: ['load', 'domcontentloaded', 'networkidle0']
           });
           // maybe use waitForFrame https://github.com/GoogleChrome/puppeteer/issues/1361
-          await page.waitFor(SELECTORS.IFRAME);
-          const frame = await page
+          await lexPage.waitFor(SELECTORS.IFRAME);
+          const frame = await lexPage
             .frames()
             .find(f => f.name().startsWith('vfFrameId'));
           await frame.waitFor(SELECTORS.SAVE_BUTTON);
@@ -168,11 +167,11 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
             frame.click(SELECTORS.SAVE_BUTTON)
           ]);
         } else {
-          await this.browserforce.goto(classicUiPath);
-          await page.waitFor(SELECTORS.SAVE_BUTTON);
+          const classicPage = await this.browserforce.openPage(classicUiPath);
+          await classicPage.waitFor(SELECTORS.SAVE_BUTTON);
           await Promise.all([
-            page.waitForNavigation(),
-            page.click(SELECTORS.SAVE_BUTTON)
+            classicPage.waitForNavigation(),
+            classicPage.click(SELECTORS.SAVE_BUTTON)
           ]);
         }
       }

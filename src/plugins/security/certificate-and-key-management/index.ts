@@ -83,7 +83,7 @@ export default class CertificateAndKeyManagement extends BrowserforcePlugin {
   }
 
   public async apply(plan) {
-    const page = this.browserforce.page;
+
     if (plan.certificates) {
       for (const certificate of plan.certificates) {
         if (certificate.id) {
@@ -100,7 +100,7 @@ export default class CertificateAndKeyManagement extends BrowserforcePlugin {
           if (certificate.exportable !== undefined) {
             urlAttributes['exp'] = certificate.exportable ? 1 : 0;
           }
-          await this.browserforce.goto(
+          const page = await this.browserforce.openPage(
             `${PATHS.CERT_PREFIX}/e?${queryString.stringify(urlAttributes)}`
           );
           await page.waitFor(SELECTORS.SAVE_BUTTON);
@@ -113,7 +113,7 @@ export default class CertificateAndKeyManagement extends BrowserforcePlugin {
     }
     if (plan.importFromKeystore) {
       for (const certificate of plan.importFromKeystore) {
-        await this.browserforce.goto(`${PATHS.KEYSTORE_IMPORT}`);
+        const page = await this.browserforce.openPage(`${PATHS.KEYSTORE_IMPORT}`);
         await page.waitFor(SELECTORS.FILE_UPLOAD);
         const elementHandle = await page.$(SELECTORS.FILE_UPLOAD);
         // TODO: make relative to this.command.flags.definitionfile
@@ -136,15 +136,15 @@ export default class CertificateAndKeyManagement extends BrowserforcePlugin {
               `SELECT Id FROM Certificate WHERE DeveloperName = '${certificate.name.toLowerCase()}'`
             );
           const importedCert = certsResponse.records[0];
-          await this.browserforce.goto(
+          const certPage = await this.browserforce.openPage(
             `${importedCert.Id}/e?MasterLabel=${
               certificate.name
             }&DeveloperName=${certificate.name}`
           );
-          await page.waitFor(SELECTORS.SAVE_BUTTON);
+          await certPage.waitFor(SELECTORS.SAVE_BUTTON);
           await Promise.all([
-            page.waitForNavigation(),
-            page.click(SELECTORS.SAVE_BUTTON)
+            certPage.waitForNavigation(),
+            certPage.click(SELECTORS.SAVE_BUTTON)
           ]);
         }
       }

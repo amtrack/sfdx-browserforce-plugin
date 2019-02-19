@@ -5,23 +5,35 @@ async function sayHello() {
   return 'hi';
 }
 
-let helloCounter = 0;
-async function sayHelloOnSecondAttempt() {
-  helloCounter++;
-  if (helloCounter >= 2) {
-    return 'hi';
-  }
-  throw new Error('not yet');
-}
-
 describe('retry', () => {
   it('should return on first try', async function() {
     const res = await retry(sayHello);
     assert.deepStrictEqual(res, 'hi');
   });
-  it('should return on second try', async function() {
-    const res = await retry(sayHelloOnSecondAttempt);
+  it('should return on third try', async function() {
+    let helloCounter = 0;
+    const res = await retry(async function() {
+      helloCounter++;
+      if (helloCounter >= 3) {
+        return 'hi';
+      }
+      throw new Error('not yet');
+    });
     assert.deepStrictEqual(res, 'hi');
+    assert.deepEqual(helloCounter, 3);
+  });
+  it('should return on third try for specific error', async function() {
+    class FooError extends Error {};
+    let helloCounter = 0;
+    const res = await retry(async function() {
+      helloCounter++;
+      if (helloCounter >= 3) {
+        return 'hi';
+      }
+      throw new FooError('not yet');
+    }, 5, 1000, false, 'FooError');
+    assert.deepStrictEqual(res, 'hi');
+    assert.deepEqual(helloCounter, 3);
   });
 });
 
