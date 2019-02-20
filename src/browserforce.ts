@@ -126,7 +126,7 @@ export default class Browserforce {
           }
           throw e;
         }
-        // await this.throwPageErrors(page);
+        await this.throwPageErrors(page);
         return page;
       }, 5, 2000, true, 'RetryError');
   }
