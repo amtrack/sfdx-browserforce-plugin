@@ -5,7 +5,7 @@ import Browserforce from '../src/browserforce';
 describe('Browser', () => {
   describe('login()', () => {
     it('should successfully login with valid credentials', async function() {
-      this.timeout(1000 * 60);
+      this.timeout(1000 * 120);
       this.slow(1000 * 10);
       const defaultScratchOrg = await core.Org.create({});
       const bf = new Browserforce(defaultScratchOrg);
@@ -15,7 +15,7 @@ describe('Browser', () => {
     });
 
     it('should fail login with invalid credentials', async function() {
-      this.timeout(1000 * 60);
+      this.timeout(1000 * 120);
       this.slow(1000 * 10);
       const fakeOrg = await core.Org.create({});
       fakeOrg.getConnection().accessToken = 'invalid';
