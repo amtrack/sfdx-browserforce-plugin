@@ -3,7 +3,7 @@ import * as puppeteer from 'puppeteer';
 import { URL } from 'url';
 import { retry } from './plugins/utils';
 
-class MyDomainError extends Error {}
+class RetryError extends Error {}
 
 const PERSONAL_INFORMATION_PATH =
   'setup/personalInformationSetup.apexp?nooverride=1';
@@ -60,15 +60,14 @@ export default class Browserforce {
       throw new Error('no response');
     }
     if (!response.ok()) {
-      throw new Error(response.statusText());
+      throw new RetryError(`${response.status}: ${response.statusText()}`);
     }
     if (response.url().indexOf('login.salesforce.com') > 0 || response.url().indexOf('test.salesforce.com') > 0) {
       const redactedUrl = response
         .url()
         .replace(/sid=(.*)/, 'sid=<REDACTED>')
         .replace(/sid%3D(.*)/, 'sid=<REDACTED>');
-      await this.org.refreshAuth();
-      throw new MyDomainError(`expected instance url but got: ${redactedUrl}`);
+      throw new RetryError(`expected instance URL but got: ${redactedUrl}`);
     }
     if (response.url().indexOf('/?ec=302') > 0) {
       throw new Error('unauthenticated');
@@ -104,8 +103,13 @@ export default class Browserforce {
 
   // path instead of url
   public async openPage(urlPath, options?) {
+    let i = 0;
     return await retry(
       async () => {
+        i++;
+        if (i > 1) {
+          console.error('retrying ...');
+        }
         await this.resolveDomains();
         const page = await this.browser.newPage();
         page.setDefaultNavigationTimeout(
@@ -114,10 +118,17 @@ export default class Browserforce {
         await page.setViewport({ width: 1024, height: 768 });
         const url = `${this.getInstanceUrl()}${urlPath}`;
         const response = await page.goto(url, options);
-        await this.throwResponseErrors(response);
+        try {
+          await this.throwResponseErrors(response);
+        } catch (e) {
+          if (e instanceof RetryError) {
+            await this.org.refreshAuth();
+          }
+          throw e;
+        }
         // await this.throwPageErrors(page);
         return page;
-      }, 5, 2000, true, 'MyDomainError');
+      }, 5, 2000, true, 'RetryError');
   }
 
   public getInstanceUrl() {

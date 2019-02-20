@@ -11,7 +11,6 @@ export async function retry(
     return val;
   } catch (error) {
     if (error.constructor.name === errorType && retriesLeft) {
-      console.error(`retrying ${retriesLeft} more times ...`);
       // tslint:disable-next-line no-string-based-set-timeout
       await new Promise(r => setTimeout(r, interval));
       return retry(
