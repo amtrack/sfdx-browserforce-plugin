@@ -110,7 +110,11 @@ export default class Browserforce {
   public async openPage(urlPath, options?) {
     return await retry(
       async () => {
-        await this.resolveDomains();
+        try {
+          await this.resolveDomains();
+        } catch (error) {
+          throw new RetryError(error);
+        }
         const page = await this.browser.newPage();
         page.setDefaultNavigationTimeout(
           parseInt(process.env.BROWSERFORCE_NAVIGATION_TIMEOUT_MS, 10) || 90000
