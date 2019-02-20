@@ -4,6 +4,7 @@ import { URL } from 'url';
 import { retry } from './plugins/utils';
 
 class RetryError extends Error {}
+class FrontdoorError extends Error {}
 
 const PERSONAL_INFORMATION_PATH =
   'setup/personalInformationSetup.apexp?nooverride=1';
@@ -32,7 +33,14 @@ export default class Browserforce {
         { waitUntil: ['load', 'domcontentloaded', 'networkidle0'] }
       );
     } catch (err) {
-      throw new Error(`login failed: ${err.message}`);
+      if (err instanceof FrontdoorError) {
+        console.error('retrying without frontdoor ...');
+        await this.openPage(PERSONAL_INFORMATION_PATH,
+          { waitUntil: ['load', 'domcontentloaded', 'networkidle0'] }
+        );
+      } else {
+        throw err;
+      }
     }
     return this;
   }
@@ -43,11 +51,8 @@ export default class Browserforce {
   }
 
   public async resolveDomains() {
-    const instanceUrl = this.getInstanceUrl();
-    const myDomain = instanceUrl.match(/https?\:\/\/([^.]*)/)[1];
-    const lightningDomain = `https://${myDomain}.lightning.force.com`;
     // resolve ip addresses of both LEX and classic URLs
-    for (const url of [instanceUrl, lightningDomain]) {
+    for (const url of [this.getInstanceUrl(), this.getLightningUrl()]) {
       const resolver = await core.MyDomainResolver.create({
         url: new URL(url)
       });
@@ -62,15 +67,15 @@ export default class Browserforce {
     if (!response.ok()) {
       throw new RetryError(`${response.status}: ${response.statusText()}`);
     }
-    if (response.url().indexOf('login.salesforce.com') > 0 || response.url().indexOf('test.salesforce.com') > 0) {
+    if (!response.url().startsWith(this.getInstanceUrl()) && !response.url().startsWith(this.getLightningUrl())) {
       const redactedUrl = response
         .url()
         .replace(/sid=(.*)/, 'sid=<REDACTED>')
         .replace(/sid%3D(.*)/, 'sid=<REDACTED>');
-      throw new RetryError(`expected instance URL but got: ${redactedUrl}`);
+      throw new FrontdoorError(`expected instance or lightning URL but got: ${redactedUrl}`);
     }
     if (response.url().indexOf('/?ec=302') > 0) {
-      throw new Error('unauthenticated');
+      throw new Error('login failed');
     }
   }
 
@@ -103,29 +108,17 @@ export default class Browserforce {
 
   // path instead of url
   public async openPage(urlPath, options?) {
-    let i = 0;
     return await retry(
       async () => {
-        i++;
-        if (i > 1) {
-          console.error('retrying ...');
-        }
         await this.resolveDomains();
         const page = await this.browser.newPage();
         page.setDefaultNavigationTimeout(
           parseInt(process.env.BROWSERFORCE_NAVIGATION_TIMEOUT_MS, 10) || 90000
-        );
+          );
         await page.setViewport({ width: 1024, height: 768 });
         const url = `${this.getInstanceUrl()}${urlPath}`;
         const response = await page.goto(url, options);
-        try {
-          await this.throwResponseErrors(response);
-        } catch (e) {
-          if (e instanceof RetryError) {
-            await this.org.refreshAuth();
-          }
-          throw e;
-        }
+        await this.throwResponseErrors(response);
         // await this.throwPageErrors(page);
         return page;
       }, 5, 2000, true, 'RetryError');
@@ -133,5 +126,10 @@ export default class Browserforce {
 
   public getInstanceUrl() {
     return this.org.getConnection().instanceUrl;
+  }
+
+  private getLightningUrl() {
+    const myDomain = this.getInstanceUrl().match(/https?\:\/\/([^.]*)/)[1];
+    return `https://${myDomain}.lightning.force.com/`;
   }
 }
