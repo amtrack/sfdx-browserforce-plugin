@@ -133,7 +133,7 @@
     supports-color "^5.4.0"
     tslib "^1"
 
-"@oclif/command@^1", "@oclif/command@^1.5.4", "@oclif/command@^1.5.6", "@oclif/command@^1.5.8":
+"@oclif/command@^1", "@oclif/command@^1.5.10", "@oclif/command@^1.5.4", "@oclif/command@^1.5.8":
   version "1.5.10"
   resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.5.10.tgz#74696d9d76e1b83c13ec21df98e90ecc99f8482a"
   integrity sha512-zZdPHKj7u7d50XIcWer0x/YriL8c3NHPZCNhqA/RP62Bg9BgmvLAdn1dJ8YuxxNrhFCv+DmTyukyCYGLle+eNQ==
@@ -163,18 +163,10 @@
     debug "^4.1.0"
     semver "^5.6.0"
 
-"@oclif/config@^1":
+"@oclif/config@^1", "@oclif/config@^1.12.8":
   version "1.12.8"
   resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.12.8.tgz#801469b9174ad0aaa26ab9132c68559fce0ac866"
   integrity sha512-NNJ0lMowYwmfdoiwswfN9PKO71mGe031kgx9MVcp0nrMNzafO/Xa4Xw7tSzpeal7+wZRsrg/Xt6p4VfCK3UqLw==
-  dependencies:
-    debug "^4.1.1"
-    tslib "^1.9.3"
-
-"@oclif/config@^1.10.2", "@oclif/config@^1.8.7":
-  version "1.12.6"
-  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.12.6.tgz#dacdb8fdf4eeb3d7fde22bc5d45b5b7b8ba3fc35"
-  integrity sha512-1xrLZkx6v/g+9FCYiyqfqikn4MtlQMH5+REZ2BOfwmcj43TBStHXylp9JtMWDvoYZpJLK/wSbBSzAxMum8LJRQ==
   dependencies:
     debug "^4.1.1"
     tslib "^1.9.3"
@@ -187,20 +179,28 @@
     debug "^4.1.0"
     tslib "^1.9.3"
 
-"@oclif/dev-cli@^1":
-  version "1.21.0"
-  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.21.0.tgz#679fbf42b44129036a26b6b88ee867a6aaee5d87"
-  integrity sha512-Hgxzcn0bCFvY1y8CDy5ic0/5iEPZJwe4/xDNZ5/+qJiNQ7ShW0tsStzOjfgufGe7jwAPZQenejOgx1EPr4bV1w==
+"@oclif/config@^1.8.7":
+  version "1.12.6"
+  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.12.6.tgz#dacdb8fdf4eeb3d7fde22bc5d45b5b7b8ba3fc35"
+  integrity sha512-1xrLZkx6v/g+9FCYiyqfqikn4MtlQMH5+REZ2BOfwmcj43TBStHXylp9JtMWDvoYZpJLK/wSbBSzAxMum8LJRQ==
   dependencies:
-    "@oclif/command" "^1.5.6"
-    "@oclif/config" "^1.10.2"
+    debug "^4.1.1"
+    tslib "^1.9.3"
+
+"@oclif/dev-cli@^1":
+  version "1.21.1"
+  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.21.1.tgz#329cd0c52393bdf6a40e63d2ded5a692b4b40b09"
+  integrity sha512-cyA4OqFrU4vk+IFLi6vN3LAIlrq00aeiR2mfjPFy+u1EibGmD3cPglWv+NnvRpxKTBZS3p7DaUbcrVwg2cIgKQ==
+  dependencies:
+    "@oclif/command" "^1.5.10"
+    "@oclif/config" "^1.12.8"
     "@oclif/errors" "^1.2.2"
-    "@oclif/plugin-help" "^2.1.4"
-    cli-ux "^4.9.3"
-    debug "^4.1.0"
+    "@oclif/plugin-help" "^2.1.6"
+    cli-ux "^5.2.0"
+    debug "^4.1.1"
     fs-extra "^7.0.1"
     lodash "^4.17.11"
-    normalize-package-data "^2.4.0"
+    normalize-package-data "^2.5.0"
     qqjs "^0.3.10"
     tslib "^1.9.3"
 
@@ -261,7 +261,7 @@
     widest-line "^2.0.0"
     wrap-ansi "^3.0.1"
 
-"@oclif/plugin-help@^2", "@oclif/plugin-help@^2.1.2", "@oclif/plugin-help@^2.1.4":
+"@oclif/plugin-help@^2", "@oclif/plugin-help@^2.1.2", "@oclif/plugin-help@^2.1.6":
   version "2.1.6"
   resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-2.1.6.tgz#ae14cbe2c5cd3eaf5f796d205ffbe66d3e369173"
   integrity sha512-M4kTERpPWNSM1Mga7K/zo9DWHLCVf2FRaIeXPoytmTPd+0kSvG3TR0Vc1bwx9/cxXoYyYGgEejwNlrfayr8FZw==
@@ -1530,7 +1530,7 @@ cli-ux@^2.0.20, cli-ux@^2.0.4:
     supports-color "^5.1.0"
     ts-lodash "^4.0.8"
 
-cli-ux@^4.8.0, cli-ux@^4.9.0, cli-ux@^4.9.3:
+cli-ux@^4.8.0, cli-ux@^4.9.0:
   version "4.9.3"
   resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-4.9.3.tgz#4c3e070c1ea23eef010bbdb041192e0661be84ce"
   integrity sha512-/1owvF0SZ5Gn54cgrikJ0QskgTzeg30HGjkmjFoaHDJzAqFpuX1DBpFR8aLvsE1J5s9MgeYRENQK4BFwOag5VA==
@@ -1551,6 +1551,36 @@ cli-ux@^4.8.0, cli-ux@^4.9.0, cli-ux@^4.9.3:
     lodash "^4.17.11"
     password-prompt "^1.0.7"
     semver "^5.6.0"
+    strip-ansi "^5.0.0"
+    supports-color "^5.5.0"
+    supports-hyperlinks "^1.0.1"
+    treeify "^1.1.0"
+    tslib "^1.9.3"
+
+cli-ux@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-5.2.0.tgz#a6c170e306beece72d916cbac49e175b134b1ea2"
+  integrity sha512-Z1fkInh/k+VBpBi4UkeUGr7Ees6HX4P5+LMdgNlqkq06e7XQDmZkz65smc/PMiF5WfecD2MW58MaUbvJmS2Xww==
+  dependencies:
+    "@oclif/command" "^1.5.1"
+    "@oclif/errors" "^1.2.1"
+    "@oclif/linewrap" "^1.0.0"
+    "@oclif/screen" "^1.0.3"
+    ansi-escapes "^3.1.0"
+    ansi-styles "^3.2.1"
+    cardinal "^2.1.1"
+    chalk "^2.4.1"
+    clean-stack "^2.0.0"
+    extract-stack "^1.0.0"
+    fs-extra "^7.0.0"
+    hyperlinker "^1.0.0"
+    indent-string "^3.2.0"
+    is-wsl "^1.1.0"
+    lodash "^4.17.11"
+    natural-orderby "^1.0.2"
+    password-prompt "^1.1.0"
+    semver "^5.6.0"
+    string-width "^2.1.1"
     strip-ansi "^5.0.0"
     supports-color "^5.5.0"
     supports-hyperlinks "^1.0.1"
@@ -5342,6 +5372,11 @@ nanomatch@^1.2.9:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
+natural-orderby@^1.0.2:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/natural-orderby/-/natural-orderby-1.1.1.tgz#26a0d6bab64595297cfeaf7c2fc3e055f882b481"
+  integrity sha512-WM3K4I9eKgn8tXcx5iR4/UYXFCnKOWUvKPkWRzGS/WIHleqoVBeL+8hArQsULl0unH87c2Kgg/usM2UMAuz8gw==
+
 ncp@2.0.0, ncp@~2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ncp/-/ncp-2.0.0.tgz#195a21d6c46e361d2fb1281ba38b91e9df7bdbb3"
@@ -5453,7 +5488,7 @@ nomnom@1.6.x:
   dependencies:
     abbrev "1"
 
-normalize-package-data@^2.3.2, normalize-package-data@^2.4.0:
+normalize-package-data@^2.3.2, normalize-package-data@^2.5.0:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/normalize-package-data/-/normalize-package-data-2.5.0.tgz#e66db1838b200c1dfc233225d12cb36520e234a8"
   integrity sha512-/5CMN3T0R4XTj4DcGaexo+roZSdSFW/0AOOTROrjxzCG1wrWXEsGbRKevjlIL+ZDE4sZlJr5ED4YW0yqmkK+eA==
@@ -5857,10 +5892,18 @@ pascalcase@^0.1.1:
   resolved "https://registry.yarnpkg.com/pascalcase/-/pascalcase-0.1.1.tgz#b363e55e8006ca6fe21784d2db22bd15d7917f14"
   integrity sha1-s2PlXoAGym/iF4TS2yK9FdeRfxQ=
 
-password-prompt@^1.0.3, password-prompt@^1.0.7:
+password-prompt@^1.0.3:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/password-prompt/-/password-prompt-1.0.7.tgz#8e27748d3400bc9c9140d5ade705dfb7aeb7d91a"
   integrity sha1-jid0jTQAvJyRQNWt5wXft6632Ro=
+  dependencies:
+    ansi-escapes "^3.1.0"
+    cross-spawn "^6.0.5"
+
+password-prompt@^1.0.7, password-prompt@^1.1.0:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/password-prompt/-/password-prompt-1.1.2.tgz#85b2f93896c5bd9e9f2d6ff0627fa5af3dc00923"
+  integrity sha512-bpuBhROdrhuN3E7G/koAju0WjVw9/uQOG5Co5mokNj0MiOSBVZS1JTwM4zl55hu0WFmIEFvO9cU9sJQiBIYeIA==
   dependencies:
     ansi-escapes "^3.1.0"
     cross-spawn "^6.0.5"
