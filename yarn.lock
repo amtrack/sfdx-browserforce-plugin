@@ -188,9 +188,9 @@
     tslib "^1.9.3"
 
 "@oclif/dev-cli@^1":
-  version "1.21.1"
-  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.21.1.tgz#329cd0c52393bdf6a40e63d2ded5a692b4b40b09"
-  integrity sha512-cyA4OqFrU4vk+IFLi6vN3LAIlrq00aeiR2mfjPFy+u1EibGmD3cPglWv+NnvRpxKTBZS3p7DaUbcrVwg2cIgKQ==
+  version "1.21.2"
+  resolved "https://registry.yarnpkg.com/@oclif/dev-cli/-/dev-cli-1.21.2.tgz#66138127e8ae89390d709c1f81d488080786fbbc"
+  integrity sha512-KaZaimB9hi2E4/+5kZ3ilUOCTCp2KDmQZQ9syw1CwWNHBg1OV+UDG/28PPs/xLng687mV1kbjERT/MlkqRpG1A==
   dependencies:
     "@oclif/command" "^1.5.10"
     "@oclif/config" "^1.12.8"
@@ -199,6 +199,7 @@
     cli-ux "^5.2.0"
     debug "^4.1.1"
     fs-extra "^7.0.1"
+    github-slugger "^1.2.1"
     lodash "^4.17.11"
     normalize-package-data "^2.5.0"
     qqjs "^0.3.10"
@@ -2310,6 +2311,11 @@ ejs@~2.5.6:
   resolved "https://registry.yarnpkg.com/ejs/-/ejs-2.5.9.tgz#7ba254582a560d267437109a68354112475b0ce5"
   integrity sha512-GJCAeDBKfREgkBtgrYSf9hQy9kTb3helv0zGdzqhM7iAkW8FA/ZF97VQDbwFiwIT8MQLLOe5VlPZOEvZAqtUAQ==
 
+"emoji-regex@>=6.0.0 <=6.1.1":
+  version "6.1.1"
+  resolved "https://registry.yarnpkg.com/emoji-regex/-/emoji-regex-6.1.1.tgz#c6cd0ec1b0642e2a3c67a1137efc5e796da4f88e"
+  integrity sha1-xs0OwbBkLio8Z6ETfvxeeW2k+I4=
+
 emoji-regex@^7.0.1:
   version "7.0.3"
   resolved "https://registry.yarnpkg.com/emoji-regex/-/emoji-regex-7.0.3.tgz#933a04052860c85e83c122479c4748a8e4c72156"
@@ -3218,6 +3224,13 @@ gh-got@^6.0.0:
   dependencies:
     got "^7.0.0"
     is-plain-obj "^1.1.0"
+
+github-slugger@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/github-slugger/-/github-slugger-1.2.1.tgz#47e904e70bf2dccd0014748142d31126cfd49508"
+  integrity sha512-SsZUjg/P03KPzQBt7OxJPasGw6NRO5uOgiZ5RGXVud5iSIZ0eNZeNp5rTwCxtavrRUa/A77j8mePVc5lEvk0KQ==
+  dependencies:
+    emoji-regex ">=6.0.0 <=6.1.1"
 
 github-username@^2.0.0:
   version "2.1.0"
