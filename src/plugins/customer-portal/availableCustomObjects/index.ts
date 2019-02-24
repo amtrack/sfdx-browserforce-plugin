@@ -3,16 +3,7 @@ import * as jsonMergePatch from 'json-merge-patch';
 import { BrowserforcePlugin } from '../../../plugin';
 
 const SELECTORS = {
-  ENABLED: '#penabled',
   SAVE_BUTTON: 'input[name="save"]',
-  ERROR_DIV: '#errorTitle',
-  ERROR_DIVS: 'div.errorMsg',
-  LIST_VIEW_PORTAL_LINKS_XPATH:
-    '//div[contains(@class,"pbBody")]//th[contains(@class,"dataCell")]//a[starts-with(@href, "/060")]',
-  PORTAL_DESCRIPTION: '#Description',
-  PORTAL_ADMIN: '#Admin',
-  PORTAL_PROFILE_MEMBERSHIP_PROFILES: 'th.dataCell',
-  PORTAL_PROFILE_MEMBERSHIP_CHECKBOXES: 'td.dataCell input',
   CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL: '#options_9',
   IFRAME: 'iframe[name^=vfFrameId]'
 };

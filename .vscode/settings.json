@@ -1,5 +1,4 @@
 {
-  "prettier.singleQuote": true,
   "terminal.integrated.env.osx": {
     "SFDX_SET_CLIENT_IDS": "sfdx-vscode"
   },

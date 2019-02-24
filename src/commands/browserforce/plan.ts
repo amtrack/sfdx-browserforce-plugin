@@ -1,8 +1,6 @@
-import { core, flags, SfdxCommand } from '@salesforce/command';
+import { core } from '@salesforce/command';
 import * as path from 'path';
-import Browserforce from '../../browserforce';
-import ConfigParser from '../../config-parser';
-import * as DRIVERS from '../../plugins';
+import BrowserforceCommand from '../../browserforceCommand';
 
 core.Messages.importMessagesDirectory(__dirname);
 const messages = core.Messages.loadMessages(
@@ -10,7 +8,7 @@ const messages = core.Messages.loadMessages(
   'browserforce'
 );
 
-export default class BrowserforcePlanCommand extends SfdxCommand {
+export default class BrowserforcePlanCommand extends BrowserforceCommand {
   public static description = messages.getMessage('planCommandDescription');
 
   public static examples = [
@@ -23,50 +21,20 @@ export default class BrowserforcePlanCommand extends SfdxCommand {
   `
   ];
 
-  protected static flagsConfig = {
-    definitionfile: flags.string({
-      char: 'f',
-      description: messages.getMessage('definitionFileDescription')
-    }),
-    planfile: flags.string({
-      char: 'p',
-      name: 'plan',
-      description: messages.getMessage('planFileDescription')
-    }),
-    statefile: flags.string({
-      char: 's',
-      name: 'state',
-      description: messages.getMessage('stateFileDescription')
-    })
-  };
-
-  protected static requiresUsername = true;
-  private bf: Browserforce;
-
   // tslint:disable-next-line:no-any
   public async run(): Promise<any> {
-    const definition = await core.fs.readJson(
-      path.resolve(this.flags.definitionfile)
-    );
-    const settings = ConfigParser.parse(DRIVERS, definition);
     this.ux.log(
       `Generating plan with definition file ${
         this.flags.definitionfile
       } from org ${this.org.getUsername()}`
     );
-    this.bf = new Browserforce(this.org);
-
-    this.ux.startSpinner('logging in');
-    await this.bf.login();
-    this.ux.stopSpinner();
-
     const state = {
       settings: {}
     };
     const plan = {
       settings: {}
     };
-    for (const setting of settings) {
+    for (const setting of this.settings) {
       const driver = setting.Driver.default;
       const instance = new driver(this.bf, this.org);
       this.ux.startSpinner(`[${driver.name}] retrieving state`);
@@ -95,15 +63,5 @@ export default class BrowserforcePlanCommand extends SfdxCommand {
       this.ux.stopSpinner();
     }
     return { success: true, plan };
-  }
-
-  // tslint:disable-next-line:no-any
-  public async finally(err: any) {
-    this.ux.stopSpinner();
-    if (this.bf) {
-      this.ux.startSpinner('logging out');
-      await this.bf.logout();
-      this.ux.stopSpinner();
-    }
   }
 }

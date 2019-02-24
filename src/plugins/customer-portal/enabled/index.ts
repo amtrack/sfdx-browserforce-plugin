@@ -5,8 +5,8 @@ const PATHS = {
 };
 const SELECTORS = {
   ENABLED: '#penabled',
-  SAVE_BUTTON: 'input[name="save"]',
-  ERROR_DIV: '#errorTitle'
+  ERROR_DIV: '#errorTitle',
+  SAVE_BUTTON: 'input[name="save"]'
 };
 
 export default class CustomerPortalEnable extends BrowserforcePlugin {
