@@ -1,0 +1,14 @@
+{
+  "$schema": "../../schema.json",
+  "settings": {
+    "companySettings": {
+      "criticalUpdates": [
+        {
+          "name": "*",
+          "comment": "Deactivated by sfdx-browserforce-plugin",
+          "active": false
+        }
+      ]
+    }
+  }
+}
