@@ -41,7 +41,7 @@ export default class BrowserforceCommand extends SfdxCommand {
     );
     // TODO: use require.resolve to dynamically load plugins from npm packages
     this.settings = ConfigParser.parse(DRIVERS, definition);
-    this.bf = new Browserforce(this.org);
+    this.bf = new Browserforce(this.org, this.ux.cli);
     this.ux.startSpinner('logging in');
     await this.bf.login();
     this.ux.stopSpinner();

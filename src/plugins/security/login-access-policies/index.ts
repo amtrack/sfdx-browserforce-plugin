@@ -11,8 +11,7 @@ const SELECTORS = {
 
 export default class LoginAccessPolicies extends BrowserforcePlugin {
   public async retrieve(definition?) {
-    const page = this.browserforce.page;
-    await page.goto(`${this.browserforce.getInstanceUrl()}/${PATHS.BASE}`);
+    const page = await this.browserforce.openPage(PATHS.BASE);
     await page.waitFor(SELECTORS.ENABLED);
     const response = {
       administratorsCanLogInAsAnyUser: await page.$eval(
@@ -24,8 +23,7 @@ export default class LoginAccessPolicies extends BrowserforcePlugin {
   }
 
   public async apply(config) {
-    const page = this.browserforce.page;
-    await page.goto(`${this.browserforce.getInstanceUrl()}/${PATHS.BASE}`);
+    const page = await this.browserforce.openPage(PATHS.BASE);
     await page.waitFor(SELECTORS.ENABLED);
     await page.$eval(
       SELECTORS.ENABLED,

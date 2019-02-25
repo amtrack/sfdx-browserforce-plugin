@@ -8,8 +8,8 @@ import CustomerPortalSetup from './portals';
 describe(CustomerPortalEnable.name, () => {
   const dir = path.resolve(path.join(__dirname, 'enabled'));
   it('should enable', function() {
-    this.timeout(1000 * 60);
-    this.slow(1000 * 15);
+    this.timeout(1000 * 90);
+    this.slow(1000 * 30);
     const enableCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
@@ -22,8 +22,8 @@ describe(CustomerPortalEnable.name, () => {
     );
   });
   it('should already be enabled', function() {
-    this.timeout(1000 * 60);
-    this.slow(1000 * 15);
+    this.timeout(1000 * 90);
+    this.slow(1000 * 30);
     const enableCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
@@ -36,8 +36,8 @@ describe(CustomerPortalEnable.name, () => {
     );
   });
   it('should fail to disable', function() {
-    this.timeout(1000 * 60);
-    this.slow(1000 * 15);
+    this.timeout(1000 * 90);
+    this.slow(1000 * 30);
     const disableCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
@@ -59,8 +59,8 @@ describe(CustomerPortalSetup.name, () => {
   const dir = path.resolve(path.join(__dirname, 'portals'));
   describe('portals', () => {
     it('should fail to set portal admin user without permset', function() {
-      this.timeout(1000 * 60);
-      this.slow(1000 * 15);
+      this.timeout(1000 * 90);
+      this.slow(1000 * 30);
       const setupPortalCmd = child.spawnSync(path.resolve('bin', 'run'), [
         'browserforce:apply',
         '-f',
@@ -85,8 +85,8 @@ describe(CustomerPortalSetup.name, () => {
       );
     });
     it('should setup user for portal', function() {
-      this.timeout(1000 * 120);
-      this.slow(1000 * 15);
+      this.timeout(1000 * 180);
+      this.slow(1000 * 30);
       const sourceDeployCmd = child.spawnSync('sfdx', [
         'force:source:deploy',
         '-p',
@@ -117,8 +117,8 @@ describe(CustomerPortalSetup.name, () => {
       );
     });
     it('should setup portal', function() {
-      this.timeout(1000 * 120);
-      this.slow(1000 * 15);
+      this.timeout(1000 * 180);
+      this.slow(1000 * 30);
       const setupPortalCmd = child.spawnSync(path.resolve('bin', 'run'), [
         'browserforce:apply',
         '-f',
@@ -149,8 +149,8 @@ describe(CustomerPortalSetup.name, () => {
       );
     });
     it('should already be set up', function() {
-      this.timeout(1000 * 60);
-      this.slow(1000 * 15);
+      this.timeout(1000 * 90);
+      this.slow(1000 * 30);
       const setupPortalCmd = child.spawnSync(path.resolve('bin', 'run'), [
         'browserforce:apply',
         '-f',
@@ -172,8 +172,8 @@ describe(CustomerPortalSetup.name, () => {
 describe(CustomerPortalAvailableCustomObjects.name, () => {
   const dir = path.resolve(path.join(__dirname, 'availableCustomObjects'));
   it('should fail to make non-existent custom objects available for customer portal', function() {
-    this.timeout(1000 * 60);
-    this.slow(1000 * 15);
+    this.timeout(1000 * 90);
+    this.slow(1000 * 30);
     const setupPortalCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
@@ -190,8 +190,8 @@ describe(CustomerPortalAvailableCustomObjects.name, () => {
     );
   });
   it('should deploy custom object', function() {
-    this.timeout(1000 * 120);
-    this.slow(1000 * 15);
+    this.timeout(1000 * 180);
+    this.slow(1000 * 30);
     const sourceDeployCmd = child.spawnSync('sfdx', [
       'force:source:deploy',
       '-p',
@@ -208,8 +208,8 @@ describe(CustomerPortalAvailableCustomObjects.name, () => {
     );
   });
   it('should make custom objects available for customer portal', function() {
-    this.timeout(1000 * 120);
-    this.slow(1000 * 15);
+    this.timeout(1000 * 180);
+    this.slow(1000 * 30);
     const setupCustomObjectsCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
@@ -228,8 +228,8 @@ describe(CustomerPortalAvailableCustomObjects.name, () => {
     );
   });
   it('should have applied checkbox available for customer portal', function() {
-    this.timeout(1000 * 60);
-    this.slow(1000 * 15);
+    this.timeout(1000 * 90);
+    this.slow(1000 * 30);
     const setupCustomObjectsCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
@@ -246,8 +246,8 @@ describe(CustomerPortalAvailableCustomObjects.name, () => {
     );
   });
   it('should make custom objects unavailable for customer portal', function() {
-    this.timeout(1000 * 120);
-    this.slow(1000 * 15);
+    this.timeout(1000 * 180);
+    this.slow(1000 * 30);
     const setupCustomObjectsCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',

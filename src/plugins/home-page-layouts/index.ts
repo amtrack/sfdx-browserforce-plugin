@@ -22,8 +22,7 @@ interface HomePageLayoutRecord {
 
 export default class HomePageLayouts extends BrowserforcePlugin {
   public async retrieve(definition?) {
-    const page = this.browserforce.page;
-    await page.goto(`${this.browserforce.getInstanceUrl()}/${PATHS.BASE}`);
+    const page = await this.browserforce.openPage(PATHS.BASE);
     await page.waitFor(SELECTORS.BASE);
     const profiles = await page.$$eval(
       'table.detailList tbody tr td label',
@@ -89,8 +88,8 @@ export default class HomePageLayouts extends BrowserforcePlugin {
       .tooling.query<HomePageLayoutRecord>(
         `SELECT Id, Name FROM HomePageLayout WHERE Name IN (${layoutsList})`
       );
-    const page = this.browserforce.page;
-    await page.goto(`${this.browserforce.getInstanceUrl()}/${PATHS.BASE}`);
+
+    const page = await this.browserforce.openPage(PATHS.BASE);
     await page.waitFor(SELECTORS.BASE);
     for (const assignment of config.homePageLayoutAssignments) {
       const homePageLayoutName = assignment.layout;
