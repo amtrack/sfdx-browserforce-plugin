@@ -56,7 +56,9 @@ export default class Browserforce {
       throw new Error('no response');
     }
     if (!response.ok()) {
-      throw new RetryableError(`${response.status()}: ${response.statusText()}`);
+      throw new RetryableError(
+        `${response.status()}: ${response.statusText()}`
+      );
     }
     if (response.url().indexOf('/?ec=302') > 0) {
       if (
