@@ -1,11 +1,7 @@
 import { core } from '@salesforce/command';
+import * as pRetry from 'p-retry';
 import * as puppeteer from 'puppeteer';
 import { URL } from 'url';
-import { retry } from './plugins/utils';
-
-class FrontdoorRedirectError extends Error {}
-class LoginError extends Error {}
-class RetryableError extends Error {}
 
 const PERSONAL_INFORMATION_PATH =
   'setup/personalInformationSetup.apexp?nooverride=1';
@@ -28,10 +24,11 @@ export default class Browserforce {
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
       headless: !(process.env.BROWSER_DEBUG === 'true')
     });
-    await this.retryLogin(
+    await this.openPage(
       `secur/frontdoor.jsp?sid=${
         this.org.getConnection().accessToken
-      }&retURL=${encodeURIComponent(PERSONAL_INFORMATION_PATH)}`
+      }&retURL=${encodeURIComponent(PERSONAL_INFORMATION_PATH)}`,
+      { waitUntil: ['load', 'domcontentloaded', 'networkidle0'] }
     );
     return this;
   }
@@ -48,32 +45,6 @@ export default class Browserforce {
         url: new URL(url)
       });
       await resolver.resolve();
-    }
-  }
-
-  public async throwResponseErrors(response) {
-    if (!response) {
-      throw new Error('no response');
-    }
-    if (!response.ok()) {
-      throw new RetryableError(
-        `${response.status()}: ${response.statusText()}`
-      );
-    }
-    if (response.url().indexOf('/?ec=302') > 0) {
-      if (
-        !response.url().startsWith(this.getInstanceUrl()) &&
-        !response.url().startsWith(this.getLightningUrl())
-      ) {
-        const redactedUrl = response
-          .url()
-          .replace(/sid=(.*)/, 'sid=<REDACTED>')
-          .replace(/sid%3D(.*)/, 'sid=<REDACTED>');
-        throw new FrontdoorRedirectError(
-          `expected instance or lightning URL but got: ${redactedUrl}`
-        );
-      }
-      throw new LoginError('login failed');
     }
   }
 
@@ -106,13 +77,9 @@ export default class Browserforce {
 
   // path instead of url
   public async openPage(urlPath, options?) {
-    const result = await retry(
+    const result = await pRetry(
       async () => {
-        try {
-          await this.resolveDomains();
-        } catch (error) {
-          throw new RetryableError(error);
-        }
+        await this.resolveDomains();
         const page = await this.browser.newPage();
         page.setDefaultNavigationTimeout(
           parseInt(process.env.BROWSERFORCE_NAVIGATION_TIMEOUT_MS, 10) || 90000
@@ -120,15 +87,48 @@ export default class Browserforce {
         await page.setViewport({ width: 1024, height: 768 });
         const url = `${this.getInstanceUrl()}/${urlPath}`;
         const response = await page.goto(url, options);
-        await this.throwResponseErrors(response);
+        if (response) {
+          if (!response.ok()) {
+            throw new Error(`${response.status()}: ${response.statusText()}`);
+          }
+          if (response.url().indexOf('/?ec=302') > 0) {
+            if (
+              response.url().startsWith(this.getInstanceUrl()) ||
+              response.url().startsWith(this.getLightningUrl())
+            ) {
+              // the url looks ok so it is a login error
+              throw new pRetry.AbortError('login failed');
+            } else {
+              // the url is not as expected
+              const redactedUrl = response
+                .url()
+                .replace(/sid=(.*)/, 'sid=<REDACTED>')
+                .replace(/sid%3D(.*)/, 'sid=<REDACTED>');
+              if (this.logger) {
+                this.logger.warn(
+                  `expected ${this.getInstanceUrl()} or ${this.getLightningUrl()} but got: ${redactedUrl}`
+                );
+                this.logger.warn('refreshing auth...');
+              }
+              await this.org.refreshAuth();
+              throw new Error('redirection failed');
+            }
+          }
+        }
         // await this.throwPageErrors(page);
         return page;
       },
-      5,
-      4000,
-      true,
-      RetryableError.prototype,
-      this.logger
+      {
+        onFailedAttempt: error => {
+          if (this.logger) {
+            this.logger.warn(
+              `retrying ${error.retriesLeft} more time(s) because of "${error}"`
+            );
+          }
+        },
+        retries: 4,
+        minTimeout: 4 * 1000
+      }
     );
     return result;
   }
@@ -140,45 +140,5 @@ export default class Browserforce {
   private getLightningUrl() {
     const myDomain = this.getInstanceUrl().match(/https?\:\/\/([^.]*)/)[1];
     return `https://${myDomain}.lightning.force.com`;
-  }
-
-  private async retryLogin(
-    loginUrl,
-    refreshAuthLeft = 1,
-    frontdoorWorkaroundLeft = 1
-  ) {
-    try {
-      await this.openPage(loginUrl, {
-        waitUntil: ['load', 'domcontentloaded', 'networkidle0']
-      });
-    } catch (err) {
-      if (err instanceof LoginError && refreshAuthLeft > 0) {
-        if (this.logger) {
-          this.logger.warn(`retrying with refreshed auth because of "${err}"`);
-        }
-        await this.org.refreshAuth();
-        await this.retryLogin(
-          loginUrl,
-          refreshAuthLeft - 1,
-          frontdoorWorkaroundLeft
-        );
-      } else if (
-        err instanceof FrontdoorRedirectError &&
-        frontdoorWorkaroundLeft > 0
-      ) {
-        if (this.logger) {
-          this.logger.warn(
-            `retrying open page with instance url because of "${err}"`
-          );
-        }
-        await this.retryLogin(
-          PERSONAL_INFORMATION_PATH,
-          refreshAuthLeft,
-          frontdoorWorkaroundLeft - 1
-        );
-      } else {
-        throw err;
-      }
-    }
   }
 }

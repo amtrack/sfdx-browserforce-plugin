@@ -1,7 +1,8 @@
 import { SalesforceId } from 'jsforce';
 import * as jsonMergePatch from 'json-merge-patch';
+import * as pRetry from 'p-retry';
 import { BrowserforcePlugin } from '../../../plugin';
-import { removeNullValues, retry } from '../../utils';
+import { removeNullValues } from '../../utils';
 
 const PATHS = {
   EDIT_VIEW: 'setup/secur/idp/IdpPage.apexp'
@@ -45,7 +46,7 @@ export default class IdentityProvider extends BrowserforcePlugin {
   public async apply(plan) {
     if (plan.enabled && plan.certificate && plan.certificate !== '') {
       // wait for cert to become available in Identity Provider UI
-      await retry(
+      await pRetry(
         async () => {
           const certsResponse = await this.org
             .getConnection()
@@ -95,8 +96,10 @@ export default class IdentityProvider extends BrowserforcePlugin {
             page.click(SELECTORS.SAVE_BUTTON)
           ]);
         },
-        5,
-        2000
+        {
+          retries: 5,
+          minTimeout: 2 * 1000
+        }
       );
     } else {
       const page = await this.browserforce.openPage(PATHS.EDIT_VIEW);
