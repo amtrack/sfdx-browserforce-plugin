@@ -106,7 +106,7 @@ export default class Browserforce {
 
   // path instead of url
   public async openPage(urlPath, options?) {
-    return await retry(
+    const result = await retry(
       async () => {
         try {
           await this.resolveDomains();
@@ -130,6 +130,7 @@ export default class Browserforce {
       RetryableError.prototype,
       this.logger
     );
+    return result;
   }
 
   public getInstanceUrl() {
