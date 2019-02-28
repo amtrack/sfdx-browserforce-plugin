@@ -1,36 +1,3 @@
-// source: https://gitlab.com/snippets/1775781 Daniel Iñigo <danielinigobanos@gmail.com>
-export async function retry(
-  fn,
-  retriesLeft = 5,
-  interval = 1000,
-  exponential = false,
-  errorPrototype = Error.prototype,
-  logger?
-) {
-  try {
-    const val = await fn();
-    return val;
-  } catch (error) {
-    if (errorPrototype.isPrototypeOf(error) && retriesLeft) {
-      if (logger) {
-        logger.warn(
-          `retrying ${retriesLeft} more time(s) because of "${error}"`
-        );
-      }
-      // tslint:disable-next-line no-string-based-set-timeout
-      await new Promise(r => setTimeout(r, interval));
-      return retry(
-        fn,
-        retriesLeft - 1,
-        exponential ? interval * 2 : interval,
-        exponential,
-        errorPrototype,
-        logger
-      );
-    } else throw error;
-  }
-}
-
 export function removeEmptyValues(obj) {
   if (!obj) {
     obj = {};
