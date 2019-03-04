@@ -13,6 +13,7 @@
     "@salesforce/command": "^1.2.0",
     "json-merge-patch": "^0.2.3",
     "p-retry": "^3.0.1",
+    "multimatch": "^3.0.0",
     "puppeteer": "^1.12.2",
     "tslib": "^1"
   },
@@ -27,6 +28,7 @@
     "mocha": "^6",
     "nyc": "^13",
     "sfdx-cli": "^6.54.4",
+    "tmp": "^0.0.33",
     "ts-node": "^8",
     "typescript": "^3.3.3333"
   },

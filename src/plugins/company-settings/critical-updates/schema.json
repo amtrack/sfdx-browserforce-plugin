@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/company-settings/critical-updates/schema.json",
+  "title": "Critical Updates",
+  "type": "array",
+  "items": { "$ref": "#/definitions/criticalUpdate" },
+  "default": [],
+  "description": "Examples:\n - activate all but 'Update 2': [{\"name\": [\"*\", \"!Update 2\"], \"active\": true]\n - activate only 'Update 2': [{\"name\": \"!Update 2\", \"active\": true]",
+  "definitions": {
+    "criticalUpdate": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": ["string", "array"],
+          "$comment": "Name or Array of Glob Patterns. Note: This is in the language of the user."
+        },
+        "active": { "type": "boolean" },
+        "comment": { "type": "string" }
+      },
+      "required": ["name", "active"]
+    }
+  }
+}
