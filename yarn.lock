@@ -456,10 +456,10 @@
     yeoman-generator "^3.1.1"
     yosay "^2.0.2"
 
-"@salesforce/sfdx-trust@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@salesforce/sfdx-trust/-/sfdx-trust-2.0.1.tgz#9d23354ec66a18dad04ba778e2c15aa30b52fd1d"
-  integrity sha512-Fki9huzG9WiAzwgkyAAoSyGTwRrvwmNThxMjPr4vBNEDUvUwqoPQY3mCCtW2dL0j6gRxxlSTnc2/g0luCkDvQQ==
+"@salesforce/sfdx-trust@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@salesforce/sfdx-trust/-/sfdx-trust-2.1.0.tgz#5dddce6a0f0b4bbd734f9ac227773f8f7989782e"
+  integrity sha512-WeJIrWEMAxCGcUYHTopyA5zVylyEvDQez+Zc6KfAcpDAvxjAN73u9pCK8Hz4TltwK0EPNX1psWeUynIAujmAqw==
   dependencies:
     "@oclif/config" "^1"
     "@oclif/errors" "^1"
@@ -3005,10 +3005,10 @@ for-in@^1.0.2:
   resolved "https://registry.yarnpkg.com/for-in/-/for-in-1.0.2.tgz#81068d295a8142ec0ac726c6e2200c30fb6d5e80"
   integrity sha1-gQaNKVqBQuwKxybG4iAMMPttXoA=
 
-force-language-services@45.6.0:
-  version "45.6.0"
-  resolved "https://registry.yarnpkg.com/force-language-services/-/force-language-services-45.6.0.tgz#799a368f1f3a8767d3cde1b4eae4e2d00cf0e6d1"
-  integrity sha512-kcaH4pJKId02qb09UFRX8ne5rv/FWjFb+YOgKYNwAHlCOGiq7l1pnzeUGgr1Fjwfr1V0JEq2FXo/4TAJmOs24w==
+force-language-services@45.8.0:
+  version "45.8.0"
+  resolved "https://registry.yarnpkg.com/force-language-services/-/force-language-services-45.8.0.tgz#bbebec03d7390f639d964471d3984907739d6894"
+  integrity sha512-h4fA3cEjnOuCuJZGasPVwxMKgwP5Xruz8kOKf1sxaqfBeNxcoEuk1AeJT7fo3phWnf9sBX+KRHI2PefQsB1BfA==
   dependencies:
     fs-extra "1.0.0"
     heroku-cli-util "6.0.11"
@@ -6788,10 +6788,10 @@ salesforce-alm@45.3.0:
     xml2js "0.4.17"
     xmldom-sfdx-encoding "0.1.29"
 
-salesforce-alm@45.5.0:
-  version "45.5.0"
-  resolved "https://registry.yarnpkg.com/salesforce-alm/-/salesforce-alm-45.5.0.tgz#772800a5bf00bd7fa842d900aecf546c31c9afb2"
-  integrity sha512-nEIgwO/zR6RsidGeH6qCQoAmQ0JgNzXNJdaLcp82m74VPEqTsXVKQJ9sr7x8hgPCOevG572Q3yQHVW5KNGwrQQ==
+salesforce-alm@45.8.0:
+  version "45.8.0"
+  resolved "https://registry.yarnpkg.com/salesforce-alm/-/salesforce-alm-45.8.0.tgz#a2a1caf57dcee231ac2dca3488519acb759e1b90"
+  integrity sha512-J+WTI8hDIeCURuH1DNMawGLc2DcaptALPWEbxI5cSZuJIYsX0ll6EKaRjN8W9IA7jLn471wQVxLPlH6naFjyoQ==
   dependencies:
     "@oclif/errors" "^1.2.0"
     "@salesforce/core" "^1.1.1"
@@ -6846,13 +6846,13 @@ salesforce-lightning-cli@1.5.2:
     heroku-cli-util "^5.8.1"
     object-assign "^4.0.1"
 
-salesforcedx@45.3.4:
-  version "45.3.4"
-  resolved "https://registry.yarnpkg.com/salesforcedx/-/salesforcedx-45.3.4.tgz#3843e1e57d3589f270969ed8fcbd92030e3e710a"
-  integrity sha512-r3+oWvGVyHQPWlC6fOJV+clcEkgHR8jHbI0KjyhSgMk/FpcI/8hPx4PA2StjO0yMxB00kuF+RP9PewqmuAS1sg==
+salesforcedx@45.5.0:
+  version "45.5.0"
+  resolved "https://registry.yarnpkg.com/salesforcedx/-/salesforcedx-45.5.0.tgz#edea0a9986f9ac219fcafb3c65e7ad0c898bf8a2"
+  integrity sha512-8lg8RGLDmZrh/4Mbo3T6Hz5oRhV8df3v7Gv5d6qZp3AIZYbHcoXxzVb4asAfamlb22brA9w6pwbAARF+5eEi5w==
   dependencies:
-    force-language-services "45.6.0"
-    salesforce-alm "45.5.0"
+    force-language-services "45.8.0"
+    salesforce-alm "45.8.0"
     salesforce-lightning-cli "1.5.2"
 
 samsam@1.3.0:
@@ -6968,15 +6968,15 @@ setprototypeof@1.1.0:
   resolved "https://registry.yarnpkg.com/setprototypeof/-/setprototypeof-1.1.0.tgz#d0bd85536887b6fe7c0d818cb962d9d91c54e656"
   integrity sha512-BvE/TwpZX4FXExxOxZyRGQQv651MSwmWKZGqvmPcRIjDqWub67kTKuIMx43cZZrS/cBBzwBcNDWoFxt2XEFIpQ==
 
-sfdx-cli@^6.54.4:
-  version "6.54.4"
-  resolved "https://registry.yarnpkg.com/sfdx-cli/-/sfdx-cli-6.54.4.tgz#6bb69743b3adaa465d98c17553425bec4599b439"
-  integrity sha512-Se/dMKUYiBkHni4tzRxQh/zWhW6uhMNE60Ym7rWv49/z3bojgDaPOPFUK0C8Emy37kyK+yrA0ag+Gt97EYrUqg==
+sfdx-cli@^6.56.0:
+  version "6.56.0"
+  resolved "https://registry.yarnpkg.com/sfdx-cli/-/sfdx-cli-6.56.0.tgz#cb199cf7d3d9718b1e270c10f145a12d0bd8b036"
+  integrity sha512-cHujV7hFHWt6GPBPwF64/OOTVfrCC//7stfBvXvpJxizZow5ZlJJ80K80Vilos1JWHed+m3Z7BzC1qBJdyCgQA==
   dependencies:
     "@salesforce/kit" "0.13.3"
     "@salesforce/lazy-require" "0.0.4"
     "@salesforce/plugin-generator" "^1.0.1"
-    "@salesforce/sfdx-trust" "^2.0.1"
+    "@salesforce/sfdx-trust" "^2.1.0"
     "@salesforce/ts-types" "0.19.3"
     ansi-escapes "3.0.0"
     cli-engine "4.7.6"
@@ -6988,7 +6988,7 @@ sfdx-cli@^6.54.4:
     fs-extra "4.0.2"
     lodash "4.17.4"
     request "2.83.0"
-    salesforcedx "45.3.4"
+    salesforcedx "45.5.0"
 
 sfdx-faye@^1.0.8, sfdx-faye@^1.0.9:
   version "1.0.9"
