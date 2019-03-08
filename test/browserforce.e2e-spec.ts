@@ -67,4 +67,34 @@ describe('Browser', () => {
       await bf.logout();
     });
   });
+  describe('throwPageErrors()', () => {
+    it('should throw the page error on internal errors', async function() {
+      this.timeout(1000 * 300);
+      this.slow(1000 * 30);
+      const defaultScratchOrg = await core.Org.create({});
+      const ux = await UX.create();
+      const bf = new Browserforce(defaultScratchOrg, ux.cli);
+      await bf.login();
+      process.env.BROWSERFORCE_RETRY_TIMEOUT_MS = '0';
+      await assert.rejects(async () => {
+        await bf.openPage(
+          '_ui/common/config/field/StandardFieldAttributes/d?type=Account&id=INVALID_Name'
+        );
+      }, /Insufficient Privileges/);
+      delete process.env.BROWSERFORCE_RETRY_TIMEOUT_MS;
+      await bf.logout();
+    });
+    it('should not throw any error opening a page', async function() {
+      this.timeout(1000 * 300);
+      this.slow(1000 * 30);
+      const defaultScratchOrg = await core.Org.create({});
+      const ux = await UX.create();
+      const bf = new Browserforce(defaultScratchOrg, ux.cli);
+      await bf.login();
+      await bf.openPage(
+        '_ui/common/config/field/StandardFieldAttributes/d?type=Account&id=Name'
+      );
+      await bf.logout();
+    });
+  });
 });
