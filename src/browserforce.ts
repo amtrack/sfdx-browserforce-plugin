@@ -1,7 +1,8 @@
 import { core } from '@salesforce/command';
 import pRetry, { AbortError } from 'p-retry';
 import * as puppeteer from 'puppeteer';
-import { URL } from 'url';
+import * as querystring from 'querystring';
+import { parse, URL } from 'url';
 
 const PERSONAL_INFORMATION_PATH =
   'setup/personalInformationSetup.apexp?nooverride=1';
@@ -86,6 +87,7 @@ export default class Browserforce {
         );
         await page.setViewport({ width: 1024, height: 768 });
         const url = `${this.getInstanceUrl()}/${urlPath}`;
+        const parsedUrl = parse(urlPath);
         const response = await page.goto(url, options);
         if (response) {
           if (!response.ok()) {
@@ -98,6 +100,16 @@ export default class Browserforce {
             ) {
               // the url looks ok so it is a login error
               throw new AbortError('login failed');
+            } else if (
+              parsedUrl.pathname === 'secur/frontdoor.jsp' &&
+              parsedUrl.query.includes('retURL=')
+            ) {
+              if (this.logger) {
+                this.logger.warn('trying frontdoor workaround...');
+              }
+              // try opening page directly without frontdoor as login might have already been successful
+              urlPath = querystring.parse(parsedUrl.query).retURL;
+              throw new Error('frontdoor error');
             } else {
               // the url is not as expected
               const redactedUrl = response
