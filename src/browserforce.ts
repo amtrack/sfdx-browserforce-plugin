@@ -145,12 +145,15 @@ export default class Browserforce {
     return result;
   }
 
+  public getMyDomain() {
+    return this.getInstanceUrl().match(/https?\:\/\/([^.]*)/)[1];
+  }
+
   public getInstanceUrl() {
     return this.org.getConnection().instanceUrl;
   }
 
-  private getLightningUrl() {
-    const myDomain = this.getInstanceUrl().match(/https?\:\/\/([^.]*)/)[1];
-    return `https://${myDomain}.lightning.force.com`;
+  public getLightningUrl() {
+    return `https://${this.getMyDomain()}.lightning.force.com`;
   }
 }
