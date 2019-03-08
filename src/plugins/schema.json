@@ -7,6 +7,9 @@
   "properties": {
     "settings": {
       "properties": {
+        "communities": {
+          "$ref": "./communities/schema.json"
+        },
         "companySettings": {
           "$ref": "./company-settings/schema.json"
         },
