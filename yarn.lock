@@ -173,15 +173,7 @@
     debug "^4.1.1"
     semver "^5.6.0"
 
-"@oclif/config@^1":
-  version "1.12.8"
-  resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.12.8.tgz#801469b9174ad0aaa26ab9132c68559fce0ac866"
-  integrity sha512-NNJ0lMowYwmfdoiwswfN9PKO71mGe031kgx9MVcp0nrMNzafO/Xa4Xw7tSzpeal7+wZRsrg/Xt6p4VfCK3UqLw==
-  dependencies:
-    debug "^4.1.1"
-    tslib "^1.9.3"
-
-"@oclif/config@^1.12.8":
+"@oclif/config@^1", "@oclif/config@^1.12.8":
   version "1.12.9"
   resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.12.9.tgz#60e666135938e5c9159fbd60675606546d2d7c30"
   integrity sha512-kirFdwOPHmcKPJWcTvM8Xhz30i/usC0rITfENshIvFZySWigpWaj3nLWMbu482EOcxzUqjaz55kSHv6jDFjc5w==
