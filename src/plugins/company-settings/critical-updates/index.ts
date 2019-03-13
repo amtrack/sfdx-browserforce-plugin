@@ -86,7 +86,7 @@ export default class CriticalUpdates extends BrowserforcePlugin {
       await page.waitFor(buttonSelector);
       const isDisabled = await page.$eval(
         buttonSelector,
-        button => button.disabled
+        (button: HTMLButtonElement) => button.disabled
       );
       if (isDisabled) {
         // TODO: use this.logger.warn once plugins have loggers
