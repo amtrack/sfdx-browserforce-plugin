@@ -1,5 +1,5 @@
 import { core } from '@salesforce/command';
-import * as pRetry from 'p-retry';
+import pRetry, { AbortError } from 'p-retry';
 import * as puppeteer from 'puppeteer';
 import { URL } from 'url';
 
@@ -97,7 +97,7 @@ export default class Browserforce {
               response.url().startsWith(this.getLightningUrl())
             ) {
               // the url looks ok so it is a login error
-              throw new pRetry.AbortError('login failed');
+              throw new AbortError('login failed');
             } else {
               // the url is not as expected
               const redactedUrl = response
