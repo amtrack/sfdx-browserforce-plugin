@@ -10,7 +10,7 @@
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/errors": "^1",
-    "@salesforce/command": "^1.2.0",
+    "@salesforce/command": "^1.3.1",
     "json-merge-patch": "^0.2.3",
     "p-retry": "^4.0.0",
     "multimatch": "^3.0.0",
