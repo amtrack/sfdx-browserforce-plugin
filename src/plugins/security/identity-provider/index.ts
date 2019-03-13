@@ -1,6 +1,6 @@
 import { SalesforceId } from 'jsforce';
 import * as jsonMergePatch from 'json-merge-patch';
-import * as pRetry from 'p-retry';
+import pRetry from 'p-retry';
 import { BrowserforcePlugin } from '../../../plugin';
 import { removeNullValues } from '../../utils';
 
