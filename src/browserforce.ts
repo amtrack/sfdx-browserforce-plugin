@@ -9,6 +9,7 @@ const PERSONAL_INFORMATION_PATH =
 
 const ERROR_DIV_SELECTOR = '#errorTitle';
 const ERROR_DIVS_SELECTOR = 'div.errorMsg';
+const VF_IFRAME_SELECTOR = 'iframe[name^=vfFrameId]';
 
 export default class Browserforce {
   public org: core.Org;
@@ -145,12 +146,29 @@ export default class Browserforce {
     return result;
   }
 
+  // If LEX is enabled, the classic url will be opened in an iframe.
+  // Wait for either the selectorOrFunctionOrTimeout in the page or the selectorOrFunctionOrTimeout in the iframe.
+  // returns the page or the frame
+  public async waitForInFrameOrPage(page, selectorOrFunctionOrTimeout) {
+    await Promise.race([
+      page.waitFor(selectorOrFunctionOrTimeout),
+      page.waitFor(VF_IFRAME_SELECTOR)
+    ]);
+    const frameOrPage =
+      (await page.frames().find(f => f.name().startsWith('vfFrameId'))) || page;
+    await frameOrPage.waitFor(selectorOrFunctionOrTimeout);
+    return frameOrPage;
+  }
+
+  public getMyDomain() {
+    return this.getInstanceUrl().match(/https?\:\/\/([^.]*)/)[1];
+  }
+
   public getInstanceUrl() {
     return this.org.getConnection().instanceUrl;
   }
 
-  private getLightningUrl() {
-    const myDomain = this.getInstanceUrl().match(/https?\:\/\/([^.]*)/)[1];
-    return `https://${myDomain}.lightning.force.com`;
+  public getLightningUrl() {
+    return `https://${this.getMyDomain()}.lightning.force.com`;
   }
 }
