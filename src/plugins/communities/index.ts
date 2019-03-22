@@ -47,7 +47,11 @@ export default class Communities extends BrowserforcePlugin {
     );
     await frameOrPage.click(SELECTORS.ENABLE_CHECKBOX);
     const domainName = (
-      config.domainName || this.browserforce.getMyDomain()
+      config.domainName ||
+      this.browserforce.getMyDomain() ||
+      `comm-${Math.random()
+        .toString()
+        .substr(-22)}`
     ).substring(0, 22);
     await frameOrPage.waitFor(SELECTORS.DOMAIN_NAME_INPUT_TEXT);
     await frameOrPage.type(SELECTORS.DOMAIN_NAME_INPUT_TEXT, domainName);
