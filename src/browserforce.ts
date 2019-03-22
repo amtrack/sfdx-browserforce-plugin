@@ -42,9 +42,13 @@ export default class Browserforce {
 
   public async resolveDomains() {
     // resolve ip addresses of both LEX and classic domains
-    for (const url of [this.getInstanceUrl(), this.getLightningUrl()]) {
+    const salesforceUrls = [
+      this.getInstanceUrl(),
+      this.getLightningUrl()
+    ].filter(u => u);
+    for (const salesforceUrl of salesforceUrls) {
       const resolver = await core.MyDomainResolver.create({
-        url: new URL(url)
+        url: new URL(salesforceUrl)
       });
       await resolver.resolve();
     }
@@ -95,9 +99,14 @@ export default class Browserforce {
             throw new Error(`${response.status()}: ${response.statusText()}`);
           }
           if (response.url().indexOf('/?ec=302') > 0) {
+            const salesforceUrls = [
+              this.getInstanceUrl(),
+              this.getLightningUrl()
+            ].filter(u => u);
             if (
-              response.url().startsWith(this.getInstanceUrl()) ||
-              response.url().startsWith(this.getLightningUrl())
+              salesforceUrls.some(salesforceUrl =>
+                response.url().startsWith(salesforceUrl)
+              )
             ) {
               // the url looks ok so it is a login error
               throw new AbortError('login failed');
@@ -161,7 +170,28 @@ export default class Browserforce {
   }
 
   public getMyDomain() {
-    return this.getInstanceUrl().match(/https?\:\/\/([^.]*)/)[1];
+    const instanceUrl = this.getInstanceUrl();
+    // acme.my.salesforce.com
+    // acme--<sandboxName>.csN.my.salesforce.com
+    const matches = instanceUrl.match(
+      /https\:\/\/([^.]*)\.my\.salesforce\.com/
+    );
+    if (matches) {
+      return matches[1];
+    }
+    return null;
+  }
+
+  public getInstanceDomain() {
+    const instanceUrl = this.getInstanceUrl();
+    // csN.salesforce.com
+    const matches = instanceUrl.match(/https\:\/\/([^.]*)\.salesforce\.com/);
+    if (matches) {
+      if (!['test', 'login'].includes(matches[1])) {
+        return matches[1];
+      }
+    }
+    return null;
   }
 
   public getInstanceUrl() {
@@ -169,6 +199,12 @@ export default class Browserforce {
   }
 
   public getLightningUrl() {
-    return `https://${this.getMyDomain()}.lightning.force.com`;
+    const myDomain = this.getMyDomain();
+    const instanceDomain = this.getInstanceDomain();
+    const myDomainOrInstance = myDomain || instanceDomain;
+    if (myDomainOrInstance) {
+      return `https://${myDomainOrInstance}.lightning.force.com`;
+    }
+    return null;
   }
 }
