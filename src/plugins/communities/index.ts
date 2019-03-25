@@ -50,14 +50,15 @@ export default class Communities extends BrowserforcePlugin {
       config.domainName ||
       this.browserforce.getMyDomain() ||
       `comm-${Math.random()
-        .toString()
-        .substr(-22)}`
+        .toString(36)
+        .substr(2)}`
     ).substring(0, 22);
     await frameOrPage.waitFor(SELECTORS.DOMAIN_NAME_INPUT_TEXT);
     await frameOrPage.type(SELECTORS.DOMAIN_NAME_INPUT_TEXT, domainName);
     page.on('dialog', async dialog => {
       await dialog.accept();
     });
+    await frameOrPage.waitFor(SELECTORS.SAVE_BUTTON);
     await Promise.all([
       page.waitForNavigation(),
       frameOrPage.click(SELECTORS.SAVE_BUTTON)
