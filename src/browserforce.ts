@@ -4,8 +4,7 @@ import * as puppeteer from 'puppeteer';
 import * as querystring from 'querystring';
 import { parse, URL } from 'url';
 
-const PERSONAL_INFORMATION_PATH =
-  'setup/personalInformationSetup.apexp?nooverride=1';
+const POST_LOGIN_PATH = 'setup/forcecomHomepage.apexp';
 
 const ERROR_DIV_SELECTOR = '#errorTitle';
 const ERROR_DIVS_SELECTOR = 'div.errorMsg';
@@ -29,7 +28,7 @@ export default class Browserforce {
     await this.openPage(
       `secur/frontdoor.jsp?sid=${
         this.org.getConnection().accessToken
-      }&retURL=${encodeURIComponent(PERSONAL_INFORMATION_PATH)}`,
+      }&retURL=${encodeURIComponent(POST_LOGIN_PATH)}`,
       { waitUntil: ['load', 'domcontentloaded', 'networkidle0'] }
     );
     return this;
