@@ -26,7 +26,7 @@
     "@types/node": "^10.14.6",
     "@types/puppeteer": "^1.12.3",
     "mocha": "^6",
-    "nyc": "^13",
+    "nyc": "^14",
     "sfdx-cli": "^7.1.4",
     "tmp": "^0.1.0",
     "ts-node": "^8",
