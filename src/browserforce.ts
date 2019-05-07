@@ -95,6 +95,7 @@ export default class Browserforce {
         const response = await page.goto(url, options);
         if (response) {
           if (!response.ok()) {
+            await this.throwPageErrors(page);
             throw new Error(`${response.status()}: ${response.statusText()}`);
           }
           if (response.url().indexOf('/?ec=302') > 0) {
@@ -136,7 +137,6 @@ export default class Browserforce {
             }
           }
         }
-        // await this.throwPageErrors(page);
         return page;
       },
       {
@@ -147,8 +147,12 @@ export default class Browserforce {
             );
           }
         },
-        retries: 4,
-        minTimeout: 4 * 1000
+        retries: process.env.BROWSERFORCE_RETRY_MAX_RETRIES
+          ? parseInt(process.env.BROWSERFORCE_RETRY_MAX_RETRIES, 10)
+          : 4,
+        minTimeout: process.env.BROWSERFORCE_RETRY_TIMEOUT_MS
+          ? parseInt(process.env.BROWSERFORCE_RETRY_TIMEOUT_MS, 10)
+          : 4000
       }
     );
     return result;
