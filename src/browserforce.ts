@@ -147,8 +147,12 @@ export default class Browserforce {
             );
           }
         },
-        retries: 4,
-        minTimeout: 4 * 1000
+        retries: process.env.BROWSERFORCE_RETRY_MAX_RETRIES
+          ? parseInt(process.env.BROWSERFORCE_RETRY_MAX_RETRIES, 10)
+          : 4,
+        minTimeout: process.env.BROWSERFORCE_RETRY_TIMEOUT_MS
+          ? parseInt(process.env.BROWSERFORCE_RETRY_TIMEOUT_MS, 10)
+          : 4000
       }
     );
     return result;
