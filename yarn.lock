@@ -2778,10 +2778,10 @@ for-in@^1.0.2:
   resolved "https://registry.yarnpkg.com/for-in/-/for-in-1.0.2.tgz#81068d295a8142ec0ac726c6e2200c30fb6d5e80"
   integrity sha1-gQaNKVqBQuwKxybG4iAMMPttXoA=
 
-force-language-services@45.10.0:
-  version "45.10.0"
-  resolved "https://registry.yarnpkg.com/force-language-services/-/force-language-services-45.10.0.tgz#8383df120a1860247479d49ed19485f5d9725f91"
-  integrity sha512-GvQM6rnh6+DPnOwHY7mCC4llGMVAm4wmAFfLp/+lSm8SG6e1DDc5pV1W0eLP3iaw+K7ZUtFls5cJmkLGY7gxbw==
+force-language-services@45.11.0:
+  version "45.11.0"
+  resolved "https://registry.yarnpkg.com/force-language-services/-/force-language-services-45.11.0.tgz#fce17031490825c2a2e2cbe7ef9adf85f6907222"
+  integrity sha512-ny8sgM2+MWZHo9URKGOKJTWg5BIyGWZFQ/v2hLq6QA4M/zxWYQ++JRcoPUrEWpD+AEQhksBJxDe1NsoQEvkR/g==
   dependencies:
     "@salesforce/command" "^1.2.0"
     "@salesforce/ts-types" "^1.1.1"
@@ -6230,10 +6230,10 @@ safe-regex@^1.1.0:
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
-salesforce-alm@45.15.0:
-  version "45.15.0"
-  resolved "https://registry.yarnpkg.com/salesforce-alm/-/salesforce-alm-45.15.0.tgz#297979a17230baf3e0898629f1c7e6dfed4aba6d"
-  integrity sha512-wHS454we3J7loyWH8wfEgGkaGmLAqYy40mphkzmMdgatRpOEhuAat5/7W4v37ZG/mpN/l2iVsAEftcOPO2+HFw==
+salesforce-alm@45.18.0:
+  version "45.18.0"
+  resolved "https://registry.yarnpkg.com/salesforce-alm/-/salesforce-alm-45.18.0.tgz#21f23e16ffe201515e1b73175592c29f5bcbd67e"
+  integrity sha512-1Ifdx8p4tbetUmB+rp7kYP2PIYl9EgFggrWMqVjtsonIQ5CUUdsdTmpkQPtmhjGz714yjEvZ5zN9H6Bcke1B1A==
   dependencies:
     "@oclif/config" "^1.12.0"
     "@oclif/errors" "^1.2.0"
@@ -6280,10 +6280,10 @@ salesforce-alm@45.15.0:
     xml2js "0.4.19"
     xmldom-sfdx-encoding "0.1.29"
 
-salesforce-lightning-cli@2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/salesforce-lightning-cli/-/salesforce-lightning-cli-2.0.1.tgz#3368c0d2769e48dbfc357e99c11b65b7b0b1be73"
-  integrity sha512-cT+bCZ0AIY0y0+U1liAvMpveTnxcrN9LJzAgXhdon3tyXhjSfttpiLS9KcEZ7eDlvh52wz/ewatQePjksBIKHQ==
+salesforce-lightning-cli@2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/salesforce-lightning-cli/-/salesforce-lightning-cli-2.0.2.tgz#288342788d9ab0809cbd551f6f9f38e45807749a"
+  integrity sha512-5n62MvokT6rNdqANGJ3t/yIPxcfO0/mCXQI9FpxuAdih9/ZTzG/t+24aecyz+cZKH7p9FqYwLTfEFuEnGWONoQ==
   dependencies:
     "@oclif/command" "^1.5.11"
     "@salesforce/command" "^1.2.0"
@@ -6294,14 +6294,14 @@ salesforce-lightning-cli@2.0.1:
     heroku-cli-util "^5.8.1"
     object-assign "^4.0.1"
 
-salesforcedx@45.12.0:
-  version "45.12.0"
-  resolved "https://registry.yarnpkg.com/salesforcedx/-/salesforcedx-45.12.0.tgz#f1fe329d784224b99b3765f729d17ca5d9b95083"
-  integrity sha512-CfV9lMb+x63LzG5tzw8ZS+pHy+p2bPMpHAcdTOv5uYCW3ceRyKY51sjGKsgfFFHlexDqKbghpo2bAiXWyMo4IA==
+salesforcedx@45.15.6:
+  version "45.15.6"
+  resolved "https://registry.yarnpkg.com/salesforcedx/-/salesforcedx-45.15.6.tgz#3b60e4b8d5d5260fbd7e109d9343fc33f81991de"
+  integrity sha512-2HlUn3PwUxLPAJX8bnUrMGV/dk2INdQqHarHfr9g78mMMu7q6z0NJtMOEQP2BfjLvvJdmi5tXkoCZxElu+2Lig==
   dependencies:
-    force-language-services "45.10.0"
-    salesforce-alm "45.15.0"
-    salesforce-lightning-cli "2.0.1"
+    force-language-services "45.11.0"
+    salesforce-alm "45.18.0"
+    salesforce-lightning-cli "2.0.2"
 
 samsam@1.3.0:
   version "1.3.0"
@@ -6382,10 +6382,10 @@ set-value@^2.0.0:
     is-plain-object "^2.0.3"
     split-string "^3.0.1"
 
-sfdx-cli@^7.5.0:
-  version "7.5.0"
-  resolved "https://registry.yarnpkg.com/sfdx-cli/-/sfdx-cli-7.5.0.tgz#22ed13c3f10d3530c0c441d60b4902af51092e33"
-  integrity sha512-ZAi7fCc4PZsPoQ3C7OLW7cw2mXV4lL+Wa6IAxEgqkc1RofQWaCby3jUDKLy6D+M7zJ4asI+Xq4ezFKLnyqNvig==
+sfdx-cli@^7.7.0:
+  version "7.7.0"
+  resolved "https://registry.yarnpkg.com/sfdx-cli/-/sfdx-cli-7.7.0.tgz#3ad7aba3d6680f0c18109c23b86e2cf634de40b6"
+  integrity sha512-qPLRmcMeUg6B4oBZ/nagBg9EQMAFxbJIzTGgTEvnJy+zwrDtgZctgzdroiR33fNL1rTs+STnhuQu2fiFMDgw3A==
   dependencies:
     "@oclif/command" "^1"
     "@oclif/config" "^1"
@@ -6407,7 +6407,7 @@ sfdx-cli@^7.5.0:
     chalk "^2.4.2"
     debug "^3"
     http-call "^5.2.3"
-    salesforcedx "45.12.0"
+    salesforcedx "45.15.6"
     tslib "^1.9.3"
     v8-compile-cache "^2.0.2"
 
