@@ -13,7 +13,7 @@
     "@salesforce/command": "^2.1.0",
     "json-merge-patch": "^0.2.3",
     "p-retry": "^4.1.0",
-    "multimatch": "^3.0.0",
+    "multimatch": "^4.0.0",
     "puppeteer": "^1.18.1",
     "tslib": "^1"
   },
