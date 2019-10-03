@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - "12"
+  - '12'
 jobs:
   include:
     - stage: test
@@ -11,8 +11,7 @@ jobs:
       before_install:
         - npm install -g yarn
       before_script:
-        - echo "$SFDX_AUTH_URL" > /tmp/sfdxurl
-        - sfdx force:auth:sfdxurl:store -f /tmp/sfdxurl -a ci-devhub -d
+        - npx sfdx-plugin-auth-url auth-url:import -d -a ci-devhub "$SFDX_AUTH_URL"
       script:
         - sfdx force:org:create -f config/project-scratch-def.json -a ci-scratch-org -s
         - npm run test:e2e
