@@ -4,9 +4,9 @@ import { BrowserforcePlugin } from '../../../plugin';
 
 const PATHS = {
   BASE: 'ruac/ruacPage.apexp',
-  REVIEW: '/ruac/CriticalUpdateDetail.apexp?name=',
-  ACTIVATE: '/ruac/CriticalUpdateActivate.apexp?name=',
-  DEACTIVATE: '/ruac/CriticalUpdateDeactivate.apexp?name='
+  REVIEW: 'ruac/CriticalUpdateDetail.apexp?name=',
+  ACTIVATE: 'ruac/CriticalUpdateActivate.apexp?name=',
+  DEACTIVATE: 'ruac/CriticalUpdateDeactivate.apexp?name='
 };
 const SELECTORS = {
   TABLE_BODY: 'tbody[id$=":featuresTable:tb"]',
@@ -78,7 +78,7 @@ export default class CriticalUpdates extends BrowserforcePlugin {
     for (const update of config) {
       const url = `${
         update.active ? PATHS.ACTIVATE : PATHS.DEACTIVATE
-      }${encodeURI(update.name)}`;
+      }${encodeURIComponent(update.name)}`;
       const page = await this.browserforce.openPage(url);
       const buttonSelector = update.active
         ? SELECTORS.FORM_ACTIVATE_BUTTON
