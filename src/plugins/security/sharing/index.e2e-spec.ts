@@ -3,7 +3,7 @@ import * as child from 'child_process';
 import * as path from 'path';
 import Sharing from '.';
 
-describe(Sharing.name, () => {
+describe.skip(Sharing.name, () => {
   it('should enable', function() {
     this.timeout(1000 * 90);
     this.slow(1000 * 30);
