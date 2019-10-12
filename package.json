@@ -27,7 +27,7 @@
     "@types/puppeteer": "^1.12.4",
     "mocha": "^6",
     "nyc": "^14",
-    "sfdx-cli": "^7.22.0",
+    "sfdx-cli": "^7.28.7",
     "tmp": "^0.1.0",
     "ts-node": "^8",
     "typescript": "^3.6.2"
