@@ -23,7 +23,7 @@
     "@oclif/test": "^1",
     "@salesforce/dev-config": "^1.5.0",
     "@types/mocha": "^5.2.7",
-    "@types/node": "^10.14.17",
+    "@types/node": "^10.14.22",
     "@types/puppeteer": "^1.12.4",
     "mocha": "^6",
     "nyc": "^14",
