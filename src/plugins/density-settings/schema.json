@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/density-settings/schema.json",
+  "title": "Density Settings",
+  "type": "object",
+  "properties": {
+    "density": {
+      "title": "Density",
+      "description": "Choose the default display setting for your org",
+      "type": "string",
+      "enum": ["Comfy", "Compact"]
+    }
+  }
+}
