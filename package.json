@@ -14,7 +14,7 @@
     "json-merge-patch": "^0.2.3",
     "p-retry": "^4.1.0",
     "multimatch": "^4.0.0",
-    "puppeteer": "^1.18.1",
+    "puppeteer": "^1.20.0",
     "tslib": "^1"
   },
   "devDependencies": {
@@ -24,7 +24,7 @@
     "@salesforce/dev-config": "^1.5.0",
     "@types/mocha": "^5.2.7",
     "@types/node": "^10.14.22",
-    "@types/puppeteer": "^1.12.4",
+    "@types/puppeteer": "^1.20.2",
     "mocha": "^6",
     "nyc": "^14",
     "sfdx-cli": "^7.28.7",
