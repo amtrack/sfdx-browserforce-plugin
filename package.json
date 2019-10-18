@@ -30,7 +30,7 @@
     "sfdx-cli": "^7.22.0",
     "tmp": "^0.1.0",
     "ts-node": "^8",
-    "typescript": "^3.6.2"
+    "typescript": "^3.6.4"
   },
   "engines": {
     "node": ">=8.0.0"
