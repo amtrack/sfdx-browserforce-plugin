@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/packages/reports-and-dashboards/schema.json",
+  "title": "Folder Sharing",
+  "type": "object",
+  "properties": {
+    "enableEnhancedFolderSharing": {
+      "title": "Enable access levels for sharing report and dashboard folders",
+      "$comment": "If your organization was created after the Summer ’13 Salesforce release, you already have enhanced folder sharing",
+      "type": "boolean"
+    }
+  }
+}

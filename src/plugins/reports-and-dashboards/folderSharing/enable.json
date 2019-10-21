@@ -1,0 +1,10 @@
+{
+  "$schema": "../../schema.json",
+  "settings": {
+    "reportsAndDashboards": {
+      "folderSharing": {
+        "enableEnhancedFolderSharing": true
+      }
+    }
+  }
+}
