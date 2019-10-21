@@ -16,6 +16,9 @@
         "customerPortal": {
           "$ref": "./customer-portal/schema.json"
         },
+        "densitySettings": {
+          "$ref": "./density-settings/schema.json"
+        },
         "homePageLayouts": {
           "$ref": "./home-page-layouts/schema.json"
         },
