@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/activity-settings/schema.json",
+  "title": "Activity Settings",
+  "type": "object",
+  "properties": {
+    "allowUsersToRelateMultipleContactsToTasksAndEvents": {
+      "title": "Allow Users to Relate Multiple Contacts to Tasks and Events",
+      "description": "Warning: can only be disabled with help of the salesforce.com Support team",
+      "type": "boolean"
+    }
+  }
+}

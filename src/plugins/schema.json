@@ -7,6 +7,9 @@
   "properties": {
     "settings": {
       "properties": {
+        "activitySettings": {
+          "$ref": "./activity-settings/schema.json"
+        },
         "communities": {
           "$ref": "./communities/schema.json"
         },
