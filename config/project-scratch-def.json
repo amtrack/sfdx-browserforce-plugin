@@ -1,10 +1,5 @@
 {
   "orgName": "Browserforce",
   "edition": "Developer",
-  "settings": {
-    "orgPreferenceSettings": {
-      "s1DesktopEnabled": true
-    }
-  }
   "language": "en_US"
 }
