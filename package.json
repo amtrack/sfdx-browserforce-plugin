@@ -62,6 +62,7 @@
   },
   "repository": "amtrack/sfdx-browserforce-plugin",
   "scripts": {
+    "generate:plugin": "npx hygen plugin new",
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "tslint -p test -t stylish",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
