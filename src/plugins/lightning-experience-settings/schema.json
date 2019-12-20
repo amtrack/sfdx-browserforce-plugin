@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/lightning-experience-theme/schema.json",
+  "title": "LightningExperienceSettings",
+  "type": "object",
+  "properties": {
+    "activeThemeName": {
+      "title": "The active Lightning Experience Theme",
+      "description": "The API Name of the Lightning Experience Theme to be activated",
+      "type": "string"
+    }
+  }
+}
