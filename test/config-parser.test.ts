@@ -1,6 +1,6 @@
 import * as assert from 'assert';
-import * as DRIVERS from '../src/plugins';
 import ConfigParser from '../src/config-parser';
+import * as DRIVERS from '../src/plugins';
 
 describe('ConfigParser', () => {
   describe('parse()', () => {
