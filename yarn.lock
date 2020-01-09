@@ -195,6 +195,18 @@
     debug "^4.1.1"
     semver "^5.6.0"
 
+"@oclif/command@^1.4.31":
+  version "1.5.19"
+  resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.5.19.tgz#13f472450eb83bd6c6871a164c03eadb5e1a07ed"
+  integrity sha512-6+iaCMh/JXJaB2QWikqvGE9//wLEVYYwZd5sud8aLoLKog1Q75naZh2vlGVtg5Mq/NqpqGQvdIjJb3Bm+64AUQ==
+  dependencies:
+    "@oclif/config" "^1"
+    "@oclif/errors" "^1.2.2"
+    "@oclif/parser" "^3.8.3"
+    "@oclif/plugin-help" "^2"
+    debug "^4.1.1"
+    semver "^5.6.0"
+
 "@oclif/command@^1.5.0":
   version "1.5.4"
   resolved "https://registry.yarnpkg.com/@oclif/command/-/command-1.5.4.tgz#659456def965454e1c0115e8265533980eefb200"
@@ -235,7 +247,7 @@
     debug "^4.1.1"
     semver "^5.6.0"
 
-"@oclif/config@1.13.3", "@oclif/config@~1.13.2":
+"@oclif/config@1.13.3", "@oclif/config@^1.6.22", "@oclif/config@~1.13.2":
   version "1.13.3"
   resolved "https://registry.yarnpkg.com/@oclif/config/-/config-1.13.3.tgz#1b13e18d0e4242ddbd9cbd100f0eec819aa2bf8c"
   integrity sha512-qs5XvGRw+1M41abOKCjd0uoeHCgsMxa2MurD2g2K8CtQlzlMXl0rW5idVeimIg5208LLuxkfzQo8TKAhhRCWLg==
@@ -339,6 +351,19 @@
     "@oclif/linewrap" "^1.0.0"
     chalk "^2.4.2"
     tslib "^1.9.3"
+
+"@oclif/plugin-autocomplete@^0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-autocomplete/-/plugin-autocomplete-0.1.5.tgz#b021b50db6d6b0d9e7d2227c58f43906578ae175"
+  integrity sha512-Afchpdd8FNfx9GaU/1D9IzyfiXvjfGybgzQ6G4GTFvPO0/hLdkXX3YyYq+SnxE6/bCrhg4pleiB+GuJACmmkEA==
+  dependencies:
+    "@oclif/command" "^1.4.31"
+    "@oclif/config" "^1.6.22"
+    chalk "^2.4.1"
+    cli-ux "^4.4.0"
+    debug "^3.1.0"
+    fs-extra "^6.0.1"
+    moment "^2.22.1"
 
 "@oclif/plugin-commands@~1.2.2":
   version "1.2.3"
@@ -1728,6 +1753,14 @@ cli-cursor@^2.1.0:
   dependencies:
     restore-cursor "^2.0.0"
 
+cli-progress@^3.4.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/cli-progress/-/cli-progress-3.5.0.tgz#972517f3b71bb6d0ec74ceaeb392005376e9ca54"
+  integrity sha512-S1wR4xfcfLWbVBH6RwYat1nMCm2UsuygxNoiRYVAXQsuWKjCRgWRZVohXLmsWfiuAK0FFf7t9OyZ2JBmDWaQGA==
+  dependencies:
+    colors "^1.1.2"
+    string-width "^2.1.1"
+
 cli-spinner@0.2.10:
   version "0.2.10"
   resolved "https://registry.yarnpkg.com/cli-spinner/-/cli-spinner-0.2.10.tgz#f7d617a36f5c47a7bc6353c697fc9338ff782a47"
@@ -1740,7 +1773,39 @@ cli-table@^0.3.1:
   dependencies:
     colors "1.0.3"
 
-cli-ux@4.9.3, cli-ux@^4.8.0, cli-ux@^4.9.0, cli-ux@^4.9.1, cli-ux@^4.9.3:
+cli-ux@5.4.0:
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-5.4.0.tgz#84f5a968c67e8cc2b6f244dc346e79cabba152dc"
+  integrity sha512-j5GmlUJEc37SHILLQAUL+4NymK1sjcM+kmwnmRSnzzCOisbFE4zotrN8BBKQhFEyOpqFxUdbuP0sdc8YEGF6VA==
+  dependencies:
+    "@oclif/command" "^1.5.1"
+    "@oclif/errors" "^1.2.1"
+    "@oclif/linewrap" "^1.0.0"
+    "@oclif/screen" "^1.0.3"
+    ansi-escapes "^3.1.0"
+    ansi-styles "^3.2.1"
+    cardinal "^2.1.1"
+    chalk "^2.4.1"
+    clean-stack "^2.0.0"
+    cli-progress "^3.4.0"
+    extract-stack "^1.0.0"
+    fs-extra "^7.0.1"
+    hyperlinker "^1.0.0"
+    indent-string "^3.2.0"
+    is-wsl "^1.1.0"
+    js-yaml "^3.13.1"
+    lodash "^4.17.11"
+    natural-orderby "^2.0.1"
+    password-prompt "^1.1.2"
+    semver "^5.6.0"
+    string-width "^3.1.0"
+    strip-ansi "^5.1.0"
+    supports-color "^5.5.0"
+    supports-hyperlinks "^1.0.1"
+    treeify "^1.1.0"
+    tslib "^1.9.3"
+
+cli-ux@^4.4.0, cli-ux@^4.8.0, cli-ux@^4.9.0, cli-ux@^4.9.1, cli-ux@^4.9.3:
   version "4.9.3"
   resolved "https://registry.yarnpkg.com/cli-ux/-/cli-ux-4.9.3.tgz#4c3e070c1ea23eef010bbdb041192e0661be84ce"
   integrity sha512-/1owvF0SZ5Gn54cgrikJ0QskgTzeg30HGjkmjFoaHDJzAqFpuX1DBpFR8aLvsE1J5s9MgeYRENQK4BFwOag5VA==
@@ -1952,6 +2017,11 @@ colors@1.2.4:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/colors/-/colors-1.2.4.tgz#e0cb41d3e4b20806b3bfc27f4559f01b94bc2f7c"
   integrity sha512-6Y+iBnWmXL+AWtlOp2Vr6R2w5MUlNJRwR0ShVFaAb1CqWzhPOpQg4L0jxD+xpw/Nc8QJwaq3KM79QUCriY8CWQ==
+
+colors@^1.1.2:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/colors/-/colors-1.4.0.tgz#c50491479d4c1bdaed2c9ced32cf7c7dc2360f78"
+  integrity sha512-a+UqTh4kgZg/SlGvfbzDHpgRu7AAQOmmqRHJnxhRZICKFUT91brVhNNt58CMWU9PsBbv3PDCZUHbVxuDiH2mtA==
 
 combined-stream@^1.0.6, combined-stream@~1.0.6:
   version "1.0.7"
@@ -4887,7 +4957,7 @@ mock-stdin@^0.3.1:
   resolved "https://registry.yarnpkg.com/mock-stdin/-/mock-stdin-0.3.1.tgz#c657d9642d90786435c64ca5e99bbd4d09bd7dd3"
   integrity sha1-xlfZZC2QeGQ1xkyl6Zu9TQm9fdM=
 
-moment@2.24.0:
+moment@2.24.0, moment@^2.22.1:
   version "2.24.0"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
@@ -6224,10 +6294,10 @@ safe-regex@^1.1.0:
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
-salesforce-alm@47.11.0:
-  version "47.11.0"
-  resolved "https://registry.yarnpkg.com/salesforce-alm/-/salesforce-alm-47.11.0.tgz#d2d4b46e920b03644c1ae10b4872a14a86ea7fd8"
-  integrity sha512-A3DQEj6/B9bLkLcpnt5i2bF+TsPuQ6n54a+2gwy3nCH1uQT0+Q9K0unWhUCwlWMS6+LyhgJ4AiHRwyt+dRAHhQ==
+salesforce-alm@47.13.0:
+  version "47.13.0"
+  resolved "https://registry.yarnpkg.com/salesforce-alm/-/salesforce-alm-47.13.0.tgz#6593f68f55e6daea052ed2cf9412a5d5bd19c434"
+  integrity sha512-cVOw93Jm4J7iM6oaCgJifo8zsr+eMx4wiIJwnxbUepn7bujy8+xLbl8FEF8wUmPbJPlyUSgPwrWfq8FlucjOzA==
   dependencies:
     "@oclif/config" "1.13.3"
     "@oclif/errors" "1.2.2"
@@ -6245,7 +6315,7 @@ salesforce-alm@47.11.0:
     bunyan-sfdx-no-dtrace "1.8.2"
     chalk "2.4.2"
     cli-spinner "0.2.10"
-    cli-ux "4.9.3"
+    cli-ux "5.4.0"
     csv-parse "4.6.5"
     debug "3.2.6"
     fs-extra "4.0.3"
@@ -6309,10 +6379,10 @@ salesforce-lightning-cli@~2.0.6:
     object-assign "^4.1.1"
     prettier "^1.18.2"
 
-salesforcedx-templates@47.11.0:
-  version "47.11.0"
-  resolved "https://registry.yarnpkg.com/salesforcedx-templates/-/salesforcedx-templates-47.11.0.tgz#f75a0e198a629084faf1ac6ea2132c612a3e9769"
-  integrity sha512-CGVseo/9xLSHXkWQc5kCWhGtxnSmPKrKGOhd+wt/usrTvWBtrLJBw28zgRMXXyv3LjVUE3gUzIc1qF+KJmV5Og==
+salesforcedx-templates@47.15.0:
+  version "47.15.0"
+  resolved "https://registry.yarnpkg.com/salesforcedx-templates/-/salesforcedx-templates-47.15.0.tgz#81471d9660a93bdde287db5eea95326786f67eb3"
+  integrity sha512-++eyfzpn8trHH9uH6Q/f+6KYInAys/yCmTVTuQL0iZEVPMQWbG1GD5qrFOEGIOJNx2rVdntqX5AbTaC4aH4AWg==
   dependencies:
     "@oclif/command" "^1"
     "@oclif/config" "^1"
@@ -6326,14 +6396,14 @@ salesforcedx-templates@47.11.0:
     yeoman-environment "^2.4.0"
     yeoman-generator "^4.0.1"
 
-salesforcedx@47.10.1:
-  version "47.10.1"
-  resolved "https://registry.yarnpkg.com/salesforcedx/-/salesforcedx-47.10.1.tgz#347bd412cac029945cc17f30b8d138d45df3c08e"
-  integrity sha512-y7IQ2S4Ry7iEBQpJ8lyA+ywcNuCz5Mrn7TCyN+2IRyUEKaLl6G3+rSgVnwgia9tYxOQjdvMggk9qB1SQ1iiA/Q==
+salesforcedx@47.14.0:
+  version "47.14.0"
+  resolved "https://registry.yarnpkg.com/salesforcedx/-/salesforcedx-47.14.0.tgz#6740cd33c82570cc057b342987549d3caaada517"
+  integrity sha512-Fc7Lc8GqdQiu5d6VbXGdGT8VfxgkBzH7WoFHbzOmhwy4aORKF4upkJlEGXv0jhr+DjG01lKl1RICL6g5tk6f/Q==
   dependencies:
-    salesforce-alm "47.11.0"
+    salesforce-alm "47.13.0"
     salesforce-lightning-cli "3.0.0"
-    salesforcedx-templates "47.11.0"
+    salesforcedx-templates "47.15.0"
 
 samsam@1.3.0:
   version "1.3.0"
@@ -6424,14 +6494,15 @@ set-value@^2.0.0:
     is-plain-object "^2.0.3"
     split-string "^3.0.1"
 
-sfdx-cli@^7.37.1:
-  version "7.37.1"
-  resolved "https://registry.yarnpkg.com/sfdx-cli/-/sfdx-cli-7.37.1.tgz#4aac26f0ba3e77be7b54c84c0f1021152f07f967"
-  integrity sha512-0FbL//mIjoMFOdOJ7FwBkLq950u3iJHJIN+ssRPlmJqESYvwjjorjoCiTQ/TEeWxK6HypPryNv/nW3IsgNnzTA==
+sfdx-cli@^7.41.0:
+  version "7.41.0"
+  resolved "https://registry.yarnpkg.com/sfdx-cli/-/sfdx-cli-7.41.0.tgz#9f247f31b65078a49e0d4cd0d40ef6b3942183e3"
+  integrity sha512-/ke+Vb6s37O6Mi5YAQvOH/JMMDFfEwSq2LBUwk8CZ71Iyf8xV9zAfRmRDGlavlyCRiAFuid3HufcWE1pFBAltg==
   dependencies:
     "@oclif/command" "~1.5.18"
     "@oclif/config" "~1.13.2"
     "@oclif/errors" "~1.2.2"
+    "@oclif/plugin-autocomplete" "^0.1.5"
     "@oclif/plugin-commands" "~1.2.2"
     "@oclif/plugin-help" "~2.2.0"
     "@oclif/plugin-not-found" "~1.2.2"
@@ -6449,7 +6520,7 @@ sfdx-cli@^7.37.1:
     chalk "~2.4.2"
     debug "~3.2.6"
     http-call "~5.2.4"
-    salesforcedx "47.10.1"
+    salesforcedx "47.14.0"
     tslib "~1.10.0"
     v8-compile-cache "~2.0.3"
 
