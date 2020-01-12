@@ -90,15 +90,21 @@ describe(CustomerPortalSetup.name, () => {
       const sourceDeployCmd = child.spawnSync('sfdx', [
         'force:source:deploy',
         '-p',
-        path.join(dir, 'sfdx-source')
+        path.join(dir, 'sfdx-source'),
+        '--json'
       ]);
       assert.deepEqual(
         sourceDeployCmd.status,
         0,
         sourceDeployCmd.output.toString()
       );
+      const stdout = JSON.parse(sourceDeployCmd.stdout.toString());
       assert(
-        /Customer_Portal_Admin/.test(sourceDeployCmd.output.toString()),
+        stdout.result &&
+          stdout.result.deployedSource &&
+          stdout.result.deployedSource.find(
+            source => source.fullName === 'Customer_Portal_Admin'
+          ),
         sourceDeployCmd.output.toString()
       );
       const permSetAssignCmd = child.spawnSync('sfdx', [
@@ -195,15 +201,21 @@ describe(CustomerPortalAvailableCustomObjects.name, () => {
     const sourceDeployCmd = child.spawnSync('sfdx', [
       'force:source:deploy',
       '-p',
-      path.join(dir, 'sfdx-source')
+      path.join(dir, 'sfdx-source'),
+      '--json'
     ]);
     assert.deepEqual(
       sourceDeployCmd.status,
       0,
       sourceDeployCmd.output.toString()
     );
+    const stdout = JSON.parse(sourceDeployCmd.stdout.toString());
     assert(
-      /Dummy/.test(sourceDeployCmd.output.toString()),
+      stdout.result &&
+        stdout.result.deployedSource &&
+        stdout.result.deployedSource.find(
+          source => source.fullName === 'Dummy__c'
+        ),
       sourceDeployCmd.output.toString()
     );
   });
