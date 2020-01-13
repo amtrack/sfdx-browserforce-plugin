@@ -414,7 +414,7 @@
   dependencies:
     fancy-test "^1.4.3"
 
-"@salesforce/command@^2.0.0", "@salesforce/command@^2.1.3", "@salesforce/command@~2.1.0", "@salesforce/command@~2.1.3":
+"@salesforce/command@^2.0.0", "@salesforce/command@^2.1.3", "@salesforce/command@^2.1.4", "@salesforce/command@~2.1.0", "@salesforce/command@~2.1.3":
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/@salesforce/command/-/command-2.1.4.tgz#11efaf5a2d528c24e642d9fed18649377594d09e"
   integrity sha512-D/3k6Ucjw1Xk934fPjjI7UyVjgLId1Z8ZoV2UrTvjwk4HOgH/5fj8ZEwfVgMw9O6qOzTS4zFxBeoPCewzkukjA==
