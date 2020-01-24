@@ -63,10 +63,10 @@ Both the `browserforce:apply` and `browserforce:plan` commands expect a config f
 To enable `Setup -> Security Controls -> Login Access Policies -> Administrators Can Log in as Any User`, the config file (here: `./config/setup-admin-login-as-any.json`) should look like this:
 
 ```json
-"$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/v1.2.0/src/plugins/schema.json",
 {
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/v1.2.0/src/plugins/schema.json",
   "settings": {
-    "security:" {
+    "security": {
       "loginAccessPolicies": {
         "administratorsCanLogInAsAnyUser": true
       }
