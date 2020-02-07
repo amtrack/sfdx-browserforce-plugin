@@ -430,10 +430,10 @@
     chalk "^2.4.2"
     cli-ux "^4.9.3"
 
-"@salesforce/command@^2.2.0":
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/@salesforce/command/-/command-2.2.0.tgz#316097f8defd300a93a3460dea3fe31e7d958254"
-  integrity sha512-woOcjp/ZUc+WQtWVuu0arFv3go90KeBDHrRldVq+8oL6SmksK/13c9OPPFANGWeD6KbsTMY7AfqNE/BdpEb1YA==
+"@salesforce/command@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@salesforce/command/-/command-3.0.0.tgz#b0511a445387c83006a10cd8234d2fa88b7cf9b8"
+  integrity sha512-B3j8FmPPFt0H6gR12jjwNKAwx6GL8FFeVZgZilsijCm/W92ziLDMfDwBZap1L9tg1r2Is6RnGzuaLKDMx3kuRg==
   dependencies:
     "@oclif/command" "^1.5.17"
     "@oclif/errors" "^1.2.2"
