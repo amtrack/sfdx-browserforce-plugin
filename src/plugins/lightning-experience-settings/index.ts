@@ -51,12 +51,6 @@ export default class LightningExperienceSettings extends BrowserforcePlugin {
   }
 }
 
-interface LightningPrimitiveCellTypes {
-  columnType: string;
-  // tslint:disable-next-line:no-any
-  value: any;
-}
-
 const domWaitForLightningThemes = () => {
   return (
     document.querySelector('lightning-datatable') &&
@@ -76,15 +70,14 @@ const domWaitForLightningThemes = () => {
       .shadowRoot.querySelectorAll(
         'table > tbody > tr > td:nth-child(2) > lightning-primitive-cell-factory'
       )[1]
-      .shadowRoot.querySelector('lightning-primitive-cell-wrapper')
-      .shadowRoot &&
+      .shadowRoot.querySelector('lightning-formatted-text').shadowRoot &&
     document
       .querySelector('lightning-datatable')
       .shadowRoot.querySelectorAll(
         'table > tbody > tr > td:nth-child(2) > lightning-primitive-cell-factory'
       )[1]
-      .shadowRoot.querySelector('lightning-primitive-cell-wrapper')
-      .shadowRoot.querySelector('div > slot')
+      .shadowRoot.querySelector('lightning-formatted-text').shadowRoot
+      .textContent
   );
 };
 
@@ -94,20 +87,14 @@ const domGetThemesData = () => {
       .querySelector('lightning-datatable')
       .shadowRoot.querySelectorAll('table > tbody > tr')
   ).map(tr => {
-    const slotDeveloperNameColumn: HTMLSlotElement = tr
+    const developerName = tr
       .querySelector('td:nth-child(2) > lightning-primitive-cell-factory')
-      .shadowRoot.querySelector('lightning-primitive-cell-wrapper')
-      .shadowRoot.querySelector('div > slot');
-    // @ts-ignore
-    const cellTypesDeveloperName: LightningPrimitiveCellTypes = slotDeveloperNameColumn.assignedNodes()[0];
-    const developerName = cellTypesDeveloperName.value;
-    const slotActiveColumn: HTMLSlotElement = tr
-      .querySelector('td:nth-child(6) > lightning-primitive-cell-factory')
-      .shadowRoot.querySelector('lightning-primitive-cell-wrapper')
-      .shadowRoot.querySelector('div > slot');
-    // @ts-ignore
-    const cellTypesActive: LightningPrimitiveCellTypes = slotActiveColumn.assignedNodes()[0];
-    const isActive = cellTypesActive.value;
+      .shadowRoot.querySelector('lightning-formatted-text').shadowRoot
+      .textContent;
+    const isActive =
+      tr
+        .querySelector('td:nth-child(6) > lightning-primitive-cell-factory')
+        .shadowRoot.querySelector('lightning-primitive-icon') !== null;
     return {
       developerName,
       isActive
@@ -122,15 +109,12 @@ const domGetThemeDeveloperNameLightningPrimitiveCellTypes = name => {
       .shadowRoot.querySelectorAll('table > tbody > tr')
   );
   for (const tr of trs) {
-    const slotDeveloperNameColumn: HTMLSlotElement = tr
+    const cellDeveloperNameColumn = tr
       .querySelector('td:nth-child(2) > lightning-primitive-cell-factory')
-      .shadowRoot.querySelector('lightning-primitive-cell-wrapper')
-      .shadowRoot.querySelector('div > slot');
-    // @ts-ignore
-    const cellTypesDeveloperName: LightningPrimitiveCellTypes = slotDeveloperNameColumn.assignedNodes()[0];
-    const developerName = cellTypesDeveloperName.value;
+      .shadowRoot.querySelector('lightning-formatted-text');
+    const developerName = cellDeveloperNameColumn.shadowRoot.textContent;
     if (developerName === name) {
-      return cellTypesDeveloperName;
+      return cellDeveloperNameColumn;
     }
   }
 };
