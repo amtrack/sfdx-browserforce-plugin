@@ -6000,10 +6000,10 @@ salesforce-lightning-cli@3.0.0:
     object-assign "^4.1.1"
     prettier "^1.18.2"
 
-salesforcedx-templates@48.7.0:
-  version "48.7.0"
-  resolved "https://registry.yarnpkg.com/salesforcedx-templates/-/salesforcedx-templates-48.7.0.tgz#99723f6210df8a8fe2131e238ca68b3721469bda"
-  integrity sha512-GCz1oufD25STj2MeK/hggIDz1Uu4dNczJQ1NsRefM3BHFEcOD/JvNkv6NP90EtDEK8aNqh4N+Ki1OkCUlSBmqA==
+salesforcedx-templates@48.8.0:
+  version "48.8.0"
+  resolved "https://registry.yarnpkg.com/salesforcedx-templates/-/salesforcedx-templates-48.8.0.tgz#c2df3c1306954006fc483dcc751b5399946493ef"
+  integrity sha512-yokkMZMEnNpUTBmu2puIsJG6IonuUrsNsSsDw8zBHfLc9VX8Xm87tiVhYCNP1aklSh9rdvNNooEo3KvwscokXA==
   dependencies:
     "@oclif/command" "^1"
     "@oclif/config" "^1"
@@ -6017,15 +6017,15 @@ salesforcedx-templates@48.7.0:
     yeoman-environment "^2.4.0"
     yeoman-generator "^4.0.1"
 
-salesforcedx@48.7.1:
-  version "48.7.1"
-  resolved "https://registry.yarnpkg.com/salesforcedx/-/salesforcedx-48.7.1.tgz#c13e2bb40cfe7d5b89e44e4b24dd49dad53cb138"
-  integrity sha512-hM9hmW61CsS3kR2V+JNQjPUbSeNKY7SR0pavx/5mMQuyEMByI4JZuSTy7pMofsXcUpUzMY0EnU673YejdV6Abw==
+salesforcedx@48.8.0:
+  version "48.8.0"
+  resolved "https://registry.yarnpkg.com/salesforcedx/-/salesforcedx-48.8.0.tgz#563ae1a613e03f4a0f33bc09d2a7dd6ba013ab6a"
+  integrity sha512-n2iDNiSGgwaiyxH7T14we3YEG0RrXfeH2Ue3SaMz3bmWUVEZIgnAuUW+4HZESdz+ZAOzi9O7QtfzNgaKAhLi7w==
   dependencies:
     "@salesforce/sfdx-plugin-lwc-test" "0.1.5"
     salesforce-alm "48.8.0"
     salesforce-lightning-cli "3.0.0"
-    salesforcedx-templates "48.7.0"
+    salesforcedx-templates "48.8.0"
 
 samsam@1.3.0:
   version "1.3.0"
@@ -6096,10 +6096,10 @@ set-value@^2.0.0, set-value@^2.0.1:
     is-plain-object "^2.0.3"
     split-string "^3.0.1"
 
-sfdx-cli@^7.52.0:
-  version "7.52.0"
-  resolved "https://registry.yarnpkg.com/sfdx-cli/-/sfdx-cli-7.52.0.tgz#6c57fcdde66d697dff6b596bafaf5733cb345fef"
-  integrity sha512-Xo62+wvFn9r0fVAam6g/rNr/o/nv+w1PSMb/DU8qYtvDDm928C1pC8w5Vz4RymhgN5F1F6ECjnfJ9aTBBz9ueg==
+sfdx-cli@^7.53.0:
+  version "7.53.0"
+  resolved "https://registry.yarnpkg.com/sfdx-cli/-/sfdx-cli-7.53.0.tgz#dddafa3b6bef878224a908248dd3ecc970f2f38f"
+  integrity sha512-2Cq73A6YnFoHIOISOCE8p8cmy2rjMFFBEPARkOKtWMyVDhqKSG0ROGuJf/6Ketjo3uS5a2HQG4OD5UlVVDl9YQ==
   dependencies:
     "@oclif/command" "~1.5.18"
     "@oclif/config" "~1.13.2"
@@ -6122,7 +6122,7 @@ sfdx-cli@^7.52.0:
     chalk "~2.4.2"
     debug "~3.2.6"
     http-call "~5.2.4"
-    salesforcedx "48.7.1"
+    salesforcedx "48.8.0"
     tslib "~1.10.0"
     v8-compile-cache "~2.0.3"
 
