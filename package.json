@@ -15,7 +15,7 @@
     "multimatch": "^4.0.0",
     "p-retry": "^4.2.0",
     "puppeteer": "^2.1.1",
-    "tslib": "^1"
+    "tslib": "^2"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1",
