@@ -11,7 +11,7 @@
     "@oclif/config": "^1",
     "@oclif/errors": "^1",
     "@salesforce/command": "^3.0.0",
-    "json-merge-patch": "^0.2.3",
+    "json-merge-patch": "^1.0.0",
     "multimatch": "^4.0.0",
     "p-retry": "^4.2.0",
     "puppeteer": "^2.1.1",
