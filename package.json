@@ -10,27 +10,27 @@
     "@oclif/command": "^1",
     "@oclif/config": "^1",
     "@oclif/errors": "^1",
-    "@salesforce/command": "^2.1.4",
-    "json-merge-patch": "^0.2.3",
+    "@salesforce/command": "^3.0.0",
+    "json-merge-patch": "^1.0.0",
     "multimatch": "^4.0.0",
     "p-retry": "^4.2.0",
-    "puppeteer": "^2.0.0",
-    "tslib": "^1"
+    "puppeteer": "^3.3.0",
+    "tslib": "^2"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1",
-    "@oclif/plugin-help": "^2",
+    "@oclif/plugin-help": "^3",
     "@oclif/test": "^1",
     "@salesforce/dev-config": "^1.5.0",
-    "@types/mocha": "^5.2.7",
-    "@types/node": "^10.17.13",
-    "@types/puppeteer": "^2.0.0",
+    "@types/mocha": "^7.0.2",
+    "@types/node": "^10.17.25",
+    "@types/puppeteer": "^3.0.0",
     "mocha": "^7",
     "nyc": "^15",
-    "sfdx-cli": "^7.43.1",
-    "tmp": "^0.1.0",
+    "sfdx-cli": "^7.61.0",
+    "tmp": "^0.2.1",
     "ts-node": "^8",
-    "typescript": "^3.7.5"
+    "typescript": "^3.9.5"
   },
   "engines": {
     "node": ">=8.0.0"
