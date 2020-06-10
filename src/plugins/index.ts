@@ -9,7 +9,10 @@ import * as reportsAndDashboards from './reports-and-dashboards';
 import * as salesforceToSalesforce from './salesforce-to-salesforce';
 import * as security from './security';
 
+import * as deferSharingCalculation from './defer-sharing-calculation';
+
 export {
+  deferSharingCalculation,
   lightningExperienceSettings,
   activitySettings,
   communities,

@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/defer-sharing-calculation/schema.json",
+  "title": "Defer Sharing Calculation Settings",
+  "type": "object",
+  "properties": {
+    "suspend": {
+      "title": "Defer Sharing Calculation",
+      "description": "This will allow the sharing calculation to be deffered, enabling will also run the sharing rules",
+      "type": "boolean"
+    }
+  }
+}
