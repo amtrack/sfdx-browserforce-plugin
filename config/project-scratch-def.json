@@ -1,5 +1,6 @@
 {
   "orgName": "Browserforce",
   "edition": "Developer",
-  "language": "en_US"
+  "language": "en_US",
+  "features": ["DeferSharingCalc"]
 }

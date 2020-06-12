@@ -4,6 +4,44 @@ import * as path from 'path';
 import DeferSharingCalculation from '.';
 
 describe(DeferSharingCalculation.name, () => {
+  it('should assing the user defer sharing permissions', function() {
+    this.timeout(1000 * 180);
+    this.slow(1000 * 30);
+    const sourceDeployCmd = child.spawnSync('sfdx', [
+      'force:source:deploy',
+      '-p',
+      path.join(__dirname, 'sfdx-source'),
+      '--json'
+    ]);
+    assert.deepEqual(
+      sourceDeployCmd.status,
+      0,
+      sourceDeployCmd.output.toString()
+    );
+    const stdout = JSON.parse(sourceDeployCmd.stdout.toString());
+    assert(
+      stdout.result &&
+        stdout.result.deployedSource &&
+        stdout.result.deployedSource.find(
+          source => source.fullName === 'Defer_Sharing'
+        ),
+      sourceDeployCmd.output.toString()
+    );
+    const permSetAssignCmd = child.spawnSync('sfdx', [
+      'force:user:permset:assign',
+      '-n',
+      'Defer_Sharing'
+    ]);
+    assert.deepEqual(
+      permSetAssignCmd.status,
+      0,
+      permSetAssignCmd.output.toString()
+    );
+    assert(
+      /Defer_Sharing/.test(permSetAssignCmd.output.toString()),
+      permSetAssignCmd.output.toString()
+    );
+  });
   it('should suspend', function() {
     this.timeout(1000 * 90);
     this.slow(1000 * 30);
@@ -54,9 +92,9 @@ describe(DeferSharingCalculation.name, () => {
       '-f',
       path.join(__dirname, 'resume.json')
     ]);
-    assert.deepEqual(resumeCmd.status, 0, resumeCmd.output.toString());
     assert(
-      /no action necessary/.test(resumeCmd.output.toString()),
+      /no action necessary/.test(resumeCmd.output.toString()) ||
+      /Sharing recalculation is currently in progress, please wait until this has completed to plan/.test(resumeCmd.output.toString()),
       resumeCmd.output.toString()
     );
   });

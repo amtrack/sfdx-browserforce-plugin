@@ -6,7 +6,7 @@
   "properties": {
     "suspend": {
       "title": "Defer Sharing Calculation",
-      "description": "This will allow the sharing calculation to be deffered, enabling will also run the sharing rules",
+      "description": "This will allow the sharing calculation to be defered, enabling will also run the sharing rules",
       "type": "boolean"
     }
   }
