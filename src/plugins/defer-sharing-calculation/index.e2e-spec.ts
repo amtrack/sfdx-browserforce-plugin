@@ -4,7 +4,7 @@ import * as path from 'path';
 import DeferSharingCalculation from '.';
 
 describe(DeferSharingCalculation.name, () => {
-  it('should assing the user defer sharing permissions', function() {
+  it('should assign the user defer sharing permissions', function() {
     this.timeout(1000 * 180);
     this.slow(1000 * 30);
     const sourceDeployCmd = child.spawnSync('sfdx', [

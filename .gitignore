@@ -9,4 +9,3 @@ node_modules
 /.sfdx
 
 .vscode/settings.json
-coverage
