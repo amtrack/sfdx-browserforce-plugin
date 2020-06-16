@@ -7,6 +7,9 @@
   "properties": {
     "settings": {
       "properties": {
+        "deferSharingCalculation": {
+          "$ref": "./defer-sharing-calculation/schema.json"
+        },
         "lightningExperienceSettings": {
           "$ref": "./lightning-experience-settings/schema.json"
         },
