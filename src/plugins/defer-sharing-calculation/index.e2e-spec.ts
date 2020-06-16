@@ -94,7 +94,9 @@ describe(DeferSharingCalculation.name, () => {
     ]);
     assert(
       /no action necessary/.test(resumeCmd.output.toString()) ||
-      /Sharing recalculation is currently in progress, please wait until this has completed to plan/.test(resumeCmd.output.toString()),
+        /Sharing recalculation is currently in progress, please wait until this has completed to plan/.test(
+          resumeCmd.output.toString()
+        ),
       resumeCmd.output.toString()
     );
   });

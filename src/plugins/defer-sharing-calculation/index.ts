@@ -24,7 +24,9 @@ export default class DeferSharingCalculation extends BrowserforcePlugin {
       (el: HTMLInputElement) => el.disabled
     );
     if (isSuspendDisabled && isResumeDisabled) {
-      throw new Error('Sharing recalculation is currently in progress, please wait until this has completed to plan');
+      throw new Error(
+        'Sharing recalculation is currently in progress, please wait until this has completed to plan'
+      );
     }
     return {
       suspend: isSuspendDisabled
@@ -33,7 +35,9 @@ export default class DeferSharingCalculation extends BrowserforcePlugin {
 
   public async apply(config) {
     const page = await this.browserforce.openPage(PATHS.BASE);
-    const button = config.suspend ? SELECTORS.SUSPEND_BUTTON : SELECTORS.RESUME_BUTTON;
+    const button = config.suspend
+      ? SELECTORS.SUSPEND_BUTTON
+      : SELECTORS.RESUME_BUTTON;
     await page.waitFor(button);
     await page.click(button);
     if (!config.suspend) {
