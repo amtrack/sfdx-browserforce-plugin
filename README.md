@@ -114,6 +114,9 @@ Here is a full blown example showing most of the supported settings in action:
       ]
     },
     "customerPortal": { "enabled": true },
+    "deferSharingCalculation": {
+      "suspend": true
+    },
     "homePageLayouts": {
       "homePageLayoutAssignments": [
         {
