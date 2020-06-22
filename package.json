@@ -14,7 +14,7 @@
     "json-merge-patch": "^1.0.0",
     "multimatch": "^4.0.0",
     "p-retry": "^4.2.0",
-    "puppeteer": "^3.3.0",
+    "puppeteer": "^4.0.0",
     "tslib": "^2"
   },
   "devDependencies": {
