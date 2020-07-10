@@ -556,6 +556,22 @@
     chalk "^2.4.2"
     cli-ux "^4.9.3"
 
+"@salesforce/command@^3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@salesforce/command/-/command-3.0.1.tgz#b03d3a15ab2758cb3fa0ce9b35f1f784518bc330"
+  integrity sha512-Cgovnj1upVfOo7HYGsJtRJndnA6Lz34+wyLZAh29oOZnLEvUrCQ3FpdbeYjYWjcWHdWM5O31/T05jNoO2328bA==
+  dependencies:
+    "@oclif/command" "^1.5.17"
+    "@oclif/errors" "^1.2.2"
+    "@oclif/parser" "^3.8.3"
+    "@oclif/plugin-help" "^2.2.0"
+    "@oclif/test" "^1.2.4"
+    "@salesforce/core" "^2.6.0"
+    "@salesforce/kit" "^1.2.2"
+    "@salesforce/ts-types" "^1.2.0"
+    chalk "^2.4.2"
+    cli-ux "^4.9.3"
+
 "@salesforce/core@^2.1.4":
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-2.1.5.tgz#5203136d7387245fee74a5866ef73fe66cc70cfc"
@@ -623,7 +639,7 @@
     mkdirp "0.5.1"
     sfdx-faye "^1.0.9"
 
-"@salesforce/core@~2.7.0":
+"@salesforce/core@^2.6.0", "@salesforce/core@~2.7.0":
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-2.7.0.tgz#191f265a2649aebaac1b79f74685fe38e3a5a4f3"
   integrity sha512-U9TxDzL5RdJmEoGls7supYtgs4exrWseCaF6oCcBgmYUDLEM8kRl9MoqG42LBtkoCPHdZ8LrBZ/+01iwtjbpOw==
