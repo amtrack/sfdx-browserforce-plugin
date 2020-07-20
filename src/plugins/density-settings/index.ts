@@ -5,31 +5,19 @@ const PATHS = {
 };
 
 const domWaitForPickerItems = () => {
-  return (
-    document.querySelector('one-density-visual-picker') &&
-    document.querySelector('one-density-visual-picker').shadowRoot &&
-    document
-      .querySelector('one-density-visual-picker')
-      .shadowRoot.querySelectorAll('one-density-visual-picker-item').length >
-      1 &&
-    document
-      .querySelector('one-density-visual-picker')
-      .shadowRoot.querySelectorAll('one-density-visual-picker-item')[1]
-      .shadowRoot &&
-    document
-      .querySelector('one-density-visual-picker')
-      .shadowRoot.querySelectorAll('one-density-visual-picker-item')[1]
-      .shadowRoot.querySelector('input')
-  );
+  return document
+    .querySelector('one-density-visual-picker')
+    ?.shadowRoot?.querySelectorAll('one-density-visual-picker-item')?.[1]
+    ?.shadowRoot?.querySelector('input');
 };
 
 const domGetPickerItemInputs = () => {
   return Array.from(
     document
       .querySelector('one-density-visual-picker')
-      .shadowRoot.querySelectorAll('one-density-visual-picker-item')
+      ?.shadowRoot?.querySelectorAll('one-density-visual-picker-item')
   ).map(item => {
-    return item.shadowRoot.querySelector('input');
+    return item.shadowRoot?.querySelector('input');
   });
 };
 

@@ -52,49 +52,29 @@ export default class LightningExperienceSettings extends BrowserforcePlugin {
 }
 
 const domWaitForLightningThemes = () => {
-  return (
-    document.querySelector('lightning-datatable') &&
-    document.querySelector('lightning-datatable').shadowRoot &&
-    document
-      .querySelector('lightning-datatable')
-      .shadowRoot.querySelectorAll(
-        'table > tbody > tr > td:nth-child(2) > lightning-primitive-cell-factory'
-      ).length >= 7 && // assuming there are at least 7 standard themes
-    document
-      .querySelector('lightning-datatable')
-      .shadowRoot.querySelectorAll(
-        'table > tbody > tr > td:nth-child(2) > lightning-primitive-cell-factory'
-      )[1].shadowRoot &&
-    document
-      .querySelector('lightning-datatable')
-      .shadowRoot.querySelectorAll(
-        'table > tbody > tr > td:nth-child(2) > lightning-primitive-cell-factory'
-      )[1]
-      .shadowRoot.querySelector('lightning-formatted-text').shadowRoot &&
-    document
-      .querySelector('lightning-datatable')
-      .shadowRoot.querySelectorAll(
-        'table > tbody > tr > td:nth-child(2) > lightning-primitive-cell-factory'
-      )[1]
-      .shadowRoot.querySelector('lightning-formatted-text').shadowRoot
-      .textContent
-  );
+  return document
+    .querySelector('lightning-datatable')
+    ?.shadowRoot?.querySelectorAll(
+      'table > tbody > tr > td:nth-child(2) > lightning-primitive-cell-factory'
+    )?.[1]
+    ?.shadowRoot?.querySelector('lightning-formatted-text, lightning-base-formatted-text')?.shadowRoot
+    ?.textContent;
 };
 
 const domGetThemesData = () => {
   return Array.from(
     document
       .querySelector('lightning-datatable')
-      .shadowRoot.querySelectorAll('table > tbody > tr')
+      ?.shadowRoot?.querySelectorAll('table > tbody > tr')
   ).map(tr => {
     const developerName = tr
-      .querySelector('td:nth-child(2) > lightning-primitive-cell-factory')
-      .shadowRoot.querySelector('lightning-formatted-text').shadowRoot
-      .textContent;
+      ?.querySelector('td:nth-child(2) > lightning-primitive-cell-factory')
+      ?.shadowRoot?.querySelector('lightning-formatted-text, lightning-base-formatted-text')?.shadowRoot
+      ?.textContent;
     const isActive =
       tr
-        .querySelector('td:nth-child(6) > lightning-primitive-cell-factory')
-        .shadowRoot.querySelector('lightning-primitive-icon') !== null;
+        ?.querySelector('td:nth-child(6) > lightning-primitive-cell-factory')
+        ?.shadowRoot?.querySelector('lightning-primitive-icon') !== null;
     return {
       developerName,
       isActive
@@ -106,13 +86,13 @@ const domGetThemeDeveloperNameLightningPrimitiveCellTypes = name => {
   const trs = Array.from(
     document
       .querySelector('lightning-datatable')
-      .shadowRoot.querySelectorAll('table > tbody > tr')
+      ?.shadowRoot?.querySelectorAll('table > tbody > tr')
   );
   for (const tr of trs) {
     const cellDeveloperNameColumn = tr
-      .querySelector('td:nth-child(2) > lightning-primitive-cell-factory')
-      .shadowRoot.querySelector('lightning-formatted-text');
-    const developerName = cellDeveloperNameColumn.shadowRoot.textContent;
+      ?.querySelector('td:nth-child(2) > lightning-primitive-cell-factory')
+      ?.shadowRoot?.querySelector('lightning-formatted-text, lightning-base-formatted-text');
+    const developerName = cellDeveloperNameColumn?.shadowRoot?.textContent;
     if (developerName === name) {
       return cellDeveloperNameColumn;
     }
