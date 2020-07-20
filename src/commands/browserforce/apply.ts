@@ -12,8 +12,8 @@ export default class BrowserforceApply extends BrowserforceCommand {
 
   public static examples = [
     `$ sfdx browserforce:apply -f ./config/setup-admin-login-as-any.json --targetusername myOrg@example.com
-  Applying plan file ./config/setup-admin-login-as-any.json to org myOrg@example.com
   logging in... done
+  Applying definition file ./config/setup-admin-login-as-any.json to org myOrg@example.com
   [Security] retrieving state... done
   [Security] changing 'loginAccessPolicies' to '{"administratorsCanLogInAsAnyUser":true}'... done
   logging out... done
@@ -24,7 +24,7 @@ export default class BrowserforceApply extends BrowserforceCommand {
   public async run(): Promise<any> {
     const logger = await core.Logger.root();
     this.ux.log(
-      `Applying plan file ${
+      `Applying definition file ${
         this.flags.definitionfile
       } to org ${this.org.getUsername()}`
     );

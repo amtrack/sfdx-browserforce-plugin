@@ -12,9 +12,9 @@ export default class BrowserforcePlanCommand extends BrowserforceCommand {
   public static description = messages.getMessage('planCommandDescription');
 
   public static examples = [
-    `$ sfdx browserforce:plan -f ./config/setup-admin-login-as-any.json -o /tmp/state.json --targetusername myOrg@example.com
-  Generating plan with definition file ./config/setup-admin-login-as-any.json from org myOrg@example.com
+    `$ sfdx browserforce:plan -f ./config/setup-admin-login-as-any.json --targetusername myOrg@example.com
   logging in... done
+  Generating plan with definition file ./config/setup-admin-login-as-any.json from org myOrg@example.com
   [Security] retrieving state... done
   [Security] generating plan... done
   logging out... done

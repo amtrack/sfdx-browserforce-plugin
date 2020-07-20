@@ -52,7 +52,7 @@ USAGE
   $ sfdx-browserforce-plugin browserforce:COMMAND
 
 COMMANDS
-  browserforce:apply  apply a plan from a plan file or remote state
+  browserforce:apply  apply a plan from a definition file
   browserforce:plan   retrieve state and generate plan file
 ```
 
@@ -81,8 +81,8 @@ Next apply the config:
 
 ```console
 $ sfdx browserforce:apply -f ./config/setup-admin-login-as-any.json --targetusername myOrg@example.com
-  Applying plan file ./config/setup-admin-login-as-any.json to org myOrg@example.com
   logging in... done
+  Applying definition file ./config/setup-admin-login-as-any.json to org myOrg@example.com
   [Security] retrieving state... done
   [Security] changing 'loginAccessPolicies' to '{"administratorsCanLogInAsAnyUser":true}'... done
   logging out... done
