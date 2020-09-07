@@ -201,7 +201,8 @@ export default class Browserforce {
   }
 
   public getInstanceUrl() {
-    return this.org.getConnection().instanceUrl;
+    // sometimes the instanceUrl includes a trailing slash
+    return this.org.getConnection().instanceUrl?.replace(/\/$/, '');
   }
 
   public getLightningUrl() {
