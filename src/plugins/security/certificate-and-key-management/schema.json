@@ -33,7 +33,7 @@
       "properties": {
         "name": {
           "type": "string",
-          "description": "Imported certificates have lowercase names. Set this to rename after importing."
+          "description": "Optional new name of the certificate. WARNING: Only use this to change the case of the certificate name as the imported name is lowercase by default."
         },
         "filePath": {
           "type": "string",
