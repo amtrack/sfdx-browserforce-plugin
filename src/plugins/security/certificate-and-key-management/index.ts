@@ -12,6 +12,7 @@ const PATHS = {
 };
 const SELECTORS = {
   FILE_UPLOAD: 'input[type="file"]',
+  KEYSTORE_PASSWORD: 'input#Password',
   SAVE_BUTTON: 'input[name="save"]'
 };
 
@@ -123,6 +124,10 @@ export default class CertificateAndKeyManagement extends BrowserforcePlugin {
           throw new Error(`file does not exist: ${filePath}`);
         }
         await elementHandle.uploadFile(filePath);
+        if (certificate.password) {
+          await page.waitFor(SELECTORS.KEYSTORE_PASSWORD);
+          await page.type(SELECTORS.KEYSTORE_PASSWORD, certificate.password);
+        }
         await page.waitFor(SELECTORS.SAVE_BUTTON);
         await Promise.all([
           page.waitForNavigation(),
