@@ -51,9 +51,7 @@ export default class IdentityProvider extends BrowserforcePlugin {
           const certsResponse = await this.org
             .getConnection()
             .tooling.query<CertificateRecord>(
-              `SELECT Id, DeveloperName FROM Certificate WHERE DeveloperName = '${
-                plan.certificate
-              }'`
+              `SELECT Id, DeveloperName FROM Certificate WHERE DeveloperName = '${plan.certificate}'`
             );
           if (!certsResponse.records.length) {
             throw new Error(`Could not find Certificate '${plan.certificate}'`);
@@ -81,9 +79,7 @@ export default class IdentityProvider extends BrowserforcePlugin {
           );
           if (!chooseCertOption) {
             throw new Error(
-              `Waiting for Certificate '${
-                plan.certificate
-              }' to be available in Identity Provider picklist timed out`
+              `Waiting for Certificate '${plan.certificate}' to be available in Identity Provider picklist timed out`
             );
           }
           await page.select(SELECTORS.CHOOSE_CERT, chooseCertOption.value);

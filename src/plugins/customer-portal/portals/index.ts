@@ -67,9 +67,7 @@ export default class CustomerPortalSetup extends BrowserforcePlugin {
       );
       // portalProfileMemberships
       const portalProfilePage = await this.browserforce.openPage(
-        `${PATHS.PORTAL_PROFILE_MEMBERSHIP}?portalId=${
-          portal.id
-        }&setupid=CustomerSuccessPortalSettings`
+        `${PATHS.PORTAL_PROFILE_MEMBERSHIP}?portalId=${portal.id}&setupid=CustomerSuccessPortalSettings`
       );
       await portalProfilePage.waitFor(SELECTORS.PORTAL_ID);
       const profiles = await portalProfilePage.$$eval(
@@ -113,9 +111,7 @@ export default class CustomerPortalSetup extends BrowserforcePlugin {
         }
         if (!sourcePortal) {
           throw new Error(
-            `Portal with name '${portal.name} (oldName: ${
-              portal.oldName
-            })' not found. Setting up new Portals is not yet supported.`
+            `Portal with name '${portal.name} (oldName: ${portal.oldName})' not found. Setting up new Portals is not yet supported.`
           );
         }
         delete portal['oldName'];
@@ -192,11 +188,11 @@ export default class CustomerPortalSetup extends BrowserforcePlugin {
         if (portal.selfRegUserDefaultLicense) {
           const licenseValue = await page.evaluate(
             (option: HTMLOptionElement) => option.value,
-            (await page.$x(
-              `//select[@id="${
-                SELECTORS.PORTAL_SELF_REG_USER_DEFAULT_LICENSE_ID
-              }"]//option[text()="${portal.selfRegUserDefaultLicense}"]`
-            ))[0]
+            (
+              await page.$x(
+                `//select[@id="${SELECTORS.PORTAL_SELF_REG_USER_DEFAULT_LICENSE_ID}"]//option[text()="${portal.selfRegUserDefaultLicense}"]`
+              )
+            )[0]
           );
           await page.select(
             `#${SELECTORS.PORTAL_SELF_REG_USER_DEFAULT_LICENSE_ID}`,
@@ -206,11 +202,11 @@ export default class CustomerPortalSetup extends BrowserforcePlugin {
         if (portal.selfRegUserDefaultRole) {
           const roleValue = await page.evaluate(
             (option: HTMLOptionElement) => option.value,
-            (await page.$x(
-              `//select[@id="${
-                SELECTORS.PORTAL_SELF_REG_USER_DEFAULT_ROLE_ID
-              }"]//option[text()="${portal.selfRegUserDefaultRole}"]`
-            ))[0]
+            (
+              await page.$x(
+                `//select[@id="${SELECTORS.PORTAL_SELF_REG_USER_DEFAULT_ROLE_ID}"]//option[text()="${portal.selfRegUserDefaultRole}"]`
+              )
+            )[0]
           );
           await page.select(
             `#${SELECTORS.PORTAL_SELF_REG_USER_DEFAULT_ROLE_ID}`,
@@ -220,11 +216,11 @@ export default class CustomerPortalSetup extends BrowserforcePlugin {
         if (portal.selfRegUserDefaultProfile) {
           const profileValue = await page.evaluate(
             (option: HTMLOptionElement) => option.value,
-            (await page.$x(
-              `//select[@id="${
-                SELECTORS.PORTAL_SELF_REG_USER_DEFAULT_PROFILE_ID
-              }"]//option[text()="${portal.selfRegUserDefaultProfile}"]`
-            ))[0]
+            (
+              await page.$x(
+                `//select[@id="${SELECTORS.PORTAL_SELF_REG_USER_DEFAULT_PROFILE_ID}"]//option[text()="${portal.selfRegUserDefaultProfile}"]`
+              )
+            )[0]
           );
           await page.select(
             `#${SELECTORS.PORTAL_SELF_REG_USER_DEFAULT_PROFILE_ID}`,

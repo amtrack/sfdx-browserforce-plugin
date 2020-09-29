@@ -21,7 +21,6 @@ export default class BrowserforcePlanCommand extends BrowserforceCommand {
   `
   ];
 
-  // tslint:disable-next-line:no-any
   public async run(): Promise<any> {
     this.ux.log(
       `Generating plan with definition file ${

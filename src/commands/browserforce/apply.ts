@@ -20,7 +20,6 @@ export default class BrowserforceApply extends BrowserforceCommand {
   `
   ];
 
-  // tslint:disable-next-line:no-any
   public async run(): Promise<any> {
     const logger = await core.Logger.root();
     this.ux.log(

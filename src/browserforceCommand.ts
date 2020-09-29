@@ -31,7 +31,6 @@ export default class BrowserforceCommand extends SfdxCommand {
   };
 
   protected bf: Browserforce;
-  // tslint:disable-next-line:no-any
   protected settings: any[];
 
   public async init() {
@@ -47,12 +46,10 @@ export default class BrowserforceCommand extends SfdxCommand {
     this.ux.stopSpinner();
   }
 
-  // tslint:disable-next-line:no-any
   public async run(): Promise<any> {
     throw new Error('BrowserforceCommand should not be run directly');
   }
 
-  // tslint:disable-next-line:no-any
   public async finally(err: any) {
     this.ux.stopSpinner();
     if (this.bf) {
