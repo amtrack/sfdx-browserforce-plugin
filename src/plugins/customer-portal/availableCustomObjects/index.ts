@@ -51,9 +51,7 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
         });
         if (!customObject) {
           throw new Error(
-            `Could not find CustomObject: {DeveloperName: ${
-              availableCustomObject.name
-            }, NamespacePrefix: ${availableCustomObject.namespacePrefix}`
+            `Could not find CustomObject: {DeveloperName: ${availableCustomObject.name}, NamespacePrefix: ${availableCustomObject.namespacePrefix}`
           );
         }
         const classicUiPath = `${customObject.Id}/e`;

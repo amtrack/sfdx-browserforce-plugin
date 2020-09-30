@@ -4,9 +4,7 @@ import * as path from 'path';
 import CertificateAndKeyManagement from './certificate-and-key-management';
 import IdentityProvider from './identity-provider';
 
-describe(`${CertificateAndKeyManagement.name} and ${
-  IdentityProvider.name
-}`, () => {
+describe(`${CertificateAndKeyManagement.name} and ${IdentityProvider.name}`, () => {
   it('should fail to enable identity provider with non-existing Certificate', function() {
     this.timeout(1000 * 90);
     this.slow(1000 * 30);

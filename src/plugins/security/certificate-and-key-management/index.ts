@@ -143,9 +143,7 @@ export default class CertificateAndKeyManagement extends BrowserforcePlugin {
             );
           const importedCert = certsResponse.records[0];
           const certPage = await this.browserforce.openPage(
-            `${importedCert.Id}/e?MasterLabel=${
-              certificate.name
-            }&DeveloperName=${certificate.name}`
+            `${importedCert.Id}/e?MasterLabel=${certificate.name}&DeveloperName=${certificate.name}`
           );
           await certPage.waitFor(SELECTORS.SAVE_BUTTON);
           await Promise.all([

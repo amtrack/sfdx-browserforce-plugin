@@ -57,8 +57,9 @@ const domWaitForLightningThemes = () => {
     ?.shadowRoot?.querySelectorAll(
       'table > tbody > tr > td:nth-child(2) > lightning-primitive-cell-factory'
     )?.[1]
-    ?.shadowRoot?.querySelector('lightning-formatted-text, lightning-base-formatted-text')?.shadowRoot
-    ?.textContent;
+    ?.shadowRoot?.querySelector(
+      'lightning-formatted-text, lightning-base-formatted-text'
+    )?.shadowRoot?.textContent;
 };
 
 const domGetThemesData = () => {
@@ -69,8 +70,9 @@ const domGetThemesData = () => {
   ).map(tr => {
     const developerName = tr
       ?.querySelector('td:nth-child(2) > lightning-primitive-cell-factory')
-      ?.shadowRoot?.querySelector('lightning-formatted-text, lightning-base-formatted-text')?.shadowRoot
-      ?.textContent;
+      ?.shadowRoot?.querySelector(
+        'lightning-formatted-text, lightning-base-formatted-text'
+      )?.shadowRoot?.textContent;
     const isActive =
       tr
         ?.querySelector('td:nth-child(6) > lightning-primitive-cell-factory')
@@ -91,7 +93,9 @@ const domGetThemeDeveloperNameLightningPrimitiveCellTypes = name => {
   for (const tr of trs) {
     const cellDeveloperNameColumn = tr
       ?.querySelector('td:nth-child(2) > lightning-primitive-cell-factory')
-      ?.shadowRoot?.querySelector('lightning-formatted-text, lightning-base-formatted-text');
+      ?.shadowRoot?.querySelector(
+        'lightning-formatted-text, lightning-base-formatted-text'
+      );
     const developerName = cellDeveloperNameColumn?.shadowRoot?.textContent;
     if (developerName === name) {
       return cellDeveloperNameColumn;

@@ -14,7 +14,9 @@ describe(LightningExperienceSettings.name, () => {
     ]);
     assert.deepEqual(cmd.status, 0, cmd.output.toString());
     assert(
-      /changing 'activeThemeName' to '"LightningLite"'/.test(cmd.output.toString()),
+      /changing 'activeThemeName' to '"LightningLite"'/.test(
+        cmd.output.toString()
+      ),
       cmd.output.toString()
     );
   });
