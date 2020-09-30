@@ -21,7 +21,7 @@
     "@oclif/dev-cli": "^1",
     "@oclif/plugin-help": "^3",
     "@oclif/test": "^1",
-    "@salesforce/dev-config": "^1.6.0",
+    "@salesforce/dev-config": "^2.0.0",
     "@salesforce/prettier-config": "^0.0.1",
     "@types/mocha": "^8.0.3",
     "@types/node": "^10.17.35",
