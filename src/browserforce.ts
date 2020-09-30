@@ -176,7 +176,7 @@ export default class Browserforce {
     const instanceUrl = this.getInstanceUrl();
     // acme.my.salesforce.com
     // acme--<sandboxName>.csN.my.salesforce.com
-    const matches = instanceUrl.match(/https\:\/\/(.*)\.my\.salesforce\.com/);
+    const matches = instanceUrl.match(/https:\/\/(.*)\.my\.salesforce\.com/);
     if (matches) {
       return matches[1].split('.')[0];
     }
@@ -188,7 +188,7 @@ export default class Browserforce {
     // csN.salesforce.com
     // acme--<sandboxName>.csN.my.salesforce.com
     // NOT: test.salesforce.com login.salesforce.com
-    const matches = instanceUrl.match(/https\:\/\/(.*)\.salesforce\.com/);
+    const matches = instanceUrl.match(/https:\/\/(.*)\.salesforce\.com/);
     if (matches) {
       const parts = matches[1].split('.');
       if (parts.length === 3 && parts[2] === 'my') {
