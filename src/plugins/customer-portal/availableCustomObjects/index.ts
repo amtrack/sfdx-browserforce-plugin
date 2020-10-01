@@ -68,11 +68,11 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
             }
           );
           // maybe use waitForFrame https://github.com/GoogleChrome/puppeteer/issues/1361
-          await lexPage.waitFor(SELECTORS.IFRAME);
+          await lexPage.waitForSelector(SELECTORS.IFRAME);
           const frame = await lexPage
             .frames()
             .find(f => f.name().startsWith('vfFrameId'));
-          await frame.waitFor(
+          await frame.waitForSelector(
             SELECTORS.CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL
           );
           response.push({
@@ -86,7 +86,7 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
           });
         } else {
           const classicPage = await this.browserforce.openPage(classicUiPath);
-          await classicPage.waitFor(
+          await classicPage.waitForSelector(
             SELECTORS.CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL
           );
           response.push({
@@ -159,11 +159,11 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
             }
           );
           // maybe use waitForFrame https://github.com/GoogleChrome/puppeteer/issues/1361
-          await lexPage.waitFor(SELECTORS.IFRAME);
+          await lexPage.waitForSelector(SELECTORS.IFRAME);
           const frame = await lexPage
             .frames()
             .find(f => f.name().startsWith('vfFrameId'));
-          await frame.waitFor(SELECTORS.SAVE_BUTTON);
+          await frame.waitForSelector(SELECTORS.SAVE_BUTTON);
           // framenavigated https://github.com/GoogleChrome/puppeteer/issues/2918
           await Promise.all([
             frame.waitForNavigation(),
@@ -171,7 +171,7 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
           ]);
         } else {
           const classicPage = await this.browserforce.openPage(classicUiPath);
-          await classicPage.waitFor(SELECTORS.SAVE_BUTTON);
+          await classicPage.waitForSelector(SELECTORS.SAVE_BUTTON);
           await Promise.all([
             classicPage.waitForNavigation(),
             classicPage.click(SELECTORS.SAVE_BUTTON)

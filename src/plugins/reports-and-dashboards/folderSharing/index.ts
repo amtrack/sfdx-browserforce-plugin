@@ -18,7 +18,7 @@ export default class FolderSharing extends BrowserforcePlugin {
       const page = await this.browserforce.openPage(PATHS.BASE, {
         waitUntil: ['load', 'domcontentloaded', 'networkidle0']
       });
-      const frameOrPage = await this.browserforce.waitForInFrameOrPage(
+      const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(
         page,
         SELECTORS.BASE
       );
@@ -48,7 +48,7 @@ export default class FolderSharing extends BrowserforcePlugin {
       );
     }
     const page = await this.browserforce.openPage(PATHS.BASE);
-    await page.waitFor(SELECTORS.ENABLE_CHECKBOX);
+    await page.waitForSelector(SELECTORS.ENABLE_CHECKBOX);
     await page.$eval(
       SELECTORS.ENABLE_CHECKBOX,
       (e: HTMLInputElement, v) => {
@@ -56,7 +56,7 @@ export default class FolderSharing extends BrowserforcePlugin {
       },
       config.enableEnhancedFolderSharing
     );
-    await page.waitFor(SELECTORS.SAVE_BUTTON);
+    await page.waitForSelector(SELECTORS.SAVE_BUTTON);
     await Promise.all([
       page.waitForNavigation(),
       page.click(SELECTORS.SAVE_BUTTON)

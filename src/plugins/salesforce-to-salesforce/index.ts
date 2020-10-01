@@ -12,7 +12,7 @@ const SELECTORS = {
 export default class SalesforceToSalesforce extends BrowserforcePlugin {
   public async retrieve() {
     const page = await this.browserforce.openPage(PATHS.BASE);
-    await page.waitFor(SELECTORS.BASE);
+    await page.waitForSelector(SELECTORS.BASE);
     const response = {};
     const inputEnable = await page.$(SELECTORS.ENABLED);
     if (inputEnable) {
@@ -33,7 +33,7 @@ export default class SalesforceToSalesforce extends BrowserforcePlugin {
     }
 
     const page = await this.browserforce.openPage(PATHS.BASE);
-    await page.waitFor(SELECTORS.ENABLED);
+    await page.waitForSelector(SELECTORS.ENABLED);
     await page.$eval(
       SELECTORS.ENABLED,
       (e: HTMLInputElement, v) => {

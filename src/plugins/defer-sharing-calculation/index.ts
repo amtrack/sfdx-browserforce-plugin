@@ -12,8 +12,8 @@ const SELECTORS = {
 export default class DeferSharingCalculation extends BrowserforcePlugin {
   public async retrieve(definition?) {
     const page = await this.browserforce.openPage(PATHS.BASE);
-    await page.waitFor(SELECTORS.SUSPEND_BUTTON);
-    await page.waitFor(SELECTORS.RESUME_BUTTON);
+    await page.waitForSelector(SELECTORS.SUSPEND_BUTTON);
+    await page.waitForSelector(SELECTORS.RESUME_BUTTON);
 
     const isSuspendDisabled = await page.$eval(
       SELECTORS.SUSPEND_BUTTON,
@@ -38,7 +38,7 @@ export default class DeferSharingCalculation extends BrowserforcePlugin {
     const button = config.suspend
       ? SELECTORS.SUSPEND_BUTTON
       : SELECTORS.RESUME_BUTTON;
-    await page.waitFor(button);
+    await page.waitForSelector(button);
     await page.click(button);
     if (!config.suspend) {
       const refreshedPage = await this.browserforce.openPage(PATHS.BASE);

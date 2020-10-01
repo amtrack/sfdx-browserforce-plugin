@@ -13,7 +13,7 @@ export default class CustomerPortalEnable extends BrowserforcePlugin {
     const page = await this.browserforce.openPage(PATHS.EDIT_VIEW, {
       waitUntil: ['load', 'domcontentloaded', 'networkidle0']
     });
-    await page.waitFor(SELECTORS.ENABLED);
+    await page.waitForSelector(SELECTORS.ENABLED);
     const response = await page.$eval(
       SELECTORS.ENABLED,
       (el: HTMLInputElement) => el.checked
@@ -34,7 +34,7 @@ export default class CustomerPortalEnable extends BrowserforcePlugin {
 
     if (plan) {
       const page = await this.browserforce.openPage(PATHS.EDIT_VIEW);
-      await page.waitFor(SELECTORS.ENABLED);
+      await page.waitForSelector(SELECTORS.ENABLED);
       await page.$eval(
         SELECTORS.ENABLED,
         (e: HTMLInputElement, v) => {

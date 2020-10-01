@@ -14,7 +14,7 @@ export default class ActivitySettings extends BrowserforcePlugin {
     const page = await this.browserforce.openPage(PATHS.BASE, {
       waitUntil: ['load', 'domcontentloaded', 'networkidle0']
     });
-    await page.waitFor(SELECTORS.MANY_WHO_PREF_INPUT);
+    await page.waitForSelector(SELECTORS.MANY_WHO_PREF_INPUT);
     const response = {
       allowUsersToRelateMultipleContactsToTasksAndEvents: await page.$eval(
         SELECTORS.MANY_WHO_PREF_INPUT,
@@ -33,7 +33,7 @@ export default class ActivitySettings extends BrowserforcePlugin {
     const page = await this.browserforce.openPage(PATHS.BASE, {
       waitUntil: ['load', 'domcontentloaded', 'networkidle0']
     });
-    await page.waitFor(SELECTORS.MANY_WHO_PREF_INPUT);
+    await page.waitForSelector(SELECTORS.MANY_WHO_PREF_INPUT);
     await page.$eval(
       SELECTORS.MANY_WHO_PREF_INPUT,
       (e: HTMLInputElement, v) => {

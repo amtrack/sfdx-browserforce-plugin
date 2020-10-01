@@ -40,7 +40,7 @@ export default class CustomerPortalSetup extends BrowserforcePlugin {
     }, ...customerPortalLinks);
     for (const portal of response) {
       const portalPage = await this.browserforce.openPage(`${portal.id}/e`);
-      await portalPage.waitFor(SELECTORS.PORTAL_DESCRIPTION);
+      await portalPage.waitForSelector(SELECTORS.PORTAL_DESCRIPTION);
       portal['description'] = await portalPage.$eval(
         SELECTORS.PORTAL_DESCRIPTION,
         (el: HTMLInputElement) => el.value
@@ -69,7 +69,7 @@ export default class CustomerPortalSetup extends BrowserforcePlugin {
       const portalProfilePage = await this.browserforce.openPage(
         `${PATHS.PORTAL_PROFILE_MEMBERSHIP}?portalId=${portal.id}&setupid=CustomerSuccessPortalSettings`
       );
-      await portalProfilePage.waitFor(SELECTORS.PORTAL_ID);
+      await portalProfilePage.waitForSelector(SELECTORS.PORTAL_ID);
       const profiles = await portalProfilePage.$$eval(
         SELECTORS.PORTAL_PROFILE_MEMBERSHIP_PROFILES,
         (ths: HTMLTableHeaderCellElement[]) => {
@@ -184,7 +184,7 @@ export default class CustomerPortalSetup extends BrowserforcePlugin {
         const page = await this.browserforce.openPage(
           `${portal.id}/e?${queryString.stringify(urlAttributes)}`
         );
-        await page.waitFor(SELECTORS.PORTAL_DESCRIPTION);
+        await page.waitForSelector(SELECTORS.PORTAL_DESCRIPTION);
         if (portal.selfRegUserDefaultLicense) {
           const licenseValue = await page.evaluate(
             (option: HTMLOptionElement) => option.value,
@@ -227,7 +227,7 @@ export default class CustomerPortalSetup extends BrowserforcePlugin {
             profileValue
           );
         }
-        await page.waitFor(SELECTORS.SAVE_BUTTON);
+        await page.waitForSelector(SELECTORS.SAVE_BUTTON);
         await Promise.all([
           page.waitForNavigation({
             waitUntil: ['load', 'domcontentloaded', 'networkidle0']
@@ -236,7 +236,7 @@ export default class CustomerPortalSetup extends BrowserforcePlugin {
         ]);
         if ((await page.url()).includes(portal.id)) {
           // error handling
-          await page.waitFor(SELECTORS.PORTAL_DESCRIPTION);
+          await page.waitForSelector(SELECTORS.PORTAL_DESCRIPTION);
           await this.browserforce.throwPageErrors(page);
           throw new Error(`saving customer portal '${portal.id}' failed`);
         }
@@ -253,7 +253,7 @@ export default class CustomerPortalSetup extends BrowserforcePlugin {
               membershipUrlAttributes
             )}`
           );
-          await portalProfilePage.waitFor(SELECTORS.SAVE_BUTTON);
+          await portalProfilePage.waitForSelector(SELECTORS.SAVE_BUTTON);
           await Promise.all([
             portalProfilePage.waitForNavigation(),
             portalProfilePage.click(SELECTORS.SAVE_BUTTON)
