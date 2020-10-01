@@ -32,7 +32,7 @@
     "eslint-config-prettier": "^6.12.0",
     "mocha": "^8",
     "nyc": "^15",
-    "sfdx-cli": "^7.73.1",
+    "sfdx-cli": "^7.75.0",
     "tmp": "^0.2.1",
     "ts-node": "^9",
     "typescript": "^4.0.3"
