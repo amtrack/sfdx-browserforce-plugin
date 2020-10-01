@@ -22,7 +22,7 @@ const SELECTORS = {
 export default class CriticalUpdates extends BrowserforcePlugin {
   public async retrieve(definition?) {
     const page = await this.browserforce.openPage(PATHS.BASE);
-    await page.waitFor(SELECTORS.TABLE_BODY);
+    await page.waitForSelector(SELECTORS.TABLE_BODY);
     const response = [];
     const rowHandles = await page.$$(SELECTORS.TABLE_ROWS);
     for (const rowHandle of rowHandles) {
@@ -83,7 +83,7 @@ export default class CriticalUpdates extends BrowserforcePlugin {
       const buttonSelector = update.active
         ? SELECTORS.FORM_ACTIVATE_BUTTON
         : SELECTORS.FORM_DEACTIVATE_BUTTON;
-      await page.waitFor(buttonSelector);
+      await page.waitForSelector(buttonSelector);
       const isDisabled = await page.$eval(
         buttonSelector,
         (button: HTMLButtonElement) => button.disabled
@@ -95,12 +95,12 @@ export default class CriticalUpdates extends BrowserforcePlugin {
         );
         continue;
       } else {
-        await page.waitFor(SELECTORS.FORM_COMMENT);
+        await page.waitForSelector(SELECTORS.FORM_COMMENT);
         if (update.comment) {
           await page.type(SELECTORS.FORM_COMMENT, update.comment);
         }
         await Promise.all([
-          page.waitFor(SELECTORS.TABLE_BODY),
+          page.waitForSelector(SELECTORS.TABLE_BODY),
           page.click(buttonSelector)
         ]);
       }

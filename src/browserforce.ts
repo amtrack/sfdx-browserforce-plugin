@@ -159,16 +159,16 @@ export default class Browserforce {
   }
 
   // If LEX is enabled, the classic url will be opened in an iframe.
-  // Wait for either the selectorOrFunctionOrTimeout in the page or the selectorOrFunctionOrTimeout in the iframe.
+  // Wait for either the selector in the page or in the iframe.
   // returns the page or the frame
-  public async waitForInFrameOrPage(page, selectorOrFunctionOrTimeout) {
+  public async waitForSelectorInFrameOrPage(page, selector) {
     await Promise.race([
-      page.waitFor(selectorOrFunctionOrTimeout),
-      page.waitFor(VF_IFRAME_SELECTOR)
+      page.waitForSelector(selector),
+      page.waitForSelector(VF_IFRAME_SELECTOR)
     ]);
     const frameOrPage =
       (await page.frames().find(f => f.name().startsWith('vfFrameId'))) || page;
-    await frameOrPage.waitFor(selectorOrFunctionOrTimeout);
+    await frameOrPage.waitForSelector(selector);
     return frameOrPage;
   }
 

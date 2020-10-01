@@ -103,7 +103,7 @@ export default class CertificateAndKeyManagement extends BrowserforcePlugin {
           const page = await this.browserforce.openPage(
             `${PATHS.CERT_PREFIX}/e?${queryString.stringify(urlAttributes)}`
           );
-          await page.waitFor(SELECTORS.SAVE_BUTTON);
+          await page.waitForSelector(SELECTORS.SAVE_BUTTON);
           await Promise.all([
             page.waitForNavigation(),
             page.click(SELECTORS.SAVE_BUTTON)
@@ -116,7 +116,7 @@ export default class CertificateAndKeyManagement extends BrowserforcePlugin {
         const page = await this.browserforce.openPage(
           `${PATHS.KEYSTORE_IMPORT}`
         );
-        await page.waitFor(SELECTORS.FILE_UPLOAD);
+        await page.waitForSelector(SELECTORS.FILE_UPLOAD);
         const elementHandle = await page.$(SELECTORS.FILE_UPLOAD);
         // TODO: make relative to this.command.flags.definitionfile
         const filePath = path.resolve(certificate.filePath);
@@ -125,10 +125,10 @@ export default class CertificateAndKeyManagement extends BrowserforcePlugin {
         }
         await elementHandle.uploadFile(filePath);
         if (certificate.password) {
-          await page.waitFor(SELECTORS.KEYSTORE_PASSWORD);
+          await page.waitForSelector(SELECTORS.KEYSTORE_PASSWORD);
           await page.type(SELECTORS.KEYSTORE_PASSWORD, certificate.password);
         }
-        await page.waitFor(SELECTORS.SAVE_BUTTON);
+        await page.waitForSelector(SELECTORS.SAVE_BUTTON);
         await Promise.all([
           page.waitForNavigation(),
           page.click(SELECTORS.SAVE_BUTTON)
@@ -145,7 +145,7 @@ export default class CertificateAndKeyManagement extends BrowserforcePlugin {
           const certPage = await this.browserforce.openPage(
             `${importedCert.Id}/e?MasterLabel=${certificate.name}&DeveloperName=${certificate.name}`
           );
-          await certPage.waitFor(SELECTORS.SAVE_BUTTON);
+          await certPage.waitForSelector(SELECTORS.SAVE_BUTTON);
           await Promise.all([
             certPage.waitForNavigation(),
             certPage.click(SELECTORS.SAVE_BUTTON)

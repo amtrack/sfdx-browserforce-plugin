@@ -37,11 +37,11 @@ export default class LightningExperienceSettings extends BrowserforcePlugin {
     await page.keyboard.press('ArrowRight');
     await page.keyboard.press('ArrowRight');
     await page.keyboard.press('Space');
-    await page.waitFor(1000);
+    await page.waitForTimeout(1000);
     await page.keyboard.press('ArrowUp');
-    await page.waitFor(1000);
+    await page.waitForTimeout(1000);
     await page.keyboard.press('ArrowUp');
-    await page.waitFor(1000);
+    await page.waitForTimeout(1000);
     await Promise.all([
       page.waitForNavigation({
         waitUntil: ['load', 'domcontentloaded', 'networkidle0']

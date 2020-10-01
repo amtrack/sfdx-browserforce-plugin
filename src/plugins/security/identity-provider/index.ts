@@ -24,7 +24,7 @@ interface CertificateRecord {
 export default class IdentityProvider extends BrowserforcePlugin {
   public async retrieve(definition?) {
     const page = await this.browserforce.openPage(PATHS.EDIT_VIEW);
-    await page.waitFor(SELECTORS.EDIT_BUTTON);
+    await page.waitForSelector(SELECTORS.EDIT_BUTTON);
     const disableButton = await page.$(SELECTORS.DISABLE_BUTTON);
     const certNameHandle = await page.$(SELECTORS.CERT_NAME_SPAN);
     const response = {
@@ -57,12 +57,12 @@ export default class IdentityProvider extends BrowserforcePlugin {
             throw new Error(`Could not find Certificate '${plan.certificate}'`);
           }
           const page = await this.browserforce.openPage(PATHS.EDIT_VIEW);
-          await page.waitFor(SELECTORS.EDIT_BUTTON);
+          await page.waitForSelector(SELECTORS.EDIT_BUTTON);
           await Promise.all([
             page.waitForNavigation(),
             page.click(SELECTORS.EDIT_BUTTON)
           ]);
-          await page.waitFor(SELECTORS.CHOOSE_CERT);
+          await page.waitForSelector(SELECTORS.CHOOSE_CERT);
           const chooseCertOptions = await page.$$eval(
             `${SELECTORS.CHOOSE_CERT} option`,
             (options: HTMLOptionElement[]) => {
@@ -86,7 +86,7 @@ export default class IdentityProvider extends BrowserforcePlugin {
           page.on('dialog', async dialog => {
             await dialog.accept();
           });
-          await page.waitFor(SELECTORS.SAVE_BUTTON);
+          await page.waitForSelector(SELECTORS.SAVE_BUTTON);
           await Promise.all([
             page.waitForNavigation(),
             page.click(SELECTORS.SAVE_BUTTON)
@@ -99,7 +99,7 @@ export default class IdentityProvider extends BrowserforcePlugin {
       );
     } else {
       const page = await this.browserforce.openPage(PATHS.EDIT_VIEW);
-      await page.waitFor(SELECTORS.EDIT_BUTTON);
+      await page.waitForSelector(SELECTORS.EDIT_BUTTON);
       await page.$(SELECTORS.DISABLE_BUTTON);
       page.on('dialog', async dialog => {
         await dialog.accept();

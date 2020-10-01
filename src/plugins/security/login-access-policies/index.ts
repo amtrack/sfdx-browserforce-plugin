@@ -12,7 +12,7 @@ const SELECTORS = {
 export default class LoginAccessPolicies extends BrowserforcePlugin {
   public async retrieve(definition?) {
     const page = await this.browserforce.openPage(PATHS.BASE);
-    await page.waitFor(SELECTORS.ENABLED);
+    await page.waitForSelector(SELECTORS.ENABLED);
     const response = {
       administratorsCanLogInAsAnyUser: await page.$eval(
         SELECTORS.ENABLED,
@@ -24,7 +24,7 @@ export default class LoginAccessPolicies extends BrowserforcePlugin {
 
   public async apply(config) {
     const page = await this.browserforce.openPage(PATHS.BASE);
-    await page.waitFor(SELECTORS.ENABLED);
+    await page.waitForSelector(SELECTORS.ENABLED);
     await page.$eval(
       SELECTORS.ENABLED,
       (e: HTMLInputElement, v) => {
@@ -33,7 +33,7 @@ export default class LoginAccessPolicies extends BrowserforcePlugin {
       config.administratorsCanLogInAsAnyUser
     );
     await Promise.all([
-      page.waitFor(SELECTORS.CONFIRM_MESSAGE),
+      page.waitForSelector(SELECTORS.CONFIRM_MESSAGE),
       page.click(SELECTORS.SAVE_BUTTON)
     ]);
   }

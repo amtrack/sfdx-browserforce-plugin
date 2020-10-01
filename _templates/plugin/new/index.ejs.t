@@ -16,7 +16,7 @@ const SELECTORS = {
 export default class <%= h.changeCase.pascalCase(name) %> extends BrowserforcePlugin {
   public async retrieve(definition?) {
     const page = await this.browserforce.openPage(PATHS.BASE);
-    await page.waitFor(SELECTORS.ENABLED);
+    await page.waitForSelector(SELECTORS.ENABLED);
     const response = {
       enabled: await page.$eval(
         SELECTORS.ENABLED,
@@ -28,7 +28,7 @@ export default class <%= h.changeCase.pascalCase(name) %> extends BrowserforcePl
 
   public async apply(config) {
     const page = await this.browserforce.openPage(PATHS.BASE);
-    await page.waitFor(SELECTORS.ENABLED);
+    await page.waitForSelector(SELECTORS.ENABLED);
     await page.$eval(
       SELECTORS.ENABLED,
       (e: HTMLInputElement, v) => {
@@ -37,7 +37,7 @@ export default class <%= h.changeCase.pascalCase(name) %> extends BrowserforcePl
       config.enabled
     );
     await Promise.all([
-      page.waitFor(SELECTORS.CONFIRM_MESSAGE),
+      page.waitForSelector(SELECTORS.CONFIRM_MESSAGE),
       page.click(SELECTORS.SAVE_BUTTON)
     ]);
   }

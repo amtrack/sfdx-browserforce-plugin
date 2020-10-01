@@ -14,7 +14,7 @@ const SELECTORS = {
 export default class Sharing extends BrowserforcePlugin {
   public async retrieve(definition?) {
     const page = await this.browserforce.openPage(PATHS.BASE);
-    await page.waitFor(SELECTORS.EXTERNAL_SHARING_MODEL_BUTTON);
+    await page.waitForSelector(SELECTORS.EXTERNAL_SHARING_MODEL_BUTTON);
     const buttonOnclick = await page.$eval(
       SELECTORS.EXTERNAL_SHARING_MODEL_BUTTON,
       (el: HTMLInputElement) => el.onclick.toString()
@@ -27,18 +27,18 @@ export default class Sharing extends BrowserforcePlugin {
 
   public async apply(config) {
     const page = await this.browserforce.openPage(PATHS.BASE);
-    await page.waitFor(SELECTORS.EXTERNAL_SHARING_MODEL_BUTTON);
+    await page.waitForSelector(SELECTORS.EXTERNAL_SHARING_MODEL_BUTTON);
     page.on('dialog', async dialog => {
       await dialog.accept();
     });
     if (config.enableExternalSharingModel) {
       await Promise.all([
-        page.waitFor(SELECTORS.DISABLE_BUTTON),
+        page.waitForSelector(SELECTORS.DISABLE_BUTTON),
         page.click(SELECTORS.ENABLE_BUTTON)
       ]);
     } else {
       await Promise.all([
-        page.waitFor(SELECTORS.ENABLE_BUTTON),
+        page.waitForSelector(SELECTORS.ENABLE_BUTTON),
         page.click(SELECTORS.DISABLE_BUTTON)
       ]);
     }

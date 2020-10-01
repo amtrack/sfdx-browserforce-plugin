@@ -23,7 +23,7 @@ interface HomePageLayoutRecord {
 export default class HomePageLayouts extends BrowserforcePlugin {
   public async retrieve(definition?) {
     const page = await this.browserforce.openPage(PATHS.BASE);
-    await page.waitFor(SELECTORS.BASE);
+    await page.waitForSelector(SELECTORS.BASE);
     const profiles = await page.$$eval(
       'table.detailList tbody tr td label',
       (labels: HTMLLabelElement[]) => {
@@ -90,7 +90,7 @@ export default class HomePageLayouts extends BrowserforcePlugin {
       );
 
     const page = await this.browserforce.openPage(PATHS.BASE);
-    await page.waitFor(SELECTORS.BASE);
+    await page.waitForSelector(SELECTORS.BASE);
     for (const assignment of config.homePageLayoutAssignments) {
       const homePageLayoutName = assignment.layout;
       const profile = profiles.records.find(p => p.Name === assignment.profile);
@@ -104,7 +104,7 @@ export default class HomePageLayouts extends BrowserforcePlugin {
         homePageLayout = { Id: 'default', Name: 'default' };
       }
       const profileSelector = `select[id='${profile.Id.substring(0, 15)}']`;
-      await page.waitFor(profileSelector);
+      await page.waitForSelector(profileSelector);
       await page.select(profileSelector, homePageLayout.Id.substring(0, 15));
     }
     await Promise.all([

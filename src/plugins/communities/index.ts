@@ -15,7 +15,7 @@ export default class Communities extends BrowserforcePlugin {
     const page = await this.browserforce.openPage(PATHS.BASE, {
       waitUntil: ['load', 'domcontentloaded', 'networkidle0']
     });
-    const frameOrPage = await this.browserforce.waitForInFrameOrPage(
+    const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(
       page,
       SELECTORS.BASE
     );
@@ -41,7 +41,7 @@ export default class Communities extends BrowserforcePlugin {
     const page = await this.browserforce.openPage(PATHS.BASE, {
       waitUntil: ['load', 'domcontentloaded', 'networkidle0']
     });
-    const frameOrPage = await this.browserforce.waitForInFrameOrPage(
+    const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(
       page,
       SELECTORS.ENABLE_CHECKBOX
     );
@@ -53,12 +53,12 @@ export default class Communities extends BrowserforcePlugin {
         .toString(36)
         .substr(2)}`
     ).substring(0, 22);
-    await frameOrPage.waitFor(SELECTORS.DOMAIN_NAME_INPUT_TEXT);
+    await frameOrPage.waitForSelector(SELECTORS.DOMAIN_NAME_INPUT_TEXT);
     await frameOrPage.type(SELECTORS.DOMAIN_NAME_INPUT_TEXT, domainName);
     page.on('dialog', async dialog => {
       await dialog.accept();
     });
-    await frameOrPage.waitFor(SELECTORS.SAVE_BUTTON);
+    await frameOrPage.waitForSelector(SELECTORS.SAVE_BUTTON);
     await Promise.all([
       page.waitForNavigation(),
       frameOrPage.click(SELECTORS.SAVE_BUTTON)
