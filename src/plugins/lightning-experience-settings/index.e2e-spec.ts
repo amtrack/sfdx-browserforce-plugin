@@ -12,7 +12,7 @@ describe(LightningExperienceSettings.name, function() {
       '-f',
       path.resolve(path.join(__dirname, 'activate-lightning-lite.json'))
     ]);
-    assert.deepEqual(cmd.status, 0, cmd.output.toString());
+    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
     assert(
       /changing 'activeThemeName' to '"LightningLite"'/.test(
         cmd.output.toString()
@@ -26,7 +26,7 @@ describe(LightningExperienceSettings.name, function() {
       '-f',
       path.join(__dirname, 'activate-lightning-lite.json')
     ]);
-    assert.deepEqual(cmd.status, 0, cmd.output.toString());
+    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
     assert(
       /no action necessary/.test(cmd.output.toString()),
       cmd.output.toString()
@@ -38,7 +38,7 @@ describe(LightningExperienceSettings.name, function() {
       '-f',
       path.resolve(path.join(__dirname, 'activate-lightning.json'))
     ]);
-    assert.deepEqual(cmd.status, 0, cmd.output.toString());
+    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
     assert(
       /changing 'activeThemeName' to '"Lightning"'/.test(cmd.output.toString()),
       cmd.output.toString()
@@ -50,7 +50,7 @@ describe(LightningExperienceSettings.name, function() {
       '-f',
       path.join(__dirname, 'activate-lightning.json')
     ]);
-    assert.deepEqual(cmd.status, 0, cmd.output.toString());
+    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
     assert(
       /no action necessary/.test(cmd.output.toString()),
       cmd.output.toString()

@@ -12,7 +12,7 @@ describe(SalesforceToSalesforce.name, function() {
       '-f',
       path.resolve(path.join(__dirname, 'enable.json'))
     ]);
-    assert.deepEqual(enableCmd.status, 0, enableCmd.output.toString());
+    assert.deepStrictEqual(enableCmd.status, 0, enableCmd.output.toString());
     assert(
       /to 'true'/.test(enableCmd.output.toString()),
       enableCmd.output.toString()
@@ -24,7 +24,7 @@ describe(SalesforceToSalesforce.name, function() {
       '-f',
       path.resolve(path.join(__dirname, 'disable.json'))
     ]);
-    assert.deepEqual(disableCmd.status, 1, disableCmd.output.toString());
+    assert.deepStrictEqual(disableCmd.status, 1, disableCmd.output.toString());
     assert(
       /to 'false'/.test(disableCmd.output.toString()),
       disableCmd.output.toString()

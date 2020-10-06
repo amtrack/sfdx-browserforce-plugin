@@ -12,7 +12,7 @@ describe(DensitySettings.name, function() {
       '-f',
       path.resolve(path.join(__dirname, 'compact.json'))
     ]);
-    assert.deepEqual(
+    assert.deepStrictEqual(
       setCompactCommand.status,
       0,
       setCompactCommand.output.toString()
@@ -28,7 +28,7 @@ describe(DensitySettings.name, function() {
       '-f',
       path.resolve(path.join(__dirname, 'compact.json'))
     ]);
-    assert.deepEqual(
+    assert.deepStrictEqual(
       setCompactCommand2.status,
       0,
       setCompactCommand2.output.toString()
@@ -44,7 +44,7 @@ describe(DensitySettings.name, function() {
       '-f',
       path.resolve(path.join(__dirname, 'comfy.json'))
     ]);
-    assert.deepEqual(
+    assert.deepStrictEqual(
       setComfyCommand.status,
       0,
       setComfyCommand.output.toString()
@@ -60,7 +60,7 @@ describe(DensitySettings.name, function() {
       '-f',
       path.resolve(path.join(__dirname, 'comfy.json'))
     ]);
-    assert.deepEqual(
+    assert.deepStrictEqual(
       setComfyCommand2.status,
       0,
       setComfyCommand2.output.toString()

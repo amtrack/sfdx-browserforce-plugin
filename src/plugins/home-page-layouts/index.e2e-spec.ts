@@ -15,7 +15,7 @@ describe(HomePageLayouts.name, function() {
         path.resolve(path.join(__dirname, 'home-page-default.json'))
       ]
     );
-    assert.deepEqual(
+    assert.deepStrictEqual(
       assignHomePageDefaultCmd.status,
       0,
       assignHomePageDefaultCmd.output.toString()
@@ -33,7 +33,7 @@ describe(HomePageLayouts.name, function() {
       '-f',
       path.resolve(path.join(__dirname, 'org-default.json'))
     ]);
-    assert.deepEqual(
+    assert.deepStrictEqual(
       assignOrgDefaultCmd.status,
       0,
       assignOrgDefaultCmd.output.toString()

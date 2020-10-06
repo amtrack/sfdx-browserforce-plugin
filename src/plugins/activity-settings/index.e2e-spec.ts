@@ -12,7 +12,7 @@ describe(ActivitySettings.name, function() {
       '-f',
       path.resolve(path.join(__dirname, 'enable-manyWhoPref.json'))
     ]);
-    assert.deepEqual(
+    assert.deepStrictEqual(
       enableManyWhoPrefCmd.status,
       0,
       enableManyWhoPrefCmd.output.toString()
@@ -30,7 +30,7 @@ describe(ActivitySettings.name, function() {
       '-f',
       path.resolve(path.join(__dirname, 'enable-manyWhoPref.json'))
     ]);
-    assert.deepEqual(
+    assert.deepStrictEqual(
       enableManyWhoPrefCmd2.status,
       0,
       enableManyWhoPrefCmd2.output.toString()
@@ -46,7 +46,7 @@ describe(ActivitySettings.name, function() {
       '-f',
       path.resolve(path.join(__dirname, 'disable-manyWhoPref.json'))
     ]);
-    assert.deepEqual(
+    assert.deepStrictEqual(
       disableManyWhoPrefCmd.status,
       1,
       disableManyWhoPrefCmd.output.toString()

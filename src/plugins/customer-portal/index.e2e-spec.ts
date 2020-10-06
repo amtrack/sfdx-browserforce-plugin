@@ -15,7 +15,7 @@ describe(CustomerPortalEnable.name, function() {
       '-f',
       path.join(dir, 'enable.json')
     ]);
-    assert.deepEqual(enableCmd.status, 0, enableCmd.output.toString());
+    assert.deepStrictEqual(enableCmd.status, 0, enableCmd.output.toString());
     assert(
       /to 'true'/.test(enableCmd.output.toString()),
       enableCmd.output.toString()
@@ -27,7 +27,7 @@ describe(CustomerPortalEnable.name, function() {
       '-f',
       path.join(dir, 'enable.json')
     ]);
-    assert.deepEqual(enableCmd.status, 0, enableCmd.output.toString());
+    assert.deepStrictEqual(enableCmd.status, 0, enableCmd.output.toString());
     assert(
       /no action necessary/.test(enableCmd.output.toString()),
       enableCmd.output.toString()
@@ -39,7 +39,7 @@ describe(CustomerPortalEnable.name, function() {
       '-f',
       path.join(dir, 'disable.json')
     ]);
-    assert.deepEqual(disableCmd.status, 1, disableCmd.output.toString());
+    assert.deepStrictEqual(disableCmd.status, 1, disableCmd.output.toString());
     assert(
       /to 'false'/.test(disableCmd.output.toString()),
       disableCmd.output.toString()
@@ -62,7 +62,7 @@ describe(CustomerPortalSetup.name, function() {
         '-f',
         path.join(dir, 'set-portal-admin.json')
       ]);
-      assert.deepEqual(
+      assert.deepStrictEqual(
         setupPortalCmd.status,
         1,
         setupPortalCmd.output.toString()
@@ -87,7 +87,7 @@ describe(CustomerPortalSetup.name, function() {
         path.join(dir, 'sfdx-source'),
         '--json'
       ]);
-      assert.deepEqual(
+      assert.deepStrictEqual(
         sourceDeployCmd.status,
         0,
         sourceDeployCmd.output.toString()
@@ -106,7 +106,7 @@ describe(CustomerPortalSetup.name, function() {
         '-n',
         'Customer_Portal_Admin'
       ]);
-      assert.deepEqual(
+      assert.deepStrictEqual(
         permSetAssignCmd.status,
         0,
         permSetAssignCmd.output.toString()
@@ -122,7 +122,7 @@ describe(CustomerPortalSetup.name, function() {
         '-f',
         path.join(dir, 'setup-portal.json')
       ]);
-      assert.deepEqual(
+      assert.deepStrictEqual(
         setupPortalCmd.status,
         0,
         setupPortalCmd.output.toString()
@@ -152,7 +152,7 @@ describe(CustomerPortalSetup.name, function() {
         '-f',
         path.join(dir, 'setup-portal.json')
       ]);
-      assert.deepEqual(
+      assert.deepStrictEqual(
         setupPortalCmd.status,
         0,
         setupPortalCmd.output.toString()
@@ -175,7 +175,7 @@ describe(CustomerPortalAvailableCustomObjects.name, function() {
       '-f',
       path.join(dir, 'available.json')
     ]);
-    assert.deepEqual(
+    assert.deepStrictEqual(
       setupPortalCmd.status,
       1,
       setupPortalCmd.output.toString()
@@ -192,7 +192,7 @@ describe(CustomerPortalAvailableCustomObjects.name, function() {
       path.join(dir, 'sfdx-source'),
       '--json'
     ]);
-    assert.deepEqual(
+    assert.deepStrictEqual(
       sourceDeployCmd.status,
       0,
       sourceDeployCmd.output.toString()
@@ -213,7 +213,7 @@ describe(CustomerPortalAvailableCustomObjects.name, function() {
       '-f',
       path.join(dir, 'available.json')
     ]);
-    assert.deepEqual(
+    assert.deepStrictEqual(
       setupCustomObjectsCmd.status,
       0,
       setupCustomObjectsCmd.output.toString()
@@ -231,7 +231,7 @@ describe(CustomerPortalAvailableCustomObjects.name, function() {
       '-f',
       path.join(dir, 'available.json')
     ]);
-    assert.deepEqual(
+    assert.deepStrictEqual(
       setupCustomObjectsCmd.status,
       0,
       setupCustomObjectsCmd.output.toString()
@@ -247,7 +247,7 @@ describe(CustomerPortalAvailableCustomObjects.name, function() {
       '-f',
       path.join(dir, 'unavailable.json')
     ]);
-    assert.deepEqual(
+    assert.deepStrictEqual(
       setupCustomObjectsCmd.status,
       0,
       setupCustomObjectsCmd.output.toString()

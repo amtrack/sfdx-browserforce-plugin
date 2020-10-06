@@ -13,7 +13,7 @@ describe(`${CertificateAndKeyManagement.name} and ${IdentityProvider.name}`, fun
       '-f',
       path.resolve(path.join(__dirname, 'identity-provider', 'enable.json'))
     ]);
-    assert.deepEqual(cmd.status, 1, cmd.output.toString());
+    assert.deepStrictEqual(cmd.status, 1, cmd.output.toString());
     assert(
       /changing 'identityProvider' to .*"enabled":true/.test(
         cmd.output.toString()
@@ -35,7 +35,7 @@ describe(`${CertificateAndKeyManagement.name} and ${IdentityProvider.name}`, fun
         path.join(__dirname, 'identity-provider', 'create-cert-and-enable.json')
       )
     ]);
-    assert.deepEqual(cmd.status, 0, cmd.output.toString());
+    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
     assert(
       /changing 'certificateAndKeyManagement' to '{"certificates":\[.*"name":"identity_provider"/.test(
         cmd.output.toString()
@@ -55,7 +55,7 @@ describe(`${CertificateAndKeyManagement.name} and ${IdentityProvider.name}`, fun
       '-f',
       path.resolve(path.join(__dirname, 'identity-provider', 'disable.json'))
     ]);
-    assert.deepEqual(cmd.status, 0, cmd.output.toString());
+    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
     assert(
       /changing 'identityProvider' to .*"enabled":false/.test(
         cmd.output.toString()
@@ -75,7 +75,7 @@ describe(`${CertificateAndKeyManagement.name} and ${IdentityProvider.name}`, fun
         )
       )
     ]);
-    assert.deepEqual(cmd.status, 0, cmd.output.toString());
+    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
     assert(
       /no action necessary/.test(cmd.output.toString()),
       cmd.output.toString()
@@ -93,7 +93,7 @@ describe(`${CertificateAndKeyManagement.name} and ${IdentityProvider.name}`, fun
         )
       )
     ]);
-    assert.deepEqual(cmd.status, 0, cmd.output.toString());
+    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
     assert(
       /changing 'certificateAndKeyManagement' to '{"importFromKeystore":\[.*"filePath"/.test(
         cmd.output.toString()

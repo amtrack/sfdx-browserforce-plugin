@@ -13,7 +13,7 @@ describe(DeferSharingCalculation.name, function() {
       path.join(__dirname, 'sfdx-source'),
       '--json'
     ]);
-    assert.deepEqual(
+    assert.deepStrictEqual(
       sourceDeployCmd.status,
       0,
       sourceDeployCmd.output.toString()
@@ -32,7 +32,7 @@ describe(DeferSharingCalculation.name, function() {
       '-n',
       'Defer_Sharing'
     ]);
-    assert.deepEqual(
+    assert.deepStrictEqual(
       permSetAssignCmd.status,
       0,
       permSetAssignCmd.output.toString()
@@ -48,7 +48,7 @@ describe(DeferSharingCalculation.name, function() {
       '-f',
       path.resolve(path.join(__dirname, 'suspend.json'))
     ]);
-    assert.deepEqual(suspendCmd.status, 0, suspendCmd.output.toString());
+    assert.deepStrictEqual(suspendCmd.status, 0, suspendCmd.output.toString());
     assert(
       /to 'true'/.test(suspendCmd.output.toString()),
       suspendCmd.output.toString()
@@ -60,7 +60,7 @@ describe(DeferSharingCalculation.name, function() {
       '-f',
       path.join(__dirname, 'suspend.json')
     ]);
-    assert.deepEqual(suspendCmd.status, 0, suspendCmd.output.toString());
+    assert.deepStrictEqual(suspendCmd.status, 0, suspendCmd.output.toString());
     assert(
       /no action necessary/.test(suspendCmd.output.toString()),
       suspendCmd.output.toString()
@@ -72,7 +72,7 @@ describe(DeferSharingCalculation.name, function() {
       '-f',
       path.resolve(path.join(__dirname, 'resume.json'))
     ]);
-    assert.deepEqual(resumeCmd.status, 0, resumeCmd.output.toString());
+    assert.deepStrictEqual(resumeCmd.status, 0, resumeCmd.output.toString());
     assert(
       /to 'false'/.test(resumeCmd.output.toString()),
       resumeCmd.output.toString()

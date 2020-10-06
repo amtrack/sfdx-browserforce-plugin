@@ -12,7 +12,7 @@ describe.skip(Sharing.name, function() {
       '-f',
       path.resolve(path.join(__dirname, 'enable.json'))
     ]);
-    assert.deepEqual(enableCmd.status, 0, enableCmd.output.toString());
+    assert.deepStrictEqual(enableCmd.status, 0, enableCmd.output.toString());
     assert(
       /to '{"enableExternalSharingModel":true}'/.test(
         enableCmd.output.toString()
@@ -26,7 +26,7 @@ describe.skip(Sharing.name, function() {
       '-f',
       path.resolve(path.join(__dirname, 'disable.json'))
     ]);
-    assert.deepEqual(disableCmd.status, 0, disableCmd.output.toString());
+    assert.deepStrictEqual(disableCmd.status, 0, disableCmd.output.toString());
     assert(
       /to '{"enableExternalSharingModel":false}'/.test(
         disableCmd.output.toString()
