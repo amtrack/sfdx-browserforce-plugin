@@ -3,10 +3,10 @@ import * as child from 'child_process';
 import * as path from 'path';
 import ActivitySettings from '.';
 
-describe(ActivitySettings.name, () => {
-  it('should enable allowUsersToRelateMultipleContactsToTasksAndEvents', function() {
-    this.timeout(1000 * 90);
-    this.slow(1000 * 30);
+describe(ActivitySettings.name, function() {
+  this.slow('30s');
+  this.timeout('2m');
+  it('should enable allowUsersToRelateMultipleContactsToTasksAndEvents', () => {
     const enableManyWhoPrefCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
@@ -24,9 +24,7 @@ describe(ActivitySettings.name, () => {
       enableManyWhoPrefCmd.output.toString()
     );
   });
-  it('should already be enabled: allowUsersToRelateMultipleContactsToTasksAndEvents', function() {
-    this.timeout(1000 * 90);
-    this.slow(1000 * 30);
+  it('should already be enabled: allowUsersToRelateMultipleContactsToTasksAndEvents', () => {
     const enableManyWhoPrefCmd2 = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
@@ -42,9 +40,7 @@ describe(ActivitySettings.name, () => {
       enableManyWhoPrefCmd2.output.toString()
     );
   });
-  it('should fail to disable allowUsersToRelateMultipleContactsToTasksAndEvents', function() {
-    this.timeout(1000 * 90);
-    this.slow(1000 * 30);
+  it('should fail to disable allowUsersToRelateMultipleContactsToTasksAndEvents', () => {
     const disableManyWhoPrefCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',

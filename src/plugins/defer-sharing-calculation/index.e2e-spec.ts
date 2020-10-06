@@ -3,10 +3,10 @@ import * as child from 'child_process';
 import * as path from 'path';
 import DeferSharingCalculation from '.';
 
-describe(DeferSharingCalculation.name, () => {
-  it('should assign the user defer sharing permissions', function() {
-    this.timeout(1000 * 180);
-    this.slow(1000 * 30);
+describe(DeferSharingCalculation.name, function() {
+  this.slow('30s');
+  this.timeout('2m');
+  it('should assign the user defer sharing permissions', () => {
     const sourceDeployCmd = child.spawnSync('sfdx', [
       'force:source:deploy',
       '-p',
@@ -42,9 +42,7 @@ describe(DeferSharingCalculation.name, () => {
       permSetAssignCmd.output.toString()
     );
   });
-  it('should suspend', function() {
-    this.timeout(1000 * 90);
-    this.slow(1000 * 30);
+  it('should suspend', () => {
     const suspendCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
@@ -56,9 +54,7 @@ describe(DeferSharingCalculation.name, () => {
       suspendCmd.output.toString()
     );
   });
-  it('should already be suspendd', function() {
-    this.timeout(1000 * 90);
-    this.slow(1000 * 30);
+  it('should already be suspendd', () => {
     const suspendCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
@@ -70,9 +66,7 @@ describe(DeferSharingCalculation.name, () => {
       suspendCmd.output.toString()
     );
   });
-  it('should resume', function() {
-    this.timeout(1000 * 90);
-    this.slow(1000 * 30);
+  it('should resume', () => {
     const resumeCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
@@ -84,9 +78,7 @@ describe(DeferSharingCalculation.name, () => {
       resumeCmd.output.toString()
     );
   });
-  it('should already be resumed', function() {
-    this.timeout(1000 * 90);
-    this.slow(1000 * 30);
+  it('should already be resumed', () => {
     const resumeCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',

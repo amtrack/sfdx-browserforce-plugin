@@ -3,10 +3,10 @@ import * as child from 'child_process';
 import * as path from 'path';
 import Communities from '.';
 
-describe.skip(Communities.name, () => {
-  it('should enable', function() {
-    this.timeout(1000 * 90);
-    this.slow(1000 * 30);
+describe.skip(Communities.name, function() {
+  this.slow('30s');
+  this.timeout('2m');
+  it('should enable', () => {
     const enableCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
@@ -18,9 +18,7 @@ describe.skip(Communities.name, () => {
       enableCmd.output.toString()
     );
   });
-  it('should fail to disable', function() {
-    this.timeout(1000 * 90);
-    this.slow(1000 * 30);
+  it('should fail to disable', () => {
     const disableCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',

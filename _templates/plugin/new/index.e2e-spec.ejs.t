@@ -6,10 +6,10 @@ import * as child from 'child_process';
 import * as path from 'path';
 import <%= h.changeCase.pascalCase(name) %> from '.';
 
-describe(<%= h.changeCase.pascalCase(name) %>.name, () => {
-  it('should enable', function() {
-    this.timeout(1000 * 90);
-    this.slow(1000 * 30);
+describe(<%= h.changeCase.pascalCase(name) %>.name, function() {
+  this.slow('30s');
+  this.timeout('2m');
+  it('should enable', () => {
     const enableCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
@@ -21,9 +21,7 @@ describe(<%= h.changeCase.pascalCase(name) %>.name, () => {
       enableCmd.output.toString()
     );
   });
-  it('should already be enabled', function() {
-    this.timeout(1000 * 90);
-    this.slow(1000 * 30);
+  it('should already be enabled', () => {
     const enableCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
@@ -35,9 +33,7 @@ describe(<%= h.changeCase.pascalCase(name) %>.name, () => {
       enableCmd.output.toString()
     );
   });
-  it('should disable', function() {
-    this.timeout(1000 * 90);
-    this.slow(1000 * 30);
+  it('should disable', () => {
     const disableCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
@@ -49,9 +45,7 @@ describe(<%= h.changeCase.pascalCase(name) %>.name, () => {
       disableCmd.output.toString()
     );
   });
-  it('should already be disabled', function() {
-    this.timeout(1000 * 90);
-    this.slow(1000 * 30);
+  it('should already be disabled', () => {
     const disableCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
