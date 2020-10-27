@@ -9,8 +9,18 @@ export default class ConfigParser {
             key: driverName,
             value: data.settings[driverName]
           });
+        } else {
+          throw new Error(
+            `Could not find plugin named '${driverName}' in definition: ${JSON.stringify(
+              data
+            )}`
+          );
         }
       }
+    } else {
+      throw new Error(
+        `Missing 'settings' attribute in definition: ${JSON.stringify(data)}`
+      );
     }
     return settings;
   }

@@ -17,5 +17,31 @@ describe('ConfigParser', () => {
       const result = ConfigParser.parse(DRIVERS, definition);
       assert.deepEqual(result[0].Driver.default.name, 'Security');
     });
+    it('should fail parsing an invalid definition file', () => {
+      const definition = {
+        foo: {
+          bar: {
+            baz: true
+          }
+        }
+      };
+      assert.throws(() => {
+        ConfigParser.parse(DRIVERS, definition);
+      }, /Missing 'settings' attribute in definition:/);
+    });
+    it('should fail parsing a definition file with an invalid plugin', () => {
+      const definition = {
+        settings: {
+          foo: {
+            bar: {
+              baz: true
+            }
+          }
+        }
+      };
+      assert.throws(() => {
+        ConfigParser.parse(DRIVERS, definition);
+      }, /Could not find plugin named 'foo' in definition: /);
+    });
   });
 });
