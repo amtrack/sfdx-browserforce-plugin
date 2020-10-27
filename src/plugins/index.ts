@@ -1,6 +1,5 @@
 import * as activitySettings from './activity-settings';
 import * as communities from './communities';
-import * as companySettings from './company-settings';
 import * as customerPortal from './customer-portal';
 import * as deferSharingCalculation from './defer-sharing-calculation';
 import * as densitySettings from './density-settings';
@@ -15,7 +14,6 @@ export {
   lightningExperienceSettings,
   activitySettings,
   communities,
-  companySettings,
   customerPortal,
   densitySettings,
   homePageLayouts,

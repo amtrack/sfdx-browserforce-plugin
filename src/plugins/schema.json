@@ -19,9 +19,6 @@
         "communities": {
           "$ref": "./communities/schema.json"
         },
-        "companySettings": {
-          "$ref": "./company-settings/schema.json"
-        },
         "customerPortal": {
           "$ref": "./customer-portal/schema.json"
         },
