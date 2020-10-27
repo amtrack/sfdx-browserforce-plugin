@@ -99,20 +99,6 @@ Here is a full blown example showing most of the supported settings in action:
   "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/v1.2.0/src/plugins/schema.json",
   "settings": {
     "communities": { "enabled": true },
-    "companySettings": {
-      "criticalUpdates": [
-        {
-          "name": "*Security*",
-          "active": true,
-          "comment": "activated by sfdx-browserforce-plugin"
-        },
-        {
-          "name": "Disable Access to Non-global Controller Methods in Managed Packages",
-          "active": true,
-          "comment": "YOLO - activated by anonymous"
-        }
-      ]
-    },
     "customerPortal": { "enabled": true },
     "deferSharingCalculation": {
       "suspend": true
