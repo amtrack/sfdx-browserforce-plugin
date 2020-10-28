@@ -3,16 +3,16 @@ import * as child from 'child_process';
 import * as path from 'path';
 import DensitySettings from '.';
 
-describe(DensitySettings.name, () => {
-  it('should set to Compact', function() {
-    this.timeout(1000 * 90);
-    this.slow(1000 * 30);
+describe(DensitySettings.name, function() {
+  this.slow('30s');
+  this.timeout('2m');
+  it('should set to Compact', () => {
     const setCompactCommand = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
       path.resolve(path.join(__dirname, 'compact.json'))
     ]);
-    assert.deepEqual(
+    assert.deepStrictEqual(
       setCompactCommand.status,
       0,
       setCompactCommand.output.toString()
@@ -22,15 +22,13 @@ describe(DensitySettings.name, () => {
       setCompactCommand.output.toString()
     );
   });
-  it('should already be set to Compact', function() {
-    this.timeout(1000 * 90);
-    this.slow(1000 * 30);
+  it('should already be set to Compact', () => {
     const setCompactCommand2 = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
       path.resolve(path.join(__dirname, 'compact.json'))
     ]);
-    assert.deepEqual(
+    assert.deepStrictEqual(
       setCompactCommand2.status,
       0,
       setCompactCommand2.output.toString()
@@ -40,15 +38,13 @@ describe(DensitySettings.name, () => {
       setCompactCommand2.output.toString()
     );
   });
-  it('should set to Comfy', function() {
-    this.timeout(1000 * 90);
-    this.slow(1000 * 30);
+  it('should set to Comfy', () => {
     const setComfyCommand = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
       path.resolve(path.join(__dirname, 'comfy.json'))
     ]);
-    assert.deepEqual(
+    assert.deepStrictEqual(
       setComfyCommand.status,
       0,
       setComfyCommand.output.toString()
@@ -58,15 +54,13 @@ describe(DensitySettings.name, () => {
       setComfyCommand.output.toString()
     );
   });
-  it('should already be set to Comfy', function() {
-    this.timeout(1000 * 90);
-    this.slow(1000 * 30);
+  it('should already be set to Comfy', () => {
     const setComfyCommand2 = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
       path.resolve(path.join(__dirname, 'comfy.json'))
     ]);
-    assert.deepEqual(
+    assert.deepStrictEqual(
       setComfyCommand2.status,
       0,
       setComfyCommand2.output.toString()

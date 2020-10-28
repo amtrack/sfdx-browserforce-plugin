@@ -15,7 +15,7 @@ describe('ConfigParser', () => {
         }
       };
       const result = ConfigParser.parse(DRIVERS, definition);
-      assert.deepEqual(result[0].Driver.default.name, 'Security');
+      assert.deepStrictEqual(result[0].Driver.default.name, 'Security');
     });
     it('should fail parsing an invalid definition file', () => {
       const definition = {

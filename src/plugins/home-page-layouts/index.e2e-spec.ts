@@ -3,10 +3,10 @@ import * as child from 'child_process';
 import * as path from 'path';
 import HomePageLayouts from '.';
 
-describe(HomePageLayouts.name, () => {
-  it('should assign the home page default', function() {
-    this.timeout(1000 * 90);
-    this.slow(1000 * 30);
+describe(HomePageLayouts.name, function() {
+  this.slow('30s');
+  this.timeout('2m');
+  it('should assign the home page default', () => {
     const assignHomePageDefaultCmd = child.spawnSync(
       path.resolve('bin', 'run'),
       [
@@ -15,7 +15,7 @@ describe(HomePageLayouts.name, () => {
         path.resolve(path.join(__dirname, 'home-page-default.json'))
       ]
     );
-    assert.deepEqual(
+    assert.deepStrictEqual(
       assignHomePageDefaultCmd.status,
       0,
       assignHomePageDefaultCmd.output.toString()
@@ -27,15 +27,13 @@ describe(HomePageLayouts.name, () => {
       assignHomePageDefaultCmd.output.toString()
     );
   });
-  it('should assign the org default', function() {
-    this.timeout(1000 * 90);
-    this.slow(1000 * 30);
+  it('should assign the org default', () => {
     const assignOrgDefaultCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
       path.resolve(path.join(__dirname, 'org-default.json'))
     ]);
-    assert.deepEqual(
+    assert.deepStrictEqual(
       assignOrgDefaultCmd.status,
       0,
       assignOrgDefaultCmd.output.toString()

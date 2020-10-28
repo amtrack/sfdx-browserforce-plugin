@@ -77,7 +77,7 @@ describe('CustomerPortal', () => {
     for (const t of tests) {
       it(t.description, () => {
         const actual = p.diff(t.source, t.target);
-        assert.deepEqual(actual, t.expected);
+        assert.deepStrictEqual(actual, t.expected);
       });
     }
   });

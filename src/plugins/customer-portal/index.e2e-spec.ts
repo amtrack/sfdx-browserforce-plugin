@@ -5,45 +5,41 @@ import CustomerPortalAvailableCustomObjects from './availableCustomObjects';
 import CustomerPortalEnable from './enabled';
 import CustomerPortalSetup from './portals';
 
-describe(CustomerPortalEnable.name, () => {
+describe(CustomerPortalEnable.name, function() {
+  this.slow('30s');
+  this.timeout('2m 30s');
   const dir = path.resolve(path.join(__dirname, 'enabled'));
-  it('should enable', function() {
-    this.timeout(1000 * 90);
-    this.slow(1000 * 30);
+  it('should enable', () => {
     const enableCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
       path.join(dir, 'enable.json')
     ]);
-    assert.deepEqual(enableCmd.status, 0, enableCmd.output.toString());
+    assert.deepStrictEqual(enableCmd.status, 0, enableCmd.output.toString());
     assert(
       /to 'true'/.test(enableCmd.output.toString()),
       enableCmd.output.toString()
     );
   });
-  it('should already be enabled', function() {
-    this.timeout(1000 * 90);
-    this.slow(1000 * 30);
+  it('should already be enabled', () => {
     const enableCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
       path.join(dir, 'enable.json')
     ]);
-    assert.deepEqual(enableCmd.status, 0, enableCmd.output.toString());
+    assert.deepStrictEqual(enableCmd.status, 0, enableCmd.output.toString());
     assert(
       /no action necessary/.test(enableCmd.output.toString()),
       enableCmd.output.toString()
     );
   });
-  it('should fail to disable', function() {
-    this.timeout(1000 * 90);
-    this.slow(1000 * 30);
+  it('should fail to disable', () => {
     const disableCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
       path.join(dir, 'disable.json')
     ]);
-    assert.deepEqual(disableCmd.status, 1, disableCmd.output.toString());
+    assert.deepStrictEqual(disableCmd.status, 1, disableCmd.output.toString());
     assert(
       /to 'false'/.test(disableCmd.output.toString()),
       disableCmd.output.toString()
@@ -55,18 +51,18 @@ describe(CustomerPortalEnable.name, () => {
   });
 });
 
-describe(CustomerPortalSetup.name, () => {
+describe(CustomerPortalSetup.name, function() {
+  this.slow('30s');
+  this.timeout('2m 30s');
   const dir = path.resolve(path.join(__dirname, 'portals'));
   describe('portals', () => {
-    it('should fail to set portal admin user without permset', function() {
-      this.timeout(1000 * 90);
-      this.slow(1000 * 30);
+    it('should fail to set portal admin user without permset', () => {
       const setupPortalCmd = child.spawnSync(path.resolve('bin', 'run'), [
         'browserforce:apply',
         '-f',
         path.join(dir, 'set-portal-admin.json')
       ]);
-      assert.deepEqual(
+      assert.deepStrictEqual(
         setupPortalCmd.status,
         1,
         setupPortalCmd.output.toString()
@@ -84,16 +80,14 @@ describe(CustomerPortalSetup.name, () => {
         setupPortalCmd.output.toString()
       );
     });
-    it('should setup user for portal', function() {
-      this.timeout(1000 * 180);
-      this.slow(1000 * 30);
+    it('should setup user for portal', () => {
       const sourceDeployCmd = child.spawnSync('sfdx', [
         'force:source:deploy',
         '-p',
         path.join(dir, 'sfdx-source'),
         '--json'
       ]);
-      assert.deepEqual(
+      assert.deepStrictEqual(
         sourceDeployCmd.status,
         0,
         sourceDeployCmd.output.toString()
@@ -112,7 +106,7 @@ describe(CustomerPortalSetup.name, () => {
         '-n',
         'Customer_Portal_Admin'
       ]);
-      assert.deepEqual(
+      assert.deepStrictEqual(
         permSetAssignCmd.status,
         0,
         permSetAssignCmd.output.toString()
@@ -122,15 +116,13 @@ describe(CustomerPortalSetup.name, () => {
         permSetAssignCmd.output.toString()
       );
     });
-    it('should setup portal', function() {
-      this.timeout(1000 * 180);
-      this.slow(1000 * 30);
+    it('should setup portal', () => {
       const setupPortalCmd = child.spawnSync(path.resolve('bin', 'run'), [
         'browserforce:apply',
         '-f',
         path.join(dir, 'setup-portal.json')
       ]);
-      assert.deepEqual(
+      assert.deepStrictEqual(
         setupPortalCmd.status,
         0,
         setupPortalCmd.output.toString()
@@ -154,15 +146,13 @@ describe(CustomerPortalSetup.name, () => {
         setupPortalCmd.output.toString()
       );
     });
-    it('should already be set up', function() {
-      this.timeout(1000 * 90);
-      this.slow(1000 * 30);
+    it('should already be set up', () => {
       const setupPortalCmd = child.spawnSync(path.resolve('bin', 'run'), [
         'browserforce:apply',
         '-f',
         path.join(dir, 'setup-portal.json')
       ]);
-      assert.deepEqual(
+      assert.deepStrictEqual(
         setupPortalCmd.status,
         0,
         setupPortalCmd.output.toString()
@@ -175,17 +165,17 @@ describe(CustomerPortalSetup.name, () => {
   });
 });
 
-describe(CustomerPortalAvailableCustomObjects.name, () => {
+describe(CustomerPortalAvailableCustomObjects.name, function() {
+  this.slow('30s');
+  this.timeout('2m 30s');
   const dir = path.resolve(path.join(__dirname, 'availableCustomObjects'));
-  it('should fail to make non-existent custom objects available for customer portal', function() {
-    this.timeout(1000 * 90);
-    this.slow(1000 * 30);
+  it('should fail to make non-existent custom objects available for customer portal', () => {
     const setupPortalCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
       path.join(dir, 'available.json')
     ]);
-    assert.deepEqual(
+    assert.deepStrictEqual(
       setupPortalCmd.status,
       1,
       setupPortalCmd.output.toString()
@@ -195,16 +185,14 @@ describe(CustomerPortalAvailableCustomObjects.name, () => {
       setupPortalCmd.output.toString()
     );
   });
-  it('should deploy custom object', function() {
-    this.timeout(1000 * 180);
-    this.slow(1000 * 30);
+  it('should deploy custom object', () => {
     const sourceDeployCmd = child.spawnSync('sfdx', [
       'force:source:deploy',
       '-p',
       path.join(dir, 'sfdx-source'),
       '--json'
     ]);
-    assert.deepEqual(
+    assert.deepStrictEqual(
       sourceDeployCmd.status,
       0,
       sourceDeployCmd.output.toString()
@@ -219,15 +207,13 @@ describe(CustomerPortalAvailableCustomObjects.name, () => {
       sourceDeployCmd.output.toString()
     );
   });
-  it('should make custom objects available for customer portal', function() {
-    this.timeout(1000 * 180);
-    this.slow(1000 * 30);
+  it('should make custom objects available for customer portal', () => {
     const setupCustomObjectsCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
       path.join(dir, 'available.json')
     ]);
-    assert.deepEqual(
+    assert.deepStrictEqual(
       setupCustomObjectsCmd.status,
       0,
       setupCustomObjectsCmd.output.toString()
@@ -239,15 +225,13 @@ describe(CustomerPortalAvailableCustomObjects.name, () => {
       setupCustomObjectsCmd.output.toString()
     );
   });
-  it('should have applied checkbox available for customer portal', function() {
-    this.timeout(1000 * 90);
-    this.slow(1000 * 30);
+  it('should have applied checkbox available for customer portal', () => {
     const setupCustomObjectsCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
       path.join(dir, 'available.json')
     ]);
-    assert.deepEqual(
+    assert.deepStrictEqual(
       setupCustomObjectsCmd.status,
       0,
       setupCustomObjectsCmd.output.toString()
@@ -257,15 +241,13 @@ describe(CustomerPortalAvailableCustomObjects.name, () => {
       setupCustomObjectsCmd.output.toString()
     );
   });
-  it('should make custom objects unavailable for customer portal', function() {
-    this.timeout(1000 * 180);
-    this.slow(1000 * 30);
+  it('should make custom objects unavailable for customer portal', () => {
     const setupCustomObjectsCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
       path.join(dir, 'unavailable.json')
     ]);
-    assert.deepEqual(
+    assert.deepStrictEqual(
       setupCustomObjectsCmd.status,
       0,
       setupCustomObjectsCmd.output.toString()
