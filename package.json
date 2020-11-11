@@ -23,7 +23,7 @@
     "@oclif/test": "^1",
     "@salesforce/dev-config": "^2.0.0",
     "@salesforce/prettier-config": "^0.0.1",
-    "@types/mocha": "^8.0.3",
+    "@types/mocha": "^8.0.4",
     "@types/node": "^10.17.44",
     "@types/puppeteer": "^5.4.0",
     "@typescript-eslint/eslint-plugin": "^4.7.0",
