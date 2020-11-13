@@ -4831,10 +4831,10 @@ json-buffer@3.0.0:
   resolved "https://registry.yarnpkg.com/json-buffer/-/json-buffer-3.0.0.tgz#5b1f397afc75d677bde8bcfc0e47e1f9a3d9a898"
   integrity sha1-Wx85evx11ne96Lz8Dkfh+aPZqJg=
 
-json-merge-patch@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/json-merge-patch/-/json-merge-patch-1.0.0.tgz#8c8e78ce88535105332afb737b5920d6c321a2fa"
-  integrity sha512-pG2/EXnf8UvFuST3lNnhBaA0UROQPzrp/5hlK0FHCu7ha8RDKy9AhKlBjTXugY/xgWxeCThRmUHD8QxEKOw1Iw==
+json-merge-patch@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/json-merge-patch/-/json-merge-patch-1.0.1.tgz#7ab1f9e51927d42fb7b355549460914b08f50c18"
+  integrity sha512-yvT2j/jJZ2S53t+WLt1/y2pvyR1UKPl1d/tJUjwnbtwdQQcloPhGS0bkEq/L6I32l1nhleU57GTkbv64t8eHQA==
   dependencies:
     deep-equal "^2.0.3"
 
