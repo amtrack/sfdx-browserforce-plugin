@@ -12,7 +12,7 @@
     "@oclif/errors": "^1",
     "@salesforce/command": "^3.0.5",
     "json-merge-patch": "^1.0.1",
-    "multimatch": "^4.0.0",
+    "multimatch": "^5.0.0",
     "p-retry": "^4.2.0",
     "puppeteer": "^5.5.0",
     "tslib": "^2"
