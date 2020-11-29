@@ -68,6 +68,7 @@
   "repository": "amtrack/sfdx-browserforce-plugin",
   "scripts": {
     "build": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "develop": "bash scripts/develop.sh",
     "format": "prettier --write \"+(src|test)/**/*.+(ts|js|json)\"",
     "generate:plugin": "npx hygen plugin new",
     "lint": "tsc -p . --noEmit && eslint \"src/**/*.ts\" \"test/**/*.ts\"",
