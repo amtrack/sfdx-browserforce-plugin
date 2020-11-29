@@ -11,7 +11,8 @@
             "address": "127.0.0.1",
             "port": 9229,
             "localRoot": "${workspaceFolder}",
-            "remoteRoot": "${workspaceFolder}"
+            "remoteRoot": "${workspaceFolder}",
+            "skipFiles": ["<node_internals>/**", "${workspaceFolder}/bin/run"]
         },
         {
             "name": "Unit Tests",
@@ -27,7 +28,8 @@
                 "--reporter", "spec",
                 "test/**/*.test.ts"
             ],
-            "cwd": "${workspaceRoot}"
+            "cwd": "${workspaceRoot}",
+            "skipFiles": ["<node_internals>/**", "${workspaceFolder}/bin/run"]
         }
     ]
 }
