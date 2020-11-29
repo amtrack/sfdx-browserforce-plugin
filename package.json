@@ -67,12 +67,13 @@
   },
   "repository": "amtrack/sfdx-browserforce-plugin",
   "scripts": {
+    "build": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
     "format": "prettier --write \"+(src|test)/**/*.+(ts|js|json)\"",
     "generate:plugin": "npx hygen plugin new",
     "lint": "tsc -p . --noEmit && eslint \"src/**/*.ts\" \"test/**/*.ts\"",
     "postpack": "rm -f oclif.manifest.json",
-    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
-    "prepare": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "prepack": "yarn build",
+    "prepare": "yarn build",
     "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\" \"src/**/*.test.ts\"",
     "test:e2e": "mocha --forbid-only \"test/**/*.e2e-spec.ts\" \"src/**/*.e2e-spec.ts\"",
     "version": "oclif-dev readme && git add README.md"
