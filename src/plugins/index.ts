@@ -8,8 +8,10 @@ import * as lightningExperienceSettings from './lightning-experience-settings';
 import * as reportsAndDashboards from './reports-and-dashboards';
 import * as salesforceToSalesforce from './salesforce-to-salesforce';
 import * as security from './security';
+import * as picklists from './picklists';
 
 export {
+  picklists,
   deferSharingCalculation,
   lightningExperienceSettings,
   activitySettings,

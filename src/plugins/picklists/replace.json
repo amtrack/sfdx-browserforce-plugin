@@ -1,0 +1,15 @@
+{
+  "$schema": "../schema.json",
+  "settings": {
+    "picklists": {
+      "picklistValues": [
+        {
+          "metadataType": "StandardValueSet",
+          "metadataFullName": "LeadSource",
+          "value": "Phone Inquiry",
+          "newValue": "Other"
+        }
+      ]
+    }
+  }
+}

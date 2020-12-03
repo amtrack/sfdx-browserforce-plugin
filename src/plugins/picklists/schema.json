@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/picklist-values/schema.json",
+  "title": "Picklists",
+  "type": "object",
+  "properties": {
+    "picklistValues": {
+      "title": "Density",
+      "description": "Choose the default display setting for your org",
+      "type": "array",
+      "items": { "$ref": "#/definitions/action" },
+      "default": []
+    }
+  },
+  "definitions": {
+    "action": {
+      "type": "object",
+      "properties": {
+        "metadataType": {
+          "type": "string",
+          "description": "the metadata type",
+          "enum": ["CustomField", "GlobalValueSet", "StandardValueSet"]
+        },
+        "metadataFullName": {
+          "type": "string",
+          "description": "the API name of the CustomField/GlobalValueSet/StandardValueSet"
+        },
+        "value": {
+          "type": "string",
+          "description": "the API name of the value"
+        },
+        "newValue": {
+          "type": "string",
+          "description": "the API name of the new value, otherwise blank"
+        },
+        "replaceAllBlankValues": {
+          "type": "boolean",
+          "description": "replace all blank values (mutually exclusive to replacing an old value)"
+        },
+        "absent": {
+          "type": "boolean",
+          "description": "ensure the picklist value is absent/deleted"
+        }
+      },
+      "required": ["metadataType", "metadataFullName"]
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "$schema": "../schema.json",
+  "settings": {
+    "picklists": {
+      "picklistValues": [
+        {
+          "metadataType": "CustomField",
+          "metadataFullName": "Vehicle__c.Features__c",
+          "value": "CD"
+        }
+      ]
+    }
+  }
+}

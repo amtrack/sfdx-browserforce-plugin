@@ -1,0 +1,29 @@
+{
+  "$schema": "../schema.json",
+  "settings": {
+    "picklists": {
+      "picklistValues": [
+        {
+          "metadataType": "CustomField",
+          "metadataFullName": "Vehicle__c.Features__c",
+          "value": "CD",
+          "newValue": "Media",
+          "absent": true
+        },
+        {
+          "metadataType": "CustomField",
+          "metadataFullName": "Vehicle__c.Features__c",
+          "value": "Tape",
+          "absent": true
+        },
+        {
+          "metadataType": "GlobalValueSet",
+          "metadataFullName": "VehicleTransmission",
+          "value": "Manual",
+          "newValue": "Automatic",
+          "absent": true
+        }
+      ]
+    }
+  }
+}
