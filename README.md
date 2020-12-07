@@ -4,7 +4,6 @@
 
 [![Actions Status](https://github.com/amtrack/sfdx-browserforce-plugin/workflows/Test%20and%20Release/badge.svg)](https://github.com/amtrack/sfdx-browserforce-plugin/actions)
 
-
 Unlike the [Scratch Org Definition Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_scratch_orgs_def_file.htm) which can only be used **on the creation of a scratch org** (`sfdx force:org:create -f config/scratch-def.json`),
 the _Browserforce Configuration_ allows to "shape" **any org**, (e.g. scratch org, sandbox or production org) with **similar preferences and unofficial preferences** that are not (yet) available in the _Scratch Org Definition Configuration_ or as _Metadata_ (`sfdx browserforce:apply -f config/setup-admin-login-as-any.json -u myOrg@example.com`).
 
@@ -65,7 +64,7 @@ To enable `Setup -> Security Controls -> Login Access Policies -> Administrators
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/v1.2.0/src/plugins/schema.json",
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/master/src/plugins/schema.json",
   "settings": {
     "security": {
       "loginAccessPolicies": {
@@ -97,7 +96,7 @@ Here is a full blown example showing most of the supported settings in action:
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/v1.2.0/src/plugins/schema.json",
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/master/src/plugins/schema.json",
   "settings": {
     "communities": { "enabled": true },
     "customerPortal": { "enabled": true },
@@ -113,6 +112,23 @@ Here is a full blown example showing most of the supported settings in action:
         {
           "profile": "System Administrator",
           "layout": "DE Default"
+        }
+      ]
+    },
+    "picklists": {
+      "picklistValues": [
+        {
+          "metadataType": "StandardValueSet",
+          "metadataFullName": "LeadSource",
+          "value": "Partner",
+          "newValue": "Partner Referral"
+        },
+        {
+          "metadataType": "CustomField",
+          "metadataFullName": "Vehicle__c.Features__c",
+          "value": "CD",
+          "newValue": "Media",
+          "absent": true
         }
       ]
     },
