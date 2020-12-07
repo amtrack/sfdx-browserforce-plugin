@@ -7,8 +7,8 @@
   "properties": {
     "settings": {
       "properties": {
-        "picklistValues": {
-          "$ref": "./picklist-values/schema.json"
+        "picklists": {
+          "$ref": "./picklists/schema.json"
         },
         "deferSharingCalculation": {
           "$ref": "./defer-sharing-calculation/schema.json"

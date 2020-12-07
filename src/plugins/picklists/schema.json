@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/picklist-values/schema.json",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/picklists/schema.json",
   "title": "Picklists",
   "type": "object",
   "properties": {
