@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>Manual</fullName>
+        <default>false</default>
+        <label>Manual</label>
+    </customValue>
+    <customValue>
+        <fullName>Automatic</fullName>
+        <default>false</default>
+        <label>Automatic</label>
+    </customValue>
+    <masterLabel>VehicleTransmission</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

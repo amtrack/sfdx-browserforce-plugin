@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Gears__c</fullName>
+    <externalId>false</externalId>
+    <label>Gears</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>Transmission__c</controllingField>
+        <restricted>true</restricted>
+        <valueSetName>VehicleGears</valueSetName>
+        <valueSettings>
+            <controllingFieldValue>Manual</controllingFieldValue>
+            <valueName>5</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Manual</controllingFieldValue>
+            <controllingFieldValue>Automatic</controllingFieldValue>
+            <valueName>7</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Automatic</controllingFieldValue>
+            <valueName>9</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>
