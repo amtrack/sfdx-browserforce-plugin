@@ -5,8 +5,8 @@
   "type": "object",
   "properties": {
     "picklistValues": {
-      "title": "Density",
-      "description": "Choose the default display setting for your org",
+      "title": "Picklist Values",
+      "description": "Replace (and delete) picklist values",
       "type": "array",
       "items": { "$ref": "#/definitions/action" },
       "default": []
