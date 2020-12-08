@@ -9,8 +9,10 @@ import * as reportsAndDashboards from './reports-and-dashboards';
 import * as salesforceToSalesforce from './salesforce-to-salesforce';
 import * as security from './security';
 import * as picklists from './picklists';
+import * as recordTypes from './record-types';
 
 export {
+  recordTypes,
   picklists,
   deferSharingCalculation,
   lightningExperienceSettings,

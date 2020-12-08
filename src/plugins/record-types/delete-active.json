@@ -1,0 +1,12 @@
+{
+  "$schema": "../schema.json",
+  "settings": {
+    "recordTypes": {
+      "deletions": [
+        {
+          "fullName": "Vehicle__c.CUV"
+        }
+      ]
+    }
+  }
+}
