@@ -89,7 +89,7 @@ export class PicklistReplacePage {
   async save() {
     await pRetry(
       async () => {
-        this.page.waitForSelector(this.saveButton);
+        await this.page.waitForSelector(this.saveButton);
         await Promise.all([
           this.page.waitForNavigation(),
           this.page.click(this.saveButton)
