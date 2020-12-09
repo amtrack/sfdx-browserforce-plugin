@@ -1,0 +1,13 @@
+{
+  "$schema": "../schema.json",
+  "settings": {
+    "recordTypes": {
+      "deletions": [
+        {
+          "fullName": "Vehicle__c.SportsCar",
+          "replacement": "Vehicle__c.Bicycle"
+        }
+      ]
+    }
+  }
+}

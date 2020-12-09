@@ -132,6 +132,7 @@ Here is a full blown example showing most of the supported settings in action:
         }
       ]
     },
+    "recordTypes": { "deletions": [{ "fullName": "Vehicle__c.SUV" }] },
     "salesforceToSalesforce": { "enabled": true },
     "security": {
       "loginAccessPolicies": { "administratorsCanLogInAsAnyUser": true },
