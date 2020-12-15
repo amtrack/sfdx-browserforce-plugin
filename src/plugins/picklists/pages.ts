@@ -15,7 +15,7 @@ export class PicklistPage {
   }
 
   public async getPicklistValues(): Promise<Array<string>> {
-    const xpath = `//tr[td[1]//a[contains(@href, "/setup/ui/picklist_master")]]//td[2]`;
+    const xpath = `//tr[td[1]//a[contains(@href, "/setup/ui/picklist_masteredit") or contains(@href, "/setup/ui/picklist_masterdelete")]]//td[2]`;
     await this.page.waitForXPath(xpath);
     const fullNameHandles = await this.page.$x(xpath);
     const innerTextJsHandles = await Promise.all<JSHandle>(
