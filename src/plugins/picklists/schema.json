@@ -37,6 +37,10 @@
           "type": "boolean",
           "description": "replace all blank values (mutually exclusive to replacing an old value)"
         },
+        "active": {
+          "type": "boolean",
+          "description": "ensure the picklist value is active/inactive"
+        },
         "absent": {
           "type": "boolean",
           "description": "ensure the picklist value is absent/deleted"

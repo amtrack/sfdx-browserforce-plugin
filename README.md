@@ -129,6 +129,13 @@ Here is a full blown example showing most of the supported settings in action:
           "value": "CD",
           "newValue": "Media",
           "absent": true
+        },
+        {
+          "metadataType": "CustomField",
+          "metadataFullName": "Vehicle__c.Features__c",
+          "value": "CD",
+          "newValue": "AC",
+          "active": false
         }
       ]
     },
