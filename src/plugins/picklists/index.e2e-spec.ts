@@ -55,4 +55,40 @@ describe(Picklists.name, function() {
       replaceCmd.output.toString()
     );
   });
+  it('should deactivate picklist value', () => {
+    const cmd = child.spawnSync(path.resolve('bin', 'run'), [
+      'browserforce:apply',
+      '-f',
+      path.resolve(path.join(__dirname, 'deactivate.json'))
+    ]);
+    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
+    assert(
+      /changing 'picklistValues' to.*/.test(cmd.output.toString()),
+      cmd.output.toString()
+    );
+  });
+  it('should activate picklist value', () => {
+    const cmd = child.spawnSync(path.resolve('bin', 'run'), [
+      'browserforce:apply',
+      '-f',
+      path.resolve(path.join(__dirname, 'activate.json'))
+    ]);
+    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
+    assert(
+      /changing 'picklistValues' to.*/.test(cmd.output.toString()),
+      cmd.output.toString()
+    );
+  });
+  it('should not do anything when the picklist values do not exist', () => {
+    const cmd = child.spawnSync(path.resolve('bin', 'run'), [
+      'browserforce:apply',
+      '-f',
+      path.resolve(path.join(__dirname, 'activate.json'))
+    ]);
+    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
+    assert(
+      /no action necessary/.test(cmd.output.toString()),
+      cmd.output.toString()
+    );
+  });
 });

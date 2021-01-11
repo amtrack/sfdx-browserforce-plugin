@@ -49,7 +49,12 @@ export default class Picklists extends BrowserforcePlugin {
       );
       const page = await this.browserforce.openPage(picklistUrl);
       const picklistPage = new PicklistPage(page);
-      if (action.absent) {
+      if (action.active !== undefined) {
+        await picklistPage.clickActivateDeactivateActionForValue(
+          action.value,
+          action.active
+        );
+      } else if (action.absent) {
         const replacePage = await picklistPage.clickDeleteActionForValue(
           action.value
         );
@@ -104,10 +109,16 @@ function isActionRequired(action, values) {
   const valueGiven = action.value !== undefined && action.value !== null;
   const newValueGiven =
     action.newValue !== undefined && action.newValue !== null;
-  if (valueGiven && !values.includes(action.value)) {
-    return false;
+  if (valueGiven) {
+    const match = values.find(x => x.value === action.value);
+    if (!match) {
+      return false;
+    }
+    if (action.active !== undefined && action.active === match.active) {
+      return false;
+    }
   }
-  if (newValueGiven && !values.includes(action.newValue)) {
+  if (newValueGiven && !values.find(x => x.value === action.newValue)) {
     return false;
   }
   return true;

@@ -7,6 +7,11 @@ import { JSHandle } from 'puppeteer';
 // - label column is a th (which is not used)
 // - xpath indices are 1 based
 
+type PicklistValue = {
+  value: string;
+  active: boolean;
+};
+
 export class PicklistPage {
   private page;
 
@@ -14,17 +19,33 @@ export class PicklistPage {
     this.page = page;
   }
 
-  public async getPicklistValues(): Promise<Array<string>> {
-    const xpath = `//tr[td[1]//a[contains(@href, "/setup/ui/picklist_masteredit") or contains(@href, "/setup/ui/picklist_masterdelete")]]//td[2]`;
-    await this.page.waitForXPath(xpath);
-    const fullNameHandles = await this.page.$x(xpath);
-    const innerTextJsHandles = await Promise.all<JSHandle>(
-      fullNameHandles.map(handle => handle.getProperty('innerText'))
+  public async getPicklistValues(): Promise<Array<PicklistValue>> {
+    // wait for New button in any related list
+    await this.page.waitForSelector('body table input[name="new"]');
+    const resolvePicklistValueNames = async xpath => {
+      const fullNameHandles = await this.page.$x(xpath);
+      const innerTextJsHandles = await Promise.all<JSHandle>(
+        fullNameHandles.map(handle => handle.getProperty('innerText'))
+      );
+      const fullNames = await Promise.all<any>(
+        innerTextJsHandles.map(handle => handle.jsonValue())
+      );
+      return fullNames;
+    };
+    const active = await resolvePicklistValueNames(
+      `//tr[td[1]//a[contains(@href, "/setup/ui/picklist_masteredit")]]//td[2]`
     );
-    const fullNames = await Promise.all<any>(
-      innerTextJsHandles.map(handle => handle.jsonValue())
+    const inactive = await resolvePicklistValueNames(
+      `//tr[td[1]//a[contains(@href, "/setup/ui/picklist_masteractivate")]]//td[2]`
     );
-    return fullNames;
+    return [
+      ...active.map(x => {
+        return { value: x, active: true };
+      }),
+      ...inactive.map(x => {
+        return { value: x, active: false };
+      })
+    ];
   }
 
   public async clickReplaceActionButton(): Promise<any> {
@@ -56,6 +77,36 @@ export class PicklistPage {
       actionLinkHandles[0].click()
     ]);
     return new PicklistReplaceAndDeletePage(this.page);
+  }
+
+  public async clickActivateDeactivateActionForValue(
+    picklistValueApiName: string,
+    active: boolean
+  ): Promise<any> {
+    let xpath;
+    let actionName;
+    if (active) {
+      xpath = `//tr[td[2][text() = "${picklistValueApiName}"]]//td[1]//a[contains(@href, "/setup/ui/picklist_masteractivate.jsp")]`;
+      actionName = 'activate';
+    } else {
+      xpath = `//tr[td[2][text() = "${picklistValueApiName}"]]//td[1]//a[contains(@href, "/setup/ui/picklist_masterdelete.jsp") and contains(@href, "deleteType=1")]`;
+      actionName = 'deactivate';
+    }
+    await this.page.waitForXPath(xpath);
+    const actionLinkHandles = await this.page.$x(xpath);
+    if (actionLinkHandles.length !== 1) {
+      throw new Error(
+        `Could not find ${actionName} action for picklist value: ${picklistValueApiName}`
+      );
+    }
+    this.page.on('dialog', async dialog => {
+      await dialog.accept();
+    });
+    await Promise.all([
+      this.page.waitForNavigation(),
+      actionLinkHandles[0].click()
+    ]);
+    return this.page;
   }
 }
 
