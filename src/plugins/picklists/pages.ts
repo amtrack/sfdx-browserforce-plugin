@@ -76,6 +76,7 @@ export class PicklistPage {
       this.page.waitForNavigation(),
       actionLinkHandles[0].click()
     ]);
+    await throwPageErrors(this.page);
     return new PicklistReplaceAndDeletePage(this.page);
   }
 
@@ -106,6 +107,7 @@ export class PicklistPage {
       this.page.waitForNavigation(),
       actionLinkHandles[0].click()
     ]);
+    await throwPageErrors(this.page);
     return this.page;
   }
 }
@@ -145,7 +147,7 @@ export class PicklistReplacePage {
           this.page.waitForNavigation(),
           this.page.click(this.saveButton)
         ]);
-        await this.throwPageErrors();
+        await throwPageErrors(this.page);
       },
       {
         onFailedAttempt: error => {
@@ -161,22 +163,6 @@ export class PicklistReplacePage {
           : 4000
       }
     );
-  }
-
-  async throwPageErrors() {
-    const errorHandle = await this.page.$(
-      'div#validationError div.messageText'
-    );
-    if (errorHandle) {
-      const errorMsg = await this.page.evaluate(
-        (div: HTMLDivElement) => div.innerText,
-        errorHandle
-      );
-      await errorHandle.dispose();
-      if (errorMsg && errorMsg.trim()) {
-        throw new Error(errorMsg.trim());
-      }
-    }
   }
 }
 
@@ -199,5 +185,19 @@ export class PicklistReplaceAndDeletePage extends PicklistReplacePage {
       await this.page.click(REPLACE_WITH_BLANK_VALUE_RADIO_INPUT);
     }
     await this.save();
+  }
+}
+
+async function throwPageErrors(page) {
+  const errorHandle = await page.$('div#validationError div.messageText');
+  if (errorHandle) {
+    const errorMsg = await page.evaluate(
+      (div: HTMLDivElement) => div.innerText,
+      errorHandle
+    );
+    await errorHandle.dispose();
+    if (errorMsg && errorMsg.trim()) {
+      throw new Error(errorMsg.trim());
+    }
   }
 }
