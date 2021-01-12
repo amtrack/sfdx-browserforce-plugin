@@ -35,6 +35,11 @@
                 <default>false</default>
                 <label>Tape Deck</label>
             </value>
+            <value>
+                <fullName>AUX</fullName>
+                <default>false</default>
+                <label>AUX</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

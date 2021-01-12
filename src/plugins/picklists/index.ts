@@ -22,17 +22,45 @@ export default class Picklists extends BrowserforcePlugin {
       const page = await this.browserforce.openPage(picklistUrl);
       const picklistPage = new PicklistPage(page);
       const values = await picklistPage.getPicklistValues();
-      const actionRequired = isActionRequired(action, values);
-      if (actionRequired) {
-        result.picklistValues.push({
-          ...action,
-          actionRequired: true
-        });
-      } else {
-        result.picklistValues.push(action);
-      }
+      const state = { ...action };
+      const valueMatch =
+        action.value !== undefined
+          ? values.find(x => x.value === action.value)
+          : undefined;
+      const newValueMatch =
+        action.newValue !== undefined
+          ? values.find(x => x.value === action.newValue)
+          : undefined;
+      state.absent = !valueMatch;
+      state.active = valueMatch?.active;
+      state.newValueExists = Boolean(newValueMatch) || action.newValue === null;
+      result.picklistValues.push(state);
     }
     return result;
+  }
+
+  public diff(state, definition) {
+    const actions = definition.picklistValues.filter((target, i) => {
+      const source = state.picklistValues[i];
+      if (target.absent) {
+        return target.absent !== source.absent;
+      }
+      if (target.active !== undefined) {
+        return target.active !== source.active;
+      }
+      // replacing a picklist value is not idempotent
+      if (
+        source.newValueExists &&
+        (target.value !== undefined || target.replaceAllBlankValues)
+      ) {
+        return true;
+      }
+      return false;
+    });
+    if (actions.length) {
+      return { picklistValues: actions };
+    }
+    return undefined;
   }
 
   public async apply(config) {
@@ -103,23 +131,4 @@ async function listMetadata(conn, sobjectTypes) {
   } else {
     return [];
   }
-}
-
-function isActionRequired(action, values) {
-  const valueGiven = action.value !== undefined && action.value !== null;
-  const newValueGiven =
-    action.newValue !== undefined && action.newValue !== null;
-  if (valueGiven) {
-    const match = values.find(x => x.value === action.value);
-    if (!match) {
-      return false;
-    }
-    if (action.active !== undefined && action.active === match.active) {
-      return false;
-    }
-  }
-  if (newValueGiven && !values.find(x => x.value === action.newValue)) {
-    return false;
-  }
-  return true;
 }
