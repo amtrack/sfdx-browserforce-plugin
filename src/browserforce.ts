@@ -82,10 +82,11 @@ export default class Browserforce {
 
   // path instead of url
   public async openPage(urlPath, options?) {
+    let page;
     const result = await pRetry(
       async () => {
         await this.resolveDomains();
-        const page = await this.browser.newPage();
+        page = await this.browser.newPage();
         page.setDefaultNavigationTimeout(
           parseInt(process.env.BROWSERFORCE_NAVIGATION_TIMEOUT_MS, 10) || 90000
         );
@@ -140,11 +141,18 @@ export default class Browserforce {
         return page;
       },
       {
-        onFailedAttempt: error => {
+        onFailedAttempt: async error => {
           if (this.logger) {
             this.logger.warn(
               `retrying ${error.retriesLeft} more time(s) because of "${error}"`
             );
+          }
+          if (page) {
+            try {
+              await page.close();
+            } catch (e) {
+              // not handled
+            }
           }
         },
         retries: process.env.BROWSERFORCE_RETRY_MAX_RETRIES
