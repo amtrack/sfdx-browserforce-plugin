@@ -91,4 +91,16 @@ describe(Picklists.name, function() {
       cmd.output.toString()
     );
   });
+  it('should replace and deactivate a picklist value', () => {
+    const replaceCmd = child.spawnSync(path.resolve('bin', 'run'), [
+      'browserforce:apply',
+      '-f',
+      path.resolve(path.join(__dirname, 'replace-and-deactivate.json'))
+    ]);
+    assert.deepStrictEqual(replaceCmd.status, 0, replaceCmd.output.toString());
+    assert(
+      /changing 'picklistValues' to.*/.test(replaceCmd.output.toString()),
+      replaceCmd.output.toString()
+    );
+  });
 });
