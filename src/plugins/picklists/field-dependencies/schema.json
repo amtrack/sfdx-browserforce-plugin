@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/picklists/controlling-field/schema.json",
+  "title": "Field Dependencies",
+  "description": "Manage (create/modify/delete) Field Dependencies on CustomFields.\nIf a Field Dependency already exists for the dependent field, it will be deleted.",
+  "type": "array",
+  "items": { "$ref": "#/definitions/fieldDependency" },
+  "default": [],
+  "definitions": {
+    "fieldDependency": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "title": "the API name of the CustomObject",
+          "examples": ["Account", "Vehicle__c", "ACME__Vehicle__c"],
+          "type": "string"
+        },
+        "dependentField": {
+          "title": "the API name of the CustomField that has its values filtered",
+          "type": "string",
+          "examples": ["Gears__c", "ACME__Gears__c"]
+        },
+        "controllingField": {
+          "title": "the API name of the CustomField that drives filtering",
+          "description": "If this value is null or not set, the Field Dependency will be deleted.",
+          "type": ["string", "null"],
+          "examples": ["Transmission__c", "ACME__Transmission__c", null]
+        }
+      }
+    }
+  }
+}

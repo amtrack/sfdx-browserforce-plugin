@@ -1,0 +1,14 @@
+{
+  "$schema": "../../schema.json",
+  "settings": {
+    "picklists": {
+      "fieldDependencies": [
+        {
+          "object": "Vehicle__c",
+          "dependentField": "Gears__c",
+          "controllingField": null
+        }
+      ]
+    }
+  }
+}

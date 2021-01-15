@@ -10,6 +10,9 @@
       "type": "array",
       "items": { "$ref": "#/definitions/action" },
       "default": []
+    },
+    "fieldDependencies": {
+      "$ref": "./field-dependencies/schema.json"
     }
   },
   "definitions": {
