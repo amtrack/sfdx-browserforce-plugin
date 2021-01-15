@@ -1,6 +1,7 @@
 import { core } from '@salesforce/command';
 import pRetry, { AbortError } from 'p-retry';
 import * as puppeteer from 'puppeteer';
+import { Page } from 'puppeteer';
 import * as querystring from 'querystring';
 import { parse, URL } from 'url';
 
@@ -54,30 +55,7 @@ export default class Browserforce {
   }
 
   public async throwPageErrors(page) {
-    const errorHandle = await page.$(ERROR_DIV_SELECTOR);
-    if (errorHandle) {
-      const errorMsg = await page.evaluate(
-        (div: HTMLDivElement) => div.innerText,
-        errorHandle
-      );
-      await errorHandle.dispose();
-      if (errorMsg && errorMsg.trim()) {
-        throw new Error(errorMsg.trim());
-      }
-    }
-    const errorElements = await page.$$(ERROR_DIVS_SELECTOR);
-    if (errorElements.length) {
-      const errorMessages = await page.evaluate((...errorDivs) => {
-        return errorDivs.map((div: HTMLDivElement) => div.innerText);
-      }, ...errorElements);
-      const errorMsg = errorMessages
-        .map(m => m.trim())
-        .join(' ')
-        .trim();
-      if (errorMsg) {
-        throw new Error(errorMsg);
-      }
-    }
+    return await throwPageErrors(page);
   }
 
   // path instead of url
@@ -221,5 +199,32 @@ export default class Browserforce {
       return `https://${myDomainOrInstance}.lightning.force.com`;
     }
     return null;
+  }
+}
+
+export async function throwPageErrors(page: Page): Promise<void> {
+  const errorHandle = await page.$(ERROR_DIV_SELECTOR);
+  if (errorHandle) {
+    const errorMsg = await page.evaluate(
+      (div: HTMLDivElement) => div.innerText,
+      errorHandle
+    );
+    await errorHandle.dispose();
+    if (errorMsg && errorMsg.trim()) {
+      throw new Error(errorMsg.trim());
+    }
+  }
+  const errorElements = await page.$$(ERROR_DIVS_SELECTOR);
+  if (errorElements.length) {
+    const errorMessages = await page.evaluate((...errorDivs) => {
+      return errorDivs.map((div: HTMLDivElement) => div.innerText);
+    }, ...errorElements);
+    const errorMsg = errorMessages
+      .map(m => m.trim())
+      .join(' ')
+      .trim();
+    if (errorMsg) {
+      throw new Error(errorMsg);
+    }
   }
 }

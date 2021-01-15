@@ -2,6 +2,7 @@ import * as assert from 'assert';
 import * as child from 'child_process';
 import * as path from 'path';
 import Picklists from '.';
+import FieldDependencies from './field-dependencies';
 
 describe(Picklists.name, function() {
   this.slow('30s');
@@ -101,6 +102,83 @@ describe(Picklists.name, function() {
     assert(
       /changing 'picklistValues' to.*/.test(replaceCmd.output.toString()),
       replaceCmd.output.toString()
+    );
+  });
+});
+
+describe(FieldDependencies.name, function() {
+  this.slow('30s');
+  this.timeout('10m');
+  it('should not do anything when the dependency is already set', () => {
+    const cmd = child.spawnSync(path.resolve('bin', 'run'), [
+      'browserforce:apply',
+      '-f',
+      path.resolve(path.join(__dirname, 'field-dependencies', 'set.json'))
+    ]);
+    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
+    assert(
+      /no action necessary/.test(cmd.output.toString()),
+      cmd.output.toString()
+    );
+  });
+  it('should unset a field dependency', () => {
+    const cmd = child.spawnSync(path.resolve('bin', 'run'), [
+      'browserforce:apply',
+      '-f',
+      path.resolve(path.join(__dirname, 'field-dependencies', 'unset.json'))
+    ]);
+    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
+    assert(
+      /changing 'fieldDependencies' to.*/.test(cmd.output.toString()),
+      cmd.output.toString()
+    );
+  });
+  it('should not do anything when the dependency is already unset', () => {
+    const cmd = child.spawnSync(path.resolve('bin', 'run'), [
+      'browserforce:apply',
+      '-f',
+      path.resolve(path.join(__dirname, 'field-dependencies', 'unset.json'))
+    ]);
+    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
+    assert(
+      /no action necessary/.test(cmd.output.toString()),
+      cmd.output.toString()
+    );
+  });
+  it('should set a field dependency', () => {
+    const cmd = child.spawnSync(path.resolve('bin', 'run'), [
+      'browserforce:apply',
+      '-f',
+      path.resolve(path.join(__dirname, 'field-dependencies', 'set.json'))
+    ]);
+    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
+    assert(
+      /changing 'fieldDependencies' to.*/.test(cmd.output.toString()),
+      cmd.output.toString()
+    );
+  });
+  it('should change a field dependency', () => {
+    const cmd = child.spawnSync(path.resolve('bin', 'run'), [
+      'browserforce:apply',
+      '-f',
+      path.resolve(path.join(__dirname, 'field-dependencies', 'change.json'))
+    ]);
+    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
+    assert(
+      /changing 'fieldDependencies' to.*/.test(cmd.output.toString()),
+      cmd.output.toString()
+    );
+  });
+  it('should change back a field dependency', () => {
+    const cmd = child.spawnSync(path.resolve('bin', 'run'), [
+      'browserforce:apply',
+      '-f',
+      path.resolve(path.join(__dirname, 'field-dependencies', 'set.json'))
+    ]);
+    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
+    assert(
+      /changing 'fieldDependencies' to.*/.test(cmd.output.toString()),
+      cmd.output.toString()
     );
   });
 });
