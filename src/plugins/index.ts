@@ -11,7 +11,10 @@ import * as security from './security';
 import * as picklists from './picklists';
 import * as recordTypes from './record-types';
 
+import * as highVelocitySalesSettings from './high-velocity-sales-settings';
+
 export {
+  highVelocitySalesSettings,
   recordTypes,
   picklists,
   deferSharingCalculation,

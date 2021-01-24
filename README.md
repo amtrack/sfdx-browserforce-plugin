@@ -103,6 +103,9 @@ Here is a full blown example showing most of the supported settings in action:
     "deferSharingCalculation": {
       "suspend": true
     },
+    "highVelocitySalesSettings": {
+      "setUpAndEnable": true
+    },
     "homePageLayouts": {
       "homePageLayoutAssignments": [
         {

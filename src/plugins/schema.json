@@ -7,6 +7,9 @@
   "properties": {
     "settings": {
       "properties": {
+        "highVelocitySalesSettings": {
+          "$ref": "./high-velocity-sales-settings/schema.json"
+        },
         "recordTypes": {
           "$ref": "./record-types/schema.json"
         },
