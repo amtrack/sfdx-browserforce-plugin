@@ -614,17 +614,17 @@
     chalk "^2.4.2"
     cli-ux "^4.9.3"
 
-"@salesforce/command@3.0.5", "@salesforce/command@^3.0.5":
-  version "3.0.5"
-  resolved "https://registry.yarnpkg.com/@salesforce/command/-/command-3.0.5.tgz#262665e0845f247005916b2a3ac62e1244b078e4"
-  integrity sha512-FhQjRALvcqXjVjv/tjPweqyN6bEhVrxV2cyM+gqns5aY5GQy9KMtNI6Sg/D5Mg4Htf89jHgV+iqgndNzGyDX2g==
+"@salesforce/command@3.1.0", "@salesforce/command@^3.0.4":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@salesforce/command/-/command-3.1.0.tgz#98874539aeda69aeb20765dcf7ed02a2945cec45"
+  integrity sha512-Ggz+P35uJVd2w+R66TGz1Rs4jr6KKmyC3bkpgbJTm+yjaOjy2l/if2hus6fhZ680LUxCucDVXbyEjdzu3B+ioA==
   dependencies:
     "@oclif/command" "^1.5.17"
     "@oclif/errors" "^1.2.2"
     "@oclif/parser" "^3.8.3"
     "@oclif/plugin-help" "^2.2.0"
     "@oclif/test" "^1.2.4"
-    "@salesforce/core" "^2.15.2"
+    "@salesforce/core" "^2.16.3"
     "@salesforce/kit" "^1.2.2"
     "@salesforce/ts-types" "^1.2.0"
     chalk "^2.4.2"
@@ -694,17 +694,17 @@
     chalk "^2.4.2"
     cli-ux "^4.9.3"
 
-"@salesforce/command@^3.0.4":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@salesforce/command/-/command-3.1.0.tgz#98874539aeda69aeb20765dcf7ed02a2945cec45"
-  integrity sha512-Ggz+P35uJVd2w+R66TGz1Rs4jr6KKmyC3bkpgbJTm+yjaOjy2l/if2hus6fhZ680LUxCucDVXbyEjdzu3B+ioA==
+"@salesforce/command@^3.0.5":
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/@salesforce/command/-/command-3.0.5.tgz#262665e0845f247005916b2a3ac62e1244b078e4"
+  integrity sha512-FhQjRALvcqXjVjv/tjPweqyN6bEhVrxV2cyM+gqns5aY5GQy9KMtNI6Sg/D5Mg4Htf89jHgV+iqgndNzGyDX2g==
   dependencies:
     "@oclif/command" "^1.5.17"
     "@oclif/errors" "^1.2.2"
     "@oclif/parser" "^3.8.3"
     "@oclif/plugin-help" "^2.2.0"
     "@oclif/test" "^1.2.4"
-    "@salesforce/core" "^2.16.3"
+    "@salesforce/core" "^2.15.2"
     "@salesforce/kit" "^1.2.2"
     "@salesforce/ts-types" "^1.2.0"
     chalk "^2.4.2"
