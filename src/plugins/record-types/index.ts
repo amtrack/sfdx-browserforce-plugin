@@ -1,4 +1,4 @@
-import { Connection } from '@salesforce/core';
+import { Connection } from '@salesforce/command/node_modules/@salesforce/core';
 import { BrowserforcePlugin } from '../../plugin';
 import { RecordTypePage } from './pages';
 
