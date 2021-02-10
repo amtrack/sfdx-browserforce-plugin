@@ -30,7 +30,7 @@
     "@typescript-eslint/parser": "4.15.0",
     "eslint": "7.15.0",
     "eslint-config-prettier": "7.0.0",
-    "mocha": "8.0.0",
+    "mocha": "8.2.1",
     "nyc": "15.0.0",
     "sfdx-cli": "7.82.0",
     "tmp": "0.2.1",
