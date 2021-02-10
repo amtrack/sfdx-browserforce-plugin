@@ -1,7 +1,6 @@
 import { core } from '@salesforce/command';
 import pRetry, { AbortError } from 'p-retry';
-import * as puppeteer from 'puppeteer';
-import { Page } from 'puppeteer';
+import { Browser, launch, Page } from 'puppeteer';
 import * as querystring from 'querystring';
 import { parse, URL } from 'url';
 
@@ -14,15 +13,15 @@ const VF_IFRAME_SELECTOR = 'iframe[name^=vfFrameId]';
 export default class Browserforce {
   public org: core.Org;
   public logger: core.Logger;
-  public browser: puppeteer.Browser;
-  public page: puppeteer.Page;
+  public browser: Browser;
+  public page: Page;
   constructor(org, logger?) {
     this.org = org;
     this.logger = logger;
   }
 
   public async login() {
-    this.browser = await puppeteer.launch({
+    this.browser = await launch({
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
       headless: !(process.env.BROWSER_DEBUG === 'true')
     });
