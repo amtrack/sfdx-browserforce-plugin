@@ -860,10 +860,10 @@
     mkdirp "1.0.4"
     sfdx-faye "^1.0.9"
 
-"@salesforce/dev-config@2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@salesforce/dev-config/-/dev-config-2.0.0.tgz#388d71830e63078a835a844b51d2661c73ac851e"
-  integrity sha512-CwPeiNrH7bULxjr7RmvStR3uPWu3aMl35mQrUNip2pTMvXQ4QmcDowWqx5MSaLj03JIQaoxnt6g8qWlhyOmxUQ==
+"@salesforce/dev-config@2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@salesforce/dev-config/-/dev-config-2.1.0.tgz#78efdf5d660d7cb839d9cafa036f9882741dc6bc"
+  integrity sha512-I+zrptt8zI1jbP3TVA6g7i3quuh71tPky8gwCsXaQ2X9ea1xbeAslN4YjWfgqbY5SaxJhqP979oxFADlH+OehQ==
 
 "@salesforce/kit@^1", "@salesforce/kit@^1.0.0", "@salesforce/kit@^1.2.0", "@salesforce/kit@^1.2.1":
   version "1.2.1"
