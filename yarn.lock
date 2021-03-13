@@ -182,10 +182,10 @@
   resolved "https://registry.yarnpkg.com/@istanbuljs/schema/-/schema-0.1.2.tgz#26520bf09abe4a5644cd5414e37125a8954241dd"
   integrity sha512-tsAQNx32a8CoFhjhijUIhI4kccIAgmGhy8LZMZgGfmXcpMbPRUqn5LWmgRttILi6yeGmBJd2xsPkFMs0PzgPCw==
 
-"@mdapi-issues/listmetadata-standardvalueset@1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@mdapi-issues/listmetadata-standardvalueset/-/listmetadata-standardvalueset-1.0.5.tgz#2ae93a5bb933f025f4b0a6b891ca58d2b3880579"
-  integrity sha512-zEkC6Ze+PAV4LnPJpul+oiWNt2RtUI8hGgZ199g+A2kE1mJV26gqoaNEBtX26zKxDswcwjWlRY8pHnBOx+V4OA==
+"@mdapi-issues/listmetadata-standardvalueset@2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@mdapi-issues/listmetadata-standardvalueset/-/listmetadata-standardvalueset-2.0.1.tgz#465f0287dcbd90dd7c28d0cd8bf17878c54ad58a"
+  integrity sha512-k+5G4diNMmnHPAES1MglF3jAcR1fpEaa9AgNzcM75mDQVrfRHIZjG/VwXP3meQ2QRHZ/OuH+84xuDFjcxbb8gA==
   dependencies:
     tslib "2.1.0"
 
