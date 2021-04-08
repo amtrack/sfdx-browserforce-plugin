@@ -1,3 +1,4 @@
+import pRetry from 'p-retry';
 import { BrowserforcePlugin } from '../../plugin';
 
 const PATHS = {
@@ -31,19 +32,25 @@ export default class SalesforceToSalesforce extends BrowserforcePlugin {
     if (config.enabled === false) {
       throw new Error('`enabled` cannot be disabled once enabled');
     }
-
-    const page = await this.browserforce.openPage(PATHS.BASE);
-    await page.waitForSelector(SELECTORS.ENABLED);
-    await page.$eval(
-      SELECTORS.ENABLED,
-      (e: HTMLInputElement, v) => {
-        e.checked = v;
-      },
-      config.enabled
-    );
-    await Promise.all([
-      page.waitForNavigation(),
-      page.click(SELECTORS.SAVE_BUTTON)
-    ]);
+    // sometimes the setting is not being applied although no error is being displayed
+    await pRetry(async () => {
+      const page = await this.browserforce.openPage(PATHS.BASE);
+      await page.waitForSelector(SELECTORS.ENABLED);
+      await page.$eval(
+        SELECTORS.ENABLED,
+        (e: HTMLInputElement, v) => {
+          e.checked = v;
+        },
+        config.enabled
+      );
+      await Promise.all([
+        page.waitForNavigation(),
+        page.click(SELECTORS.SAVE_BUTTON)
+      ]);
+      const result = await this.retrieve();
+      if (result['enabled'] !== config.enabled) {
+        throw new Error('setting was not applied as expected');
+      }
+    });
   }
 }
