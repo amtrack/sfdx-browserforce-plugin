@@ -24,7 +24,7 @@
     "@salesforce/dev-config": "2.1.0",
     "@salesforce/prettier-config": "0.0.1",
     "@types/mocha": "8.2.2",
-    "@types/node": "10.17.52",
+    "@types/node": "10.17.58",
     "@typescript-eslint/eslint-plugin": "4.15.1",
     "@typescript-eslint/parser": "4.15.1",
     "eslint": "7.24.0",
