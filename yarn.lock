@@ -579,13 +579,6 @@
   resolved "https://registry.yarnpkg.com/@oclif/screen/-/screen-1.0.4.tgz#b740f68609dfae8aa71c3a6cab15d816407ba493"
   integrity sha512-60CHpq+eqnTxLZQ4PGHYNwUX572hgpMHGPtTWMjdTMsAvlm69lZV/4ly6O3sAYkomo4NggGcomrDpBe34rxUqw==
 
-"@oclif/test@1.2.8":
-  version "1.2.8"
-  resolved "https://registry.yarnpkg.com/@oclif/test/-/test-1.2.8.tgz#a5b2ebd747832217d9af65ac30b58780c4c17c5e"
-  integrity sha512-HCh0qPge1JCqTEw4s2ScnicEZd4Ro4/0VvdjpsfCiX6fuDV53fRZ2uqLTgxKGHrVoqOZnVrRZHyhFyEsFGs+zQ==
-  dependencies:
-    fancy-test "^1.4.3"
-
 "@oclif/test@^1.2.4":
   version "1.2.5"
   resolved "https://registry.yarnpkg.com/@oclif/test/-/test-1.2.5.tgz#4d9723c38647a2a5930bf888f8c43790d74a18ca"
@@ -1173,11 +1166,6 @@
     "@salesforce/command" "^3.1.0"
     "@salesforce/core" "^2.20.5"
     tslib "^2"
-
-"@salesforce/prettier-config@0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@salesforce/prettier-config/-/prettier-config-0.0.1.tgz#4ef70bca610ea981181fb030b25a27797b15cdff"
-  integrity sha512-o43j1I6JliElZXmTL5q1ni2frSkO5o/kCjIp7nI56cWBHWeZaM81vXOmap8TESDzIrEok6tF5jLKyEv4+SOleQ==
 
 "@salesforce/require-analytics@^0.7.0":
   version "0.7.3"
