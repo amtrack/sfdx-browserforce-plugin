@@ -40,6 +40,7 @@ export default class Picklists extends BrowserforcePlugin {
           Boolean(newValueMatch) || action.newValue === null;
         result.picklistValues.push(state);
       }
+
     }
     if (definition.fieldDependencies) {
       result.fieldDependencies = await new FieldDependencies(
@@ -67,6 +68,11 @@ export default class Picklists extends BrowserforcePlugin {
             source.newValueExists &&
             (target.value !== undefined || target.replaceAllBlankValues)
           ) {
+            return true;
+          }
+          if (target.newValue && !source.newValueExists && target.metadataType === "StandardValueSet") {
+            // New value doesn't exist in org yet
+            // TODO: support for CustomFields
             return true;
           }
           return false;
@@ -107,6 +113,12 @@ export default class Picklists extends BrowserforcePlugin {
             action.value
           );
           await replacePage.replaceAndDelete(action.newValue);
+        } else if (!action.value && action.newValue && !action.replaceAllBlankValues) {
+          const addPage = await picklistPage.clickNewActionButton();
+          await addPage.add(
+            action.newValue,
+            action.statusCategory
+          );
         } else {
           const replacePage = await picklistPage.clickReplaceActionButton();
           await replacePage.replace(
