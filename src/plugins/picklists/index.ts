@@ -3,7 +3,7 @@ import { ensureArray } from '../../jsforce-utils';
 import { BrowserforcePlugin } from '../../plugin';
 import { removeEmptyValues } from '../utils';
 import FieldDependencies from './field-dependencies';
-import { PicklistPage } from './pages';
+import { PicklistPage, DefaultPicklistAddPage, StatusPicklistAddPage } from './pages';
 import { determineStandardValueSetEditUrl } from './standard-value-set';
 
 export default class Picklists extends BrowserforcePlugin {
@@ -70,9 +70,11 @@ export default class Picklists extends BrowserforcePlugin {
           ) {
             return true;
           }
-          if (target.newValue && !source.newValueExists && target.metadataType === "StandardValueSet") {
+          if (
+            target.newValue &&
+            !source.newValueExists
+          ) {
             // New value doesn't exist in org yet
-            // TODO: support for CustomFields
             return true;
           }
           return false;
@@ -114,11 +116,14 @@ export default class Picklists extends BrowserforcePlugin {
           );
           await replacePage.replaceAndDelete(action.newValue);
         } else if (!action.value && action.newValue && !action.replaceAllBlankValues) {
-          const addPage = await picklistPage.clickNewActionButton();
-          await addPage.add(
-            action.newValue,
-            action.statusCategory
-          );
+          await picklistPage.clickNewActionButton();
+
+          if (action.statusCategory) {
+            await new StatusPicklistAddPage(page).add(action.newValue, action.statusCategory);
+          } else {
+            await new DefaultPicklistAddPage(page).add(action.newValue);
+          }
+
         } else {
           const replacePage = await picklistPage.clickReplaceActionButton();
           await replacePage.replace(
