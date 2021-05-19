@@ -22,6 +22,30 @@
           "value": "Manual",
           "newValue": "Automatic",
           "absent": true
+        },
+        {
+          "metadataType": "StandardValueSet",
+          "metadataFullName": "ContractStatus",
+          "value": "Rejected",
+          "absent": true
+        },
+        {
+          "metadataType": "StandardValueSet",
+          "metadataFullName": "AccountType",
+          "value": "Sales Partner",
+          "absent": true
+        },
+        {
+          "metadataType": "CustomField",
+          "metadataFullName": "Vehicle__c.Features__c",
+          "value": "Heated Seats",
+          "absent": true
+        },
+        {
+          "metadataType": "GlobalValueSet",
+          "metadataFullName": "VehicleGears",
+          "value": "10",
+          "absent": true
         }
       ]
     }

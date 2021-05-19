@@ -20,6 +20,18 @@ describe(Picklists.name, function() {
       sourceDeployCmd.output.toString()
     );
   });
+  it('should add a new picklist value when it does not exist', () => {
+    const cmd = child.spawnSync(path.resolve('bin', 'run'), [
+      'browserforce:apply',
+      '-f',
+      path.resolve(path.join(__dirname, 'new.json'))
+    ]);
+    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
+    assert(
+      /changing 'picklistValues' to.*/.test(cmd.output.toString()),
+      cmd.output.toString()
+    );
+  });
   it('should replace picklist values', () => {
     const replaceCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
@@ -102,18 +114,6 @@ describe(Picklists.name, function() {
     assert(
       /changing 'picklistValues' to.*/.test(replaceCmd.output.toString()),
       replaceCmd.output.toString()
-    );
-  });
-  it('should add a new picklist value when it does not exist', () => {
-    const cmd = child.spawnSync(path.resolve('bin', 'run'), [
-      'browserforce:apply',
-      '-f',
-      path.resolve(path.join(__dirname, 'new.json'))
-    ]);
-    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
-    assert(
-      /changing 'picklistValues' to.*/.test(cmd.output.toString()),
-      cmd.output.toString()
     );
   });
 });
