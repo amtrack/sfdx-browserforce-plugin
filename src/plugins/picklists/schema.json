@@ -36,6 +36,10 @@
           "type": "string",
           "description": "the API name of the new value, otherwise blank"
         },
+        "statusCategory": {
+          "type": "string",
+          "description": "the Status Category of a new picklist value"
+        },
         "replaceAllBlankValues": {
           "type": "boolean",
           "description": "replace all blank values (mutually exclusive to replacing an old value)"

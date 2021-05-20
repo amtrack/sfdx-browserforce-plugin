@@ -1,0 +1,30 @@
+{
+  "$schema": "../schema.json",
+  "settings": {
+    "picklists": {
+      "picklistValues": [
+        {
+          "metadataType": "StandardValueSet",
+          "metadataFullName": "ContractStatus",
+          "newValue": "Rejected",
+          "statusCategory": "Activated"
+        },
+        {
+          "metadataType": "StandardValueSet",
+          "metadataFullName": "AccountType",
+          "newValue": "Sales Partner"
+        },
+        {
+          "metadataType": "CustomField",
+          "metadataFullName": "Vehicle__c.Features__c",
+          "newValue": "Heated Seats"
+        },
+        {
+          "metadataType": "GlobalValueSet",
+          "metadataFullName": "VehicleGears",
+          "newValue": "10"
+        }
+      ]
+    }
+  }
+}

@@ -47,6 +47,15 @@ export class PicklistPage {
       })
     ];
   }
+  public async clickNewActionButton(): Promise<void> {
+    const NEW_ACTION_BUTTON_XPATH = '//tr[td[2]]//input[contains(@onclick, "/setup/ui/picklist_masteredit")][@value=" New "]';
+    await this.page.waitForXPath(NEW_ACTION_BUTTON_XPATH);
+    const NEW_ACTION_BUTTON = (await this.page.$x(NEW_ACTION_BUTTON_XPATH))[0];
+    await Promise.all([
+      this.page.waitForNavigation(),
+      NEW_ACTION_BUTTON.click()
+    ]);
+  }
 
   public async clickReplaceActionButton(): Promise<any> {
     const REPLACE_ACTION_BUTTON = 'input[name="replace"]';
@@ -109,6 +118,98 @@ export class PicklistPage {
     ]);
     await throwPageErrors(this.page);
     return this.page;
+  }
+}
+
+export class DefaultPicklistAddPage {
+  protected page;
+  protected saveButton = 'input.btn[name="save"]';
+
+  constructor(page) {
+    this.page = page;
+  }
+
+  async add(newValue) {
+    const TEXT_AREA = 'textarea';
+    if (newValue !== undefined && newValue !== null) {
+      await this.page.waitForSelector(TEXT_AREA);
+      await this.page.type(TEXT_AREA, newValue);
+    }
+    await this.save();
+  }
+
+  async save() {
+    await pRetry(
+      async () => {
+        await this.page.waitForSelector(this.saveButton);
+        await Promise.all([
+          this.page.waitForNavigation(),
+          this.page.click(this.saveButton)
+        ]);
+        await throwPageErrors(this.page);
+      },
+      {
+        onFailedAttempt: error => {
+          console.warn(
+            `retrying ${error.retriesLeft} more time(s) because of "${error}"`
+          );
+        },
+        retries: process.env.BROWSERFORCE_RETRY_MAX_RETRIES
+          ? parseInt(process.env.BROWSERFORCE_RETRY_MAX_RETRIES, 10)
+          : 6,
+        minTimeout: process.env.BROWSERFORCE_RETRY_TIMEOUT_MS
+          ? parseInt(process.env.BROWSERFORCE_RETRY_TIMEOUT_MS, 10)
+          : 4000
+      }
+    );
+  }
+}
+
+export class StatusPicklistAddPage {
+  protected page;
+  protected saveButton = 'input.btn[name="save"]';
+
+  constructor(page) {
+    this.page = page;
+  }
+
+  async add(newValue, statusCategory) {
+    const LABEL_INPUT = 'input#p1';
+    const API_NAME_INPUT = 'input#p3';
+    const STATUS_CATEGORY_SELECTOR = 'select#p5'
+    if (newValue !== undefined && newValue !== null) {
+      await this.page.waitForSelector(STATUS_CATEGORY_SELECTOR);
+      await this.page.type(LABEL_INPUT, newValue);
+      await this.page.type(API_NAME_INPUT, newValue);
+      await this.page.type(STATUS_CATEGORY_SELECTOR, statusCategory);
+    }
+    await this.save();
+  }
+
+  async save() {
+    await pRetry(
+      async () => {
+        await this.page.waitForSelector(this.saveButton);
+        await Promise.all([
+          this.page.waitForNavigation(),
+          this.page.click(this.saveButton)
+        ]);
+        await throwPageErrors(this.page);
+      },
+      {
+        onFailedAttempt: error => {
+          console.warn(
+            `retrying ${error.retriesLeft} more time(s) because of "${error}"`
+          );
+        },
+        retries: process.env.BROWSERFORCE_RETRY_MAX_RETRIES
+          ? parseInt(process.env.BROWSERFORCE_RETRY_MAX_RETRIES, 10)
+          : 6,
+        minTimeout: process.env.BROWSERFORCE_RETRY_TIMEOUT_MS
+          ? parseInt(process.env.BROWSERFORCE_RETRY_TIMEOUT_MS, 10)
+          : 4000
+      }
+    );
   }
 }
 
