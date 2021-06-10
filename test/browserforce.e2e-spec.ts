@@ -59,6 +59,24 @@ describe('Browser', function() {
       await bf.logout();
     });
   });
+  describe('waitForSelectorInFrameOrPage()', () => {
+    it('should query a selector in LEX and Classic UI', async () => {
+      const defaultScratchOrg = await core.Org.create({});
+      const ux = await UX.create();
+      const bf = new Browserforce(defaultScratchOrg, ux.cli);
+      await bf.login();
+      const page = await bf.openPage('lightning/setup/ExternalStrings/home');
+      const frame = await bf.waitForSelectorInFrameOrPage(
+        page,
+        'input[name="edit"]'
+      );
+      await Promise.all([
+        page.waitForNavigation(),
+        frame.click('input[name="edit"]')
+      ]);
+      await bf.logout();
+    });
+  });
   describe('throwPageErrors()', () => {
     it('should throw the page error on internal errors', async () => {
       const defaultScratchOrg = await core.Org.create({});

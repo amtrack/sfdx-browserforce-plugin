@@ -22,7 +22,12 @@ export default class Browserforce {
 
   public async login() {
     this.browser = await launch({
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        // workaround for navigating frames https://github.com/puppeteer/puppeteer/issues/5123
+        '--disable-features=site-per-process'
+      ],
       headless: !(process.env.BROWSER_DEBUG === 'true')
     });
     await this.openPage(
@@ -147,12 +152,19 @@ export default class Browserforce {
   // Wait for either the selector in the page or in the iframe.
   // returns the page or the frame
   public async waitForSelectorInFrameOrPage(page, selector) {
-    await Promise.race([
-      page.waitForSelector(selector),
-      page.waitForSelector(VF_IFRAME_SELECTOR)
-    ]);
-    const frameOrPage =
-      (await page.frames().find(f => f.name().startsWith('vfFrameId'))) || page;
+    await page.waitForSelector(
+      `pierce/force-aloha-page ${VF_IFRAME_SELECTOR}, ${VF_IFRAME_SELECTOR}, ${selector}`
+    );
+    const frameElementHandle = await page.$(
+      `pierce/force-aloha-page ${VF_IFRAME_SELECTOR}, ${VF_IFRAME_SELECTOR}`
+    );
+    let frameOrPage = page;
+    if (frameElementHandle) {
+      const frame = await frameElementHandle.contentFrame();
+      if (frame) {
+        frameOrPage = frame;
+      }
+    }
     await frameOrPage.waitForSelector(selector);
     return frameOrPage;
   }
