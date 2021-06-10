@@ -4,8 +4,7 @@ import { BrowserforcePlugin } from '../../../plugin';
 
 const SELECTORS = {
   SAVE_BUTTON: 'input[name="save"]',
-  CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL: '#options_9',
-  IFRAME: 'iframe[name^=vfFrameId]'
+  CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL: '#options_9'
 };
 
 interface CustomObjectRecord {
@@ -39,6 +38,19 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
       const isLEX =
         page.url().indexOf('/one/one.app') >= 0 ||
         page.url().indexOf('/lightning/') >= 0;
+      const getObjectPageUrl = function(customObject, isLexUi = true) {
+        const classicUiPath = `${customObject.id}/e`;
+        if (isLexUi) {
+          return `lightning/setup/ObjectManager/${
+            customObject.id
+          }/edit?nodeId=ObjectManager&address=${encodeURIComponent(
+            `/${classicUiPath}`
+          )}`;
+        } else {
+          return classicUiPath;
+        }
+      };
+
       for (const availableCustomObject of definition) {
         const customObject = customObjects.records.find(co => {
           if (availableCustomObject.namespacePrefix === undefined) {
@@ -54,51 +66,26 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
             `Could not find CustomObject: {DeveloperName: ${availableCustomObject.name}, NamespacePrefix: ${availableCustomObject.namespacePrefix}`
           );
         }
-        const classicUiPath = `${customObject.Id}/e`;
-        if (isLEX) {
-          const availableForCustomerPortalPath = `lightning/setup/ObjectManager/${
-            customObject.Id
-          }/edit?nodeId=ObjectManager&address=${encodeURIComponent(
-            `/${classicUiPath}`
-          )}`;
-          const lexPage = await this.browserforce.openPage(
-            availableForCustomerPortalPath,
-            {
-              waitUntil: ['load', 'domcontentloaded', 'networkidle0']
-            }
-          );
-          // maybe use waitForFrame https://github.com/GoogleChrome/puppeteer/issues/1361
-          await lexPage.waitForSelector(SELECTORS.IFRAME);
-          const frame = await lexPage
-            .frames()
-            .find(f => f.name().startsWith('vfFrameId'));
-          await frame.waitForSelector(
-            SELECTORS.CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL
-          );
-          response.push({
-            id: customObject.Id,
-            name: customObject.DeveloperName,
-            namespacePrefix: customObject.NamespacePrefix,
-            available: await frame.$eval(
-              SELECTORS.CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL,
-              (el: HTMLInputElement) => el.checked
-            )
-          });
-        } else {
-          const classicPage = await this.browserforce.openPage(classicUiPath);
-          await classicPage.waitForSelector(
-            SELECTORS.CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL
-          );
-          response.push({
-            id: customObject.Id,
-            name: customObject.DeveloperName,
-            namespacePrefix: customObject.NamespacePrefix,
-            available: await classicPage.$eval(
-              SELECTORS.CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL,
-              (el: HTMLInputElement) => el.checked
-            )
-          });
-        }
+        const result = {
+          id: customObject.Id,
+          name: customObject.DeveloperName,
+          namespacePrefix: customObject.NamespacePrefix
+        };
+        const pageUrl = getObjectPageUrl(result, isLEX);
+        const editPage = await this.browserforce.openPage(pageUrl, {
+          waitUntil: ['load', 'domcontentloaded', 'networkidle0']
+        });
+        const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(
+          editPage,
+          SELECTORS.CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL
+        );
+        response.push({
+          ...result,
+          available: await frameOrPage.$eval(
+            SELECTORS.CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL,
+            (el: HTMLInputElement) => el.checked
+          )
+        });
       }
     }
     return response;
@@ -142,41 +129,34 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
       const isLEX =
         page.url().indexOf('/one/one.app') >= 0 ||
         page.url().indexOf('/lightning/') >= 0;
-      for (const customObject of plan) {
+      const getObjectPageUrl = function(customObject, isLexUi = true) {
         const classicUiPath = `${customObject.id}/e?options_9=${
           customObject.available ? 1 : 0
         }&retURL=/${customObject.id}`;
-        if (isLEX) {
-          const availableForCustomerPortalPath = `lightning/setup/ObjectManager/${
+        if (isLexUi) {
+          return `lightning/setup/ObjectManager/${
             customObject.id
           }/edit?nodeId=ObjectManager&address=${encodeURIComponent(
             `/${classicUiPath}`
           )}`;
-          const lexPage = await this.browserforce.openPage(
-            availableForCustomerPortalPath,
-            {
-              waitUntil: ['load', 'domcontentloaded', 'networkidle0']
-            }
-          );
-          // maybe use waitForFrame https://github.com/GoogleChrome/puppeteer/issues/1361
-          await lexPage.waitForSelector(SELECTORS.IFRAME);
-          const frame = await lexPage
-            .frames()
-            .find(f => f.name().startsWith('vfFrameId'));
-          await frame.waitForSelector(SELECTORS.SAVE_BUTTON);
-          // framenavigated https://github.com/GoogleChrome/puppeteer/issues/2918
-          await Promise.all([
-            frame.waitForNavigation(),
-            frame.click(SELECTORS.SAVE_BUTTON)
-          ]);
         } else {
-          const classicPage = await this.browserforce.openPage(classicUiPath);
-          await classicPage.waitForSelector(SELECTORS.SAVE_BUTTON);
-          await Promise.all([
-            classicPage.waitForNavigation(),
-            classicPage.click(SELECTORS.SAVE_BUTTON)
-          ]);
+          return classicUiPath;
         }
+      };
+
+      for (const customObject of plan) {
+        const pageUrl = getObjectPageUrl(customObject, isLEX);
+        const editPage = await this.browserforce.openPage(pageUrl, {
+          waitUntil: ['load', 'domcontentloaded', 'networkidle0']
+        });
+        const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(
+          editPage,
+          SELECTORS.SAVE_BUTTON
+        );
+        await Promise.all([
+          frameOrPage.waitForNavigation(),
+          frameOrPage.click(SELECTORS.SAVE_BUTTON)
+        ]);
       }
     }
   }
