@@ -4,13 +4,19 @@ const PATHS = {
   BASE: 'lightning/setup/ThemingAndBranding/home'
 };
 
+const THEME_ROW_SELECTOR =
+  'pierce/#setupComponent lightning-datatable table > tbody > tr';
+const SELECTORS = {
+  DEVELOPER_NAMES: `${THEME_ROW_SELECTOR} > td:nth-child(2) > lightning-primitive-cell-factory lightning-base-formatted-text`,
+  STATES: `${THEME_ROW_SELECTOR} > td:nth-child(6) > lightning-primitive-cell-factory`
+};
+
 export default class LightningExperienceSettings extends BrowserforcePlugin {
   public async retrieve() {
     const page = await this.browserforce.openPage(PATHS.BASE, {
       waitUntil: ['load', 'domcontentloaded', 'networkidle0']
     });
-    await page.waitForFunction(domWaitForLightningThemes);
-    const themes = await page.evaluate(domGetThemesData);
+    const themes = await this.getThemeData(page);
     const activeTheme = themes.find(theme => theme.isActive);
     const response = {
       activeThemeName: activeTheme.developerName
@@ -23,82 +29,56 @@ export default class LightningExperienceSettings extends BrowserforcePlugin {
       waitUntil: ['load', 'domcontentloaded', 'networkidle0']
     });
 
-    await page.waitForFunction(domWaitForLightningThemes);
-    const cellJsHandle = await page.evaluateHandle(
-      domGetThemeDeveloperNameLightningPrimitiveCellTypes,
-      config.activeThemeName
-    );
+    await this.setActiveTheme(page, config.activeThemeName);
+  }
 
-    // click in TargetTheme/DeveloperName cell and use keyboard navigation from there on
-    await cellJsHandle.asElement().click();
-    await page.keyboard.press('ArrowRight');
-    await page.keyboard.press('ArrowRight');
-    await page.keyboard.press('ArrowRight');
-    await page.keyboard.press('ArrowRight');
-    await page.keyboard.press('ArrowRight');
-    await page.keyboard.press('Space');
-    await page.waitForTimeout(1000);
-    await page.keyboard.press('ArrowUp');
-    await page.waitForTimeout(1000);
-    await page.keyboard.press('ArrowUp');
-    await page.waitForTimeout(1000);
+  async getThemeData(page) {
+    await page.waitForSelector(THEME_ROW_SELECTOR);
+    const rowElementHandles = await page.$$(THEME_ROW_SELECTOR);
+    await page.waitForSelector(SELECTORS.DEVELOPER_NAMES);
+    const developerNames = await page.$$eval(SELECTORS.DEVELOPER_NAMES, cells =>
+      cells.map(cell => cell.innerText)
+    );
+    const states = await page.$$eval(SELECTORS.STATES, cells =>
+      cells.map(
+        cell =>
+          cell.shadowRoot?.querySelector('lightning-primitive-icon') !== null
+      )
+    );
+    return developerNames.map((developerName, i) => {
+      return {
+        developerName,
+        isActive: states[i],
+        rowElementHandle: rowElementHandles[i]
+      };
+    });
+  }
+
+  async setActiveTheme(page, themeDeveloperName) {
+    const data = await this.getThemeData(page);
+    const theme = data.find(
+      theme => theme.developerName === themeDeveloperName
+    );
+    const newActiveThemeRowElementHandle = theme.rowElementHandle;
+    await page.waitForSelector(`${THEME_ROW_SELECTOR} lightning-button-menu`, {
+      visible: true
+    });
+    const menuButton = await newActiveThemeRowElementHandle.$(
+      'pierce/td lightning-primitive-cell-factory lightning-primitive-cell-actions lightning-button-menu'
+    );
+    await menuButton.click();
+    await page.waitForSelector(
+      `${THEME_ROW_SELECTOR} lightning-button-menu slot lightning-menu-item`,
+      { visible: true }
+    );
+    const menuItems = await menuButton.$$('pierce/slot lightning-menu-item');
+    // second last item: [show, activate, preview]
+    const activateMenuItem = menuItems[menuItems.length - 2];
     await Promise.all([
       page.waitForNavigation({
         waitUntil: ['load', 'domcontentloaded', 'networkidle0']
       }),
-      page.keyboard.press('Space')
+      activateMenuItem.click()
     ]);
   }
 }
-
-const domWaitForLightningThemes = () => {
-  return document
-    .querySelector('lightning-datatable')
-    ?.shadowRoot?.querySelectorAll(
-      'table > tbody > tr > td:nth-child(2) > lightning-primitive-cell-factory'
-    )?.[1]
-    ?.shadowRoot?.querySelector(
-      'lightning-formatted-text, lightning-base-formatted-text'
-    )?.shadowRoot?.textContent;
-};
-
-const domGetThemesData = () => {
-  return Array.from(
-    document
-      .querySelector('lightning-datatable')
-      ?.shadowRoot?.querySelectorAll('table > tbody > tr')
-  ).map(tr => {
-    const developerName = tr
-      ?.querySelector('td:nth-child(2) > lightning-primitive-cell-factory')
-      ?.shadowRoot?.querySelector(
-        'lightning-formatted-text, lightning-base-formatted-text'
-      )?.shadowRoot?.textContent;
-    const isActive =
-      tr
-        ?.querySelector('td:nth-child(6) > lightning-primitive-cell-factory')
-        ?.shadowRoot?.querySelector('lightning-primitive-icon') !== null;
-    return {
-      developerName,
-      isActive
-    };
-  });
-};
-
-const domGetThemeDeveloperNameLightningPrimitiveCellTypes = name => {
-  const trs = Array.from(
-    document
-      .querySelector('lightning-datatable')
-      ?.shadowRoot?.querySelectorAll('table > tbody > tr')
-  );
-  for (const tr of trs) {
-    const cellDeveloperNameColumn = tr
-      ?.querySelector('td:nth-child(2) > lightning-primitive-cell-factory')
-      ?.shadowRoot?.querySelector(
-        'lightning-formatted-text, lightning-base-formatted-text'
-      );
-    const developerName = cellDeveloperNameColumn?.shadowRoot?.textContent;
-    if (developerName === name) {
-      return cellDeveloperNameColumn;
-    }
-  }
-};
