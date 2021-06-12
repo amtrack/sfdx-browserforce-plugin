@@ -9,7 +9,7 @@ const SELECTORS = {
     'pierce/one-density-visual-picker one-density-visual-picker-item input'
 };
 
-export default class DensitySettings extends BrowserforcePlugin {
+export class DensitySettings extends BrowserforcePlugin {
   public async retrieve() {
     const page = await this.browserforce.openPage(PATHS.BASE, {
       waitUntil: ['load', 'domcontentloaded', 'networkidle0']

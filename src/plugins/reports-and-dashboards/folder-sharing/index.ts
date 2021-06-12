@@ -9,7 +9,7 @@ const SELECTORS = {
   SAVE_BUTTON: 'input[id="saveButton"]'
 };
 
-export default class FolderSharing extends BrowserforcePlugin {
+export class FolderSharing extends BrowserforcePlugin {
   public async retrieve(definition?) {
     const response = {
       enableEnhancedFolderSharing: true

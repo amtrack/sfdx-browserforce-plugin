@@ -11,7 +11,7 @@ const SELECTORS = {
   STATES: `${THEME_ROW_SELECTOR} > td:nth-child(6) > lightning-primitive-cell-factory`
 };
 
-export default class LightningExperienceSettings extends BrowserforcePlugin {
+export class LightningExperienceSettings extends BrowserforcePlugin {
   public async retrieve() {
     const page = await this.browserforce.openPage(PATHS.BASE, {
       waitUntil: ['load', 'domcontentloaded', 'networkidle0']

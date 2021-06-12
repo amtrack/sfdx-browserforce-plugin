@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import CustomerPortalSetup from '.';
+import { CustomerPortalSetup } from '.';
 
 const tests = [
   {

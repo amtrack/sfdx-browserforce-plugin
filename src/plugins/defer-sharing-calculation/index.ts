@@ -9,7 +9,7 @@ const SELECTORS = {
   RECALCULATE_BUTTON: 'input[name="rule_recalc"]'
 };
 
-export default class DeferSharingCalculation extends BrowserforcePlugin {
+export class DeferSharingCalculation extends BrowserforcePlugin {
   public async retrieve(definition?) {
     const page = await this.browserforce.openPage(PATHS.BASE);
     await page.waitForSelector(SELECTORS.SUSPEND_BUTTON);

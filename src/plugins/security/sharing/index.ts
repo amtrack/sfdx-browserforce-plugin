@@ -11,7 +11,7 @@ const SELECTORS = {
   MODAL_DIALOG: 'Modal.confirm'
 };
 
-export default class Sharing extends BrowserforcePlugin {
+export class Sharing extends BrowserforcePlugin {
   public async retrieve(definition?) {
     const page = await this.browserforce.openPage(PATHS.BASE);
     await page.waitForSelector(SELECTORS.EXTERNAL_SHARING_MODEL_BUTTON);

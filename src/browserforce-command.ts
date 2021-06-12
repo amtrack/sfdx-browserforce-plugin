@@ -1,7 +1,7 @@
 import { core, flags, SfdxCommand } from '@salesforce/command';
 import * as path from 'path';
-import Browserforce from './browserforce';
-import ConfigParser from './config-parser';
+import { Browserforce } from './browserforce';
+import { ConfigParser } from './config-parser';
 import * as DRIVERS from './plugins';
 
 core.Messages.importMessagesDirectory(__dirname);
@@ -10,7 +10,7 @@ const messages = core.Messages.loadMessages(
   'browserforce'
 );
 
-export default class BrowserforceCommand extends SfdxCommand {
+export class BrowserforceCommand extends SfdxCommand {
   protected static requiresUsername = true;
 
   protected static flagsConfig = {

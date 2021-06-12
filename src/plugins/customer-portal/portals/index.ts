@@ -22,7 +22,7 @@ const SELECTORS = {
   PORTAL_PROFILE_MEMBERSHIP_CHECKBOXES: 'td.dataCell input'
 };
 
-export default class CustomerPortalSetup extends BrowserforcePlugin {
+export class CustomerPortalSetup extends BrowserforcePlugin {
   public async retrieve(definition?) {
     const page = await this.browserforce.openPage(PATHS.LIST_VIEW);
     await page.waitForXPath(SELECTORS.LIST_VIEW_PORTAL_LINKS_XPATH);

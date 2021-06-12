@@ -1,4 +1,4 @@
-export default class ConfigParser {
+export class ConfigParser {
   public static parse(drivers, data) {
     const settings = [];
     if (data && data.settings) {

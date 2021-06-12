@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import ConfigParser from '../src/config-parser';
+import { ConfigParser } from '../src/config-parser';
 import * as DRIVERS from '../src/plugins';
 
 describe('ConfigParser', () => {
@@ -15,7 +15,7 @@ describe('ConfigParser', () => {
         }
       };
       const result = ConfigParser.parse(DRIVERS, definition);
-      assert.deepStrictEqual(result[0].Driver.default.name, 'Security');
+      assert.deepStrictEqual(result[0].Driver.name, 'Security');
     });
     it('should fail parsing an invalid definition file', () => {
       const definition = {

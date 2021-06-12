@@ -1,11 +1,11 @@
 import { BrowserforcePlugin } from '../../plugin';
 import { removeEmptyValues } from '../utils';
-import CertificateAndKeyManagement from './certificate-and-key-management';
-import IdentityProvider from './identity-provider';
-import LoginAccessPolicies from './login-access-policies';
-import Sharing from './sharing';
+import { CertificateAndKeyManagement } from './certificate-and-key-management';
+import { IdentityProvider } from './identity-provider';
+import { LoginAccessPolicies } from './login-access-policies';
+import { Sharing } from './sharing';
 
-export default class Security extends BrowserforcePlugin {
+export class Security extends BrowserforcePlugin {
   public async retrieve(definition?) {
     const response = {
       certificateAndKeyManagement: {},

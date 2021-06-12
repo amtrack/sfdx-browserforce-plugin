@@ -21,7 +21,7 @@ interface CertificateRecord {
   NamespacePrefix: string;
 }
 
-export default class IdentityProvider extends BrowserforcePlugin {
+export class IdentityProvider extends BrowserforcePlugin {
   public async retrieve(definition?) {
     const page = await this.browserforce.openPage(PATHS.EDIT_VIEW);
     await page.waitForSelector(SELECTORS.EDIT_BUTTON);

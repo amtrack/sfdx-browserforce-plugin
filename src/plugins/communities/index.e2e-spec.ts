@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 import * as child from 'child_process';
 import * as path from 'path';
-import Communities from '.';
+import { Communities } from '.';
 
 describe.skip(Communities.name, function() {
   this.slow('30s');

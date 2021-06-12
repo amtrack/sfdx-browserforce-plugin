@@ -1,9 +1,9 @@
 import * as assert from 'assert';
 import * as child from 'child_process';
 import * as path from 'path';
-import CustomerPortalAvailableCustomObjects from './available-custom-objects';
-import CustomerPortalEnable from './enabled';
-import CustomerPortalSetup from './portals';
+import { CustomerPortalAvailableCustomObjects } from './available-custom-objects';
+import { CustomerPortalEnable } from './enabled';
+import { CustomerPortalSetup } from './portals';
 
 describe(CustomerPortalEnable.name, function() {
   this.slow('30s');

@@ -9,7 +9,7 @@ const SELECTORS = {
   SUBMIT_BUTTON: 'input[id="thePage:theForm:theBlock:buttons:submit"]'
 };
 
-export default class ActivitySettings extends BrowserforcePlugin {
+export class ActivitySettings extends BrowserforcePlugin {
   public async retrieve() {
     const page = await this.browserforce.openPage(PATHS.BASE, {
       waitUntil: ['load', 'domcontentloaded', 'networkidle0']

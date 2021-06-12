@@ -1,8 +1,8 @@
 import * as assert from 'assert';
 import * as child from 'child_process';
 import * as path from 'path';
-import CertificateAndKeyManagement from './certificate-and-key-management';
-import IdentityProvider from './identity-provider';
+import { CertificateAndKeyManagement } from './certificate-and-key-management';
+import { IdentityProvider } from './identity-provider';
 
 describe(`${CertificateAndKeyManagement.name} and ${IdentityProvider.name}`, function() {
   this.slow('30s');

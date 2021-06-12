@@ -10,7 +10,7 @@ const SELECTORS = {
   SAVE_BUTTON: 'input[id$=":saveId"]'
 };
 
-export default class Communities extends BrowserforcePlugin {
+export class Communities extends BrowserforcePlugin {
   public async retrieve() {
     const page = await this.browserforce.openPage(PATHS.BASE, {
       waitUntil: ['load', 'domcontentloaded', 'networkidle0']

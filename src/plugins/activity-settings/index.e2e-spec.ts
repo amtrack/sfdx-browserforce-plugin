@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 import * as child from 'child_process';
 import * as path from 'path';
-import ActivitySettings from '.';
+import { ActivitySettings } from '.';
 
 describe(ActivitySettings.name, function() {
   this.slow('30s');

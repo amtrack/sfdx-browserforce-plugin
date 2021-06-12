@@ -1,10 +1,10 @@
 import { BrowserforcePlugin } from '../../plugin';
 import { removeEmptyValues } from '../utils';
-import CustomerPortalAvailableCustomObjects from './available-custom-objects';
-import CustomerPortalEnable from './enabled';
-import CustomerPortalSetup from './portals';
+import { CustomerPortalAvailableCustomObjects } from './available-custom-objects';
+import { CustomerPortalEnable } from './enabled';
+import { CustomerPortalSetup } from './portals';
 
-export default class CustomerPortal extends BrowserforcePlugin {
+export class CustomerPortal extends BrowserforcePlugin {
   public async retrieve(definition?) {
     const pluginEnable = new CustomerPortalEnable(this.browserforce, this.org);
     const response = {

@@ -8,7 +8,7 @@ const SELECTORS = {
   SAVE_BUTTON: 'input[name="save"]'
 };
 
-export default class CustomerPortalEnable extends BrowserforcePlugin {
+export class CustomerPortalEnable extends BrowserforcePlugin {
   public async retrieve(definition?) {
     const page = await this.browserforce.openPage(PATHS.EDIT_VIEW, {
       waitUntil: ['load', 'domcontentloaded', 'networkidle0']

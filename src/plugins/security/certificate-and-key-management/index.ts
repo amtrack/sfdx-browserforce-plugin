@@ -24,7 +24,7 @@ interface CertificateRecord {
   KeySize: string;
 }
 
-export default class CertificateAndKeyManagement extends BrowserforcePlugin {
+export class CertificateAndKeyManagement extends BrowserforcePlugin {
   public async retrieve(definition?) {
     const response = { certificates: [], importFromKeystore: [] };
     if (definition && definition.certificates) {

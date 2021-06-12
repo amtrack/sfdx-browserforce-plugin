@@ -20,7 +20,7 @@ interface HomePageLayoutRecord {
   Name: string;
 }
 
-export default class HomePageLayouts extends BrowserforcePlugin {
+export class HomePageLayouts extends BrowserforcePlugin {
   public async retrieve(definition?) {
     const page = await this.browserforce.openPage(PATHS.BASE);
     await page.waitForSelector(SELECTORS.BASE);

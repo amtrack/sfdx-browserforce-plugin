@@ -13,7 +13,7 @@ const SELECTORS = {
   SAVE_BUTTON: 'input[id$=":save"]'
 };
 
-export default class <%= h.changeCase.pascalCase(name) %> extends BrowserforcePlugin {
+export class <%= h.changeCase.pascalCase(name) %> extends BrowserforcePlugin {
   public async retrieve(definition?) {
     const page = await this.browserforce.openPage(PATHS.BASE);
     await page.waitForSelector(SELECTORS.ENABLED);

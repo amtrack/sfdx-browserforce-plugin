@@ -2,7 +2,7 @@ import { Connection } from '@salesforce/command/node_modules/@salesforce/core';
 import { BrowserforcePlugin } from '../../plugin';
 import { RecordTypePage } from './pages';
 
-export default class RecordTypes extends BrowserforcePlugin {
+export class RecordTypes extends BrowserforcePlugin {
   public async retrieve(definition?) {
     const conn = this.org.getConnection();
     const response = {

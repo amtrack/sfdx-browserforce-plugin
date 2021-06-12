@@ -1,8 +1,8 @@
 import { BrowserforcePlugin } from '../../plugin';
 import { removeEmptyValues } from '../utils';
-import FolderSharing from './folder-sharing';
+import { FolderSharing } from './folder-sharing';
 
-export default class ReportsAndDashboards extends BrowserforcePlugin {
+export class ReportsAndDashboards extends BrowserforcePlugin {
   public async retrieve(definition?) {
     const response = {
       folderSharing: {}

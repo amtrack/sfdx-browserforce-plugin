@@ -2,7 +2,7 @@ import { FileProperties } from 'jsforce';
 import { ensureArray } from '../../jsforce-utils';
 import { BrowserforcePlugin } from '../../plugin';
 import { removeEmptyValues } from '../utils';
-import FieldDependencies from './field-dependencies';
+import { FieldDependencies } from './field-dependencies';
 import {
   PicklistPage,
   DefaultPicklistAddPage,
@@ -10,7 +10,7 @@ import {
 } from './pages';
 import { determineStandardValueSetEditUrl } from './standard-value-set';
 
-export default class Picklists extends BrowserforcePlugin {
+export class Picklists extends BrowserforcePlugin {
   public async retrieve(definition?) {
     const conn = this.org.getConnection();
     const result = { picklistValues: [], fieldDependencies: [] };

@@ -10,7 +10,7 @@ const ERROR_DIV_SELECTOR = '#errorTitle';
 const ERROR_DIVS_SELECTOR = 'div.errorMsg';
 const VF_IFRAME_SELECTOR = 'iframe[name^=vfFrameId]';
 
-export default class Browserforce {
+export class Browserforce {
   public org: core.Org;
   public logger: core.Logger;
   public browser: Browser;

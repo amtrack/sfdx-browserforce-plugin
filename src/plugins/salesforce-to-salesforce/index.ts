@@ -10,7 +10,7 @@ const SELECTORS = {
   SAVE_BUTTON: 'input[name="save"]'
 };
 
-export default class SalesforceToSalesforce extends BrowserforcePlugin {
+export class SalesforceToSalesforce extends BrowserforcePlugin {
   public async retrieve() {
     const page = await this.browserforce.openPage(PATHS.BASE);
     await page.waitForSelector(SELECTORS.BASE);

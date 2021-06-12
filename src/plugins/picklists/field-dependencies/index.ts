@@ -1,7 +1,7 @@
 import { BrowserforcePlugin } from '../../../plugin';
 import { FieldDependencyPage, NewFieldDependencyPage } from './pages';
 
-export default class FieldDependencies extends BrowserforcePlugin {
+export class FieldDependencies extends BrowserforcePlugin {
   public async retrieve(definition?) {
     const conn = this.org.getConnection();
     const dependentFieldNames = definition.map(

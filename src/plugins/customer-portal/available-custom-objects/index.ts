@@ -13,7 +13,7 @@ interface CustomObjectRecord {
   NamespacePrefix: string;
 }
 
-export default class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
+export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
   public async retrieve(definition?) {
     const response = [];
     if (definition) {

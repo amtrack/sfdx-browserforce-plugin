@@ -4,7 +4,7 @@ import { HighVelocitySalesSetupPage } from './page';
 const MSG_NOT_AVAILABLE = `HighVelocitySales is not available in this organization.
 Please add 'HighVelocitySales' to your Scratch Org Features or purchase a license.`;
 
-export default class HighVelocitySalesSettings extends BrowserforcePlugin {
+export class HighVelocitySalesSettings extends BrowserforcePlugin {
   public async retrieve(definition?) {
     const conn = this.org.getConnection();
     const result = { setUpAndEnable: false };
