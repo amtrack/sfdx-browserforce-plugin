@@ -1,4 +1,4 @@
-import pRetry = require('p-retry');
+import pRetry from 'p-retry';
 import { JSHandle } from 'puppeteer';
 
 // table columns
