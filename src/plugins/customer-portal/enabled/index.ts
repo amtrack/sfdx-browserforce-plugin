@@ -10,15 +10,9 @@ const SELECTORS = {
 
 export default class CustomerPortalEnable extends BrowserforcePlugin {
   public async retrieve(definition?) {
-    const page = await this.browserforce.openPage(PATHS.EDIT_VIEW, {
-      waitUntil: ['load', 'domcontentloaded', 'networkidle0']
-    });
-    await page.waitForSelector(SELECTORS.ENABLED);
-    const response = await page.$eval(
-      SELECTORS.ENABLED,
-      (el: HTMLInputElement) => el.checked
-    );
-    return response;
+    const conn = await this.browserforce.org.getConnection();
+    const orgSettings = await conn.metadata.readSync('OrgSettings', 'Org');
+    return Boolean(orgSettings['enableCustomerSuccessPortal']);
   }
 
   public diff(state, definition) {
