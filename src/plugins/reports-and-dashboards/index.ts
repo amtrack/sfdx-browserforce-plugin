@@ -1,6 +1,6 @@
 import { BrowserforcePlugin } from '../../plugin';
 import { removeEmptyValues } from '../utils';
-import FolderSharing from './folderSharing';
+import FolderSharing from './folder-sharing';
 
 export default class ReportsAndDashboards extends BrowserforcePlugin {
   public async retrieve(definition?) {

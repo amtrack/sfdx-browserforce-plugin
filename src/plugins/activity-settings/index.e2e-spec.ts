@@ -10,7 +10,7 @@ describe(ActivitySettings.name, function() {
     const enableManyWhoPrefCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
-      path.resolve(path.join(__dirname, 'enable-manyWhoPref.json'))
+      path.resolve(path.join(__dirname, 'enable-many-who-pref.json'))
     ]);
     assert.deepStrictEqual(
       enableManyWhoPrefCmd.status,
@@ -28,7 +28,7 @@ describe(ActivitySettings.name, function() {
     const enableManyWhoPrefCmd2 = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
-      path.resolve(path.join(__dirname, 'enable-manyWhoPref.json'))
+      path.resolve(path.join(__dirname, 'enable-many-who-pref.json'))
     ]);
     assert.deepStrictEqual(
       enableManyWhoPrefCmd2.status,
@@ -44,7 +44,7 @@ describe(ActivitySettings.name, function() {
     const disableManyWhoPrefCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
-      path.resolve(path.join(__dirname, 'disable-manyWhoPref.json'))
+      path.resolve(path.join(__dirname, 'disable-many-who-pref.json'))
     ]);
     assert.deepStrictEqual(
       disableManyWhoPrefCmd.status,

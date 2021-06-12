@@ -1,6 +1,6 @@
 import { core } from '@salesforce/command';
 import * as path from 'path';
-import BrowserforceCommand from '../../browserforceCommand';
+import BrowserforceCommand from '../../browserforce-command';
 
 core.Messages.importMessagesDirectory(__dirname);
 const messages = core.Messages.loadMessages(

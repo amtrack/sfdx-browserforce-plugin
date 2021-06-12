@@ -1,6 +1,6 @@
 import { BrowserforcePlugin } from '../../plugin';
 import { removeEmptyValues } from '../utils';
-import CustomerPortalAvailableCustomObjects from './availableCustomObjects';
+import CustomerPortalAvailableCustomObjects from './available-custom-objects';
 import CustomerPortalEnable from './enabled';
 import CustomerPortalSetup from './portals';
 
