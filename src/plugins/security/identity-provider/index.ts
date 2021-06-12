@@ -1,6 +1,6 @@
 import { SalesforceId } from 'jsforce';
 import * as jsonMergePatch from 'json-merge-patch';
-import pRetry from 'p-retry';
+import pRetry, { AbortError } from 'p-retry';
 import { BrowserforcePlugin } from '../../../plugin';
 import { removeNullValues } from '../../utils';
 
@@ -59,8 +59,10 @@ export class IdentityProvider extends BrowserforcePlugin {
             .tooling.query<CertificateRecord>(
               `SELECT Id, DeveloperName FROM Certificate WHERE DeveloperName = '${plan.certificate}'`
             );
-          if (!certsResponse.records.length) {
-            throw new Error(`Could not find Certificate '${plan.certificate}'`);
+          if (!certsResponse.totalSize) {
+            throw new AbortError(
+              `Could not find Certificate '${plan.certificate}'`
+            );
           }
           const page = await this.browserforce.openPage(PATHS.EDIT_VIEW);
           await page.waitForSelector(SELECTORS.EDIT_BUTTON);

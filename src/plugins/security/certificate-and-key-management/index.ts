@@ -4,7 +4,11 @@ import * as jsonMergePatch from 'json-merge-patch';
 import * as path from 'path';
 import * as queryString from 'querystring';
 import { BrowserforcePlugin } from '../../../plugin';
-import { removeEmptyValues } from '../../utils';
+import {
+  removeEmptyValues,
+  removeNullValues,
+  semanticallyCleanObject
+} from '../../utils';
 
 const PATHS = {
   CERT_PREFIX: '0P1',
@@ -45,23 +49,27 @@ type KeyStore = {
 
 export class CertificateAndKeyManagement extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {
-    const response = { certificates: [], importFromKeystore: [] };
-    if (definition && definition.certificates) {
-      const certificatesList = definition.certificates
-        .map(cert => {
-          return `'${cert.name}'`;
-        })
-        .join(',');
-      const certificatesResponse = await this.org
+    const response: Config = {
+      certificates: [],
+      importFromKeystore: []
+    };
+    let existingCertificates;
+    if (
+      definition?.certificates?.length ||
+      definition?.importFromKeystore?.length
+    ) {
+      existingCertificates = await this.org
         .getConnection()
         .tooling.query<CertificateRecord>(
-          `SELECT Id, DeveloperName, MasterLabel, OptionsIsPrivateKeyExportable, KeySize FROM Certificate WHERE DeveloperName IN (${certificatesList})`,
+          `SELECT Id, DeveloperName, MasterLabel, OptionsIsPrivateKeyExportable, KeySize FROM Certificate`,
           { scanAll: false }
+          // BUG in jsforce: query acts with scanAll:true and returns deleted CustomObjects.
+          // It cannot be disabled.
         );
-      // BUG in jsforce: query acts with scanAll:true and returns deleted CustomObjects.
-      // It cannot be disabled.
+    }
+    if (definition?.certificates?.length) {
       for (const cert of definition.certificates) {
-        const existingCert = certificatesResponse.records.find(
+        const existingCert = existingCertificates.records.find(
           co => co.DeveloperName === cert.name
         );
         if (existingCert) {
@@ -71,6 +79,19 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
             label: existingCert.MasterLabel,
             exportable: existingCert.OptionsIsPrivateKeyExportable,
             keySize: existingCert.KeySize
+          });
+        }
+      }
+    }
+    if (definition?.importFromKeystore?.length) {
+      for (const cert of definition.importFromKeystore) {
+        const existingCert = existingCertificates.records.find(
+          co => co.DeveloperName === cert.name
+        );
+        if (existingCert) {
+          response.importFromKeystore.push({
+            name: existingCert.DeveloperName,
+            filePath: null
           });
         }
       }
@@ -85,19 +106,26 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
     };
     if (state && definition && state.certificates && definition.certificates) {
       for (const cert of definition.certificates) {
-        const existingCert = state.certificates.find(
-          c => c.name === cert.DeveloperName
-        );
+        const existingCert = state.certificates.find(c => c.name === cert.name);
         if (existingCert) {
           // move id from state to definition to be retained and used
           cert._id = existingCert._id;
           delete existingCert._id;
         }
-        response.certificates.push(jsonMergePatch.generate(existingCert, cert));
+        const certDiff = semanticallyCleanObject(
+          removeNullValues(jsonMergePatch.generate(existingCert, cert)),
+          '_id'
+        );
+        if (certDiff) {
+          response.certificates.push(certDiff);
+        }
       }
     }
-    if (definition && definition.importFromKeystore) {
-      response.importFromKeystore = definition.importFromKeystore;
+    if (definition?.importFromKeystore?.length) {
+      response.importFromKeystore =
+        definition?.importFromKeystore?.filter(
+          cert => !state.importFromKeystore.find(c => c.name === cert.name)
+        ) || [];
     }
     return removeEmptyValues(response);
   }

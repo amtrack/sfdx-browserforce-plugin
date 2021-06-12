@@ -1,3 +1,4 @@
+import { core } from '@salesforce/command';
 import * as assert from 'assert';
 import * as child from 'child_process';
 import * as path from 'path';
@@ -49,6 +50,20 @@ describe(`${CertificateAndKeyManagement.name} and ${IdentityProvider.name}`, fun
       cmd.output.toString()
     );
   });
+  it('should not do anything if self-signed certificate is already available', () => {
+    const cmd = child.spawnSync(path.resolve('bin', 'run'), [
+      'browserforce:apply',
+      '-f',
+      path.resolve(
+        path.join(__dirname, 'identity-provider', 'create-cert-and-enable.json')
+      )
+    ]);
+    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
+    assert(
+      /no action necessary/.test(cmd.output.toString()),
+      cmd.output.toString()
+    );
+  });
   it('should disable Identity Provider', () => {
     const cmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
@@ -60,24 +75,6 @@ describe(`${CertificateAndKeyManagement.name} and ${IdentityProvider.name}`, fun
       /changing 'identityProvider' to .*"enabled":false/.test(
         cmd.output.toString()
       ),
-      cmd.output.toString()
-    );
-  });
-  it.skip('should not do anything if self-signed certificate is already available', () => {
-    const cmd = child.spawnSync(path.resolve('bin', 'run'), [
-      'browserforce:apply',
-      '-f',
-      path.resolve(
-        path.join(
-          __dirname,
-          'certificate-and-key-management',
-          'create-self-signed-cert.json'
-        )
-      )
-    ]);
-    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
-    assert(
-      /no action necessary/.test(cmd.output.toString()),
       cmd.output.toString()
     );
   });
@@ -100,5 +97,28 @@ describe(`${CertificateAndKeyManagement.name} and ${IdentityProvider.name}`, fun
       ),
       cmd.output.toString()
     );
+  });
+  it('should not do anything if cert is already available in keystore', () => {
+    const cmd = child.spawnSync(path.resolve('bin', 'run'), [
+      'browserforce:apply',
+      '-f',
+      path.resolve(
+        path.join(
+          __dirname,
+          'certificate-and-key-management',
+          'import-from-keystore.json'
+        )
+      )
+    ]);
+    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
+    assert(
+      /no action necessary/.test(cmd.output.toString()),
+      cmd.output.toString()
+    );
+  });
+  it('should delete certificates using Metadata API', async () => {
+    const org = await core.Org.create({});
+    const conn = org.getConnection();
+    await conn.metadata.delete('Certificate', ['identity_provider', 'Dummy']);
   });
 });
