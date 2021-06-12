@@ -4,59 +4,51 @@ const PATHS = {
   BASE: 'lightning/setup/DensitySetup/home'
 };
 
-const domWaitForPickerItems = () => {
-  return document
-    .querySelector('one-density-visual-picker')
-    ?.shadowRoot?.querySelectorAll('one-density-visual-picker-item')?.[1]
-    ?.shadowRoot?.querySelector('input');
-};
-
-const domGetPickerItemInputs = () => {
-  return Array.from(
-    document
-      .querySelector('one-density-visual-picker')
-      ?.shadowRoot?.querySelectorAll('one-density-visual-picker-item')
-  ).map(item => {
-    return item.shadowRoot?.querySelector('input');
-  });
+const SELECTORS = {
+  PICKER_ITEMS:
+    'pierce/one-density-visual-picker one-density-visual-picker-item input'
 };
 
 export default class DensitySettings extends BrowserforcePlugin {
   public async retrieve() {
-    const response = {
-      density: ''
-    };
     const page = await this.browserforce.openPage(PATHS.BASE, {
       waitUntil: ['load', 'domcontentloaded', 'networkidle0']
     });
-    await page.waitForFunction(domWaitForPickerItems);
-    const inputJsHandle = await page.evaluateHandle(domGetPickerItemInputs);
-    // convert JSHandle.getProperties (Map) to Array
-    const inputs = Array.from((await inputJsHandle.getProperties()).values());
-    const checkedRadio = await page.evaluate((...inputElements) => {
-      return inputElements
-        .map(input => {
-          return {
-            value: input.value,
-            checked: input.checked
-          };
-        })
-        .find(input => input.checked);
-    }, ...inputs);
-    if (checkedRadio && checkedRadio.value) {
-      response.density = checkedRadio.value;
-    }
-    return response;
+    const densities = await this.getDensities(page);
+    const selected = densities.find(input => input.checked);
+    return {
+      density: selected?.value
+    };
   }
 
   public async apply(config) {
     const page = await this.browserforce.openPage(PATHS.BASE, {
       waitUntil: ['load', 'domcontentloaded', 'networkidle0']
     });
-    await page.waitForFunction(domWaitForPickerItems);
-    const inputJsHandle = await page.evaluateHandle(domGetPickerItemInputs);
-    // convert JSHandle.getProperties (Map) to Array
-    const inputs = Array.from((await inputJsHandle.getProperties()).values());
+    await this.setDensity(page, config.density);
+  }
+
+  async getDensities(page) {
+    await page.waitForSelector(SELECTORS.PICKER_ITEMS);
+    const elementHandles = await page.$$(SELECTORS.PICKER_ITEMS);
+    const result = await page.$$eval(
+      SELECTORS.PICKER_ITEMS,
+      (radioInputs: HTMLInputElement[]) =>
+        radioInputs.map(input => {
+          return {
+            value: input.value,
+            checked: input.checked
+          };
+        })
+    );
+    return result.map((input, i) => {
+      return { ...input, elementHandle: elementHandles[i] };
+    });
+  }
+
+  async setDensity(page, name) {
+    const densities = await this.getDensities(page);
+    const densityToSelect = densities.find(input => input.value === name);
     await Promise.all([
       page.waitForResponse(
         response =>
@@ -66,18 +58,7 @@ export default class DensitySettings extends BrowserforcePlugin {
               'UserSettings.DensityUserSettings.setDefaultDensitySetting=1'
             ) && response.status() === 200
       ),
-      page.evaluate(
-        (targetValue, ...inputElements) => {
-          const targetInput = inputElements.find(
-            input => input.value === targetValue
-          );
-          if (targetInput) {
-            targetInput.click();
-          }
-        },
-        config.density,
-        ...inputs
-      )
+      densityToSelect.elementHandle.evaluate(input => input.click())
     ]);
   }
 }
