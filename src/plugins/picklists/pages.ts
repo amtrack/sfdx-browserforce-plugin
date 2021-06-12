@@ -48,7 +48,8 @@ export class PicklistPage {
     ];
   }
   public async clickNewActionButton(): Promise<void> {
-    const NEW_ACTION_BUTTON_XPATH = '//tr[td[2]]//input[contains(@onclick, "/setup/ui/picklist_masteredit")][@value=" New "]';
+    const NEW_ACTION_BUTTON_XPATH =
+      '//tr[td[2]]//input[contains(@onclick, "/setup/ui/picklist_masteredit")][@value=" New "]';
     await this.page.waitForXPath(NEW_ACTION_BUTTON_XPATH);
     const NEW_ACTION_BUTTON = (await this.page.$x(NEW_ACTION_BUTTON_XPATH))[0];
     await Promise.all([
@@ -176,7 +177,7 @@ export class StatusPicklistAddPage {
   async add(newValue, statusCategory) {
     const LABEL_INPUT = 'input#p1';
     const API_NAME_INPUT = 'input#p3';
-    const STATUS_CATEGORY_SELECTOR = 'select#p5'
+    const STATUS_CATEGORY_SELECTOR = 'select#p5';
     if (newValue !== undefined && newValue !== null) {
       await this.page.waitForSelector(STATUS_CATEGORY_SELECTOR);
       await this.page.type(LABEL_INPUT, newValue);

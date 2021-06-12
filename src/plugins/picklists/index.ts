@@ -3,7 +3,11 @@ import { ensureArray } from '../../jsforce-utils';
 import { BrowserforcePlugin } from '../../plugin';
 import { removeEmptyValues } from '../utils';
 import FieldDependencies from './field-dependencies';
-import { PicklistPage, DefaultPicklistAddPage, StatusPicklistAddPage } from './pages';
+import {
+  PicklistPage,
+  DefaultPicklistAddPage,
+  StatusPicklistAddPage
+} from './pages';
 import { determineStandardValueSetEditUrl } from './standard-value-set';
 
 export default class Picklists extends BrowserforcePlugin {
@@ -40,7 +44,6 @@ export default class Picklists extends BrowserforcePlugin {
           Boolean(newValueMatch) || action.newValue === null;
         result.picklistValues.push(state);
       }
-
     }
     if (definition.fieldDependencies) {
       result.fieldDependencies = await new FieldDependencies(
@@ -70,10 +73,7 @@ export default class Picklists extends BrowserforcePlugin {
           ) {
             return true;
           }
-          if (
-            target.newValue &&
-            !source.newValueExists
-          ) {
+          if (target.newValue && !source.newValueExists) {
             // New value doesn't exist in org yet
             return true;
           }
@@ -115,15 +115,21 @@ export default class Picklists extends BrowserforcePlugin {
             action.value
           );
           await replacePage.replaceAndDelete(action.newValue);
-        } else if (!action.value && action.newValue && !action.replaceAllBlankValues) {
+        } else if (
+          !action.value &&
+          action.newValue &&
+          !action.replaceAllBlankValues
+        ) {
           await picklistPage.clickNewActionButton();
 
           if (action.statusCategory) {
-            await new StatusPicklistAddPage(page).add(action.newValue, action.statusCategory);
+            await new StatusPicklistAddPage(page).add(
+              action.newValue,
+              action.statusCategory
+            );
           } else {
             await new DefaultPicklistAddPage(page).add(action.newValue);
           }
-
         } else {
           const replacePage = await picklistPage.clickReplaceActionButton();
           await replacePage.replace(
