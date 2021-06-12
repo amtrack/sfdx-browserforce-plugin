@@ -2,8 +2,17 @@ import { Connection } from '@salesforce/command/node_modules/@salesforce/core';
 import { BrowserforcePlugin } from '../../plugin';
 import { RecordTypePage } from './pages';
 
+type Config = {
+  deletions: RecordTypeConfig[];
+};
+
+type RecordTypeConfig = {
+  fullName: string;
+  replacement?: string;
+};
+
 export class RecordTypes extends BrowserforcePlugin {
-  public async retrieve(definition?) {
+  public async retrieve(definition?: Config): Promise<Config> {
     const conn = this.org.getConnection();
     const response = {
       deletions: []
@@ -45,7 +54,7 @@ export class RecordTypes extends BrowserforcePlugin {
     return response;
   }
 
-  public async apply(config) {
+  public async apply(config: Config): Promise<void> {
     const conn = this.org.getConnection();
     const recordTypeFileProperties = await listRecordTypes(conn);
     const recordTypes = await queryRecordTypes(conn);

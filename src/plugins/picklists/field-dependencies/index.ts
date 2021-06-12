@@ -1,8 +1,16 @@
 import { BrowserforcePlugin } from '../../../plugin';
 import { FieldDependencyPage, NewFieldDependencyPage } from './pages';
 
+export type FieldDependencyConfig = {
+  object: string;
+  dependentField: string;
+  controllingField: string;
+};
+
+export type Config = FieldDependencyConfig[];
+
 export class FieldDependencies extends BrowserforcePlugin {
-  public async retrieve(definition?) {
+  public async retrieve(definition?: Config): Promise<Config> {
     const conn = this.org.getConnection();
     const dependentFieldNames = definition.map(
       f => `${f.object}.${f.dependentField}`
@@ -20,7 +28,7 @@ export class FieldDependencies extends BrowserforcePlugin {
     return state;
   }
 
-  public async apply(plan) {
+  public async apply(plan: Config): Promise<void> {
     const conn = this.org.getConnection();
     const listMetadataResult = await conn.metadata.list([
       {

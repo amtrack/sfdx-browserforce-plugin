@@ -8,8 +8,11 @@ const SELECTORS = {
   SAVE_BUTTON: 'input[name="save"]'
 };
 
+export type Config = boolean;
+
 export class CustomerPortalEnable extends BrowserforcePlugin {
-  public async retrieve(definition?) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public async retrieve(definition?: Config): Promise<Config> {
     const page = await this.browserforce.openPage(PATHS.EDIT_VIEW, {
       waitUntil: ['load', 'domcontentloaded', 'networkidle0']
     });
@@ -21,13 +24,13 @@ export class CustomerPortalEnable extends BrowserforcePlugin {
     return response;
   }
 
-  public diff(state, definition) {
+  public diff(state: Config, definition: Config): Config {
     if (state !== definition) {
       return definition;
     }
   }
 
-  public async apply(plan) {
+  public async apply(plan: Config): Promise<void> {
     if (plan === false) {
       throw new Error('`enabled` cannot be disabled once enabled');
     }
@@ -37,7 +40,7 @@ export class CustomerPortalEnable extends BrowserforcePlugin {
       await page.waitForSelector(SELECTORS.ENABLED);
       await page.$eval(
         SELECTORS.ENABLED,
-        (e: HTMLInputElement, v) => {
+        (e: HTMLInputElement, v: boolean) => {
           e.checked = v;
         },
         plan

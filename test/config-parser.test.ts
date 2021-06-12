@@ -25,8 +25,10 @@ describe('ConfigParser', () => {
           }
         }
       };
+      // workaround to disable static type checking
+      const anonymousDefinition = JSON.parse(JSON.stringify(definition));
       assert.throws(() => {
-        ConfigParser.parse(DRIVERS, definition);
+        ConfigParser.parse(DRIVERS, anonymousDefinition);
       }, /Missing 'settings' attribute in definition:/);
     });
     it('should fail parsing a definition file with an invalid plugin', () => {

@@ -1,18 +1,29 @@
 import { BrowserforcePlugin } from '../../plugin';
 import { removeEmptyValues } from '../utils';
-import { CertificateAndKeyManagement } from './certificate-and-key-management';
-import { IdentityProvider } from './identity-provider';
-import { LoginAccessPolicies } from './login-access-policies';
-import { Sharing } from './sharing';
+import {
+  Config as CertificateAndKeyManagementConfig,
+  CertificateAndKeyManagement
+} from './certificate-and-key-management';
+import {
+  Config as IdentityProviderConfig,
+  IdentityProvider
+} from './identity-provider';
+import {
+  Config as LoginAccessPoliciesConfig,
+  LoginAccessPolicies
+} from './login-access-policies';
+import { Config as SharingConfig, Sharing } from './sharing';
+
+type Config = {
+  certificateAndKeyManagement?: CertificateAndKeyManagementConfig;
+  identityProvider?: IdentityProviderConfig;
+  loginAccessPolicies?: LoginAccessPoliciesConfig;
+  sharing?: SharingConfig;
+};
 
 export class Security extends BrowserforcePlugin {
-  public async retrieve(definition?) {
-    const response = {
-      certificateAndKeyManagement: {},
-      identityProvider: {},
-      loginAccessPolicies: {},
-      sharing: {}
-    };
+  public async retrieve(definition?: Config): Promise<Config> {
+    const response: Config = {};
     if (definition) {
       if (definition.certificateAndKeyManagement) {
         const pluginCKM = new CertificateAndKeyManagement(
@@ -49,7 +60,7 @@ export class Security extends BrowserforcePlugin {
     return response;
   }
 
-  public diff(state, definition) {
+  public diff(state: Config, definition: Config): Config {
     const pluginCKM = new CertificateAndKeyManagement(null, null);
     const pluginIdentityProvider = new IdentityProvider(null, null);
     const pluginLoginAccessPolicies = new LoginAccessPolicies(null, null);
@@ -72,7 +83,7 @@ export class Security extends BrowserforcePlugin {
     return removeEmptyValues(response);
   }
 
-  public async apply(plan) {
+  public async apply(plan: Config): Promise<void> {
     if (plan.certificateAndKeyManagement) {
       const pluginCKM = new CertificateAndKeyManagement(
         this.browserforce,

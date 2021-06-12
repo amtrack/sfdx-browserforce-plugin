@@ -6,7 +6,7 @@ const tests = [
     description: 'should only return necessary fields',
     source: [
       {
-        id: 'p1',
+        _id: 'p1',
         name: 'Dummy',
         namespacePrefix: null,
         available: false
@@ -20,7 +20,7 @@ const tests = [
     ],
     expected: [
       {
-        id: 'p1',
+        _id: 'p1',
         available: true
       }
     ]

@@ -1,5 +1,21 @@
+import { BrowserforcePlugin } from './plugin';
+
+type Drivers = {
+  [key: string]: unknown;
+};
+
+type Data = {
+  settings?: unknown;
+};
+
+type Config = {
+  Driver: typeof BrowserforcePlugin;
+  key: string;
+  value: unknown;
+};
+
 export class ConfigParser {
-  public static parse(drivers, data) {
+  public static parse(drivers: Drivers, data: Data): Config[] {
     const settings = [];
     if (data && data.settings) {
       for (const driverName of Object.keys(data.settings)) {

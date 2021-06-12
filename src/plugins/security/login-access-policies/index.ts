@@ -9,8 +9,13 @@ const SELECTORS = {
   SAVE_BUTTON: 'input[id$=":save"]'
 };
 
+export type Config = {
+  administratorsCanLogInAsAnyUser: boolean;
+};
+
 export class LoginAccessPolicies extends BrowserforcePlugin {
-  public async retrieve(definition?) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public async retrieve(definition?: Config): Promise<Config> {
     const page = await this.browserforce.openPage(PATHS.BASE);
     await page.waitForSelector(SELECTORS.ENABLED);
     const response = {
@@ -22,12 +27,12 @@ export class LoginAccessPolicies extends BrowserforcePlugin {
     return response;
   }
 
-  public async apply(config) {
+  public async apply(config: Config): Promise<void> {
     const page = await this.browserforce.openPage(PATHS.BASE);
     await page.waitForSelector(SELECTORS.ENABLED);
     await page.$eval(
       SELECTORS.ENABLED,
-      (e: HTMLInputElement, v) => {
+      (e: HTMLInputElement, v: boolean) => {
         e.checked = v;
       },
       config.administratorsCanLogInAsAnyUser

@@ -20,8 +20,18 @@ interface HomePageLayoutRecord {
   Name: string;
 }
 
+type Config = {
+  homePageLayoutAssignments: HomePageLayoutAssignment[];
+};
+
+type HomePageLayoutAssignment = {
+  profile: string;
+  layout: string;
+};
+
 export class HomePageLayouts extends BrowserforcePlugin {
-  public async retrieve(definition?) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public async retrieve(definition?: Config): Promise<Config> {
     const page = await this.browserforce.openPage(PATHS.BASE);
     await page.waitForSelector(SELECTORS.BASE);
     const profiles = await page.$$eval(
@@ -57,7 +67,7 @@ export class HomePageLayouts extends BrowserforcePlugin {
     };
   }
 
-  public diff(source, target) {
+  public diff(source: Config, target: Config): Config {
     const profileNames = target.homePageLayoutAssignments.map(
       assignment => assignment.profile
     );
@@ -67,7 +77,7 @@ export class HomePageLayouts extends BrowserforcePlugin {
     return jsonMergePatch.generate(source, target);
   }
 
-  public async apply(config) {
+  public async apply(config: Config): Promise<void> {
     const profilesList = config.homePageLayoutAssignments
       .map(assignment => {
         return `'${assignment.profile}'`;

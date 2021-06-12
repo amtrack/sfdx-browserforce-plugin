@@ -20,12 +20,31 @@ interface CertificateRecord {
   Id: SalesforceId;
   DeveloperName: string;
   MasterLabel: string;
-  OptionsIsPrivateKeyExportable: string;
-  KeySize: string;
+  OptionsIsPrivateKeyExportable: boolean;
+  KeySize: number;
 }
 
+export type Config = {
+  certificates?: Certificate[];
+  importFromKeystore?: KeyStore[];
+};
+
+type Certificate = {
+  name: string;
+  label: string;
+  exportable?: boolean;
+  keySize?: number;
+  _id?: string;
+};
+
+type KeyStore = {
+  name: string;
+  filePath: string;
+  password?: string;
+};
+
 export class CertificateAndKeyManagement extends BrowserforcePlugin {
-  public async retrieve(definition?) {
+  public async retrieve(definition?: Config): Promise<Config> {
     const response = { certificates: [], importFromKeystore: [] };
     if (definition && definition.certificates) {
       const certificatesList = definition.certificates
@@ -47,7 +66,7 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
         );
         if (existingCert) {
           response.certificates.push({
-            id: existingCert.Id,
+            _id: existingCert.Id,
             name: existingCert.DeveloperName,
             label: existingCert.MasterLabel,
             exportable: existingCert.OptionsIsPrivateKeyExportable,
@@ -59,8 +78,8 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
     return response;
   }
 
-  public diff(state, definition) {
-    const response = {
+  public diff(state: Config, definition: Config): Config {
+    const response: Config = {
       certificates: [],
       importFromKeystore: []
     };
@@ -71,8 +90,8 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
         );
         if (existingCert) {
           // move id from state to definition to be retained and used
-          cert.id = existingCert.id;
-          delete existingCert.id;
+          cert._id = existingCert._id;
+          delete existingCert._id;
         }
         response.certificates.push(jsonMergePatch.generate(existingCert, cert));
       }
@@ -83,10 +102,10 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
     return removeEmptyValues(response);
   }
 
-  public async apply(plan) {
+  public async apply(plan: Config): Promise<void> {
     if (plan.certificates) {
       for (const certificate of plan.certificates) {
-        if (certificate.id) {
+        if (certificate._id) {
           // update
         } else {
           // create new

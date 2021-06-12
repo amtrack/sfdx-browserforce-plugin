@@ -1,9 +1,10 @@
+import { Page } from 'puppeteer';
 import { throwPageErrors } from '../../../browserforce';
 
 export class FieldDependencyPage {
   private page;
 
-  constructor(page) {
+  constructor(page: Page) {
     this.page = page;
   }
 
@@ -16,7 +17,7 @@ export class FieldDependencyPage {
 
   public async clickDeleteDependencyActionForField(
     customFieldId: string
-  ): Promise<any> {
+  ): Promise<FieldDependencyPage> {
     // wait for "new" button in field dependencies releated list header
     await this.page.waitForSelector(
       'div.listRelatedObject div.pbHeader input[name="new"]'
@@ -44,7 +45,7 @@ export class NewFieldDependencyPage {
   protected page;
   protected saveButton = 'input[name="save"]';
 
-  constructor(page) {
+  constructor(page: Page) {
     this.page = page;
   }
 
@@ -65,7 +66,7 @@ export class NewFieldDependencyPage {
     )}&retURL=/${customObjectId.substring(0, 15)}`;
   }
 
-  async save() {
+  async save(): Promise<void> {
     await this.page.waitForSelector(this.saveButton);
     await Promise.all([
       this.page.waitForNavigation(),

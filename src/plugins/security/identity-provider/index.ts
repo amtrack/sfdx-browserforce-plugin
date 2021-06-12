@@ -21,8 +21,14 @@ interface CertificateRecord {
   NamespacePrefix: string;
 }
 
+export type Config = {
+  enabled?: boolean;
+  certificate?: string;
+};
+
 export class IdentityProvider extends BrowserforcePlugin {
-  public async retrieve(definition?) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public async retrieve(definition?: Config): Promise<Config> {
     const page = await this.browserforce.openPage(PATHS.EDIT_VIEW);
     await page.waitForSelector(SELECTORS.EDIT_BUTTON);
     const disableButton = await page.$(SELECTORS.DISABLE_BUTTON);
@@ -39,11 +45,11 @@ export class IdentityProvider extends BrowserforcePlugin {
     return response;
   }
 
-  public diff(state, definition) {
+  public diff(state: Config, definition: Config): Config {
     return removeNullValues(jsonMergePatch.generate(state, definition));
   }
 
-  public async apply(plan) {
+  public async apply(plan: Config): Promise<void> {
     if (plan.enabled && plan.certificate && plan.certificate !== '') {
       // wait for cert to become available in Identity Provider UI
       await pRetry(

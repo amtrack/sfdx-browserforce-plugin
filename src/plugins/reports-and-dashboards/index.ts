@@ -1,12 +1,14 @@
 import { BrowserforcePlugin } from '../../plugin';
 import { removeEmptyValues } from '../utils';
-import { FolderSharing } from './folder-sharing';
+import { Config as FolderSharingConfig, FolderSharing } from './folder-sharing';
+
+type Config = {
+  folderSharing?: FolderSharingConfig;
+};
 
 export class ReportsAndDashboards extends BrowserforcePlugin {
-  public async retrieve(definition?) {
-    const response = {
-      folderSharing: {}
-    };
+  public async retrieve(definition?: Config): Promise<Config> {
+    const response: Config = {};
     if (definition) {
       if (definition.folderSharing) {
         const pluginFolderSharing = new FolderSharing(
@@ -21,7 +23,7 @@ export class ReportsAndDashboards extends BrowserforcePlugin {
     return response;
   }
 
-  public diff(state, definition) {
+  public diff(state: Config, definition: Config): Config {
     const pluginFolderSharing = new FolderSharing(null, null);
     const response = {
       folderSharing: pluginFolderSharing.diff(
@@ -32,7 +34,7 @@ export class ReportsAndDashboards extends BrowserforcePlugin {
     return removeEmptyValues(response);
   }
 
-  public async apply(plan) {
+  public async apply(plan: Config): Promise<void> {
     if (plan.folderSharing) {
       const pluginFolderSharing = new FolderSharing(
         this.browserforce,

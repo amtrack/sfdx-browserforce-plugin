@@ -1,11 +1,15 @@
+import { Page } from 'puppeteer';
+
 export class RecordTypePage {
   private page;
 
-  constructor(page) {
+  constructor(page: Page) {
     this.page = page;
   }
 
-  public async clickDeleteAction(recordTypeId: string): Promise<any> {
+  public async clickDeleteAction(
+    recordTypeId: string
+  ): Promise<RecordTypeDeletePage> {
     const xpath = `//a[contains(@href, "setup/ui/recordtypedelete.jsp?id=${recordTypeId.slice(
       0,
       15
@@ -30,11 +34,11 @@ export class RecordTypeDeletePage {
   protected page;
   protected saveButton = 'input[name="save"]';
 
-  constructor(page) {
+  constructor(page: Page) {
     this.page = page;
   }
 
-  async replace(newRecordTypeId?: string) {
+  async replace(newRecordTypeId?: string): Promise<void> {
     await this.throwOnMissingSaveButton();
     const NEW_VALUE_SELECTOR = 'select#p2';
     if (newRecordTypeId) {
@@ -44,7 +48,7 @@ export class RecordTypeDeletePage {
     await this.save();
   }
 
-  async save() {
+  async save(): Promise<void> {
     await this.page.waitForSelector(this.saveButton);
     await Promise.all([
       this.page.waitForNavigation(),
@@ -53,7 +57,7 @@ export class RecordTypeDeletePage {
     await this.throwPageErrors();
   }
 
-  async throwOnMissingSaveButton() {
+  async throwOnMissingSaveButton(): Promise<void> {
     const saveButton = await this.page.$(this.saveButton);
     if (!saveButton) {
       const bodyHandle = await this.page.$('div.pbBody');
@@ -70,7 +74,7 @@ export class RecordTypeDeletePage {
     }
   }
 
-  async throwPageErrors() {
+  async throwPageErrors(): Promise<void> {
     const errorHandle = await this.page.$(
       'div#validationError div.messageText'
     );

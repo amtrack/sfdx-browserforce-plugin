@@ -9,8 +9,13 @@ const SELECTORS = {
   RECALCULATE_BUTTON: 'input[name="rule_recalc"]'
 };
 
+type Config = {
+  suspend: boolean;
+};
+
 export class DeferSharingCalculation extends BrowserforcePlugin {
-  public async retrieve(definition?) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public async retrieve(definition?: Config): Promise<Config> {
     const page = await this.browserforce.openPage(PATHS.BASE);
     await page.waitForSelector(SELECTORS.SUSPEND_BUTTON);
     await page.waitForSelector(SELECTORS.RESUME_BUTTON);
@@ -33,7 +38,7 @@ export class DeferSharingCalculation extends BrowserforcePlugin {
     };
   }
 
-  public async apply(config) {
+  public async apply(config: Config): Promise<void> {
     const page = await this.browserforce.openPage(PATHS.BASE);
     const button = config.suspend
       ? SELECTORS.SUSPEND_BUTTON

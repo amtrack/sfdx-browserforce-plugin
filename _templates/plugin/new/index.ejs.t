@@ -14,7 +14,7 @@ const SELECTORS = {
 };
 
 export class <%= h.changeCase.pascalCase(name) %> extends BrowserforcePlugin {
-  public async retrieve(definition?) {
+  public async retrieve(definition?: Config): Promise<Config> {
     const page = await this.browserforce.openPage(PATHS.BASE);
     await page.waitForSelector(SELECTORS.ENABLED);
     const response = {
@@ -26,12 +26,12 @@ export class <%= h.changeCase.pascalCase(name) %> extends BrowserforcePlugin {
     return response;
   }
 
-  public async apply(config) {
+  public async apply(config: Config): Promise<void> {
     const page = await this.browserforce.openPage(PATHS.BASE);
     await page.waitForSelector(SELECTORS.ENABLED);
     await page.$eval(
       SELECTORS.ENABLED,
-      (e: HTMLInputElement, v) => {
+      (e: HTMLInputElement, v: boolean) => {
         e.checked = v;
       },
       config.enabled

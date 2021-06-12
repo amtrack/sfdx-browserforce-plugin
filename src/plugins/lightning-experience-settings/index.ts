@@ -1,3 +1,4 @@
+import { ElementHandle, Page } from 'puppeteer';
 import { BrowserforcePlugin } from '../../plugin';
 
 const PATHS = {
@@ -11,8 +12,18 @@ const SELECTORS = {
   STATES: `${THEME_ROW_SELECTOR} > td:nth-child(6) > lightning-primitive-cell-factory`
 };
 
+type Config = {
+  activeThemeName: string;
+};
+
+type Theme = {
+  developerName: string;
+  isActive: boolean;
+  rowElementHandle: ElementHandle;
+};
+
 export class LightningExperienceSettings extends BrowserforcePlugin {
-  public async retrieve() {
+  public async retrieve(): Promise<Config> {
     const page = await this.browserforce.openPage(PATHS.BASE, {
       waitUntil: ['load', 'domcontentloaded', 'networkidle0']
     });
@@ -24,7 +35,7 @@ export class LightningExperienceSettings extends BrowserforcePlugin {
     return response;
   }
 
-  public async apply(config) {
+  public async apply(config: Config): Promise<void> {
     const page = await this.browserforce.openPage(PATHS.BASE, {
       waitUntil: ['load', 'domcontentloaded', 'networkidle0']
     });
@@ -32,12 +43,12 @@ export class LightningExperienceSettings extends BrowserforcePlugin {
     await this.setActiveTheme(page, config.activeThemeName);
   }
 
-  async getThemeData(page) {
+  async getThemeData(page: Page): Promise<Theme[]> {
     await page.waitForSelector(THEME_ROW_SELECTOR);
     const rowElementHandles = await page.$$(THEME_ROW_SELECTOR);
     await page.waitForSelector(SELECTORS.DEVELOPER_NAMES);
     const developerNames = await page.$$eval(SELECTORS.DEVELOPER_NAMES, cells =>
-      cells.map(cell => cell.innerText)
+      cells.map((cell: HTMLTableCellElement) => cell.innerText)
     );
     const states = await page.$$eval(SELECTORS.STATES, cells =>
       cells.map(
@@ -54,7 +65,7 @@ export class LightningExperienceSettings extends BrowserforcePlugin {
     });
   }
 
-  async setActiveTheme(page, themeDeveloperName) {
+  async setActiveTheme(page: Page, themeDeveloperName: string): Promise<void> {
     const data = await this.getThemeData(page);
     const theme = data.find(
       theme => theme.developerName === themeDeveloperName

@@ -21,7 +21,7 @@ export default class BrowserforcePlanCommand extends BrowserforceCommand {
   `
   ];
 
-  public async run(): Promise<any> {
+  public async run(): Promise<unknown> {
     this.ux.log(
       `Generating plan with definition file ${
         this.flags.definitionfile

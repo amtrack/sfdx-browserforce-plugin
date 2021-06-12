@@ -1,4 +1,5 @@
 import { core, flags, SfdxCommand } from '@salesforce/command';
+import { promises } from 'fs';
 import * as path from 'path';
 import { Browserforce } from './browserforce';
 import { ConfigParser } from './config-parser';
@@ -31,13 +32,21 @@ export class BrowserforceCommand extends SfdxCommand {
   };
 
   protected bf: Browserforce;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   protected settings: any[];
 
-  public async init() {
+  public async init(): Promise<void> {
     await super.init();
-    const definition = await core.fs.readJson(
-      path.resolve(this.flags.definitionfile)
+    const definitionFileData = await promises.readFile(
+      path.resolve(this.flags.definitionfile),
+      'utf8'
     );
+    let definition;
+    try {
+      definition = JSON.parse(definitionFileData);
+    } catch (err) {
+      throw new Error('Failed parsing definitionfile');
+    }
     // TODO: use require.resolve to dynamically load plugins from npm packages
     this.settings = ConfigParser.parse(DRIVERS, definition);
     this.bf = new Browserforce(this.org, this.ux.cli);
@@ -46,11 +55,12 @@ export class BrowserforceCommand extends SfdxCommand {
     this.ux.stopSpinner();
   }
 
-  public async run(): Promise<any> {
+  public async run(): Promise<unknown> {
     throw new Error('BrowserforceCommand should not be run directly');
   }
 
-  public async finally(err: any) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public async finally(err: Error): Promise<void> {
     this.ux.stopSpinner();
     if (this.bf) {
       this.ux.startSpinner('logging out');

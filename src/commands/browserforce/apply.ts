@@ -20,7 +20,7 @@ export default class BrowserforceApply extends BrowserforceCommand {
   `
   ];
 
-  public async run(): Promise<any> {
+  public async run(): Promise<unknown> {
     const logger = await core.Logger.root();
     this.ux.log(
       `Applying definition file ${

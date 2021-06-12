@@ -1,4 +1,7 @@
-export function removeEmptyValues(obj) {
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+export function removeEmptyValues(obj: any): any {
   if (!obj) {
     obj = {};
   }
@@ -18,7 +21,7 @@ export function removeEmptyValues(obj) {
   }, {});
 }
 
-export function removeNullValues(obj) {
+export function removeNullValues(obj: any): any {
   if (!obj) {
     obj = {};
   }
@@ -31,7 +34,7 @@ export function removeNullValues(obj) {
 }
 
 // an object only containing an id is semantically empty
-export function semanticallyCleanObject(obj, id = 'id') {
+export function semanticallyCleanObject(obj: any, id = 'id'): any {
   if (!obj) {
     obj = {};
   }
