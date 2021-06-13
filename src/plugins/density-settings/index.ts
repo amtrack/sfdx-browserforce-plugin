@@ -22,9 +22,7 @@ type Density = {
 
 export class DensitySettings extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
-    const page = await this.browserforce.openPage(PATHS.BASE, {
-      waitUntil: ['load', 'domcontentloaded', 'networkidle0']
-    });
+    const page = await this.browserforce.openPage(PATHS.BASE);
     const densities = await this.getDensities(page);
     const selected = densities.find(input => input.checked);
     return {
@@ -33,9 +31,7 @@ export class DensitySettings extends BrowserforcePlugin {
   }
 
   public async apply(config: Config): Promise<void> {
-    const page = await this.browserforce.openPage(PATHS.BASE, {
-      waitUntil: ['load', 'domcontentloaded', 'networkidle0']
-    });
+    const page = await this.browserforce.openPage(PATHS.BASE);
     await this.setDensity(page, config.density);
   }
 

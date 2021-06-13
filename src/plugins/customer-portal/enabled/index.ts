@@ -13,9 +13,7 @@ export type Config = boolean;
 export class CustomerPortalEnable extends BrowserforcePlugin {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async retrieve(definition?: Config): Promise<Config> {
-    const page = await this.browserforce.openPage(PATHS.EDIT_VIEW, {
-      waitUntil: ['load', 'domcontentloaded', 'networkidle0']
-    });
+    const page = await this.browserforce.openPage(PATHS.EDIT_VIEW);
     await page.waitForSelector(SELECTORS.ENABLED);
     const response = await page.$eval(
       SELECTORS.ENABLED,

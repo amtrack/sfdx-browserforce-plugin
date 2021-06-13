@@ -20,9 +20,7 @@ export class FolderSharing extends BrowserforcePlugin {
       enableEnhancedFolderSharing: true
     };
     try {
-      const page = await this.browserforce.openPage(PATHS.BASE, {
-        waitUntil: ['load', 'domcontentloaded', 'networkidle0']
-      });
+      const page = await this.browserforce.openPage(PATHS.BASE);
       const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(
         page,
         SELECTORS.BASE

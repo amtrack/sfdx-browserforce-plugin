@@ -15,9 +15,7 @@ type Config = {
 
 export class ActivitySettings extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
-    const page = await this.browserforce.openPage(PATHS.BASE, {
-      waitUntil: ['load', 'domcontentloaded', 'networkidle0']
-    });
+    const page = await this.browserforce.openPage(PATHS.BASE);
     await page.waitForSelector(SELECTORS.MANY_WHO_PREF_INPUT);
     const response = {
       allowUsersToRelateMultipleContactsToTasksAndEvents: await page.$eval(
@@ -34,9 +32,7 @@ export class ActivitySettings extends BrowserforcePlugin {
         '`allowUsersToRelateMultipleContactsToTasksAndEvents` can only be disabled with help of the salesforce.com Support team'
       );
     }
-    const page = await this.browserforce.openPage(PATHS.BASE, {
-      waitUntil: ['load', 'domcontentloaded', 'networkidle0']
-    });
+    const page = await this.browserforce.openPage(PATHS.BASE);
     await page.waitForSelector(SELECTORS.MANY_WHO_PREF_INPUT);
     await page.$eval(
       SELECTORS.MANY_WHO_PREF_INPUT,

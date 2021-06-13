@@ -17,9 +17,7 @@ type Config = {
 
 export class Communities extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
-    const page = await this.browserforce.openPage(PATHS.BASE, {
-      waitUntil: ['load', 'domcontentloaded', 'networkidle0']
-    });
+    const page = await this.browserforce.openPage(PATHS.BASE);
     const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(
       page,
       SELECTORS.BASE
@@ -42,9 +40,7 @@ export class Communities extends BrowserforcePlugin {
       throw new Error('`enabled` cannot be disabled once enabled');
     }
 
-    const page = await this.browserforce.openPage(PATHS.BASE, {
-      waitUntil: ['load', 'domcontentloaded', 'networkidle0']
-    });
+    const page = await this.browserforce.openPage(PATHS.BASE);
     const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(
       page,
       SELECTORS.ENABLE_CHECKBOX
