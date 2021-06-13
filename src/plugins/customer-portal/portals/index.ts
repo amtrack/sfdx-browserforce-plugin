@@ -253,9 +253,7 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
         }
         await page.waitForSelector(SELECTORS.SAVE_BUTTON);
         await Promise.all([
-          page.waitForNavigation({
-            waitUntil: ['load', 'domcontentloaded', 'networkidle0']
-          }),
+          page.waitForNavigation(),
           page.click(SELECTORS.SAVE_BUTTON)
         ]);
         if ((await page.url()).includes(portal._id)) {

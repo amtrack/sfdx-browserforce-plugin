@@ -39,9 +39,7 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
       // BUG in jsforce: query acts with scanAll:true and returns deleted CustomObjects.
       // It cannot be disabled.
       // This will throw a timeout error waitingFor('#options_9')
-      const page = await this.browserforce.openPage('', {
-        waitUntil: ['load', 'domcontentloaded', 'networkidle0']
-      });
+      const page = await this.browserforce.openPage('');
       // new URLs for LEX: https://help.salesforce.com/articleView?id=FAQ-for-the-New-URL-Format-for-Lightning-Experience-and-the-Salesforce-Mobile-App&type=1
       const isLEX =
         page.url().indexOf('/one/one.app') >= 0 ||
@@ -80,9 +78,7 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
           namespacePrefix: customObject.NamespacePrefix
         };
         const pageUrl = getObjectPageUrl(result, isLEX);
-        const editPage = await this.browserforce.openPage(pageUrl, {
-          waitUntil: ['load', 'domcontentloaded', 'networkidle0']
-        });
+        const editPage = await this.browserforce.openPage(pageUrl);
         const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(
           editPage,
           SELECTORS.CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL
@@ -130,9 +126,7 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
 
   public async apply(plan: Config): Promise<void> {
     if (plan && plan.length) {
-      const page = await this.browserforce.openPage('', {
-        waitUntil: ['load', 'domcontentloaded', 'networkidle0']
-      });
+      const page = await this.browserforce.openPage('');
       // new URLs for LEX: https://help.salesforce.com/articleView?id=FAQ-for-the-New-URL-Format-for-Lightning-Experience-and-the-Salesforce-Mobile-App&type=1
       const isLEX =
         page.url().indexOf('/one/one.app') >= 0 ||
@@ -154,9 +148,7 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
 
       for (const customObject of plan) {
         const pageUrl = getObjectPageUrl(customObject, isLEX);
-        const editPage = await this.browserforce.openPage(pageUrl, {
-          waitUntil: ['load', 'domcontentloaded', 'networkidle0']
-        });
+        const editPage = await this.browserforce.openPage(pageUrl);
         const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(
           editPage,
           SELECTORS.SAVE_BUTTON
