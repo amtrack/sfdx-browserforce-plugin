@@ -1,11 +1,17 @@
+import { Connection } from 'jsforce';
 import { BrowserforcePlugin } from '../../plugin';
 import { HighVelocitySalesSetupPage } from './page';
 
 const MSG_NOT_AVAILABLE = `HighVelocitySales is not available in this organization.
 Please add 'HighVelocitySales' to your Scratch Org Features or purchase a license.`;
 
-export default class HighVelocitySalesSettings extends BrowserforcePlugin {
-  public async retrieve(definition?) {
+type Config = {
+  setUpAndEnable: boolean;
+};
+
+export class HighVelocitySalesSettings extends BrowserforcePlugin {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public async retrieve(definition?: Config): Promise<Config> {
     const conn = this.org.getConnection();
     const result = { setUpAndEnable: false };
     try {
@@ -29,7 +35,7 @@ export default class HighVelocitySalesSettings extends BrowserforcePlugin {
     return result;
   }
 
-  public async apply(config) {
+  public async apply(config: Config): Promise<void> {
     if (config.setUpAndEnable) {
       const page = new HighVelocitySalesSetupPage(
         await this.browserforce.openPage(HighVelocitySalesSetupPage.getUrl())
@@ -42,7 +48,9 @@ export default class HighVelocitySalesSettings extends BrowserforcePlugin {
   }
 }
 
-export async function disableHighVelocitySalesUsingMetadata(conn) {
+export async function disableHighVelocitySalesUsingMetadata(
+  conn: Connection
+): Promise<void> {
   const settings = {
     fullName: 'HighVelocitySales',
     enableHighVelocitySalesSetup: 'false',

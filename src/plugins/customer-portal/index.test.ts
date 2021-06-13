@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import CustomerPortal from '.';
+import { CustomerPortal } from '.';
 
 const tests = [
   {
@@ -45,10 +45,10 @@ const tests = [
             {
               name: 'Customer Portal Manager Standard',
               active: true,
-              id: 'a1'
+              _id: 'a1'
             }
           ],
-          id: 'p1'
+          _id: 'p1'
         }
       ]
     },
@@ -64,7 +64,7 @@ const tests = [
       portals: [
         {
           description: 'new description',
-          id: 'p1'
+          _id: 'p1'
         }
       ]
     }

@@ -1,11 +1,26 @@
 import { BrowserforcePlugin } from '../../plugin';
 import { removeEmptyValues } from '../utils';
-import CustomerPortalAvailableCustomObjects from './availableCustomObjects';
-import CustomerPortalEnable from './enabled';
-import CustomerPortalSetup from './portals';
+import {
+  Config as CustomerPortalAvailableCustomObjectsConfig,
+  CustomerPortalAvailableCustomObjects
+} from './available-custom-objects';
+import {
+  Config as CustomerPortalEnableConfig,
+  CustomerPortalEnable
+} from './enabled';
+import {
+  Config as CustomerPortalSetupConfig,
+  CustomerPortalSetup
+} from './portals';
 
-export default class CustomerPortal extends BrowserforcePlugin {
-  public async retrieve(definition?) {
+type Config = {
+  enabled?: CustomerPortalEnableConfig;
+  portals?: CustomerPortalSetupConfig;
+  availableCustomObjects?: CustomerPortalAvailableCustomObjectsConfig;
+};
+
+export class CustomerPortal extends BrowserforcePlugin {
+  public async retrieve(definition?: Config): Promise<Config> {
     const pluginEnable = new CustomerPortalEnable(this.browserforce, this.org);
     const response = {
       enabled: false,
@@ -34,7 +49,7 @@ export default class CustomerPortal extends BrowserforcePlugin {
     return response;
   }
 
-  public diff(state, definition) {
+  public diff(state: Config, definition: Config): Config {
     const pluginEnable = new CustomerPortalEnable(null, null);
     const pluginSetup = new CustomerPortalSetup(null, null);
     const pluginAvailableCustomObjects = new CustomerPortalAvailableCustomObjects(
@@ -52,7 +67,7 @@ export default class CustomerPortal extends BrowserforcePlugin {
     return removeEmptyValues(response);
   }
 
-  public async apply(config) {
+  public async apply(config: Config): Promise<void> {
     if (config.enabled !== undefined) {
       const pluginEnable = new CustomerPortalEnable(
         this.browserforce,

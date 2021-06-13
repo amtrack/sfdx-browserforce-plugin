@@ -10,8 +10,13 @@ const SELECTORS = {
   SAVE_BUTTON: 'input[id$=":saveId"]'
 };
 
-export default class Communities extends BrowserforcePlugin {
-  public async retrieve() {
+type Config = {
+  enabled?: boolean;
+  domainName?: string;
+};
+
+export class Communities extends BrowserforcePlugin {
+  public async retrieve(): Promise<Config> {
     const page = await this.browserforce.openPage(PATHS.BASE, {
       waitUntil: ['load', 'domcontentloaded', 'networkidle0']
     });
@@ -19,21 +24,20 @@ export default class Communities extends BrowserforcePlugin {
       page,
       SELECTORS.BASE
     );
-    const response = {};
+    const response = {
+      enabled: true
+    };
     const inputEnable = await frameOrPage.$(SELECTORS.ENABLE_CHECKBOX);
     if (inputEnable) {
-      response['enabled'] = await frameOrPage.$eval(
+      response.enabled = await frameOrPage.$eval(
         SELECTORS.ENABLE_CHECKBOX,
         (el: HTMLInputElement) => el.checked
       );
-    } else {
-      // already enabled
-      response['enabled'] = true;
     }
     return response;
   }
 
-  public async apply(config) {
+  public async apply(config: Config): Promise<void> {
     if (config.enabled === false) {
       throw new Error('`enabled` cannot be disabled once enabled');
     }

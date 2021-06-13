@@ -1,12 +1,12 @@
 import * as assert from 'assert';
-import CustomerPortalSetup from '.';
+import { CustomerPortalSetup } from '.';
 
 const tests = [
   {
     description: 'should only return necessary portal fields',
     source: [
       {
-        id: 'p1',
+        _id: 'p1',
         name: 'Customer Portal',
         description: 'Customer Portal',
         adminUser: 'User User',
@@ -24,7 +24,7 @@ const tests = [
     ],
     expected: [
       {
-        id: 'p1',
+        _id: 'p1',
         description: 'new description'
       }
     ]
@@ -41,10 +41,10 @@ const tests = [
           {
             name: 'Customer Portal Manager Standard',
             active: true,
-            id: 'a1'
+            _id: 'a1'
           }
         ],
-        id: 'p1'
+        _id: 'p1'
       }
     ],
     target: [
@@ -60,10 +60,10 @@ const tests = [
     ],
     expected: [
       {
-        id: 'p1',
+        _id: 'p1',
         portalProfileMemberships: [
           {
-            id: 'a1',
+            _id: 'a1',
             active: false
           }
         ]
@@ -78,7 +78,7 @@ const tests = [
         description: 'Customer Portal',
         adminUser: 'User User',
         portalProfileMemberships: [],
-        id: 'p1'
+        _id: 'p1'
       }
     ],
     target: [
@@ -89,7 +89,7 @@ const tests = [
     ],
     expected: [
       {
-        id: 'p1',
+        _id: 'p1',
         name: 'Foo Portal'
       }
     ]
@@ -105,10 +105,10 @@ const tests = [
           {
             name: 'Customer Portal Manager Standard',
             active: true,
-            id: 'a1'
+            _id: 'a1'
           }
         ],
-        id: 'p1'
+        _id: 'p1'
       }
     ],
     target: [

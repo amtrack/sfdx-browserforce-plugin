@@ -10,25 +10,28 @@ const SELECTORS = {
   SAVE_BUTTON: 'input[name="save"]'
 };
 
-export default class SalesforceToSalesforce extends BrowserforcePlugin {
-  public async retrieve() {
+type Config = {
+  enabled: boolean;
+};
+
+export class SalesforceToSalesforce extends BrowserforcePlugin {
+  public async retrieve(): Promise<Config> {
     const page = await this.browserforce.openPage(PATHS.BASE);
     await page.waitForSelector(SELECTORS.BASE);
-    const response = {};
+    const response = {
+      enabled: true
+    };
     const inputEnable = await page.$(SELECTORS.ENABLED);
     if (inputEnable) {
-      response['enabled'] = await page.$eval(
+      response.enabled = await page.$eval(
         SELECTORS.ENABLED,
         (el: HTMLInputElement) => el.checked
       );
-    } else {
-      // already enabled
-      response['enabled'] = true;
     }
     return response;
   }
 
-  public async apply(config) {
+  public async apply(config: Config): Promise<void> {
     if (config.enabled === false) {
       throw new Error('`enabled` cannot be disabled once enabled');
     }
@@ -38,7 +41,7 @@ export default class SalesforceToSalesforce extends BrowserforcePlugin {
       await page.waitForSelector(SELECTORS.ENABLED);
       await page.$eval(
         SELECTORS.ENABLED,
-        (e: HTMLInputElement, v) => {
+        (e: HTMLInputElement, v: boolean) => {
           e.checked = v;
         },
         config.enabled
@@ -48,7 +51,7 @@ export default class SalesforceToSalesforce extends BrowserforcePlugin {
         page.click(SELECTORS.SAVE_BUTTON)
       ]);
       const result = await this.retrieve();
-      if (result['enabled'] !== config.enabled) {
+      if (result.enabled !== config.enabled) {
         throw new Error('setting was not applied as expected');
       }
     });

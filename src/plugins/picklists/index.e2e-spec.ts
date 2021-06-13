@@ -1,8 +1,8 @@
 import * as assert from 'assert';
 import * as child from 'child_process';
 import * as path from 'path';
-import Picklists from '.';
-import FieldDependencies from './field-dependencies';
+import { Picklists } from '.';
+import { FieldDependencies } from './field-dependencies';
 
 describe(Picklists.name, function() {
   this.slow('30s');

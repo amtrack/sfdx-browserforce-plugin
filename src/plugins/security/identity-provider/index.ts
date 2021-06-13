@@ -1,6 +1,6 @@
 import { SalesforceId } from 'jsforce';
 import * as jsonMergePatch from 'json-merge-patch';
-import pRetry from 'p-retry';
+import pRetry, { AbortError } from 'p-retry';
 import { BrowserforcePlugin } from '../../../plugin';
 import { removeNullValues } from '../../utils';
 
@@ -21,8 +21,14 @@ interface CertificateRecord {
   NamespacePrefix: string;
 }
 
-export default class IdentityProvider extends BrowserforcePlugin {
-  public async retrieve(definition?) {
+export type Config = {
+  enabled?: boolean;
+  certificate?: string;
+};
+
+export class IdentityProvider extends BrowserforcePlugin {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public async retrieve(definition?: Config): Promise<Config> {
     const page = await this.browserforce.openPage(PATHS.EDIT_VIEW);
     await page.waitForSelector(SELECTORS.EDIT_BUTTON);
     const disableButton = await page.$(SELECTORS.DISABLE_BUTTON);
@@ -39,11 +45,11 @@ export default class IdentityProvider extends BrowserforcePlugin {
     return response;
   }
 
-  public diff(state, definition) {
+  public diff(state: Config, definition: Config): Config {
     return removeNullValues(jsonMergePatch.generate(state, definition));
   }
 
-  public async apply(plan) {
+  public async apply(plan: Config): Promise<void> {
     if (plan.enabled && plan.certificate && plan.certificate !== '') {
       // wait for cert to become available in Identity Provider UI
       await pRetry(
@@ -53,8 +59,10 @@ export default class IdentityProvider extends BrowserforcePlugin {
             .tooling.query<CertificateRecord>(
               `SELECT Id, DeveloperName FROM Certificate WHERE DeveloperName = '${plan.certificate}'`
             );
-          if (!certsResponse.records.length) {
-            throw new Error(`Could not find Certificate '${plan.certificate}'`);
+          if (!certsResponse.totalSize) {
+            throw new AbortError(
+              `Could not find Certificate '${plan.certificate}'`
+            );
           }
           const page = await this.browserforce.openPage(PATHS.EDIT_VIEW);
           await page.waitForSelector(SELECTORS.EDIT_BUTTON);

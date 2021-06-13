@@ -1,6 +1,6 @@
 import { core } from '@salesforce/command';
 import pRetry, { AbortError } from 'p-retry';
-import { Browser, launch, Page } from 'puppeteer';
+import { Browser, Frame, launch, Page, WaitForOptions } from 'puppeteer';
 import * as querystring from 'querystring';
 import { parse, URL } from 'url';
 
@@ -10,17 +10,26 @@ const ERROR_DIV_SELECTOR = '#errorTitle';
 const ERROR_DIVS_SELECTOR = 'div.errorMsg';
 const VF_IFRAME_SELECTOR = 'iframe[name^=vfFrameId]';
 
-export default class Browserforce {
+export interface Logger {
+  debug(message?: unknown, ...optionalParams: unknown[]): void;
+  error(message?: unknown, ...optionalParams: unknown[]): void;
+  info(message?: unknown, ...optionalParams: unknown[]): void;
+  trace(message?: unknown, ...optionalParams: unknown[]): void;
+  warn(message?: unknown, ...optionalParams: unknown[]): void;
+  [m: string]: unknown;
+}
+
+export class Browserforce {
   public org: core.Org;
-  public logger: core.Logger;
+  public logger: Logger;
   public browser: Browser;
   public page: Page;
-  constructor(org, logger?) {
+  constructor(org: core.Org, logger?: Logger) {
     this.org = org;
     this.logger = logger;
   }
 
-  public async login() {
+  public async login(): Promise<Browserforce> {
     this.browser = await launch({
       args: [
         '--no-sandbox',
@@ -39,12 +48,12 @@ export default class Browserforce {
     return this;
   }
 
-  public async logout() {
+  public async logout(): Promise<Browserforce> {
     await this.browser.close();
     return this;
   }
 
-  public async resolveDomains() {
+  public async resolveDomains(): Promise<void> {
     // resolve ip addresses of both LEX and classic domains
     const salesforceUrls = [
       this.getInstanceUrl(),
@@ -58,12 +67,15 @@ export default class Browserforce {
     }
   }
 
-  public async throwPageErrors(page) {
-    return await throwPageErrors(page);
+  public async throwPageErrors(page: Page): Promise<void> {
+    await throwPageErrors(page);
   }
 
   // path instead of url
-  public async openPage(urlPath, options?) {
+  public async openPage(
+    urlPath: string,
+    options?: WaitForOptions
+  ): Promise<Page> {
     let page;
     const result = await pRetry(
       async () => {
@@ -101,7 +113,10 @@ export default class Browserforce {
                 this.logger.warn('trying frontdoor workaround...');
               }
               // try opening page directly without frontdoor as login might have already been successful
-              urlPath = querystring.parse(parsedUrl.query).retURL;
+              const qsUrl = querystring.parse(parsedUrl.query);
+              urlPath = Array.isArray(qsUrl.retURL)
+                ? qsUrl.retURL[0]
+                : qsUrl.retURL;
               throw new Error('frontdoor error');
             } else {
               // the url is not as expected
@@ -151,14 +166,17 @@ export default class Browserforce {
   // If LEX is enabled, the classic url will be opened in an iframe.
   // Wait for either the selector in the page or in the iframe.
   // returns the page or the frame
-  public async waitForSelectorInFrameOrPage(page, selector) {
+  public async waitForSelectorInFrameOrPage(
+    page: Page,
+    selector: string
+  ): Promise<Page | Frame> {
     await page.waitForSelector(
       `pierce/force-aloha-page ${VF_IFRAME_SELECTOR}, ${VF_IFRAME_SELECTOR}, ${selector}`
     );
     const frameElementHandle = await page.$(
       `pierce/force-aloha-page ${VF_IFRAME_SELECTOR}, ${VF_IFRAME_SELECTOR}`
     );
-    let frameOrPage = page;
+    let frameOrPage: Page | Frame = page;
     if (frameElementHandle) {
       const frame = await frameElementHandle.contentFrame();
       if (frame) {
@@ -169,7 +187,7 @@ export default class Browserforce {
     return frameOrPage;
   }
 
-  public getMyDomain() {
+  public getMyDomain(): string {
     const instanceUrl = this.getInstanceUrl();
     // acme.my.salesforce.com
     // acme--<sandboxName>.csN.my.salesforce.com
@@ -180,7 +198,7 @@ export default class Browserforce {
     return null;
   }
 
-  public getInstanceDomain() {
+  public getInstanceDomain(): string {
     const instanceUrl = this.getInstanceUrl();
     // csN.salesforce.com
     // acme--<sandboxName>.csN.my.salesforce.com
@@ -197,12 +215,12 @@ export default class Browserforce {
     return null;
   }
 
-  public getInstanceUrl() {
+  public getInstanceUrl(): string {
     // sometimes the instanceUrl includes a trailing slash
     return this.org.getConnection().instanceUrl?.replace(/\/$/, '');
   }
 
-  public getLightningUrl() {
+  public getLightningUrl(): string {
     const myDomain = this.getMyDomain();
     const instanceDomain = this.getInstanceDomain();
     const myDomainOrInstance = myDomain || instanceDomain;

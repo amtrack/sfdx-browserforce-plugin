@@ -1,3 +1,4 @@
+import { Page } from 'puppeteer';
 import { throwPageErrors } from '../../browserforce';
 
 const SET_UP_AND_ENABLE_HVS_BUTTON = 'button.setupAndEnableButton';
@@ -6,7 +7,7 @@ const ENABLE_TOGGLE = '#toggleHighVelocitySalesPref';
 export class HighVelocitySalesSetupPage {
   private page;
 
-  constructor(page) {
+  constructor(page: Page) {
     this.page = page;
   }
 
@@ -14,7 +15,7 @@ export class HighVelocitySalesSetupPage {
     return 'lightning/setup/HighVelocitySales/home';
   }
 
-  public async setUpAndEnable() {
+  public async setUpAndEnable(): Promise<void> {
     await this.page.waitForSelector(SET_UP_AND_ENABLE_HVS_BUTTON);
     await this.page.click(SET_UP_AND_ENABLE_HVS_BUTTON);
     await throwPageErrors(this.page);

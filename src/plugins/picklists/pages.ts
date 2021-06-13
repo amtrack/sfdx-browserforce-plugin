@@ -1,5 +1,5 @@
-import pRetry = require('p-retry');
-import { JSHandle } from 'puppeteer';
+import pRetry from 'p-retry';
+import { JSHandle, Page } from 'puppeteer';
 
 // table columns
 //    <td> (actions) | <th> (label) | <td> (API name)
@@ -15,7 +15,7 @@ type PicklistValue = {
 export class PicklistPage {
   private page;
 
-  constructor(page) {
+  constructor(page: Page) {
     this.page = page;
   }
 
@@ -27,7 +27,7 @@ export class PicklistPage {
       const innerTextJsHandles = await Promise.all<JSHandle>(
         fullNameHandles.map(handle => handle.getProperty('innerText'))
       );
-      const fullNames = await Promise.all<any>(
+      const fullNames = await Promise.all<string>(
         innerTextJsHandles.map(handle => handle.jsonValue())
       );
       return fullNames;
@@ -48,7 +48,8 @@ export class PicklistPage {
     ];
   }
   public async clickNewActionButton(): Promise<void> {
-    const NEW_ACTION_BUTTON_XPATH = '//tr[td[2]]//input[contains(@onclick, "/setup/ui/picklist_masteredit")][@value=" New "]';
+    const NEW_ACTION_BUTTON_XPATH =
+      '//tr[td[2]]//input[contains(@onclick, "/setup/ui/picklist_masteredit")][@value=" New "]';
     await this.page.waitForXPath(NEW_ACTION_BUTTON_XPATH);
     const NEW_ACTION_BUTTON = (await this.page.$x(NEW_ACTION_BUTTON_XPATH))[0];
     await Promise.all([
@@ -57,7 +58,7 @@ export class PicklistPage {
     ]);
   }
 
-  public async clickReplaceActionButton(): Promise<any> {
+  public async clickReplaceActionButton(): Promise<PicklistReplacePage> {
     const REPLACE_ACTION_BUTTON = 'input[name="replace"]';
     await this.page.waitForSelector(REPLACE_ACTION_BUTTON);
     await Promise.all([
@@ -69,7 +70,7 @@ export class PicklistPage {
 
   public async clickDeleteActionForValue(
     picklistValueApiName: string
-  ): Promise<any> {
+  ): Promise<PicklistReplaceAndDeletePage> {
     const xpath = `//tr[td[2][text() = "${picklistValueApiName}"]]//td[1]//a[contains(@href, "/setup/ui/picklist_masterdelete.jsp") and contains(@href, "deleteType=0")]`;
     await this.page.waitForXPath(xpath);
     const actionLinkHandles = await this.page.$x(xpath);
@@ -92,7 +93,7 @@ export class PicklistPage {
   public async clickActivateDeactivateActionForValue(
     picklistValueApiName: string,
     active: boolean
-  ): Promise<any> {
+  ): Promise<PicklistPage> {
     let xpath;
     let actionName;
     if (active) {
@@ -125,11 +126,11 @@ export class DefaultPicklistAddPage {
   protected page;
   protected saveButton = 'input.btn[name="save"]';
 
-  constructor(page) {
+  constructor(page: Page) {
     this.page = page;
   }
 
-  async add(newValue) {
+  async add(newValue: string): Promise<void> {
     const TEXT_AREA = 'textarea';
     if (newValue !== undefined && newValue !== null) {
       await this.page.waitForSelector(TEXT_AREA);
@@ -138,7 +139,7 @@ export class DefaultPicklistAddPage {
     await this.save();
   }
 
-  async save() {
+  async save(): Promise<void> {
     await pRetry(
       async () => {
         await this.page.waitForSelector(this.saveButton);
@@ -169,14 +170,14 @@ export class StatusPicklistAddPage {
   protected page;
   protected saveButton = 'input.btn[name="save"]';
 
-  constructor(page) {
+  constructor(page: Page) {
     this.page = page;
   }
 
-  async add(newValue, statusCategory) {
+  async add(newValue: string, statusCategory: string): Promise<void> {
     const LABEL_INPUT = 'input#p1';
     const API_NAME_INPUT = 'input#p3';
-    const STATUS_CATEGORY_SELECTOR = 'select#p5'
+    const STATUS_CATEGORY_SELECTOR = 'select#p5';
     if (newValue !== undefined && newValue !== null) {
       await this.page.waitForSelector(STATUS_CATEGORY_SELECTOR);
       await this.page.type(LABEL_INPUT, newValue);
@@ -186,7 +187,7 @@ export class StatusPicklistAddPage {
     await this.save();
   }
 
-  async save() {
+  async save(): Promise<void> {
     await pRetry(
       async () => {
         await this.page.waitForSelector(this.saveButton);
@@ -217,11 +218,15 @@ export class PicklistReplacePage {
   protected page;
   protected saveButton = 'input[name="save"]';
 
-  constructor(page) {
+  constructor(page: Page) {
     this.page = page;
   }
 
-  async replace(value, newValue, replaceAllBlankValues?) {
+  async replace(
+    value: string,
+    newValue: string,
+    replaceAllBlankValues?: boolean
+  ): Promise<void> {
     const OLD_VALUE_SELECTOR = 'input#nf';
     const NEW_VALUE_SELECTOR = 'select#nv';
     const REPLACE_ALL_BLANK_VALUES_CHECKBOX = 'input#fnv';
@@ -240,7 +245,7 @@ export class PicklistReplacePage {
     await this.save();
   }
 
-  async save() {
+  async save(): Promise<void> {
     await pRetry(
       async () => {
         await this.page.waitForSelector(this.saveButton);
@@ -268,12 +273,12 @@ export class PicklistReplacePage {
 }
 
 export class PicklistReplaceAndDeletePage extends PicklistReplacePage {
-  constructor(page) {
+  constructor(page: Page) {
     super(page);
     this.saveButton = 'input[name="delID"][type="submit"]';
   }
 
-  async replaceAndDelete(newValue) {
+  async replaceAndDelete(newValue: string): Promise<void> {
     const NEW_VALUE_SELECTOR = 'select#p13';
     const REPLACE_WITH_BLANK_VALUE_RADIO_INPUT =
       'input#ReplaceValueWithNullValue';
@@ -289,7 +294,7 @@ export class PicklistReplaceAndDeletePage extends PicklistReplacePage {
   }
 }
 
-async function throwPageErrors(page) {
+async function throwPageErrors(page: Page): Promise<void> {
   const errorHandle = await page.$('div#validationError div.messageText');
   if (errorHandle) {
     const errorMsg = await page.evaluate(

@@ -13,8 +13,17 @@ interface CustomObjectRecord {
   NamespacePrefix: string;
 }
 
-export default class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
-  public async retrieve(definition?) {
+export type Config = AvailableCustomObjectConfig[];
+
+type AvailableCustomObjectConfig = {
+  name: string;
+  namespacePrefix?: string;
+  available: boolean;
+  _id?: string;
+};
+
+export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
+  public async retrieve(definition?: Config): Promise<Config> {
     const response = [];
     if (definition) {
       const availableCustomObjectList = definition
@@ -39,10 +48,10 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
         page.url().indexOf('/one/one.app') >= 0 ||
         page.url().indexOf('/lightning/') >= 0;
       const getObjectPageUrl = function(customObject, isLexUi = true) {
-        const classicUiPath = `${customObject.id}/e`;
+        const classicUiPath = `${customObject._id}/e`;
         if (isLexUi) {
           return `lightning/setup/ObjectManager/${
-            customObject.id
+            customObject._id
           }/edit?nodeId=ObjectManager&address=${encodeURIComponent(
             `/${classicUiPath}`
           )}`;
@@ -67,7 +76,7 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
           );
         }
         const result = {
-          id: customObject.Id,
+          _id: customObject.Id,
           name: customObject.DeveloperName,
           namespacePrefix: customObject.NamespacePrefix
         };
@@ -91,7 +100,7 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
     return response;
   }
 
-  public diff(state, definition) {
+  public diff(state: Config, definition: Config): Config {
     const response = [];
     if (state && definition) {
       for (const availableCustomObject of definition) {
@@ -106,8 +115,8 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
           );
         });
         // move id of existing object to new object to be retained and used
-        availableCustomObject.id = oldCustomObject.id;
-        delete oldCustomObject.id;
+        availableCustomObject._id = oldCustomObject._id;
+        delete oldCustomObject._id;
         const diff = jsonMergePatch.generate(
           oldCustomObject,
           availableCustomObject
@@ -120,7 +129,7 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
     return response;
   }
 
-  public async apply(plan) {
+  public async apply(plan: Config): Promise<void> {
     if (plan && plan.length) {
       const page = await this.browserforce.openPage('', {
         waitUntil: ['load', 'domcontentloaded', 'networkidle0']
@@ -130,12 +139,12 @@ export default class CustomerPortalAvailableCustomObjects extends BrowserforcePl
         page.url().indexOf('/one/one.app') >= 0 ||
         page.url().indexOf('/lightning/') >= 0;
       const getObjectPageUrl = function(customObject, isLexUi = true) {
-        const classicUiPath = `${customObject.id}/e?options_9=${
+        const classicUiPath = `${customObject._id}/e?options_9=${
           customObject.available ? 1 : 0
-        }&retURL=/${customObject.id}`;
+        }&retURL=/${customObject._id}`;
         if (isLexUi) {
           return `lightning/setup/ObjectManager/${
-            customObject.id
+            customObject._id
           }/edit?nodeId=ObjectManager&address=${encodeURIComponent(
             `/${classicUiPath}`
           )}`;

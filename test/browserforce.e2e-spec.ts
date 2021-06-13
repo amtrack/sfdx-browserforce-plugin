@@ -1,6 +1,6 @@
 import { core, UX } from '@salesforce/command';
 import * as assert from 'assert';
-import Browserforce from '../src/browserforce';
+import { Browserforce } from '../src/browserforce';
 
 describe('Browser', function() {
   this.slow('30s');

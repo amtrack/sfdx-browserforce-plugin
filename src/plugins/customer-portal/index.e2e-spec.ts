@@ -1,9 +1,9 @@
 import * as assert from 'assert';
 import * as child from 'child_process';
 import * as path from 'path';
-import CustomerPortalAvailableCustomObjects from './availableCustomObjects';
-import CustomerPortalEnable from './enabled';
-import CustomerPortalSetup from './portals';
+import { CustomerPortalAvailableCustomObjects } from './available-custom-objects';
+import { CustomerPortalEnable } from './enabled';
+import { CustomerPortalSetup } from './portals';
 
 describe(CustomerPortalEnable.name, function() {
   this.slow('30s');
@@ -168,7 +168,7 @@ describe(CustomerPortalSetup.name, function() {
 describe(CustomerPortalAvailableCustomObjects.name, function() {
   this.slow('30s');
   this.timeout('2m 30s');
-  const dir = path.resolve(path.join(__dirname, 'availableCustomObjects'));
+  const dir = path.resolve(path.join(__dirname, 'available-custom-objects'));
   it('should fail to make non-existent custom objects available for customer portal', () => {
     const setupPortalCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',

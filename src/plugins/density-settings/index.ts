@@ -1,3 +1,4 @@
+import { ElementHandle, Page } from 'puppeteer';
 import { BrowserforcePlugin } from '../../plugin';
 
 const PATHS = {
@@ -9,8 +10,18 @@ const SELECTORS = {
     'pierce/one-density-visual-picker one-density-visual-picker-item input'
 };
 
-export default class DensitySettings extends BrowserforcePlugin {
-  public async retrieve() {
+type Config = {
+  density: string;
+};
+
+type Density = {
+  value: string;
+  checked: boolean;
+  elementHandle: ElementHandle;
+};
+
+export class DensitySettings extends BrowserforcePlugin {
+  public async retrieve(): Promise<Config> {
     const page = await this.browserforce.openPage(PATHS.BASE, {
       waitUntil: ['load', 'domcontentloaded', 'networkidle0']
     });
@@ -21,14 +32,14 @@ export default class DensitySettings extends BrowserforcePlugin {
     };
   }
 
-  public async apply(config) {
+  public async apply(config: Config): Promise<void> {
     const page = await this.browserforce.openPage(PATHS.BASE, {
       waitUntil: ['load', 'domcontentloaded', 'networkidle0']
     });
     await this.setDensity(page, config.density);
   }
 
-  async getDensities(page) {
+  async getDensities(page: Page): Promise<Density[]> {
     await page.waitForSelector(SELECTORS.PICKER_ITEMS);
     const elementHandles = await page.$$(SELECTORS.PICKER_ITEMS);
     const result = await page.$$eval(
@@ -46,7 +57,7 @@ export default class DensitySettings extends BrowserforcePlugin {
     });
   }
 
-  async setDensity(page, name) {
+  async setDensity(page: Page, name: string): Promise<void> {
     const densities = await this.getDensities(page);
     const densityToSelect = densities.find(input => input.value === name);
     await Promise.all([

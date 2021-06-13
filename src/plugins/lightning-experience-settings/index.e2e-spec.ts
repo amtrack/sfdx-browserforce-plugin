@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 import * as child from 'child_process';
 import * as path from 'path';
-import LightningExperienceSettings from '.';
+import { LightningExperienceSettings } from '.';
 
 describe(LightningExperienceSettings.name, function() {
   this.slow('30s');

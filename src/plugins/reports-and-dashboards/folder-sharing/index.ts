@@ -9,8 +9,13 @@ const SELECTORS = {
   SAVE_BUTTON: 'input[id="saveButton"]'
 };
 
-export default class FolderSharing extends BrowserforcePlugin {
-  public async retrieve(definition?) {
+export type Config = {
+  enableEnhancedFolderSharing: boolean;
+};
+
+export class FolderSharing extends BrowserforcePlugin {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public async retrieve(definition?: Config): Promise<Config> {
     const response = {
       enableEnhancedFolderSharing: true
     };
@@ -41,7 +46,7 @@ export default class FolderSharing extends BrowserforcePlugin {
     return response;
   }
 
-  public async apply(config) {
+  public async apply(config: Config): Promise<void> {
     if (config.enableEnhancedFolderSharing === false) {
       throw new Error(
         '`enableEnhancedFolderSharing` cannot be disabled once enabled'
@@ -51,7 +56,7 @@ export default class FolderSharing extends BrowserforcePlugin {
     await page.waitForSelector(SELECTORS.ENABLE_CHECKBOX);
     await page.$eval(
       SELECTORS.ENABLE_CHECKBOX,
-      (e: HTMLInputElement, v) => {
+      (e: HTMLInputElement, v: boolean) => {
         e.checked = v;
       },
       config.enableEnhancedFolderSharing

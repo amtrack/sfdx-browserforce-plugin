@@ -1,6 +1,6 @@
 import { core } from '@salesforce/command';
 import * as path from 'path';
-import BrowserforceCommand from '../../browserforceCommand';
+import { BrowserforceCommand } from '../../browserforce-command';
 
 core.Messages.importMessagesDirectory(__dirname);
 const messages = core.Messages.loadMessages(
@@ -21,7 +21,7 @@ export default class BrowserforcePlanCommand extends BrowserforceCommand {
   `
   ];
 
-  public async run(): Promise<any> {
+  public async run(): Promise<unknown> {
     this.ux.log(
       `Generating plan with definition file ${
         this.flags.definitionfile
@@ -34,7 +34,7 @@ export default class BrowserforcePlanCommand extends BrowserforceCommand {
       settings: {}
     };
     for (const setting of this.settings) {
-      const driver = setting.Driver.default;
+      const driver = setting.Driver;
       const instance = new driver(this.bf, this.org);
       this.ux.startSpinner(`[${driver.name}] retrieving state`);
       let driverState;

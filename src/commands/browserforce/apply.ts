@@ -1,5 +1,5 @@
 import { core } from '@salesforce/command';
-import BrowserforceCommand from '../../browserforceCommand';
+import { BrowserforceCommand } from '../../browserforce-command';
 
 core.Messages.importMessagesDirectory(__dirname);
 const messages = core.Messages.loadMessages(
@@ -20,7 +20,7 @@ export default class BrowserforceApply extends BrowserforceCommand {
   `
   ];
 
-  public async run(): Promise<any> {
+  public async run(): Promise<unknown> {
     const logger = await core.Logger.root();
     this.ux.log(
       `Applying definition file ${
@@ -28,7 +28,7 @@ export default class BrowserforceApply extends BrowserforceCommand {
       } to org ${this.org.getUsername()}`
     );
     for (const setting of this.settings) {
-      const driver = setting.Driver.default;
+      const driver = setting.Driver;
       const instance = new driver(this.bf, this.org);
       this.ux.startSpinner(`[${driver.name}] retrieving state`);
       let state;
