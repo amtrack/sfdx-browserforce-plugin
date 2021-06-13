@@ -3,7 +3,7 @@ import * as child from 'child_process';
 import * as path from 'path';
 import { HighVelocitySalesSettings } from '.';
 
-describe.skip(HighVelocitySalesSettings.name, function() {
+describe(HighVelocitySalesSettings.name, function() {
   this.slow('30s');
   this.timeout('2m');
   it('should enable', () => {
