@@ -25,7 +25,6 @@ export class RecordTypePage {
       this.page.waitForNavigation(),
       actionLinkHandles[0].click()
     ]);
-    await this.page.waitForTimeout(3000);
     return new RecordTypeDeletePage(this.page);
   }
 }
