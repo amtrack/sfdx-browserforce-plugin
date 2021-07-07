@@ -21,7 +21,7 @@
     "@oclif/dev-cli": "1.26.0",
     "@oclif/plugin-help": "3.2.2",
     "@salesforce/dev-config": "2.1.0",
-    "@types/mocha": "8.2.2",
+    "@types/mocha": "8.2.3",
     "@types/node": "10.17.60",
     "@typescript-eslint/eslint-plugin": "4.26.1",
     "@typescript-eslint/parser": "4.26.1",
