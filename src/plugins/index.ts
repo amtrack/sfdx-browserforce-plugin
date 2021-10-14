@@ -12,7 +12,10 @@ import { ReportsAndDashboards as reportsAndDashboards } from './reports-and-dash
 import { SalesforceToSalesforce as salesforceToSalesforce } from './salesforce-to-salesforce';
 import { Security as security } from './security';
 
+import { RelateContactToMultipleAccounts as relateContactToMultipleAccounts } from './relate-contact-to-multiple-accounts';
+
 export {
+  relateContactToMultipleAccounts,
   activitySettings,
   communities,
   customerPortal,
