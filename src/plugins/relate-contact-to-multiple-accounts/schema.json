@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/relate-contact-to-multiple-accounts/schema.json",
+  "title": "RelateContactToMultipleAccounts Settings",
+  "type": "object",
+  "properties": {
+    "enabled": {
+      "title": "Enable RelateContactToMultipleAccounts",
+      "description": "The description you want to be displayed as toolip when the user is editing the configuration",
+      "type": "boolean"
+    }
+  }
+}
