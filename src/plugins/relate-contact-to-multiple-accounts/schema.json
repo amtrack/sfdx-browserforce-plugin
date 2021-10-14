@@ -6,7 +6,7 @@
   "properties": {
     "enabled": {
       "title": "Enable RelateContactToMultipleAccounts",
-      "description": "The description you want to be displayed as toolip when the user is editing the configuration",
+      "description": "This allows you to enable the 'Relate contact to multiple Accounts' in the Account settings. Doing this through the metadata API will not always make the AccountContactRelation object available. Enabling the feature using the setup does always work, therefore this plugin.",
       "type": "boolean"
     }
   }
