@@ -1,7 +1,7 @@
 import * as assert from 'assert';
 import * as child from 'child_process';
 import * as path from 'path';
-import RelateContactToMultipleAccounts from '.';
+import { RelateContactToMultipleAccounts } from '.';
 
 describe(RelateContactToMultipleAccounts.name, function() {
   this.slow('30s');
