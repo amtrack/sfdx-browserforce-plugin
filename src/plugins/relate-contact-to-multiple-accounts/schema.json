@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/relate-contact-to-multiple-accounts/schema.json",
+  "title": "RelateContactToMultipleAccounts Settings",
+  "type": "object",
+  "properties": {
+    "enabled": {
+      "title": "Enable RelateContactToMultipleAccounts",
+      "description": "This allows you to enable the 'Relate contact to multiple Accounts' in the Account settings. Doing this through the metadata API will not always make the AccountContactRelation object available. Enabling the feature using the setup does always work, therefore this plugin.",
+      "type": "boolean"
+    }
+  }
+}

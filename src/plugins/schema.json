@@ -7,6 +7,9 @@
   "properties": {
     "settings": {
       "properties": {
+        "relateContactToMultipleAccounts": {
+          "$ref": "./relate-contact-to-multiple-accounts/schema.json"
+        },
         "highVelocitySalesSettings": {
           "$ref": "./high-velocity-sales-settings/schema.json"
         },
