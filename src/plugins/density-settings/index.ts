@@ -69,7 +69,7 @@ export class DensitySettings extends BrowserforcePlugin {
               'UserSettings.DensityUserSettings.setDefaultDensitySetting=1'
             ) && response.status() === 200
       ),
-      densityToSelect.elementHandle.evaluate(input => input.click())
+      densityToSelect.elementHandle.evaluate((input: HTMLInputElement) => input.click())
     ]);
   }
 }
