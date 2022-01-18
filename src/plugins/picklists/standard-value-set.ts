@@ -32,6 +32,7 @@ const mapping = {
   FiscalYearPeriodPrefix: '',
   FiscalYearQuarterName: '',
   FiscalYearQuarterPrefix: '',
+  ForecastCategoryName: editUrl('ForecastCategoryName', 'Opportunity'),
   IdeaMultiCategory: editUrl('Categories', 'Idea'),
   IdeaStatus: editUrl('Status', 'Idea'),
   IdeaThemeStatus: editUrl('Status', 'IdeaTheme'),
