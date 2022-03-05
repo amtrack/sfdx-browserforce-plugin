@@ -10,3 +10,5 @@ node_modules
 /.sf
 
 .vscode/settings.json
+
+/oclif.manifest.json
