@@ -1,4 +1,4 @@
-import * as assert from 'assert';
+import assert from 'assert';
 import * as child from 'child_process';
 import * as path from 'path';
 import { HomePageLayouts } from '.';
@@ -20,7 +20,7 @@ describe(HomePageLayouts.name, function() {
       0,
       assignHomePageDefaultCmd.output.toString()
     );
-    assert(
+    assert.ok(
       /'\[{"profile":"Standard User","layout":""},{"profile":"System Administrator","layout":""}\]'/.test(
         assignHomePageDefaultCmd.output.toString()
       ),
@@ -38,7 +38,7 @@ describe(HomePageLayouts.name, function() {
       0,
       assignOrgDefaultCmd.output.toString()
     );
-    assert(
+    assert.ok(
       /'\[{"profile":"Standard User","layout":"DE Default"},{"profile":"System Administrator","layout":"DE Default"}\]'/.test(
         assignOrgDefaultCmd.output.toString()
       ),

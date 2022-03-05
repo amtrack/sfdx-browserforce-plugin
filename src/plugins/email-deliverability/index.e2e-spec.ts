@@ -1,4 +1,4 @@
-import * as assert from 'assert';
+import assert from 'assert';
 import * as child from 'child_process';
 import * as path from 'path';
 import { EmailDeliverability } from '.';
@@ -14,7 +14,7 @@ describe(EmailDeliverability.name, function() {
       path.resolve(path.join(__dirname, 'no-access.json'))
     ]);
     assert.deepStrictEqual(applyNoAccessCmd.status, 0, applyNoAccessCmd.output.toString());
-    assert(
+    assert.ok(
       /to '"No access"'/.test(applyNoAccessCmd.output.toString()),
       applyNoAccessCmd.output.toString()
     );
@@ -26,7 +26,7 @@ describe(EmailDeliverability.name, function() {
       path.join(__dirname, 'no-access.json')
     ]);
     assert.deepStrictEqual(applyNoAccessCmd.status, 0, applyNoAccessCmd.output.toString());
-    assert(
+    assert.ok(
       /no action necessary/.test(applyNoAccessCmd.output.toString()),
       applyNoAccessCmd.output.toString()
     );
@@ -38,7 +38,7 @@ describe(EmailDeliverability.name, function() {
       path.resolve(path.join(__dirname, 'system.json'))
     ]);
     assert.deepStrictEqual(systemEmailCmd.status, 0, systemEmailCmd.output.toString());
-    assert(
+    assert.ok(
       /to '"System email only"'/.test(systemEmailCmd.output.toString()),
       systemEmailCmd.output.toString()
     );
@@ -50,7 +50,7 @@ describe(EmailDeliverability.name, function() {
       path.join(__dirname, 'system.json')
     ]);
     assert.deepStrictEqual(systemEmailCmd.status, 0, systemEmailCmd.output.toString());
-    assert(
+    assert.ok(
       /no action necessary/.test(systemEmailCmd.output.toString()),
       systemEmailCmd.output.toString()
     );
@@ -62,7 +62,7 @@ describe(EmailDeliverability.name, function() {
       path.resolve(path.join(__dirname, 'all.json'))
     ]);
     assert.deepStrictEqual(applyAllCmd.status, 0, applyAllCmd.output.toString());
-    assert(
+    assert.ok(
       /to '"All email"'/.test(applyAllCmd.output.toString()),
       applyAllCmd.output.toString()
     );
@@ -74,7 +74,7 @@ describe(EmailDeliverability.name, function() {
       path.join(__dirname, 'all.json')
     ]);
     assert.deepStrictEqual(applyAllCmd.status, 0, applyAllCmd.output.toString());
-    assert(
+    assert.ok(
       /no action necessary/.test(applyAllCmd.output.toString()),
       applyAllCmd.output.toString()
     );
@@ -86,7 +86,7 @@ describe(EmailDeliverability.name, function() {
       path.join(__dirname, 'invalid.json')
     ]);
     assert.notDeepStrictEqual(systemEmailCmd.status, 0, systemEmailCmd.output.toString());
-    assert(
+    assert.ok(
       /Invalid email access level/.test(systemEmailCmd.output.toString()),
       systemEmailCmd.output.toString()
     );

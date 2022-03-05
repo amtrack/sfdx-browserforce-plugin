@@ -1,4 +1,4 @@
-import { Connection } from '@salesforce/command/node_modules/@salesforce/core';
+import { Connection } from '@salesforce/core';
 import { BrowserforcePlugin } from '../../plugin';
 import { RecordTypePage } from './pages';
 
@@ -106,10 +106,10 @@ async function queryRecordTypes(conn: Connection): Promise<Array<RecordType>> {
 
 function getRecordType(fullName: string, fileProperties, recordTypes) {
   const recordTypeFileProperty = fileProperties.find(
-    fp => fp.fullName === fullName
+    (fp) => fp.fullName === fullName
   );
   if (recordTypeFileProperty) {
-    return recordTypes.find(x => x.Id === recordTypeFileProperty.id);
+    return recordTypes.find((x) => x.Id === recordTypeFileProperty.id);
   }
   return undefined;
 }

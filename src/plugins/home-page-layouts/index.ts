@@ -1,4 +1,4 @@
-import { SalesforceId } from 'jsforce';
+import type { Record } from 'jsforce';
 import * as jsonMergePatch from 'json-merge-patch';
 import { BrowserforcePlugin } from '../../plugin';
 
@@ -10,13 +10,11 @@ const SELECTORS = {
   SAVE_BUTTON: 'input[name="save"]'
 };
 
-interface ProfileRecord {
-  Id: SalesforceId;
+interface ProfileRecord extends Record {
   Name: string;
 }
 
-interface HomePageLayoutRecord {
-  Id: SalesforceId;
+interface HomePageLayoutRecord extends Record {
   Name: string;
 }
 
@@ -37,7 +35,7 @@ export class HomePageLayouts extends BrowserforcePlugin {
     const profiles = await page.$$eval(
       'table.detailList tbody tr td label',
       (labels: HTMLLabelElement[]) => {
-        return labels.map(label => {
+        return labels.map((label) => {
           for (let i = 0; label.childNodes.length; i++) {
             if (label.childNodes[i].nodeType === label.TEXT_NODE) {
               return label.childNodes[i].nodeValue;
@@ -51,8 +49,8 @@ export class HomePageLayouts extends BrowserforcePlugin {
       'table.detailList tbody tr td select',
       (selects: HTMLSelectElement[]) => {
         return selects
-          .map(select => select.selectedOptions[0].text)
-          .map(text => (text === 'Home Page Default' ? '' : text));
+          .map((select) => select.selectedOptions[0].text)
+          .map((text) => (text === 'Home Page Default' ? '' : text));
       }
     );
     const homePageLayoutAssignments = [];
@@ -69,22 +67,22 @@ export class HomePageLayouts extends BrowserforcePlugin {
 
   public diff(source: Config, target: Config): Config {
     const profileNames = target.homePageLayoutAssignments.map(
-      assignment => assignment.profile
+      (assignment) => assignment.profile
     );
     source.homePageLayoutAssignments = source.homePageLayoutAssignments.filter(
-      assignment => profileNames.includes(assignment.profile)
+      (assignment) => profileNames.includes(assignment.profile)
     );
     return jsonMergePatch.generate(source, target);
   }
 
   public async apply(config: Config): Promise<void> {
     const profilesList = config.homePageLayoutAssignments
-      .map(assignment => {
+      .map((assignment) => {
         return `'${assignment.profile}'`;
       })
       .join(',');
     const layoutsList = config.homePageLayoutAssignments
-      .map(assignment => {
+      .map((assignment) => {
         return `'${assignment.layout}'`;
       })
       .join(',');
@@ -103,12 +101,14 @@ export class HomePageLayouts extends BrowserforcePlugin {
     await page.waitForSelector(SELECTORS.BASE);
     for (const assignment of config.homePageLayoutAssignments) {
       const homePageLayoutName = assignment.layout;
-      const profile = profiles.records.find(p => p.Name === assignment.profile);
+      const profile = profiles.records.find(
+        (p) => p.Name === assignment.profile
+      );
       if (!profile) {
         throw new Error(`could not find profile '${assignment.profile}'`);
       }
       let homePageLayout = homePageLayouts.records.find(
-        l => l.Name === homePageLayoutName
+        (l) => l.Name === homePageLayoutName
       );
       if (homePageLayoutName === '') {
         homePageLayout = { Id: 'default', Name: 'default' };

@@ -1,4 +1,4 @@
-import { SalesforceId } from 'jsforce';
+import type { Record } from "jsforce";
 import * as jsonMergePatch from 'json-merge-patch';
 import { BrowserforcePlugin } from '../../../plugin';
 
@@ -7,8 +7,7 @@ const SELECTORS = {
   CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL: '#options_9'
 };
 
-interface CustomObjectRecord {
-  Id: SalesforceId;
+interface CustomObjectRecord extends Record {
   DeveloperName: string;
   NamespacePrefix: string;
 }

@@ -1,12 +1,13 @@
-import { core, flags, SfdxCommand } from '@salesforce/command';
+import { flags, SfdxCommand } from '@salesforce/command';
+import { Messages } from '@salesforce/core';
 import { promises } from 'fs';
 import * as path from 'path';
 import { Browserforce } from './browserforce';
 import { ConfigParser } from './config-parser';
 import * as DRIVERS from './plugins';
 
-core.Messages.importMessagesDirectory(__dirname);
-const messages = core.Messages.loadMessages(
+Messages.importMessagesDirectory(__dirname);
+const messages = Messages.loadMessages(
   'sfdx-browserforce-plugin',
   'browserforce'
 );
@@ -49,7 +50,7 @@ export class BrowserforceCommand extends SfdxCommand {
     }
     // TODO: use require.resolve to dynamically load plugins from npm packages
     this.settings = ConfigParser.parse(DRIVERS, definition);
-    this.bf = new Browserforce(this.org, this.ux.cli);
+    this.bf = new Browserforce(this.org, this.ux);
     this.ux.startSpinner('logging in');
     await this.bf.login();
     this.ux.stopSpinner();

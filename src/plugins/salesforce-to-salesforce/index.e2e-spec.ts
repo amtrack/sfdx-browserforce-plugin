@@ -1,4 +1,4 @@
-import * as assert from 'assert';
+import assert from 'assert';
 import * as child from 'child_process';
 import * as path from 'path';
 import { SalesforceToSalesforce } from '.';
@@ -13,7 +13,7 @@ describe(SalesforceToSalesforce.name, function() {
       path.resolve(path.join(__dirname, 'enable.json'))
     ]);
     assert.deepStrictEqual(enableCmd.status, 0, enableCmd.output.toString());
-    assert(
+    assert.ok(
       /to 'true'/.test(enableCmd.output.toString()),
       enableCmd.output.toString()
     );
@@ -25,11 +25,11 @@ describe(SalesforceToSalesforce.name, function() {
       path.resolve(path.join(__dirname, 'disable.json'))
     ]);
     assert.deepStrictEqual(disableCmd.status, 1, disableCmd.output.toString());
-    assert(
+    assert.ok(
       /to 'false'/.test(disableCmd.output.toString()),
       disableCmd.output.toString()
     );
-    assert(
+    assert.ok(
       /cannot be disabled/.test(disableCmd.output.toString()),
       disableCmd.output.toString()
     );

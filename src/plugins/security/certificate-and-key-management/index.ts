@@ -1,5 +1,5 @@
 import { existsSync } from 'fs';
-import { SalesforceId } from 'jsforce';
+import type { Record } from 'jsforce';
 import * as jsonMergePatch from 'json-merge-patch';
 import * as path from 'path';
 import type { ElementHandle } from 'puppeteer';
@@ -21,8 +21,7 @@ const SELECTORS = {
   SAVE_BUTTON: 'input[name="save"]'
 };
 
-interface CertificateRecord {
-  Id: SalesforceId;
+interface CertificateRecord extends Record {
   DeveloperName: string;
   MasterLabel: string;
   OptionsIsPrivateKeyExportable: boolean;

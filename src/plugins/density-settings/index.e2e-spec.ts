@@ -1,4 +1,4 @@
-import * as assert from 'assert';
+import assert from 'assert';
 import * as child from 'child_process';
 import * as path from 'path';
 import { DensitySettings } from '.';
@@ -17,7 +17,7 @@ describe(DensitySettings.name, function() {
       0,
       setCompactCommand.output.toString()
     );
-    assert(
+    assert.ok(
       /to '"Compact"'/.test(setCompactCommand.output.toString()),
       setCompactCommand.output.toString()
     );
@@ -33,7 +33,7 @@ describe(DensitySettings.name, function() {
       0,
       setCompactCommand2.output.toString()
     );
-    assert(
+    assert.ok(
       /no action necessary/.test(setCompactCommand2.output.toString()),
       setCompactCommand2.output.toString()
     );
@@ -49,7 +49,7 @@ describe(DensitySettings.name, function() {
       0,
       setComfyCommand.output.toString()
     );
-    assert(
+    assert.ok(
       /to '"Comfy"'/.test(setComfyCommand.output.toString()),
       setComfyCommand.output.toString()
     );
@@ -65,7 +65,7 @@ describe(DensitySettings.name, function() {
       0,
       setComfyCommand2.output.toString()
     );
-    assert(
+    assert.ok(
       /no action necessary/.test(setComfyCommand2.output.toString()),
       setComfyCommand2.output.toString()
     );

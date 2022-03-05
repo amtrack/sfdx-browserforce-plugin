@@ -22,7 +22,8 @@ export class FieldDependencies extends BrowserforcePlugin {
       const field = metadata.find(
         m => m.fullName === `${f.object}.${f.dependentField}`
       );
-      fieldState.controllingField = field?.['valueSet']?.controllingField;
+      // for diffing: to unset a field dependency, set it to null
+      fieldState.controllingField = field?.['valueSet']?.controllingField || null;
       return fieldState;
     });
     return state;

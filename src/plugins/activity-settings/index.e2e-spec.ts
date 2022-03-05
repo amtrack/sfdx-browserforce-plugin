@@ -1,4 +1,4 @@
-import * as assert from 'assert';
+import assert from 'assert';
 import * as child from 'child_process';
 import * as path from 'path';
 import { ActivitySettings } from '.';
@@ -17,7 +17,7 @@ describe(ActivitySettings.name, function() {
       0,
       enableManyWhoPrefCmd.output.toString()
     );
-    assert(
+    assert.ok(
       /'allowUsersToRelateMultipleContactsToTasksAndEvents' to 'true'/.test(
         enableManyWhoPrefCmd.output.toString()
       ),
@@ -35,7 +35,7 @@ describe(ActivitySettings.name, function() {
       0,
       enableManyWhoPrefCmd2.output.toString()
     );
-    assert(
+    assert.ok(
       /no action necessary/.test(enableManyWhoPrefCmd2.output.toString()),
       enableManyWhoPrefCmd2.output.toString()
     );
@@ -51,13 +51,13 @@ describe(ActivitySettings.name, function() {
       1,
       disableManyWhoPrefCmd.output.toString()
     );
-    assert(
+    assert.ok(
       /'allowUsersToRelateMultipleContactsToTasksAndEvents' to 'false'/.test(
         disableManyWhoPrefCmd.output.toString()
       ),
       disableManyWhoPrefCmd.output.toString()
     );
-    assert(
+    assert.ok(
       /can only be disabled/.test(disableManyWhoPrefCmd.output.toString()),
       disableManyWhoPrefCmd.output.toString()
     );

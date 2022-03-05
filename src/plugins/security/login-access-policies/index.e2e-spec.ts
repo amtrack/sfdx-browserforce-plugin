@@ -1,4 +1,4 @@
-import * as assert from 'assert';
+import assert from 'assert';
 import * as child from 'child_process';
 import * as path from 'path';
 import { LoginAccessPolicies } from '.';
@@ -13,7 +13,7 @@ describe(LoginAccessPolicies.name, function() {
       path.resolve(path.join(__dirname, 'enable.json'))
     ]);
     assert.deepStrictEqual(enableCmd.status, 0, enableCmd.output.toString());
-    assert(
+    assert.ok(
       /changing 'loginAccessPolicies' to '{"administratorsCanLogInAsAnyUser":true}'/.test(
         enableCmd.output.toString()
       ),
@@ -27,7 +27,7 @@ describe(LoginAccessPolicies.name, function() {
       path.resolve(path.join(__dirname, 'disable.json'))
     ]);
     assert.deepStrictEqual(disableCmd.status, 0, disableCmd.output.toString());
-    assert(
+    assert.ok(
       /changing 'loginAccessPolicies' to '{"administratorsCanLogInAsAnyUser":false}'/.test(
         disableCmd.output.toString()
       ),

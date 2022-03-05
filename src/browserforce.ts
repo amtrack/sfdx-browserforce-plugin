@@ -1,4 +1,4 @@
-import { core } from '@salesforce/command';
+import { MyDomainResolver, Org } from '@salesforce/core';
 import pRetry, { AbortError } from 'p-retry';
 import { Browser, Frame, launch, Page, WaitForOptions } from 'puppeteer';
 import * as querystring from 'querystring';
@@ -11,20 +11,17 @@ const ERROR_DIVS_SELECTOR = 'div.errorMsg';
 const VF_IFRAME_SELECTOR = 'iframe[name^=vfFrameId]';
 
 export interface Logger {
-  debug(message?: unknown, ...optionalParams: unknown[]): void;
-  error(message?: unknown, ...optionalParams: unknown[]): void;
-  info(message?: unknown, ...optionalParams: unknown[]): void;
-  trace(message?: unknown, ...optionalParams: unknown[]): void;
-  warn(message?: unknown, ...optionalParams: unknown[]): void;
-  [m: string]: unknown;
+  log(...args: string[]): unknown;
+  warn(message: string): unknown;
+  error(...args: unknown[]): unknown;
 }
 
 export class Browserforce {
-  public org: core.Org;
+  public org: Org;
   public logger: Logger;
   public browser: Browser;
   public page: Page;
-  constructor(org: core.Org, logger?: Logger) {
+  constructor(org: Org, logger?: Logger) {
     this.org = org;
     this.logger = logger;
   }
@@ -58,9 +55,9 @@ export class Browserforce {
     const salesforceUrls = [
       this.getInstanceUrl(),
       this.getLightningUrl()
-    ].filter(u => u);
+    ].filter((u) => u);
     for (const salesforceUrl of salesforceUrls) {
-      const resolver = await core.MyDomainResolver.create({
+      const resolver = await MyDomainResolver.create({
         url: new URL(salesforceUrl)
       });
       await resolver.resolve();
@@ -97,9 +94,9 @@ export class Browserforce {
             const salesforceUrls = [
               this.getInstanceUrl(),
               this.getLightningUrl()
-            ].filter(u => u);
+            ].filter((u) => u);
             if (
-              salesforceUrls.some(salesforceUrl =>
+              salesforceUrls.some((salesforceUrl) =>
                 response.url().startsWith(salesforceUrl)
               )
             ) {
@@ -138,7 +135,7 @@ export class Browserforce {
         return page;
       },
       {
-        onFailedAttempt: async error => {
+        onFailedAttempt: async (error) => {
           if (this.logger) {
             this.logger.warn(
               `retrying ${error.retriesLeft} more time(s) because of "${error}"`
@@ -249,7 +246,7 @@ export async function throwPageErrors(page: Page): Promise<void> {
       return errorDivs.map((div: HTMLDivElement) => div.innerText);
     }, ...errorElements);
     const errorMsg = errorMessages
-      .map(m => m.trim())
+      .map((m) => m.trim())
       .join(' ')
       .trim();
     if (errorMsg) {
