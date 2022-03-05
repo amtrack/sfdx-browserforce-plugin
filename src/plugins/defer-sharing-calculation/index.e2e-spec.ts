@@ -54,7 +54,7 @@ describe(DeferSharingCalculation.name, function() {
       suspendCmd.output.toString()
     );
   });
-  it('should already be suspendd', () => {
+  it('should already be suspended', () => {
     const suspendCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
