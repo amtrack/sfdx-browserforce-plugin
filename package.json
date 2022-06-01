@@ -10,7 +10,7 @@
     "@mdapi-issues/listmetadata-standardvalueset": "2.0.1",
     "@salesforce/command": "3.1.0",
     "json-merge-patch": "1.0.1",
-    "p-retry": "4.5.0",
+    "p-retry": "4.6.2",
     "puppeteer": "10.4.0",
     "tslib": "2.4.0"
   },
