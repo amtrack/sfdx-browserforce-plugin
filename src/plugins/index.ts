@@ -14,7 +14,10 @@ import { Security as security } from './security';
 
 import { RelateContactToMultipleAccounts as relateContactToMultipleAccounts } from './relate-contact-to-multiple-accounts';
 
+import { EmptyOrgRecycleBin as emptyOrgRecycleBin } from './empty-org-recycle-bin';
+
 export {
+  emptyOrgRecycleBin,
   relateContactToMultipleAccounts,
   activitySettings,
   communities,

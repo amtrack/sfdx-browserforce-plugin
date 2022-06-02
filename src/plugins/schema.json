@@ -7,6 +7,9 @@
   "properties": {
     "settings": {
       "properties": {
+        "emptyOrgRecycleBin": {
+          "$ref": "./empty-org-recycle-bin/schema.json"
+        },
         "relateContactToMultipleAccounts": {
           "$ref": "./relate-contact-to-multiple-accounts/schema.json"
         },
