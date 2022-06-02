@@ -7,7 +7,7 @@
     "sfdx-browserforce-plugin": "bin/run"
   },
   "dependencies": {
-    "@mdapi-issues/listmetadata-standardvalueset": "2.0.1",
+    "@mdapi-issues/listmetadata-standardvalueset": "2.0.2",
     "@salesforce/command": "3.1.0",
     "json-merge-patch": "1.0.1",
     "p-retry": "4.6.2",
