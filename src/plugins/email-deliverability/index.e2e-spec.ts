@@ -31,7 +31,7 @@ describe(EmailDeliverability.name, function() {
       applyNoAccessCmd.output.toString()
     );
   });
-  it('should set "syetem only"', () => {
+  it('should set "system only"', () => {
     const systemEmailCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
