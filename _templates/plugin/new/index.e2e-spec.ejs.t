@@ -4,7 +4,7 @@ to: src/plugins/<%= h.changeCase.paramCase(name) %>/index.e2e-spec.ts
 import * as assert from 'assert';
 import * as child from 'child_process';
 import * as path from 'path';
-import <%= h.changeCase.pascalCase(name) %> from '.';
+import { <%= h.changeCase.pascalCase(name) %> } from '.';
 
 describe(<%= h.changeCase.pascalCase(name) %>.name, function() {
   this.slow('30s');
