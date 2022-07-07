@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/density-settings/schema.json",
+  "title": "Email Deliverability Settings",
+  "type": "object",
+  "properties": {
+    "accessLevel": {
+      "title": "Access Level",
+      "description": "Choose the email Deliverability Access Level required",
+      "type": "string",
+      "enum": ["No access", "System email only", "All email"]
+    }
+  }
+}

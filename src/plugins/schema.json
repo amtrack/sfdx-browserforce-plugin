@@ -22,6 +22,9 @@
         "deferSharingCalculation": {
           "$ref": "./defer-sharing-calculation/schema.json"
         },
+        "emailDeliverability": {
+          "$ref": "./email-deliverability/schema.json"
+        },
         "lightningExperienceSettings": {
           "$ref": "./lightning-experience-settings/schema.json"
         },

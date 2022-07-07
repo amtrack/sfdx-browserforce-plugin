@@ -7,5 +7,6 @@
 /tmp
 node_modules
 /.sfdx
+/.sf
 
 .vscode/settings.json

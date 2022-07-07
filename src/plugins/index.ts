@@ -3,6 +3,7 @@ import { Communities as communities } from './communities';
 import { CustomerPortal as customerPortal } from './customer-portal';
 import { DeferSharingCalculation as deferSharingCalculation } from './defer-sharing-calculation';
 import { DensitySettings as densitySettings } from './density-settings';
+import { EmailDeliverability as emailDeliverability } from './email-deliverability';
 import { HighVelocitySalesSettings as highVelocitySalesSettings } from './high-velocity-sales-settings';
 import { HomePageLayouts as homePageLayouts } from './home-page-layouts';
 import { LightningExperienceSettings as lightningExperienceSettings } from './lightning-experience-settings';
@@ -21,6 +22,7 @@ export {
   customerPortal,
   deferSharingCalculation,
   densitySettings,
+  emailDeliverability,
   highVelocitySalesSettings,
   homePageLayouts,
   lightningExperienceSettings,
