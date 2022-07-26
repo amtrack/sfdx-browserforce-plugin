@@ -47,7 +47,7 @@ export class DeferSharingCalculation extends BrowserforcePlugin {
     await page.click(button);
     if (!config.suspend) {
       const refreshedPage = await this.browserforce.openPage(PATHS.BASE);
-      await page.waitForSelector(SELECTORS.RECALCULATE_BUTTON);
+      await refreshedPage.waitForSelector(SELECTORS.RECALCULATE_BUTTON);
       await refreshedPage.click(SELECTORS.RECALCULATE_BUTTON);
     }
   }
