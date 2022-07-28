@@ -20,7 +20,7 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v3
         with:
-          node-version: 14
+          node-version: 16
       - name: Install dependencies
         run: yarn
       - name: Run unit tests
