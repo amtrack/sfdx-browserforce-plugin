@@ -24,7 +24,7 @@ export class PicklistPage {
     await this.page.waitForSelector('body table input[name="new"]');
     const resolvePicklistValueNames = async xpath => {
       const fullNameHandles = await this.page.$x(xpath);
-      const innerTextJsHandles = await Promise.all<JSHandle>(
+      const innerTextJsHandles = await Promise.all<JSHandle<string>>(
         fullNameHandles.map(handle => handle.getProperty('innerText'))
       );
       const fullNames = await Promise.all<string>(

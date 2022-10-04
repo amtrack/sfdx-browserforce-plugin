@@ -3,7 +3,8 @@
   "compilerOptions": {
     "outDir": "./lib",
     "rootDir": "./src",
-    "lib": ["dom", "es2017"]
+    "lib": ["dom", "es2017"],
+    "skipLibCheck": true
   },
   "include": ["./src/**/*"],
   "exclude": ["./src/**/*.test.ts", "./src/**/*.e2e-spec.ts"]

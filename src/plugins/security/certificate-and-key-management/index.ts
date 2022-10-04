@@ -2,6 +2,7 @@ import { existsSync } from 'fs';
 import { SalesforceId } from 'jsforce';
 import * as jsonMergePatch from 'json-merge-patch';
 import * as path from 'path';
+import type { ElementHandle } from 'puppeteer';
 import * as queryString from 'querystring';
 import { BrowserforcePlugin } from '../../../plugin';
 import {
@@ -164,7 +165,7 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
           `${PATHS.KEYSTORE_IMPORT}`
         );
         await page.waitForSelector(SELECTORS.FILE_UPLOAD);
-        const elementHandle = await page.$(SELECTORS.FILE_UPLOAD);
+        const elementHandle = await page.$(SELECTORS.FILE_UPLOAD) as ElementHandle<HTMLInputElement>;
         // TODO: make relative to this.command.flags.definitionfile
         const filePath = path.resolve(certificate.filePath);
         if (!existsSync(filePath)) {
