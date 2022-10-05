@@ -39,8 +39,7 @@ export class Browserforce {
     await this.openPage(
       `secur/frontdoor.jsp?sid=${
         this.org.getConnection().accessToken
-      }&retURL=${encodeURIComponent(POST_LOGIN_PATH)}`,
-      { waitUntil: ['load', 'domcontentloaded', 'networkidle0'] }
+      }&retURL=${encodeURIComponent(POST_LOGIN_PATH)}`
     );
     return this;
   }

@@ -24,9 +24,7 @@ type Theme = {
 
 export class LightningExperienceSettings extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
-    const page = await this.browserforce.openPage(PATHS.BASE, {
-      waitUntil: ['load', 'domcontentloaded', 'networkidle0']
-    });
+    const page = await this.browserforce.openPage(PATHS.BASE);
     const themes = await this.getThemeData(page);
     const activeTheme = themes.find(theme => theme.isActive);
     const response = {
@@ -36,9 +34,7 @@ export class LightningExperienceSettings extends BrowserforcePlugin {
   }
 
   public async apply(config: Config): Promise<void> {
-    const page = await this.browserforce.openPage(PATHS.BASE, {
-      waitUntil: ['load', 'domcontentloaded', 'networkidle0']
-    });
+    const page = await this.browserforce.openPage(PATHS.BASE);
 
     await this.setActiveTheme(page, config.activeThemeName);
   }
@@ -86,9 +82,7 @@ export class LightningExperienceSettings extends BrowserforcePlugin {
     // second last item: [show, activate, preview]
     const activateMenuItem = menuItems[menuItems.length - 2];
     await Promise.all([
-      page.waitForNavigation({
-        waitUntil: ['load', 'domcontentloaded', 'networkidle0']
-      }),
+      page.waitForNavigation(),
       activateMenuItem.click()
     ]);
   }
