@@ -13,13 +13,9 @@ export type Config = boolean;
 export class CustomerPortalEnable extends BrowserforcePlugin {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async retrieve(definition?: Config): Promise<Config> {
-    const page = await this.browserforce.openPage(PATHS.EDIT_VIEW);
-    await page.waitForSelector(SELECTORS.ENABLED);
-    const response = await page.$eval(
-      SELECTORS.ENABLED,
-      (el: HTMLInputElement) => el.checked
-    );
-    return response;
+    const conn = await this.browserforce.org.getConnection();
+    const orgSettings = await conn.metadata.read('OrgSettings', 'Org');
+    return orgSettings.enableCustomerSuccessPortal;
   }
 
   public diff(state: Config, definition: Config): Config {
