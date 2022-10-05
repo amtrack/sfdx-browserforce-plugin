@@ -1,12 +1,12 @@
-import { core } from '@salesforce/command';
+import { Org } from '@salesforce/core';
 import * as jsonMergePatch from 'json-merge-patch';
 import { Browserforce } from './browserforce';
 
 export abstract class BrowserforcePlugin {
-  protected org: core.Org;
+  protected org: Org;
   protected browserforce: Browserforce;
 
-  public constructor(browserforce: Browserforce, org: core.Org) {
+  public constructor(browserforce: Browserforce, org: Org) {
     this.browserforce = browserforce;
     this.org = org;
   }

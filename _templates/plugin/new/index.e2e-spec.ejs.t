@@ -1,7 +1,7 @@
 ---
 to: src/plugins/<%= h.changeCase.paramCase(name) %>/index.e2e-spec.ts
 ---
-import * as assert from 'assert';
+import assert from 'assert';
 import * as child from 'child_process';
 import * as path from 'path';
 import { <%= h.changeCase.pascalCase(name) %> } from '.';
@@ -16,7 +16,7 @@ describe(<%= h.changeCase.pascalCase(name) %>.name, function() {
       path.resolve(path.join(__dirname, 'enable.json'))
     ]);
     assert.deepStrictEqual(enableCmd.status, 0, enableCmd.output.toString());
-    assert(
+    assert.ok(
       /to 'true'/.test(enableCmd.output.toString()),
       enableCmd.output.toString()
     );
@@ -28,7 +28,7 @@ describe(<%= h.changeCase.pascalCase(name) %>.name, function() {
       path.join(__dirname, 'enable.json')
     ]);
     assert.deepStrictEqual(enableCmd.status, 0, enableCmd.output.toString());
-    assert(
+    assert.ok(
       /no action necessary/.test(enableCmd.output.toString()),
       enableCmd.output.toString()
     );
@@ -40,7 +40,7 @@ describe(<%= h.changeCase.pascalCase(name) %>.name, function() {
       path.resolve(path.join(__dirname, 'disable.json'))
     ]);
     assert.deepStrictEqual(disableCmd.status, 0, disableCmd.output.toString());
-    assert(
+    assert.ok(
       /to 'false'/.test(disableCmd.output.toString()),
       disableCmd.output.toString()
     );
@@ -52,7 +52,7 @@ describe(<%= h.changeCase.pascalCase(name) %>.name, function() {
       path.join(__dirname, 'disable.json')
     ]);
     assert.deepStrictEqual(disableCmd.status, 0, disableCmd.output.toString());
-    assert(
+    assert.ok(
       /no action necessary/.test(disableCmd.output.toString()),
       disableCmd.output.toString()
     );

@@ -1,4 +1,4 @@
-import * as assert from 'assert';
+import assert from 'assert';
 import * as child from 'child_process';
 import * as path from 'path';
 import { DeferSharingCalculation } from '.';
@@ -19,7 +19,7 @@ describe(DeferSharingCalculation.name, function() {
       sourceDeployCmd.output.toString()
     );
     const stdout = JSON.parse(sourceDeployCmd.stdout.toString());
-    assert(
+    assert.ok(
       stdout.result &&
         stdout.result.deployedSource &&
         stdout.result.deployedSource.find(
@@ -37,7 +37,7 @@ describe(DeferSharingCalculation.name, function() {
       0,
       permSetAssignCmd.output.toString()
     );
-    assert(
+    assert.ok(
       /Defer_Sharing/.test(permSetAssignCmd.output.toString()),
       permSetAssignCmd.output.toString()
     );
@@ -49,19 +49,19 @@ describe(DeferSharingCalculation.name, function() {
       path.resolve(path.join(__dirname, 'suspend.json'))
     ]);
     assert.deepStrictEqual(suspendCmd.status, 0, suspendCmd.output.toString());
-    assert(
+    assert.ok(
       /to 'true'/.test(suspendCmd.output.toString()),
       suspendCmd.output.toString()
     );
   });
-  it('should already be suspendd', () => {
+  it('should already be suspended', () => {
     const suspendCmd = child.spawnSync(path.resolve('bin', 'run'), [
       'browserforce:apply',
       '-f',
       path.join(__dirname, 'suspend.json')
     ]);
     assert.deepStrictEqual(suspendCmd.status, 0, suspendCmd.output.toString());
-    assert(
+    assert.ok(
       /no action necessary/.test(suspendCmd.output.toString()),
       suspendCmd.output.toString()
     );
@@ -73,7 +73,7 @@ describe(DeferSharingCalculation.name, function() {
       path.resolve(path.join(__dirname, 'resume.json'))
     ]);
     assert.deepStrictEqual(resumeCmd.status, 0, resumeCmd.output.toString());
-    assert(
+    assert.ok(
       /to 'false'/.test(resumeCmd.output.toString()),
       resumeCmd.output.toString()
     );
@@ -84,7 +84,7 @@ describe(DeferSharingCalculation.name, function() {
       '-f',
       path.join(__dirname, 'resume.json')
     ]);
-    assert(
+    assert.ok(
       /no action necessary/.test(resumeCmd.output.toString()) ||
         /Sharing recalculation is currently in progress, please wait until this has completed to plan/.test(
           resumeCmd.output.toString()

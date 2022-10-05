@@ -1,4 +1,4 @@
-import * as assert from 'assert';
+import assert from 'assert';
 import * as child from 'child_process';
 import * as path from 'path';
 import { CustomerPortalAvailableCustomObjects } from './available-custom-objects';
@@ -16,7 +16,7 @@ describe(CustomerPortalEnable.name, function() {
       path.join(dir, 'enable.json')
     ]);
     assert.deepStrictEqual(enableCmd.status, 0, enableCmd.output.toString());
-    assert(
+    assert.ok(
       /to 'true'/.test(enableCmd.output.toString()),
       enableCmd.output.toString()
     );
@@ -28,7 +28,7 @@ describe(CustomerPortalEnable.name, function() {
       path.join(dir, 'enable.json')
     ]);
     assert.deepStrictEqual(enableCmd.status, 0, enableCmd.output.toString());
-    assert(
+    assert.ok(
       /no action necessary/.test(enableCmd.output.toString()),
       enableCmd.output.toString()
     );
@@ -40,11 +40,11 @@ describe(CustomerPortalEnable.name, function() {
       path.join(dir, 'disable.json')
     ]);
     assert.deepStrictEqual(disableCmd.status, 1, disableCmd.output.toString());
-    assert(
+    assert.ok(
       /to 'false'/.test(disableCmd.output.toString()),
       disableCmd.output.toString()
     );
-    assert(
+    assert.ok(
       /cannot be disabled/.test(disableCmd.output.toString()),
       disableCmd.output.toString()
     );
@@ -67,13 +67,13 @@ describe(CustomerPortalSetup.name, function() {
         1,
         setupPortalCmd.output.toString()
       );
-      assert(
+      assert.ok(
         /changing 'portals' to .*"User User"/.test(
           setupPortalCmd.output.toString()
         ),
         setupPortalCmd.output.toString()
       );
-      assert(
+      assert.ok(
         /This user has insufficient permissions to be a portal administrator/.test(
           setupPortalCmd.output.toString()
         ),
@@ -93,7 +93,7 @@ describe(CustomerPortalSetup.name, function() {
         sourceDeployCmd.output.toString()
       );
       const stdout = JSON.parse(sourceDeployCmd.stdout.toString());
-      assert(
+      assert.ok(
         stdout.result &&
           stdout.result.deployedSource &&
           stdout.result.deployedSource.find(
@@ -111,7 +111,7 @@ describe(CustomerPortalSetup.name, function() {
         0,
         permSetAssignCmd.output.toString()
       );
-      assert(
+      assert.ok(
         /Customer_Portal_Admin/.test(permSetAssignCmd.output.toString()),
         permSetAssignCmd.output.toString()
       );
@@ -127,19 +127,19 @@ describe(CustomerPortalSetup.name, function() {
         0,
         setupPortalCmd.output.toString()
       );
-      assert(
+      assert.ok(
         /changing 'portals' to .*"name":"Foo Portal"/.test(
           setupPortalCmd.output.toString()
         ),
         setupPortalCmd.output.toString()
       );
-      assert(
+      assert.ok(
         /changing 'portals' to .*isSelfRegistrationActivated/.test(
           setupPortalCmd.output.toString()
         ),
         setupPortalCmd.output.toString()
       );
-      assert(
+      assert.ok(
         /changing 'portals' to .*portalProfileMemberships/.test(
           setupPortalCmd.output.toString()
         ),
@@ -157,7 +157,7 @@ describe(CustomerPortalSetup.name, function() {
         0,
         setupPortalCmd.output.toString()
       );
-      assert(
+      assert.ok(
         /no action necessary/.test(setupPortalCmd.output.toString()),
         setupPortalCmd.output.toString()
       );
@@ -180,7 +180,7 @@ describe(CustomerPortalAvailableCustomObjects.name, function() {
       1,
       setupPortalCmd.output.toString()
     );
-    assert(
+    assert.ok(
       /Could not find CustomObject/.test(setupPortalCmd.output.toString()),
       setupPortalCmd.output.toString()
     );
@@ -198,7 +198,7 @@ describe(CustomerPortalAvailableCustomObjects.name, function() {
       sourceDeployCmd.output.toString()
     );
     const stdout = JSON.parse(sourceDeployCmd.stdout.toString());
-    assert(
+    assert.ok(
       stdout.result &&
         stdout.result.deployedSource &&
         stdout.result.deployedSource.find(
@@ -218,7 +218,7 @@ describe(CustomerPortalAvailableCustomObjects.name, function() {
       0,
       setupCustomObjectsCmd.output.toString()
     );
-    assert(
+    assert.ok(
       /changing 'availableCustomObjects' to .*"available":true/.test(
         setupCustomObjectsCmd.output.toString()
       ),
@@ -236,7 +236,7 @@ describe(CustomerPortalAvailableCustomObjects.name, function() {
       0,
       setupCustomObjectsCmd.output.toString()
     );
-    assert(
+    assert.ok(
       /no action necessary/.test(setupCustomObjectsCmd.output.toString()),
       setupCustomObjectsCmd.output.toString()
     );
@@ -252,7 +252,7 @@ describe(CustomerPortalAvailableCustomObjects.name, function() {
       0,
       setupCustomObjectsCmd.output.toString()
     );
-    assert(
+    assert.ok(
       /changing 'availableCustomObjects' to .*"available":false/.test(
         setupCustomObjectsCmd.output.toString()
       ),

@@ -1,4 +1,4 @@
-import { FileProperties } from 'jsforce';
+import type { FileProperties } from 'jsforce/api/metadata';
 import { ensureArray } from '../../jsforce-utils';
 import { BrowserforcePlugin } from '../../plugin';
 import { removeEmptyValues } from '../utils';

@@ -1,9 +1,10 @@
-import { core } from '@salesforce/command';
+import { writeFile } from 'fs/promises';
+import { Messages } from '@salesforce/core';
 import * as path from 'path';
 import { BrowserforceCommand } from '../../browserforce-command';
 
-core.Messages.importMessagesDirectory(__dirname);
-const messages = core.Messages.loadMessages(
+Messages.importMessagesDirectory(__dirname);
+const messages = Messages.loadMessages(
   'sfdx-browserforce-plugin',
   'browserforce'
 );
@@ -53,12 +54,18 @@ export default class BrowserforcePlanCommand extends BrowserforceCommand {
     }
     if (this.flags.statefile) {
       this.ux.startSpinner('writing state file');
-      await core.fs.writeJson(path.resolve(this.flags.statefile), state);
+      await writeFile(
+        path.resolve(this.flags.statefile),
+        JSON.stringify(state, null, 2)
+      );
       this.ux.stopSpinner();
     }
     if (this.flags.planfile) {
       this.ux.startSpinner('writing plan file');
-      await core.fs.writeJson(path.resolve(this.flags.planfile), plan);
+      await writeFile(
+        path.resolve(this.flags.planfile),
+        JSON.stringify(plan, null, 2)
+      );
       this.ux.stopSpinner();
     }
     return { success: true, plan };

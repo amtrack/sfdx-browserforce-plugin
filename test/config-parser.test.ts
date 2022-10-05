@@ -1,4 +1,4 @@
-import * as assert from 'assert';
+import assert from 'assert';
 import { ConfigParser } from '../src/config-parser';
 import * as DRIVERS from '../src/plugins';
 

@@ -1,4 +1,4 @@
-import { Connection } from 'jsforce';
+import { Connection } from '@salesforce/core';
 import { BrowserforcePlugin } from '../../plugin';
 import { HighVelocitySalesSetupPage } from './page';
 
@@ -20,7 +20,7 @@ export class HighVelocitySalesSettings extends BrowserforcePlugin {
         'HighVelocitySales'
       );
       result.setUpAndEnable =
-        settings['enableHighVelocitySalesSetup'] === 'true';
+        settings['enableHighVelocitySalesSetup'] === true;
     } catch (e) {
       if (
         /INVALID_TYPE: This type of metadata is not available for this organization/.test(
@@ -53,8 +53,8 @@ export async function disableHighVelocitySalesUsingMetadata(
 ): Promise<void> {
   const settings = {
     fullName: 'HighVelocitySales',
-    enableHighVelocitySalesSetup: 'false',
-    enableHighVelocitySales: 'false'
+    enableHighVelocitySalesSetup: false,
+    enableHighVelocitySales: false
   };
   await conn.metadata.update('HighVelocitySalesSettings', settings);
 }

@@ -1,4 +1,4 @@
-import * as assert from 'assert';
+import assert from 'assert';
 import * as child from 'child_process';
 import * as path from 'path';
 import { RecordTypes } from '.';
@@ -28,7 +28,7 @@ describe(RecordTypes.name, function() {
       path.resolve(path.join(__dirname, 'delete.json'))
     ]);
     assert.deepStrictEqual(replaceCmd.status, 0, replaceCmd.output.toString());
-    assert(
+    assert.ok(
       /changing 'deletions' to.*/.test(replaceCmd.output.toString()),
       replaceCmd.output.toString()
     );
@@ -40,7 +40,7 @@ describe(RecordTypes.name, function() {
       path.resolve(path.join(__dirname, 'delete.json'))
     ]);
     assert.deepStrictEqual(replaceCmd.status, 0, replaceCmd.output.toString());
-    assert(
+    assert.ok(
       /no action necessary/.test(replaceCmd.output.toString()),
       replaceCmd.output.toString()
     );
@@ -52,7 +52,7 @@ describe(RecordTypes.name, function() {
       path.resolve(path.join(__dirname, 'delete-active.json'))
     ]);
     assert.deepStrictEqual(replaceCmd.status, 1, replaceCmd.output.toString());
-    assert(
+    assert.ok(
       /Cannot delete active RecordType/.test(replaceCmd.output.toString()),
       replaceCmd.output.toString()
     );
@@ -64,7 +64,7 @@ describe(RecordTypes.name, function() {
       path.resolve(path.join(__dirname, 'delete-and-replace.json'))
     ]);
     assert.deepStrictEqual(replaceCmd.status, 0, replaceCmd.output.toString());
-    assert(
+    assert.ok(
       /changing 'deletions' to.*/.test(replaceCmd.output.toString()),
       replaceCmd.output.toString()
     );
