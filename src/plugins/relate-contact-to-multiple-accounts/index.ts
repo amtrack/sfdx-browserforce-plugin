@@ -29,9 +29,11 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
   public async apply(config: Config): Promise<void> {
     const page = await this.browserforce.openPage(PATHS.BASE);
     // First we have to click the 'Edit' button, to make the checkbox editable
-    await page.waitForSelector(SELECTORS.ENABLED);
-    await page.click(SELECTORS.EDIT_BUTTON);
-    await page.waitForNavigation();
+    await page.waitForSelector(SELECTORS.EDIT_BUTTON);
+    await Promise.all([
+      page.waitForNavigation(),
+      page.click(SELECTORS.EDIT_BUTTON)
+    ])
     // Change the value of the checkbox
     await page.waitForSelector(SELECTORS.ENABLED);
     await page.$eval(
@@ -42,7 +44,9 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
       config.enabled
     );
     // Save
+    await page.waitForSelector(SELECTORS.SAVE_BUTTON);
     await Promise.all([
+      page.waitForNavigation(),
       page.click(SELECTORS.SAVE_BUTTON)
     ]);
   }
