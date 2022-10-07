@@ -36,8 +36,7 @@
     "/bin",
     "/lib",
     "/messages",
-    "/oclif.manifest.json",
-    "/yarn.lock"
+    "/oclif.manifest.json"
   ],
   "keywords": [
     "salesforce",
