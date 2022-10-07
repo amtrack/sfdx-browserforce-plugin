@@ -11,7 +11,7 @@
     "@salesforce/command": "5.2.11",
     "json-merge-patch": "1.0.2",
     "p-retry": "4.6.2",
-    "puppeteer": "18.1.0",
+    "puppeteer": "18.2.1",
     "tslib": "2.4.0"
   },
   "devDependencies": {
