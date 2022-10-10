@@ -34,9 +34,18 @@ yarn run generate:plugin --name AdminsCanLogInAsAnyUser
 
 Run `git status` afterwards to see what files have been generated.
 
-Bravo 👏, you have just generated a working browserforce plugin!
-
 Want to see it in action?
+
+## Building
+
+TypeScript code needs to be transpiled to JavaScript.
+To do this, run the following command:
+
+```console
+yarn run build
+```
+
+Bravo 👏, you have just generated a working browserforce plugin!
 
 Create a scratch org and try it yourself:
 

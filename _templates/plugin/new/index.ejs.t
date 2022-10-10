@@ -13,6 +13,10 @@ const SELECTORS = {
   SAVE_BUTTON: 'input[id$=":save"]'
 };
 
+type Config = {
+  enabled: boolean;
+};
+
 export class <%= h.changeCase.pascalCase(name) %> extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {
     const page = await this.browserforce.openPage(PATHS.BASE);
