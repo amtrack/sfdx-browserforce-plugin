@@ -37,6 +37,7 @@ _main() {
     -a "$alias" \
     -s \
     description="${alias}" ${POSITIONAL_ARGS[@]}
+  sfdx force:org:display -u "$alias"
   sfdx force:source:push -u "$alias"
 }
 
