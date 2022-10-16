@@ -504,7 +504,7 @@
     supports-color "^8.1.1"
     tslib "^2"
 
-"@oclif/core@^1.14.1", "@oclif/core@^1.16.4", "@oclif/core@^1.16.5", "@oclif/core@^1.18.0":
+"@oclif/core@^1.14.1", "@oclif/core@^1.16.5", "@oclif/core@^1.18.0":
   version "1.18.0"
   resolved "https://registry.yarnpkg.com/@oclif/core/-/core-1.18.0.tgz#93c790c663c6b24a609d1ea44362f5438cb19d73"
   integrity sha512-12SWbbDbMrhBmEuN9cOQkbN+sFUKlSTw+NlCPVVIg3uEhnmkXgx2wZJtCN4c+IBMJjC27L9lDneeoe70yQuiVg==
@@ -543,14 +543,14 @@
   resolved "https://registry.yarnpkg.com/@oclif/linewrap/-/linewrap-1.0.0.tgz#aedcb64b479d4db7be24196384897b5000901d91"
   integrity sha512-Ups2dShK52xXa8w6iBWLgcjPJWjais6KPJQq3gQ/88AY6BXoTX+MIGFPrWQO1KLMiQfoTpcLnUwloN4brrVUHw==
 
-"@oclif/plugin-help@^5.1.11", "@oclif/plugin-help@^5.1.14":
+"@oclif/plugin-help@^5.1.11", "@oclif/plugin-help@^5.1.15":
   version "5.1.15"
   resolved "https://registry.yarnpkg.com/@oclif/plugin-help/-/plugin-help-5.1.15.tgz#c9466d3efc694cfd0e83eaca565b8799b477549c"
   integrity sha512-RfLo7vOTga/02w7jTAHFOi3m4X34Xbfyl20spg4Jq7NM6WduDaIj2auXrHW3w8OkEi4Zl/g0AvB4PIyLr+NYYw==
   dependencies:
     "@oclif/core" "^1.16.5"
 
-"@oclif/plugin-not-found@^2.3.4":
+"@oclif/plugin-not-found@^2.3.5":
   version "2.3.5"
   resolved "https://registry.yarnpkg.com/@oclif/plugin-not-found/-/plugin-not-found-2.3.5.tgz#76d939d57f207039061a14727ee263de14e1a739"
   integrity sha512-8c1hf6+JnWmtGQS5gBSGlbMOYLbssz0mpGytlzevHZzPes2k8EGuNQBOP2nEeyObM9HhbNjzBRjwJcjDB6zoQQ==
@@ -4363,14 +4363,14 @@ object.assign@^4.1.4:
     has-symbols "^1.0.3"
     object-keys "^1.1.1"
 
-oclif@3.2.16:
-  version "3.2.16"
-  resolved "https://registry.yarnpkg.com/oclif/-/oclif-3.2.16.tgz#46a7cea544b3c4037f6c2a2c5a5fd76d347121dc"
-  integrity sha512-4BsGj9mxEz56vCKzvjdijnqa4p2f0uWDjtPwGlUYZe+MtRVo+lNLzCxLM/w8WcLpOSxB3SGXdQIw4W5koVmwUg==
+oclif@3.2.19:
+  version "3.2.19"
+  resolved "https://registry.yarnpkg.com/oclif/-/oclif-3.2.19.tgz#a2d2c412e21f627172b84e789b8587d416b86329"
+  integrity sha512-LnJpX+YmUdFIAr86oT/++LTh9DhzAu40BhAR+dQ4H4wbOJtDylRgMnH8pAnr+Nw7DZuWe5tKTua9u1H63gEGtg==
   dependencies:
-    "@oclif/core" "^1.16.4"
-    "@oclif/plugin-help" "^5.1.14"
-    "@oclif/plugin-not-found" "^2.3.4"
+    "@oclif/core" "^1.18.0"
+    "@oclif/plugin-help" "^5.1.15"
+    "@oclif/plugin-not-found" "^2.3.5"
     "@oclif/plugin-warn-if-update-available" "^2.0.6"
     aws-sdk "^2.1231.0"
     concurrently "^7.4.0"
