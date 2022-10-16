@@ -699,20 +699,20 @@
     mv "~2"
     safe-json-stringify "~1"
 
-"@salesforce/command@5.2.11":
-  version "5.2.11"
-  resolved "https://registry.yarnpkg.com/@salesforce/command/-/command-5.2.11.tgz#43fdb687c8cd6a5f76dafd548ea176663c8a6620"
-  integrity sha512-6KhXbxlV+noVFL8FNhVBPDiD5Z4fEcezh1rClcjdturt2Zg/cp9KPIFqZoFn34zt30u+DlhhU3GDlfE18IoNHw==
+"@salesforce/command@5.2.12":
+  version "5.2.12"
+  resolved "https://registry.yarnpkg.com/@salesforce/command/-/command-5.2.12.tgz#89e29e267366ef4840c8633d5c8be2bc22506ded"
+  integrity sha512-BPYbj9rxySO1egpmtOsEzaic6kWRG8PRL2v732KXrC5lrplvkZAovbOd84bz1HVWO4Knbj28N+iV4qXXfrhPAA==
   dependencies:
     "@oclif/core" "^1.14.1"
     "@oclif/plugin-help" "^5.1.11"
     "@oclif/test" "^2.1.0"
-    "@salesforce/core" "^3.30.9"
+    "@salesforce/core" "^3.31.9"
     "@salesforce/kit" "^1.6.1"
     "@salesforce/ts-types" "^1.5.21"
     chalk "^2.4.2"
 
-"@salesforce/core@^3.30.9":
+"@salesforce/core@^3.31.9":
   version "3.31.10"
   resolved "https://registry.yarnpkg.com/@salesforce/core/-/core-3.31.10.tgz#8ad004c0e3559a50d5dee3aa71e03bb57686c190"
   integrity sha512-ie05IaLVcM8jhRjCh3sVUBcEtTb2dC0FWUTIXaGKHRSqdJPRuTKE+Uwbp7RYb4Wywjiunf8+721msYOwAO4QbA==
