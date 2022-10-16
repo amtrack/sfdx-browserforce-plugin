@@ -75,7 +75,8 @@ export class Browserforce {
     let page;
     const result = await pRetry(
       async () => {
-        await this.resolveDomains();
+        // there seems to be an issue with Enhanced Domains
+        // await this.resolveDomains();
         page = await this.browser.newPage();
         page.setDefaultNavigationTimeout(
           parseInt(process.env.BROWSERFORCE_NAVIGATION_TIMEOUT_MS, 10) || 90000
