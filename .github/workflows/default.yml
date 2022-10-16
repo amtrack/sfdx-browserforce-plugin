@@ -22,21 +22,23 @@ jobs:
         with:
           node-version: 16
       - name: Install dependencies
-        run: yarn
+        run: |
+          yarn install
+          yarn global add sfdx-cli@7.172.0
       - name: Run unit tests
         run: yarn test
       - name: Authenticate DevHub and create scratch org
         env:
           SFDX_AUTH_URL_DEVHUB: ${{ secrets.SFDX_AUTH_URL_DEVHUB }}
         run: |
-          npx sfdx auth:sfdxurl:store -d -a devhub -f /dev/stdin <<< "${SFDX_AUTH_URL_DEVHUB}"
+          sfdx auth:sfdxurl:store -d -a devhub -f /dev/stdin <<< "${SFDX_AUTH_URL_DEVHUB}"
           yarn develop
       - name: Run end-to-end tests
         run: yarn test:e2e
       - name: Delete scratch org
         if: always()
         run: |
-          npx sfdx force:org:delete -p
+          sfdx force:org:delete -p
       - name: Release package
         run: npx semantic-release
         env:
