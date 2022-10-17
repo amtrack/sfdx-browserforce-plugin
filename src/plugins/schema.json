@@ -7,6 +7,9 @@
   "properties": {
     "settings": {
       "properties": {
+        "opportunitySplits": {
+          "$ref": "./opportunity-splits/schema.json"
+        },
         "relateContactToMultipleAccounts": {
           "$ref": "./relate-contact-to-multiple-accounts/schema.json"
         },
