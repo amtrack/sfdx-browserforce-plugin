@@ -319,12 +319,12 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@mdapi-issues/listmetadata-standardvalueset@2.0.2":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@mdapi-issues/listmetadata-standardvalueset/-/listmetadata-standardvalueset-2.0.2.tgz#529420a96636a944c70fa20312f972885f8d7ccb"
-  integrity sha512-VWS6pDujw82RgYyc4PnhhdyVag/4yaPuF5lGUjwOzqeZo0lppiHbPKQSCzD/wr+mT+u+9YSYHwmPpalHgQONRg==
+"@mdapi-issues/listmetadata-standardvalueset@2.0.3":
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/@mdapi-issues/listmetadata-standardvalueset/-/listmetadata-standardvalueset-2.0.3.tgz#3c6c3b0f00b2d6ce0897078eb626bde4e059b0ff"
+  integrity sha512-XI7YRBYAlwJU1HyS25otJX+l3YWrXmcCuMILibJVO1a9L9op/5p+4zLg9O1CcCe1k4FB/JKfFfY8DqXzNFWuiw==
   dependencies:
-    tslib "2.3.1"
+    tslib "2.4.0"
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -5721,11 +5721,6 @@ ts-retry-promise@^0.7.0:
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/ts-retry-promise/-/ts-retry-promise-0.7.0.tgz#08f2dcbbf5d2981495841cb63389a268324e8147"
   integrity sha512-x6yWZXC4BfXy4UyMweOFvbS1yJ/Y5biSz/mEPiILtJZLrqD3ZxIpzVOGGgifHHdaSe3WxzFRtsRbychI6zofOg==
-
-tslib@2.3.1:
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.3.1.tgz#e8a335add5ceae51aa261d32a490158ef042ef01"
-  integrity sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==
 
 tslib@2.4.0, tslib@^2, tslib@^2.0.3, tslib@^2.1.0, tslib@^2.2.0, tslib@^2.3.1:
   version "2.4.0"
