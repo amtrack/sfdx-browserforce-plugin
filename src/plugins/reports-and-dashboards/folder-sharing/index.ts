@@ -14,7 +14,6 @@ export type Config = {
 };
 
 export class FolderSharing extends BrowserforcePlugin {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async retrieve(definition?: Config): Promise<Config> {
     const response = {
       enableEnhancedFolderSharing: true

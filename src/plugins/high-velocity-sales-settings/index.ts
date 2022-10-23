@@ -10,7 +10,6 @@ type Config = {
 };
 
 export class HighVelocitySalesSettings extends BrowserforcePlugin {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async retrieve(definition?: Config): Promise<Config> {
     const conn = this.org.getConnection();
     const result = { setUpAndEnable: false };

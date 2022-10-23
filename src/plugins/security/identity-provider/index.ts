@@ -26,7 +26,6 @@ export type Config = {
 };
 
 export class IdentityProvider extends BrowserforcePlugin {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async retrieve(definition?: Config): Promise<Config> {
     const page = await this.browserforce.openPage(PATHS.EDIT_VIEW);
     await page.waitForSelector(SELECTORS.EDIT_BUTTON);

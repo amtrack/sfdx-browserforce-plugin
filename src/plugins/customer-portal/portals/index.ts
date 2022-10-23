@@ -44,7 +44,6 @@ type PortalProfileMembership = {
 };
 
 export class CustomerPortalSetup extends BrowserforcePlugin {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async retrieve(definition?: Config): Promise<Config> {
     const page = await this.browserforce.openPage(PATHS.LIST_VIEW);
     await page.waitForXPath(SELECTORS.LIST_VIEW_PORTAL_LINKS_XPATH);
