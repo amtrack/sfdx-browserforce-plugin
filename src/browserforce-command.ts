@@ -33,7 +33,6 @@ export class BrowserforceCommand extends SfdxCommand {
   };
 
   protected bf: Browserforce;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   protected settings: any[];
 
   public async init(): Promise<void> {
@@ -60,7 +59,6 @@ export class BrowserforceCommand extends SfdxCommand {
     throw new Error('BrowserforceCommand should not be run directly');
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async finally(err: Error): Promise<void> {
     this.ux.stopSpinner();
     if (this.bf) {

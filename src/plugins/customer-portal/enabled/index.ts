@@ -11,7 +11,6 @@ const SELECTORS = {
 export type Config = boolean;
 
 export class CustomerPortalEnable extends BrowserforcePlugin {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async retrieve(definition?: Config): Promise<Config> {
     const conn = await this.browserforce.org.getConnection();
     const orgSettings = await conn.metadata.read('OrgSettings', 'Org');

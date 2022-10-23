@@ -14,7 +14,6 @@ export type Config = {
 };
 
 export class LoginAccessPolicies extends BrowserforcePlugin {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async retrieve(definition?: Config): Promise<Config> {
     const page = await this.browserforce.openPage(PATHS.BASE);
     await page.waitForSelector(SELECTORS.ENABLED);

@@ -28,7 +28,6 @@ type HomePageLayoutAssignment = {
 };
 
 export class HomePageLayouts extends BrowserforcePlugin {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async retrieve(definition?: Config): Promise<Config> {
     const page = await this.browserforce.openPage(PATHS.BASE);
     await page.waitForSelector(SELECTORS.BASE);

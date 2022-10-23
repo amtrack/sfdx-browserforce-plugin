@@ -3,7 +3,6 @@
  * @param prop result of a Metadata API call (array or object)
  */
 export function ensureArray<T>(
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   prop: T
 ): Array<T> {
   if (Array.isArray(prop)) {

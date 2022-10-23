@@ -1,6 +1,6 @@
 ---
 to: src/plugins/<%= h.changeCase.paramCase(name) %>/index.ts
-sh: "npx eslint --fix 'src/plugins/<%= h.changeCase.paramCase(name) %>/*' 'src/plugins/index.ts' && npx prettier --write 'src/plugins/<%= h.changeCase.paramCase(name) %>/*' 'src/plugins/index.ts'"
+sh: "npx prettier --write 'src/plugins/<%= h.changeCase.paramCase(name) %>/*' 'src/plugins/index.ts'"
 ---
 import { BrowserforcePlugin } from '../../plugin';
 
