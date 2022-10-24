@@ -550,13 +550,13 @@
   dependencies:
     "@oclif/core" "^1.19.1"
 
-"@oclif/plugin-not-found@^2.3.5":
-  version "2.3.5"
-  resolved "https://registry.yarnpkg.com/@oclif/plugin-not-found/-/plugin-not-found-2.3.5.tgz#76d939d57f207039061a14727ee263de14e1a739"
-  integrity sha512-8c1hf6+JnWmtGQS5gBSGlbMOYLbssz0mpGytlzevHZzPes2k8EGuNQBOP2nEeyObM9HhbNjzBRjwJcjDB6zoQQ==
+"@oclif/plugin-not-found@^2.3.6":
+  version "2.3.6"
+  resolved "https://registry.yarnpkg.com/@oclif/plugin-not-found/-/plugin-not-found-2.3.6.tgz#279dec98219512f7d2d667dd3a4b55abe6a1f9a8"
+  integrity sha512-VcO8VwHalrALUV+vZO1mEAjt1r4JM//rmW8Rw9Ca1/aITnOC58Saf8v2MpZABuu7QeJ/LbwQsZglR0MNDAbYnw==
   dependencies:
     "@oclif/color" "^1.0.1"
-    "@oclif/core" "^1.18.0"
+    "@oclif/core" "^1.19.1"
     fast-levenshtein "^3.0.0"
     lodash "^4.17.21"
 
@@ -4058,14 +4058,14 @@ object.assign@^4.1.4:
     has-symbols "^1.0.3"
     object-keys "^1.1.1"
 
-oclif@3.2.21:
-  version "3.2.21"
-  resolved "https://registry.yarnpkg.com/oclif/-/oclif-3.2.21.tgz#6f039d701c4ceb6241d818a836686d52d38cf3a0"
-  integrity sha512-7U39WYAoHBuciUT3cSncRgGKfunyFJWrkoOfyv5OurlJ4JLleFrwDngZQ1nMrISWlRvwo/ayGqMbkjHipdxVNw==
+oclif@3.2.22:
+  version "3.2.22"
+  resolved "https://registry.yarnpkg.com/oclif/-/oclif-3.2.22.tgz#fedf7ad75fd4c02e081a3ac2fdd0903eec9a6b85"
+  integrity sha512-aYfC+feIOSMo9rAfSMnPaHFImSmL5gPs6CA0mD+LZuNTEyHjWr2VMk+flqs346rP9zIcZBjZJCnsdJndwefKQQ==
   dependencies:
     "@oclif/core" "^1.18.0"
     "@oclif/plugin-help" "^5.1.16"
-    "@oclif/plugin-not-found" "^2.3.5"
+    "@oclif/plugin-not-found" "^2.3.6"
     "@oclif/plugin-warn-if-update-available" "^2.0.6"
     aws-sdk "^2.1231.0"
     concurrently "^7.4.0"
