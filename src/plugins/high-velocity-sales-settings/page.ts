@@ -12,7 +12,7 @@ export class HighVelocitySalesSetupPage {
   }
 
   public static getUrl(): string {
-    return 'lightning/setup/HighVelocitySales/home';
+    return 'lightning/setup/SalesEngagement/home';
   }
 
   public async setUpAndEnable(): Promise<void> {
