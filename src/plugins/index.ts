@@ -7,16 +7,15 @@ import { EmailDeliverability as emailDeliverability } from './email-deliverabili
 import { HighVelocitySalesSettings as highVelocitySalesSettings } from './high-velocity-sales-settings';
 import { HomePageLayouts as homePageLayouts } from './home-page-layouts';
 import { LightningExperienceSettings as lightningExperienceSettings } from './lightning-experience-settings';
+import { OpportunitySplits as opportunitySplits } from './opportunity-splits';
 import { Picklists as picklists } from './picklists';
 import { RecordTypes as recordTypes } from './record-types';
+import { RelateContactToMultipleAccounts as relateContactToMultipleAccounts } from './relate-contact-to-multiple-accounts';
 import { ReportsAndDashboards as reportsAndDashboards } from './reports-and-dashboards';
 import { SalesforceToSalesforce as salesforceToSalesforce } from './salesforce-to-salesforce';
 import { Security as security } from './security';
 
-import { RelateContactToMultipleAccounts as relateContactToMultipleAccounts } from './relate-contact-to-multiple-accounts';
-
 export {
-  relateContactToMultipleAccounts,
   activitySettings,
   communities,
   customerPortal,
@@ -26,8 +25,10 @@ export {
   highVelocitySalesSettings,
   homePageLayouts,
   lightningExperienceSettings,
+  opportunitySplits,
   picklists,
   recordTypes,
+  relateContactToMultipleAccounts,
   reportsAndDashboards,
   salesforceToSalesforce,
   security
