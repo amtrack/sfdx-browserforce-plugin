@@ -1,5 +1,6 @@
 import { ActivitySettings as activitySettings } from './activity-settings';
 import { Communities as communities } from './communities';
+import { ExperienceBundleApi as experienceBundleApi } from './experience-bundle-api';
 import { CustomerPortal as customerPortal } from './customer-portal';
 import { DeferSharingCalculation as deferSharingCalculation } from './defer-sharing-calculation';
 import { DensitySettings as densitySettings } from './density-settings';
@@ -18,6 +19,7 @@ import { Security as security } from './security';
 export {
   activitySettings,
   communities,
+  experienceBundleApi,
   customerPortal,
   deferSharingCalculation,
   densitySettings,

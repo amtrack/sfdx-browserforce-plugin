@@ -37,6 +37,9 @@
         "communities": {
           "$ref": "./communities/schema.json"
         },
+        "experience-bundle-api": {
+          "$ref": "./experience-bundle-api/schema.json"
+        },
         "customerPortal": {
           "$ref": "./customer-portal/schema.json"
         },
