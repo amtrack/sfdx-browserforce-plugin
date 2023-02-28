@@ -8,11 +8,6 @@
       "title": "Enable Communities",
       "description": "Warning: cannot be disabled once enabled",
       "type": "boolean"
-    },
-    "domainName": {
-      "title": "Optional domain name for communities (default: mydomain)",
-      "description": "Important: The domain name will be used in all of your communities and can’t be changed after you save it",
-      "type": "string"
     }
   }
 }

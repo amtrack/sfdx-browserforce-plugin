@@ -6,13 +6,11 @@ const PATHS = {
 const SELECTORS = {
   BASE: 'div.pbBody',
   ENABLE_CHECKBOX: 'input[id$=":enableNetworkPrefId"]',
-  DOMAIN_NAME_INPUT_TEXT: 'input[id$=":inputSubdomain"]',
   SAVE_BUTTON: 'input[id$=":saveId"]'
 };
 
 type Config = {
   enabled?: boolean;
-  domainName?: string;
 };
 
 export class Communities extends BrowserforcePlugin {
@@ -46,22 +44,13 @@ export class Communities extends BrowserforcePlugin {
       SELECTORS.ENABLE_CHECKBOX
     );
     await frameOrPage.click(SELECTORS.ENABLE_CHECKBOX);
-    const domainName = (
-      config.domainName ||
-      this.browserforce.getMyDomain() ||
-      `comm-${Math.random()
-        .toString(36)
-        .substr(2)}`
-    ).substring(0, 22);
-    await frameOrPage.waitForSelector(SELECTORS.DOMAIN_NAME_INPUT_TEXT);
-    await frameOrPage.type(SELECTORS.DOMAIN_NAME_INPUT_TEXT, domainName);
     page.on('dialog', async dialog => {
       await dialog.accept();
     });
     await frameOrPage.waitForSelector(SELECTORS.SAVE_BUTTON);
     await Promise.all([
-      page.waitForNavigation(),
-      frameOrPage.click(SELECTORS.SAVE_BUTTON)
+      frameOrPage.click(SELECTORS.SAVE_BUTTON),
+      page.waitForNavigation()
     ]);
   }
 }
