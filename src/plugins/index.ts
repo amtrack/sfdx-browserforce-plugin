@@ -14,6 +14,7 @@ import { RelateContactToMultipleAccounts as relateContactToMultipleAccounts } fr
 import { ReportsAndDashboards as reportsAndDashboards } from './reports-and-dashboards';
 import { SalesforceToSalesforce as salesforceToSalesforce } from './salesforce-to-salesforce';
 import { Security as security } from './security';
+import { CompanyInformation as companyInformation } from './company-information';
 
 export {
   activitySettings,
@@ -31,5 +32,6 @@ export {
   relateContactToMultipleAccounts,
   reportsAndDashboards,
   salesforceToSalesforce,
-  security
+  security,
+  companyInformation
 };
