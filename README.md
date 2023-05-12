@@ -147,6 +147,9 @@ Here is a full blown example showing most of the supported settings in action:
     "security": {
       "loginAccessPolicies": { "administratorsCanLogInAsAnyUser": true },
       "sharing": { "enableExternalSharingModel": true }
+    },
+    "companyInformation": {
+      "defaultCurrencyIsoCode": "English (Ireland) - EUR"
     }
   }
 }
