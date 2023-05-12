@@ -7,6 +7,9 @@
   "properties": {
     "settings": {
       "properties": {
+        "companyInformation": {
+          "$ref": "./company-information/schema.json"
+        },
         "opportunitySplits": {
           "$ref": "./opportunity-splits/schema.json"
         },

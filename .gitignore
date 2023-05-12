@@ -8,6 +8,9 @@
 node_modules
 /.sfdx
 /.sf
+coverage/
+.yarn/
+.yarnrc.yml
 
 .vscode/settings.json
 
