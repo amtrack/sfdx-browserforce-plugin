@@ -37,26 +37,33 @@ export class CompanyInformation extends BrowserforcePlugin {
     if (config.defaultCurrencyIsoCode?.length > 0) {
       const path = PATHS(this.org.getOrgId());
       const page = await this.browserforce.openPage(path.BASE);
-      await page.waitForSelector(SELECTORS.CURRENCY_DROPDOWN);
-      await page.click(SELECTORS.CURRENCY_DROPDOWN);
 
+      // wait for selectors
+      await page.waitForSelector(SELECTORS.CURRENCY_DROPDOWN);
+      const selectElem = await page.$(SELECTORS.CURRENCY_DROPDOWN);
+      await page.waitForSelector(SELECTORS.SAVE_BUTTON);
+
+      // apply changes
+      // await page.click(SELECTORS.CURRENCY_DROPDOWN);
       const optionList = await page.$$eval(
         `${SELECTORS.CURRENCY_DROPDOWN} > option`,
-        options => options.map(option => option.textContent)
+        options => options.map(option => ({
+          value: (option as HTMLOptionElement).value,
+          textContent: option.textContent
+        }))
       );
-      if (!optionList.includes(config.defaultCurrencyIsoCode)) {
+      const toBeSelectedOption = optionList.find(option => option.textContent == config.defaultCurrencyIsoCode);
+      if (!toBeSelectedOption) {
         throw new Error(`Invalid currency provided. '${config.defaultCurrencyIsoCode}' is not a valid option available for currencies. Please use the exact name as it appears in the list.`);
       }
-
-      const selectElem = await page.$(SELECTORS.CURRENCY_DROPDOWN);
-      await selectElem.type(config.defaultCurrencyIsoCode);
-      await page.waitForSelector(SELECTORS.SAVE_BUTTON);
+      await selectElem.select(toBeSelectedOption.value);
 
       // auto accept the dialog when it appears
       page.on("dialog", (dialog) => {
         dialog.accept();
       });
 
+      // save
       await Promise.all([
         page.waitForNavigation(),
         page.click(SELECTORS.SAVE_BUTTON)
