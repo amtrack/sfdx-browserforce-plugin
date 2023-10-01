@@ -4,8 +4,6 @@ import assert from 'assert';
 import { Browserforce } from '../src/browserforce';
 
 describe('Browser', function () {
-  this.slow('30s');
-  this.timeout('2m');
   describe('login()', () => {
     it('should successfully login with valid credentials', async () => {
       const defaultScratchOrg = await Org.create({});

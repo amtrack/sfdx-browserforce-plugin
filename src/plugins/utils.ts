@@ -40,3 +40,10 @@ export function semanticallyCleanObject(obj: any, id = 'id'): any {
   }
   return obj;
 }
+
+export function isEmpty(obj: unknown): Boolean {
+  return !(
+    (obj !== undefined && obj !== null && obj !== Object(obj)) ||
+    (obj === Object(obj) && Object.keys(obj).length > 0)
+  );
+}

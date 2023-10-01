@@ -13,7 +13,7 @@ const SELECTORS = {
   SAVE_BUTTON: 'input[id$=":save"]'
 };
 
-type Config = {
+export type Config = {
   enabled: boolean;
 };
 

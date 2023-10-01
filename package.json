@@ -59,6 +59,6 @@
     "prepack": "yarn build",
     "prepare": "yarn build",
     "test": "nyc --reporter=lcov --reporter=text mocha --require ts-node/register \"test/**/*.test.ts\" \"src/**/*.test.ts\"",
-    "test:e2e": "mocha --require ts-node/register \"test/**/*.e2e-spec.ts\" \"src/**/*.e2e-spec.ts\""
+    "test:e2e": "mocha --require ts-node/register --slow 30s --timeout 2m --file test/e2e-setup.ts \"test/**/*.e2e-spec.ts\" \"src/**/*.e2e-spec.ts\""
   }
 }

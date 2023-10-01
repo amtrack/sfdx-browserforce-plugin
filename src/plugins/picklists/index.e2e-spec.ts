@@ -4,9 +4,22 @@ import * as path from 'path';
 import { Picklists } from '.';
 import { FieldDependencies } from './field-dependencies';
 
-describe(Picklists.name, function() {
-  this.slow('30s');
+describe(Picklists.name, function () {
   this.timeout('10m');
+  let plugin;
+  before(() => {
+    plugin = new Picklists(global.bf);
+  });
+
+  const configNew = require('./new.json').settings.picklists;
+  const configReplace = require('./replace.json').settings.picklists;
+  const configReplaceAndDelete = require('./replace-and-delete.json').settings
+    .picklists;
+  const configDeactivate = require('./deactivate.json').settings.picklists;
+  const configActivate = require('./activate.json').settings.picklists;
+  const configReplaceAndDeactivate = require('./replace-and-deactivate.json')
+    .settings.picklists;
+
   it('should deploy a CustomObject for testing', () => {
     const sourceDeployCmd = child.spawnSync('sfdx', [
       'force:source:deploy',
@@ -20,189 +33,70 @@ describe(Picklists.name, function() {
       sourceDeployCmd.output.toString()
     );
   });
-  it('should add a new picklist value when it does not exist', () => {
-    const cmd = child.spawnSync(path.resolve('bin', 'run'), [
-      'browserforce:apply',
-      '-f',
-      path.resolve(path.join(__dirname, 'new.json'))
-    ]);
-    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
-    assert.ok(
-      /changing 'picklistValues' to.*/.test(cmd.output.toString()),
-      cmd.output.toString()
-    );
+  it('should add a new picklist value when it does not exist', async () => {
+    await plugin.run(configNew);
   });
-  it('should not do anything when picklist value already exists', () => {
-    const cmd = child.spawnSync(path.resolve('bin', 'run'), [
-      'browserforce:apply',
-      '-f',
-      path.resolve(path.join(__dirname, 'new.json'))
-    ]);
-    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
-    assert.ok(
-      /no action necessary/.test(cmd.output.toString()),
-      cmd.output.toString()
-    );
+  it('should not do anything when picklist value already exists', async () => {
+    const res = await plugin.run(configNew);
+    assert.deepStrictEqual(res, { message: 'no action necessary' });
   });
-  it('should replace picklist values', () => {
-    const replaceCmd = child.spawnSync(path.resolve('bin', 'run'), [
-      'browserforce:apply',
-      '-f',
-      path.resolve(path.join(__dirname, 'replace.json'))
-    ]);
-    assert.deepStrictEqual(replaceCmd.status, 0, replaceCmd.output.toString());
-    assert.ok(
-      /changing 'picklistValues' to.*/.test(replaceCmd.output.toString()),
-      replaceCmd.output.toString()
-    );
+  it('should replace picklist values', async () => {
+    await plugin.run(configReplace);
   });
-  it('should replace and delete picklist values', () => {
-    const replaceCmd = child.spawnSync(path.resolve('bin', 'run'), [
-      'browserforce:apply',
-      '-f',
-      path.resolve(path.join(__dirname, 'replace-and-delete.json'))
-    ]);
-    assert.deepStrictEqual(replaceCmd.status, 0, replaceCmd.output.toString());
-    assert.ok(
-      /changing 'picklistValues' to.*/.test(replaceCmd.output.toString()),
-      replaceCmd.output.toString()
-    );
+  it('should replace and delete picklist values', async () => {
+    await plugin.run(configReplaceAndDelete);
   });
-  it('should not do anything when the picklist values do not exist', () => {
-    const replaceCmd = child.spawnSync(path.resolve('bin', 'run'), [
-      'browserforce:apply',
-      '-f',
-      path.resolve(path.join(__dirname, 'replace-and-delete.json'))
-    ]);
-    assert.deepStrictEqual(replaceCmd.status, 0, replaceCmd.output.toString());
-    assert.ok(
-      /no action necessary/.test(replaceCmd.output.toString()),
-      replaceCmd.output.toString()
-    );
+  it('should not do anything when the picklist values do not exist', async () => {
+    const res = await plugin.run(configReplaceAndDelete);
+    assert.deepStrictEqual(res, { message: 'no action necessary' });
   });
-  it('should deactivate picklist value', () => {
-    const cmd = child.spawnSync(path.resolve('bin', 'run'), [
-      'browserforce:apply',
-      '-f',
-      path.resolve(path.join(__dirname, 'deactivate.json'))
-    ]);
-    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
-    assert.ok(
-      /changing 'picklistValues' to.*/.test(cmd.output.toString()),
-      cmd.output.toString()
-    );
+  it('should deactivate picklist value', async () => {
+    await plugin.run(configDeactivate);
   });
-  it('should activate picklist value', () => {
-    const cmd = child.spawnSync(path.resolve('bin', 'run'), [
-      'browserforce:apply',
-      '-f',
-      path.resolve(path.join(__dirname, 'activate.json'))
-    ]);
-    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
-    assert.ok(
-      /changing 'picklistValues' to.*/.test(cmd.output.toString()),
-      cmd.output.toString()
-    );
+  it('should activate picklist value', async () => {
+    await plugin.run(configActivate);
   });
-  it('should not do anything when the picklist values do not exist', () => {
-    const cmd = child.spawnSync(path.resolve('bin', 'run'), [
-      'browserforce:apply',
-      '-f',
-      path.resolve(path.join(__dirname, 'activate.json'))
-    ]);
-    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
-    assert.ok(
-      /no action necessary/.test(cmd.output.toString()),
-      cmd.output.toString()
-    );
+  it('should not do anything when the picklist values already exist', async () => {
+    const res = await plugin.run(configActivate);
+    assert.deepStrictEqual(res, { message: 'no action necessary' });
   });
-  it('should replace and deactivate a picklist value', () => {
-    const replaceCmd = child.spawnSync(path.resolve('bin', 'run'), [
-      'browserforce:apply',
-      '-f',
-      path.resolve(path.join(__dirname, 'replace-and-deactivate.json'))
-    ]);
-    assert.deepStrictEqual(replaceCmd.status, 0, replaceCmd.output.toString());
-    assert.ok(
-      /changing 'picklistValues' to.*/.test(replaceCmd.output.toString()),
-      replaceCmd.output.toString()
-    );
+  it('should replace and deactivate a picklist value', async () => {
+    await plugin.run(configReplaceAndDeactivate);
   });
 });
 
-describe(FieldDependencies.name, function() {
-  this.slow('30s');
+describe(FieldDependencies.name, function () {
   this.timeout('10m');
-  it('should not do anything when the dependency is already set', () => {
-    const cmd = child.spawnSync(path.resolve('bin', 'run'), [
-      'browserforce:apply',
-      '-f',
-      path.resolve(path.join(__dirname, 'field-dependencies', 'set.json'))
-    ]);
-    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
-    assert.ok(
-      /no action necessary/.test(cmd.output.toString()),
-      cmd.output.toString()
-    );
+  let plugin;
+  before(() => {
+    plugin = new FieldDependencies(global.bf);
   });
-  it('should unset a field dependency', () => {
-    const cmd = child.spawnSync(path.resolve('bin', 'run'), [
-      'browserforce:apply',
-      '-f',
-      path.resolve(path.join(__dirname, 'field-dependencies', 'unset.json'))
-    ]);
-    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
-    assert.ok(
-      /changing 'fieldDependencies' to.*/.test(cmd.output.toString()),
-      cmd.output.toString()
-    );
+
+  const configSet = require('./field-dependencies/set.json').settings.picklists
+    .fieldDependencies;
+  const configUnset = require('./field-dependencies/unset.json').settings
+    .picklists.fieldDependencies;
+  const configChange = require('./field-dependencies/change.json').settings
+    .picklists.fieldDependencies;
+
+  it('should not do anything when the dependency is already set', async () => {
+    const res = await plugin.run(configSet);
+    assert.deepStrictEqual(res, { message: 'no action necessary' });
   });
-  it('should not do anything when the dependency is already unset', () => {
-    const cmd = child.spawnSync(path.resolve('bin', 'run'), [
-      'browserforce:apply',
-      '-f',
-      path.resolve(path.join(__dirname, 'field-dependencies', 'unset.json'))
-    ]);
-    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
-    assert.ok(
-      /no action necessary/.test(cmd.output.toString()),
-      cmd.output.toString()
-    );
+  it('should unset a field dependency', async () => {
+    await plugin.run(configUnset);
   });
-  it('should set a field dependency', () => {
-    const cmd = child.spawnSync(path.resolve('bin', 'run'), [
-      'browserforce:apply',
-      '-f',
-      path.resolve(path.join(__dirname, 'field-dependencies', 'set.json'))
-    ]);
-    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
-    assert.ok(
-      /changing 'fieldDependencies' to.*/.test(cmd.output.toString()),
-      cmd.output.toString()
-    );
+  it('should not do anything when the dependency is already unset', async () => {
+    const res = await plugin.run(configUnset);
+    assert.deepStrictEqual(res, { message: 'no action necessary' });
   });
-  it('should change a field dependency', () => {
-    const cmd = child.spawnSync(path.resolve('bin', 'run'), [
-      'browserforce:apply',
-      '-f',
-      path.resolve(path.join(__dirname, 'field-dependencies', 'change.json'))
-    ]);
-    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
-    assert.ok(
-      /changing 'fieldDependencies' to.*/.test(cmd.output.toString()),
-      cmd.output.toString()
-    );
+  it('should set a field dependency', async () => {
+    await plugin.run(configSet);
   });
-  it('should change back a field dependency', () => {
-    const cmd = child.spawnSync(path.resolve('bin', 'run'), [
-      'browserforce:apply',
-      '-f',
-      path.resolve(path.join(__dirname, 'field-dependencies', 'set.json'))
-    ]);
-    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
-    assert.ok(
-      /changing 'fieldDependencies' to.*/.test(cmd.output.toString()),
-      cmd.output.toString()
-    );
+  it('should change a field dependency', async () => {
+    await plugin.run(configChange);
+  });
+  it('should change back a field dependency', async () => {
+    await plugin.run(configSet);
   });
 });
