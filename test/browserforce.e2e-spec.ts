@@ -34,7 +34,7 @@ describe('Browser', function () {
       const bf = new Browserforce(defaultScratchOrg, ux);
       await bf.login();
       const myDomain = bf.getMyDomain();
-      assert.notDeepEqual(null, myDomain);
+      assert.notDeepStrictEqual(null, myDomain);
       await bf.logout();
     });
   });
@@ -45,7 +45,7 @@ describe('Browser', function () {
       const bf = new Browserforce(defaultScratchOrg, ux);
       await bf.login();
       const instanceDomain = bf.getInstanceDomain();
-      assert.notDeepEqual(null, instanceDomain);
+      assert.notDeepStrictEqual(null, instanceDomain);
       await bf.logout();
     });
   });
@@ -56,7 +56,7 @@ describe('Browser', function () {
       const bf = new Browserforce(defaultScratchOrg, ux);
       await bf.login();
       const lexUrl = bf.getLightningUrl();
-      assert.notDeepEqual(null, lexUrl);
+      assert.notDeepStrictEqual(null, lexUrl);
       await bf.logout();
     });
   });
