@@ -11,7 +11,7 @@ export class BrowserforceApply extends BrowserforceCommand {
   public static description = messages.getMessage('applyCommandDescription');
 
   public static examples = [
-    `$ sfdx browserforce:apply -f ./config/setup-admin-login-as-any.json --targetusername myOrg@example.com
+    `$ sfdx <%= command.id %> -f ./config/setup-admin-login-as-any.json --targetusername myOrg@example.com
   logging in... done
   Applying definition file ./config/setup-admin-login-as-any.json to org myOrg@example.com
   [Security] retrieving state... done
