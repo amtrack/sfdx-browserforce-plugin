@@ -15,15 +15,10 @@ export class RecordTypePage {
       15
     )}")]`;
     await this.page.waitForXPath(xpath);
-    const actionLinkHandles = await this.page.$x(xpath);
-    if (actionLinkHandles.length !== 1) {
-      throw new Error(
-        `Could not find delete action for record type id: ${recordTypeId}`
-      );
-    }
+    const deleteLink = (await this.page.$x(xpath))[0];
     await Promise.all([
       this.page.waitForNavigation(),
-      actionLinkHandles[0].click()
+      this.page.evaluate((e) => e.click(), deleteLink)
     ]);
     return new RecordTypeDeletePage(this.page);
   }
