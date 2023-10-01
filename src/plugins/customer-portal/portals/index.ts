@@ -127,8 +127,9 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
   public diff(source: Config, target: Config): Config {
     const response = [];
     if (source && target) {
-      for (const portal of target) {
-        let sourcePortal = source.find(p => p.name === portal.name);
+      for (const plannedPortal of target) {
+        const portal = JSON.parse(JSON.stringify(plannedPortal));
+        let sourcePortal = source.find((p) => p.name === portal.name);
         if (portal.oldName && !sourcePortal) {
           // fallback to old name of portal
           sourcePortal = source.find(p => p.name === portal.oldName);
