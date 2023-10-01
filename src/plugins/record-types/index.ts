@@ -86,9 +86,10 @@ export class RecordTypes extends BrowserforcePlugin {
 }
 
 async function listRecordTypes(conn) {
-  return await conn.metadata.list({
+  const recordTypes = await conn.metadata.list({
     type: 'RecordType'
   });
+  return recordTypes;
 }
 
 type RecordType = {
