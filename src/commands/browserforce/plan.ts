@@ -9,7 +9,7 @@ const messages = Messages.loadMessages(
   'browserforce'
 );
 
-export default class BrowserforcePlanCommand extends BrowserforceCommand {
+export class BrowserforcePlanCommand extends BrowserforceCommand {
   public static description = messages.getMessage('planCommandDescription');
 
   public static examples = [

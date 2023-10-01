@@ -7,7 +7,7 @@ const messages = Messages.loadMessages(
   'browserforce'
 );
 
-export default class BrowserforceApply extends BrowserforceCommand {
+export class BrowserforceApply extends BrowserforceCommand {
   public static description = messages.getMessage('applyCommandDescription');
 
   public static examples = [
