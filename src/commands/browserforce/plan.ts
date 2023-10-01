@@ -36,7 +36,7 @@ export default class BrowserforcePlanCommand extends BrowserforceCommand {
     };
     for (const setting of this.settings) {
       const driver = setting.Driver;
-      const instance = new driver(this.bf, this.org);
+      const instance = new driver(this.bf);
       this.ux.startSpinner(`[${driver.name}] retrieving state`);
       let driverState;
       try {

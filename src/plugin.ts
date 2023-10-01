@@ -3,12 +3,12 @@ import * as jsonMergePatch from 'json-merge-patch';
 import { Browserforce } from './browserforce';
 
 export abstract class BrowserforcePlugin {
-  protected org: Org;
   protected browserforce: Browserforce;
+  protected org: Org;
 
-  public constructor(browserforce: Browserforce, org: Org) {
+  public constructor(browserforce: Browserforce) {
     this.browserforce = browserforce;
-    this.org = org;
+    this.org = browserforce?.org;
   }
   public abstract retrieve(definition?: unknown): Promise<unknown>;
   public diff(state: unknown, definition: unknown): unknown {

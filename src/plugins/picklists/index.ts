@@ -68,8 +68,7 @@ export class Picklists extends BrowserforcePlugin {
     }
     if (definition.fieldDependencies) {
       result.fieldDependencies = await new FieldDependencies(
-        this.browserforce,
-        this.org
+        this.browserforce
       ).retrieve(definition.fieldDependencies);
     }
     return result;
@@ -104,8 +103,7 @@ export class Picklists extends BrowserforcePlugin {
     }
     if (definition.fieldDependencies) {
       changes['fieldDependencies'] = new FieldDependencies(
-        this.browserforce,
-        this.org
+        this.browserforce
       ).diff(state.fieldDependencies, definition.fieldDependencies);
     }
     return removeEmptyValues(changes);
@@ -163,7 +161,7 @@ export class Picklists extends BrowserforcePlugin {
       }
     }
     if (config.fieldDependencies) {
-      await new FieldDependencies(this.browserforce, this.org).apply(
+      await new FieldDependencies(this.browserforce).apply(
         config.fieldDependencies
       );
     }

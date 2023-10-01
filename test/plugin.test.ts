@@ -13,12 +13,12 @@ class DummyPlugin extends BrowserforcePlugin {
 describe('BrowserforcePlugin', () => {
   describe('#diff()', async () => {
     it('generates a diff for a simple object', async () => {
-      const plugin = new DummyPlugin(null, null);
+      const plugin = new DummyPlugin(null);
       const actions = plugin.diff({ a: 1 }, { a: 2 });
       assert.deepStrictEqual(actions, { a: 2 });
     });
     it('generates a diff for a deep object', async () => {
-      const plugin = new DummyPlugin(null, null);
+      const plugin = new DummyPlugin(null);
       const actions = plugin.diff(
         {
           a: [
@@ -32,7 +32,7 @@ describe('BrowserforcePlugin', () => {
       assert.deepStrictEqual(actions, { a: [{ a: 2 }] });
     });
     it('generates a diff for a deep object', async () => {
-      const plugin = new DummyPlugin(null, null);
+      const plugin = new DummyPlugin(null);
       const actions = plugin.diff(
         {
           a: [
@@ -56,7 +56,7 @@ describe('BrowserforcePlugin', () => {
       assert.deepStrictEqual(actions, { a: [{ a: 2, b: true }] });
     });
     it('generates a diff for an array', async () => {
-      const plugin = new DummyPlugin(null, null);
+      const plugin = new DummyPlugin(null);
       const actions = plugin.diff(
         [
           {
