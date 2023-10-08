@@ -80,14 +80,16 @@ export class RecordTypes extends BrowserforcePlugin {
         newRecordTypeId = replacementRecordType.Id;
       }
       await deletePage.replace(newRecordTypeId);
+      await page.close();
     }
   }
 }
 
 async function listRecordTypes(conn) {
-  return await conn.metadata.list({
+  const recordTypes = await conn.metadata.list({
     type: 'RecordType'
   });
+  return recordTypes;
 }
 
 type RecordType = {

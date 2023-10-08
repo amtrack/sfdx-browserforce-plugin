@@ -32,6 +32,7 @@ export class Communities extends BrowserforcePlugin {
         (el: HTMLInputElement) => el.checked
       );
     }
+    await page.close();
     return response;
   }
 
@@ -63,5 +64,6 @@ export class Communities extends BrowserforcePlugin {
       page.waitForNavigation(),
       frameOrPage.click(SELECTORS.SAVE_BUTTON)
     ]);
+    await page.close();
   }
 }

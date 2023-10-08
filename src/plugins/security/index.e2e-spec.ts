@@ -1,120 +1,79 @@
 import { Org } from '@salesforce/core';
 import assert from 'assert';
-import * as child from 'child_process';
-import * as path from 'path';
 import { CertificateAndKeyManagement } from './certificate-and-key-management';
 import { IdentityProvider } from './identity-provider';
 
-describe(`${CertificateAndKeyManagement.name} and ${IdentityProvider.name}`, function() {
-  this.slow('30s');
-  this.timeout('2m');
-  it('should fail to enable identity provider with non-existing Certificate', () => {
-    const cmd = child.spawnSync(path.resolve('bin', 'run'), [
-      'browserforce:apply',
-      '-f',
-      path.resolve(path.join(__dirname, 'identity-provider', 'enable.json'))
-    ]);
-    assert.deepStrictEqual(cmd.status, 1, cmd.output.toString());
-    assert.ok(
-      /changing 'identityProvider' to .*"enabled":true/.test(
-        cmd.output.toString()
-      ),
-      cmd.output.toString()
-    );
-    assert.ok(
-      /Could not find Certificate 'identity_provider'/.test(
-        cmd.output.toString()
-      ),
-      cmd.output.toString()
-    );
+describe(`${CertificateAndKeyManagement.name} and ${IdentityProvider.name}`, function () {
+  let pluginIdentityProvider, pluginCertificateManagement;
+  before(() => {
+    pluginIdentityProvider = new IdentityProvider(global.bf);
+    pluginCertificateManagement = new CertificateAndKeyManagement(global.bf);
   });
-  it('should create a self-signed certificate and enable Identity Provider', function() {
-    const cmd = child.spawnSync(path.resolve('bin', 'run'), [
-      'browserforce:apply',
-      '-f',
-      path.resolve(
-        path.join(__dirname, 'identity-provider', 'create-cert-and-enable.json')
-      )
-    ]);
-    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
-    assert.ok(
-      /changing 'certificateAndKeyManagement' to '{"certificates":\[.*"name":"identity_provider"/.test(
-        cmd.output.toString()
-      ),
-      cmd.output.toString()
-    );
-    assert.ok(
-      /changing 'identityProvider' to .*"enabled":true/.test(
-        cmd.output.toString()
-      ),
-      cmd.output.toString()
-    );
+
+  const configEnabled = {
+    enabled: true,
+    certificate: 'identity_provider'
+  };
+  const configDisabled = {
+    enabled: false
+  };
+  const configGeneratedCert = {
+    certificates: [
+      {
+        name: 'identity_provider',
+        label: 'identity_provider'
+      }
+    ]
+  };
+  const configImportFromKeystore = {
+    importFromKeystore: [
+      {
+        filePath:
+          './src/plugins/security/certificate-and-key-management/Dummy.jks',
+        name: 'Dummy'
+      }
+    ]
+  };
+
+  it('should fail to enable identity provider with non-existing Certificate', async () => {
+    let err;
+    try {
+      await pluginIdentityProvider.run(configEnabled);
+    } catch (e) {
+      err = e;
+    }
+    assert.throws(() => {
+      throw err;
+    }, /Could not find Certificate 'identity_provider'/);
   });
-  it('should not do anything if self-signed certificate is already available', () => {
-    const cmd = child.spawnSync(path.resolve('bin', 'run'), [
-      'browserforce:apply',
-      '-f',
-      path.resolve(
-        path.join(__dirname, 'identity-provider', 'create-cert-and-enable.json')
-      )
-    ]);
-    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
-    assert.ok(
-      /no action necessary/.test(cmd.output.toString()),
-      cmd.output.toString()
-    );
+  it('should create a self-signed certificate', async () => {
+    await pluginCertificateManagement.apply(configGeneratedCert);
   });
-  it('should disable Identity Provider', () => {
-    const cmd = child.spawnSync(path.resolve('bin', 'run'), [
-      'browserforce:apply',
-      '-f',
-      path.resolve(path.join(__dirname, 'identity-provider', 'disable.json'))
-    ]);
-    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
-    assert.ok(
-      /changing 'identityProvider' to .*"enabled":false/.test(
-        cmd.output.toString()
-      ),
-      cmd.output.toString()
-    );
+  it('should not do anything if self-signed certificate is already available', async () => {
+    // explictly pass definition to retrieve
+    const res = await pluginCertificateManagement.run(configGeneratedCert);
+    assert.deepStrictEqual(res, { message: 'no action necessary' });
   });
-  it('should import a cert from a keystore', () => {
-    const cmd = child.spawnSync(path.resolve('bin', 'run'), [
-      'browserforce:apply',
-      '-f',
-      path.resolve(
-        path.join(
-          __dirname,
-          'certificate-and-key-management',
-          'import-from-keystore.json'
-        )
-      )
-    ]);
-    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
-    assert.ok(
-      /changing 'certificateAndKeyManagement' to '{"importFromKeystore":\[.*"filePath"/.test(
-        cmd.output.toString()
-      ),
-      cmd.output.toString()
-    );
+  it('should enable Identity Provider with generated cert', async () => {
+    await pluginIdentityProvider.apply(configEnabled);
   });
-  it('should not do anything if cert is already available in keystore', () => {
-    const cmd = child.spawnSync(path.resolve('bin', 'run'), [
-      'browserforce:apply',
-      '-f',
-      path.resolve(
-        path.join(
-          __dirname,
-          'certificate-and-key-management',
-          'import-from-keystore.json'
-        )
-      )
-    ]);
-    assert.deepStrictEqual(cmd.status, 0, cmd.output.toString());
-    assert.ok(
-      /no action necessary/.test(cmd.output.toString()),
-      cmd.output.toString()
-    );
+  it('Identity Provider should be enabled', async () => {
+    const state = await pluginIdentityProvider.retrieve();
+    assert.deepStrictEqual(state.enabled, true);
+  });
+  it('should disable Identity Provider', async () => {
+    await pluginIdentityProvider.apply(configDisabled);
+  });
+  it('Identity Provider should be disabled', async () => {
+    const state = await pluginIdentityProvider.retrieve();
+    assert.deepStrictEqual(state.enabled, false);
+  });
+  it('should import a cert from a keystore', async () => {
+    await pluginCertificateManagement.apply(configImportFromKeystore);
+  });
+  it('should not do anything if cert is already available in keystore', async () => {
+    const res = await pluginCertificateManagement.run(configImportFromKeystore);
+    assert.deepStrictEqual(res, { message: 'no action necessary' });
   });
   it('should delete certificates using Metadata API', async () => {
     const org = await Org.create({});

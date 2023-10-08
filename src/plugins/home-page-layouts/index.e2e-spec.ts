@@ -1,48 +1,48 @@
 import assert from 'assert';
-import * as child from 'child_process';
-import * as path from 'path';
 import { HomePageLayouts } from '.';
 
-describe(HomePageLayouts.name, function() {
-  this.slow('30s');
-  this.timeout('2m');
-  it('should assign the home page default', () => {
-    const assignHomePageDefaultCmd = child.spawnSync(
-      path.resolve('bin', 'run'),
-      [
-        'browserforce:apply',
-        '-f',
-        path.resolve(path.join(__dirname, 'home-page-default.json'))
-      ]
-    );
-    assert.deepStrictEqual(
-      assignHomePageDefaultCmd.status,
-      0,
-      assignHomePageDefaultCmd.output.toString()
-    );
-    assert.ok(
-      /'\[{"profile":"Standard User","layout":""},{"profile":"System Administrator","layout":""}\]'/.test(
-        assignHomePageDefaultCmd.output.toString()
-      ),
-      assignHomePageDefaultCmd.output.toString()
-    );
+describe(HomePageLayouts.name, function () {
+  let plugin;
+  before(() => {
+    plugin = new HomePageLayouts(global.bf);
   });
-  it('should assign the org default', () => {
-    const assignOrgDefaultCmd = child.spawnSync(path.resolve('bin', 'run'), [
-      'browserforce:apply',
-      '-f',
-      path.resolve(path.join(__dirname, 'org-default.json'))
-    ]);
-    assert.deepStrictEqual(
-      assignOrgDefaultCmd.status,
-      0,
-      assignOrgDefaultCmd.output.toString()
-    );
-    assert.ok(
-      /'\[{"profile":"Standard User","layout":"DE Default"},{"profile":"System Administrator","layout":"DE Default"}\]'/.test(
-        assignOrgDefaultCmd.output.toString()
-      ),
-      assignOrgDefaultCmd.output.toString()
-    );
+
+  const configPageDefault = {
+    homePageLayoutAssignments: [
+      {
+        profile: 'Standard User',
+        layout: ''
+      },
+      {
+        profile: 'System Administrator',
+        layout: ''
+      }
+    ]
+  };
+  const configOrgDefault = {
+    homePageLayoutAssignments: [
+      {
+        profile: 'Standard User',
+        layout: 'DE Default'
+      },
+      {
+        profile: 'System Administrator',
+        layout: 'DE Default'
+      }
+    ]
+  };
+  it('should assign some layouts', async () => {
+    await plugin.run(configPageDefault);
+  });
+  it('should be assigned', async () => {
+    const res = await plugin.run(configPageDefault);
+    assert.deepStrictEqual(res, { message: 'no action necessary' });
+  });
+  it('should unassign some layouts', async () => {
+    await plugin.apply(configOrgDefault);
+  });
+  it('should be unassigned', async () => {
+    const res = await plugin.run(configOrgDefault);
+    assert.deepStrictEqual(res, { message: 'no action necessary' });
   });
 });

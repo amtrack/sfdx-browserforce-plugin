@@ -63,12 +63,12 @@ export class Picklists extends BrowserforcePlugin {
         state._newValueExists =
           Boolean(newValueMatch) || action.newValue === null;
         result.picklistValues.push(state);
+        await page.close();
       }
     }
     if (definition.fieldDependencies) {
       result.fieldDependencies = await new FieldDependencies(
-        this.browserforce,
-        this.org
+        this.browserforce
       ).retrieve(definition.fieldDependencies);
     }
     return result;
@@ -103,8 +103,7 @@ export class Picklists extends BrowserforcePlugin {
     }
     if (definition.fieldDependencies) {
       changes['fieldDependencies'] = new FieldDependencies(
-        this.browserforce,
-        this.org
+        this.browserforce
       ).diff(state.fieldDependencies, definition.fieldDependencies);
     }
     return removeEmptyValues(changes);
@@ -158,10 +157,11 @@ export class Picklists extends BrowserforcePlugin {
             action.replaceAllBlankValues
           );
         }
+        await page.close();
       }
     }
     if (config.fieldDependencies) {
-      await new FieldDependencies(this.browserforce, this.org).apply(
+      await new FieldDependencies(this.browserforce).apply(
         config.fieldDependencies
       );
     }

@@ -33,7 +33,7 @@ export class FieldDependencyPage {
       });
       await Promise.all([
         this.page.waitForNavigation(),
-        actionLinkHandles[0].click()
+        this.page.evaluate((e) => e.click(), actionLinkHandles[0])
       ]);
       await throwPageErrors(this.page);
     }
@@ -83,5 +83,6 @@ export class NewFieldDependencyPage {
       this.page.click(this.saveButton)
     ]);
     await throwPageErrors(this.page);
+    await this.page.close();
   }
 }

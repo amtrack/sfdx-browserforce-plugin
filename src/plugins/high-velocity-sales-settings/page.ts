@@ -20,5 +20,6 @@ export class HighVelocitySalesSetupPage {
     await this.page.click(SET_UP_AND_ENABLE_HVS_BUTTON);
     await throwPageErrors(this.page);
     await this.page.waitForSelector(ENABLE_TOGGLE);
+    await this.page.close();
   }
 }

@@ -42,6 +42,7 @@ export class CustomerPortalEnable extends BrowserforcePlugin {
         page.waitForNavigation(),
         page.click(SELECTORS.SAVE_BUTTON)
       ]);
+      await page.close();
     }
   }
 }

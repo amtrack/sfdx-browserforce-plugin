@@ -30,6 +30,7 @@ export class CompanyInformation extends BrowserforcePlugin {
       throw new Error('No available existing value');
     }
     response.defaultCurrencyIsoCode = selectedOptions[0];
+    await page.close();
     return response;
   }
 
@@ -68,6 +69,7 @@ export class CompanyInformation extends BrowserforcePlugin {
         page.waitForNavigation(),
         page.click(SELECTORS.SAVE_BUTTON)
       ]);
+      await page.close();
     }
   }
 }

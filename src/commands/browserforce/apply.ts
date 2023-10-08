@@ -7,11 +7,11 @@ const messages = Messages.loadMessages(
   'browserforce'
 );
 
-export default class BrowserforceApply extends BrowserforceCommand {
+export class BrowserforceApply extends BrowserforceCommand {
   public static description = messages.getMessage('applyCommandDescription');
 
   public static examples = [
-    `$ sfdx browserforce:apply -f ./config/setup-admin-login-as-any.json --targetusername myOrg@example.com
+    `$ sfdx <%= command.id %> -f ./config/setup-admin-login-as-any.json --targetusername myOrg@example.com
   logging in... done
   Applying definition file ./config/setup-admin-login-as-any.json to org myOrg@example.com
   [Security] retrieving state... done
@@ -28,7 +28,7 @@ export default class BrowserforceApply extends BrowserforceCommand {
     );
     for (const setting of this.settings) {
       const driver = setting.Driver;
-      const instance = new driver(this.bf, this.org);
+      const instance = new driver(this.bf);
       this.ux.startSpinner(`[${driver.name}] retrieving state`);
       let state;
       try {

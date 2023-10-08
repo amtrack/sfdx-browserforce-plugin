@@ -16,6 +16,12 @@ type Config = {
 export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {
     const page = await this.browserforce.openPage(PATHS.BASE);
+    // First we have to click the 'Edit' button, to see the checkbox
+    await page.waitForSelector(SELECTORS.EDIT_BUTTON);
+    await Promise.all([
+      page.waitForNavigation(),
+      page.click(SELECTORS.EDIT_BUTTON)
+    ]);
     await page.waitForSelector(SELECTORS.ENABLED);
     const response = {
       enabled: await page.$eval(
@@ -23,6 +29,7 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
         (el: HTMLInputElement) => el.checked
       )
     };
+    await page.close();
     return response;
   }
 
@@ -49,5 +56,6 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
       page.waitForNavigation(),
       page.click(SELECTORS.SAVE_BUTTON)
     ]);
+    await page.close();
   }
 }

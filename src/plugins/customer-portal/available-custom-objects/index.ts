@@ -90,7 +90,9 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
             (el: HTMLInputElement) => el.checked
           )
         });
+        await editPage.close();
       }
+      await page.close();
     }
     return response;
   }
@@ -157,7 +159,9 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
           frameOrPage.waitForNavigation(),
           frameOrPage.click(SELECTORS.SAVE_BUTTON)
         ]);
+        await editPage.close();
       }
+      await page.close();
     }
   }
 }

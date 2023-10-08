@@ -1,3 +1,4 @@
+import { Page } from 'puppeteer';
 import { BrowserforcePlugin } from '../../../plugin';
 
 const PATHS = {
@@ -18,8 +19,9 @@ export class FolderSharing extends BrowserforcePlugin {
     const response = {
       enableEnhancedFolderSharing: true
     };
+    let page: Page;
     try {
-      const page = await this.browserforce.openPage(PATHS.BASE);
+      page = await this.browserforce.openPage(PATHS.BASE);
       const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(
         page,
         SELECTORS.BASE
@@ -40,6 +42,7 @@ export class FolderSharing extends BrowserforcePlugin {
       }
       throw e;
     }
+    await page.close();
     return response;
   }
 
@@ -63,5 +66,6 @@ export class FolderSharing extends BrowserforcePlugin {
       page.waitForNavigation(),
       page.click(SELECTORS.SAVE_BUTTON)
     ]);
+    await page.close();
   }
 }

@@ -21,7 +21,7 @@ type Config = {
 
 export class CustomerPortal extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {
-    const pluginEnable = new CustomerPortalEnable(this.browserforce, this.org);
+    const pluginEnable = new CustomerPortalEnable(this.browserforce);
     const response = {
       enabled: false,
       portals: [],
@@ -30,32 +30,26 @@ export class CustomerPortal extends BrowserforcePlugin {
     response.enabled = await pluginEnable.retrieve(definition.enabled);
     if (response.enabled) {
       if (definition.portals) {
-        const pluginSetup = new CustomerPortalSetup(
-          this.browserforce,
-          this.org
-        );
+        const pluginSetup = new CustomerPortalSetup(this.browserforce);
         response.portals = await pluginSetup.retrieve(definition.portals);
       }
       if (definition.availableCustomObjects) {
-        const pluginAvailableCustomObjects = new CustomerPortalAvailableCustomObjects(
-          this.browserforce,
-          this.org
-        );
-        response.availableCustomObjects = await pluginAvailableCustomObjects.retrieve(
-          definition.availableCustomObjects
-        );
+        const pluginAvailableCustomObjects =
+          new CustomerPortalAvailableCustomObjects(this.browserforce);
+        response.availableCustomObjects =
+          await pluginAvailableCustomObjects.retrieve(
+            definition.availableCustomObjects
+          );
       }
     }
     return response;
   }
 
   public diff(state: Config, definition: Config): Config {
-    const pluginEnable = new CustomerPortalEnable(null, null);
-    const pluginSetup = new CustomerPortalSetup(null, null);
-    const pluginAvailableCustomObjects = new CustomerPortalAvailableCustomObjects(
-      null,
-      null
-    );
+    const pluginEnable = new CustomerPortalEnable(null);
+    const pluginSetup = new CustomerPortalSetup(null);
+    const pluginAvailableCustomObjects =
+      new CustomerPortalAvailableCustomObjects(null);
     const response = {
       enabled: pluginEnable.diff(state.enabled, definition.enabled),
       portals: pluginSetup.diff(state.portals, definition.portals),
@@ -69,21 +63,16 @@ export class CustomerPortal extends BrowserforcePlugin {
 
   public async apply(config: Config): Promise<void> {
     if (config.enabled !== undefined) {
-      const pluginEnable = new CustomerPortalEnable(
-        this.browserforce,
-        this.org
-      );
+      const pluginEnable = new CustomerPortalEnable(this.browserforce);
       await pluginEnable.apply(config.enabled);
     }
     if (config.portals && config.portals.length) {
-      const pluginSetup = new CustomerPortalSetup(this.browserforce, this.org);
+      const pluginSetup = new CustomerPortalSetup(this.browserforce);
       await pluginSetup.apply(config.portals);
     }
     if (config.availableCustomObjects) {
-      const pluginAvailableCustomObjects = new CustomerPortalAvailableCustomObjects(
-        this.browserforce,
-        this.org
-      );
+      const pluginAvailableCustomObjects =
+        new CustomerPortalAvailableCustomObjects(this.browserforce);
       await pluginAvailableCustomObjects.apply(config.availableCustomObjects);
     }
   }

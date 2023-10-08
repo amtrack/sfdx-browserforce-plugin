@@ -51,10 +51,10 @@ export class PicklistPage {
     const NEW_ACTION_BUTTON_XPATH =
       '//tr[td[2]]//input[contains(@onclick, "/setup/ui/picklist_masteredit")][@value=" New "]';
     await this.page.waitForXPath(NEW_ACTION_BUTTON_XPATH);
-    const NEW_ACTION_BUTTON = (await this.page.$x(NEW_ACTION_BUTTON_XPATH))[0];
+    const newActionButton = (await this.page.$x(NEW_ACTION_BUTTON_XPATH))[0];
     await Promise.all([
       this.page.waitForNavigation(),
-      NEW_ACTION_BUTTON.click()
+      this.page.evaluate((e) => e.click(), newActionButton)
     ]);
   }
 
@@ -73,18 +73,13 @@ export class PicklistPage {
   ): Promise<PicklistReplaceAndDeletePage> {
     const xpath = `//tr[td[2][text() = "${picklistValueApiName}"]]//td[1]//a[contains(@href, "/setup/ui/picklist_masterdelete.jsp") and contains(@href, "deleteType=0")]`;
     await this.page.waitForXPath(xpath);
-    const actionLinkHandles = await this.page.$x(xpath);
-    if (actionLinkHandles.length !== 1) {
-      throw new Error(
-        `Could not find delete action for picklist value: ${picklistValueApiName}`
-      );
-    }
-    this.page.on('dialog', async dialog => {
+    const deleteLink = (await this.page.$x(xpath))[0];
+    this.page.on('dialog', async (dialog) => {
       await dialog.accept();
     });
     await Promise.all([
       this.page.waitForNavigation(),
-      actionLinkHandles[0].click()
+      this.page.evaluate((e) => e.click(), deleteLink)
     ]);
     await throwPageErrors(this.page);
     return new PicklistReplaceAndDeletePage(this.page);
@@ -95,27 +90,19 @@ export class PicklistPage {
     active: boolean
   ): Promise<PicklistPage> {
     let xpath;
-    let actionName;
     if (active) {
       xpath = `//tr[td[2][text() = "${picklistValueApiName}"]]//td[1]//a[contains(@href, "/setup/ui/picklist_masteractivate.jsp")]`;
-      actionName = 'activate';
     } else {
       xpath = `//tr[td[2][text() = "${picklistValueApiName}"]]//td[1]//a[contains(@href, "/setup/ui/picklist_masterdelete.jsp") and contains(@href, "deleteType=1")]`;
-      actionName = 'deactivate';
     }
     await this.page.waitForXPath(xpath);
-    const actionLinkHandles = await this.page.$x(xpath);
-    if (actionLinkHandles.length !== 1) {
-      throw new Error(
-        `Could not find ${actionName} action for picklist value: ${picklistValueApiName}`
-      );
-    }
-    this.page.on('dialog', async dialog => {
+    const actionLink = (await this.page.$x(xpath))[0];
+    this.page.on('dialog', async (dialog) => {
       await dialog.accept();
     });
     await Promise.all([
       this.page.waitForNavigation(),
-      actionLinkHandles[0].click()
+      this.page.evaluate((e) => e.click(), actionLink)
     ]);
     await throwPageErrors(this.page);
     return this.page;

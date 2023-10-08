@@ -73,7 +73,7 @@ const tests = [
 
 describe('CustomerPortal', () => {
   describe('diff()', () => {
-    const p = new CustomerPortal(null, null);
+    const p = new CustomerPortal(null);
     for (const t of tests) {
       it(t.description, () => {
         const actual = p.diff(t.source, t.target);

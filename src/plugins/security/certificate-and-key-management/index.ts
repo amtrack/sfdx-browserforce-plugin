@@ -155,6 +155,7 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
             page.waitForNavigation(),
             page.click(SELECTORS.SAVE_BUTTON)
           ]);
+          await page.close();
         }
       }
     }
@@ -197,7 +198,9 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
             certPage.waitForNavigation(),
             certPage.click(SELECTORS.SAVE_BUTTON)
           ]);
+          await certPage.close();
         }
+        await page.close();
       }
     }
   }

@@ -28,6 +28,7 @@ export class SalesforceToSalesforce extends BrowserforcePlugin {
         (el: HTMLInputElement) => el.checked
       );
     }
+    await page.close();
     return response;
   }
 
@@ -51,6 +52,7 @@ export class SalesforceToSalesforce extends BrowserforcePlugin {
         page.click(SELECTORS.SAVE_BUTTON)
       ]);
       const result = await this.retrieve();
+      await page.close();
       if (result.enabled !== config.enabled) {
         throw new Error('setting was not applied as expected');
       }

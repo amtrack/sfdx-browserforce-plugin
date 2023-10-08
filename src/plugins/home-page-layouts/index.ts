@@ -59,6 +59,7 @@ export class HomePageLayouts extends BrowserforcePlugin {
         layout: layouts[i]
       });
     }
+    await page.close();
     return {
       homePageLayoutAssignments
     };
@@ -120,5 +121,6 @@ export class HomePageLayouts extends BrowserforcePlugin {
       page.waitForNavigation(),
       page.click(SELECTORS.SAVE_BUTTON)
     ]);
+    await page.close();
   }
 }

@@ -11,10 +11,7 @@ export class ReportsAndDashboards extends BrowserforcePlugin {
     const response: Config = {};
     if (definition) {
       if (definition.folderSharing) {
-        const pluginFolderSharing = new FolderSharing(
-          this.browserforce,
-          this.org
-        );
+        const pluginFolderSharing = new FolderSharing(this.browserforce);
         response.folderSharing = await pluginFolderSharing.retrieve(
           definition.folderSharing
         );
@@ -24,7 +21,7 @@ export class ReportsAndDashboards extends BrowserforcePlugin {
   }
 
   public diff(state: Config, definition: Config): Config {
-    const pluginFolderSharing = new FolderSharing(null, null);
+    const pluginFolderSharing = new FolderSharing(null);
     const response = {
       folderSharing: pluginFolderSharing.diff(
         state.folderSharing,
@@ -36,10 +33,7 @@ export class ReportsAndDashboards extends BrowserforcePlugin {
 
   public async apply(plan: Config): Promise<void> {
     if (plan.folderSharing) {
-      const pluginFolderSharing = new FolderSharing(
-        this.browserforce,
-        this.org
-      );
+      const pluginFolderSharing = new FolderSharing(this.browserforce);
       await pluginFolderSharing.apply(plan.folderSharing);
     }
   }
