@@ -16,10 +16,14 @@ export class HighVelocitySalesSetupPage {
   }
 
   public async setUpAndEnable(): Promise<void> {
-    await this.page.waitForSelector(SET_UP_AND_ENABLE_HVS_BUTTON);
-    await this.page.click(SET_UP_AND_ENABLE_HVS_BUTTON);
+    await this.page.waitForSelector(SET_UP_AND_ENABLE_HVS_BUTTON, {
+      visible: true
+    });
+    await Promise.all([
+      this.page.waitForSelector(ENABLE_TOGGLE, { timeout: 60_000 }),
+      await this.page.click(SET_UP_AND_ENABLE_HVS_BUTTON)
+    ]);
     await throwPageErrors(this.page);
-    await this.page.waitForSelector(ENABLE_TOGGLE);
     await this.page.close();
   }
 }
