@@ -254,3 +254,22 @@ export async function throwPageErrors(page: Page): Promise<void> {
     }
   }
 }
+
+export async function retry<T>(
+  input: (attemptCount: number) => PromiseLike<T> | T
+): Promise<T> {
+  const res = await pRetry(input, {
+    onFailedAttempt: (error) => {
+      console.warn(
+        `retrying ${error.retriesLeft} more time(s) because of "${error}"`
+      );
+    },
+    retries: process.env.BROWSERFORCE_RETRY_MAX_RETRIES
+      ? parseInt(process.env.BROWSERFORCE_RETRY_MAX_RETRIES, 10)
+      : 6,
+    minTimeout: process.env.BROWSERFORCE_RETRY_TIMEOUT_MS
+      ? parseInt(process.env.BROWSERFORCE_RETRY_TIMEOUT_MS, 10)
+      : 4000
+  });
+  return res;
+}

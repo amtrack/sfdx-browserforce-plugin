@@ -1,4 +1,5 @@
 import type { FileProperties } from 'jsforce/api/metadata';
+import { retry } from '../../browserforce';
 import { ensureArray } from '../../jsforce-utils';
 import { BrowserforcePlugin } from '../../plugin';
 import { removeEmptyValues } from '../utils';
@@ -130,9 +131,12 @@ export class Picklists extends BrowserforcePlugin {
             action.active
           );
         } else if (action.absent) {
-          const replacePage = await picklistPage.clickDeleteActionForValue(
-            action.value
-          );
+          const replacePage = await retry(async () => {
+            const p = await picklistPage.clickDeleteActionForValue(
+              action.value
+            );
+            return p;
+          });
           await replacePage.replaceAndDelete(action.newValue);
         } else if (
           !action.value &&
