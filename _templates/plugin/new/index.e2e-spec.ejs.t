@@ -5,7 +5,7 @@ import assert from 'assert';
 import { type Config, <%= h.changeCase.pascalCase(name) %> } from '.';
 
 describe(<%= h.changeCase.pascalCase(name) %>.name, function() {
-  let plugin;
+  let plugin: <%= h.changeCase.pascalCase(name) %>;
   before(() => {
     plugin = new <%= h.changeCase.pascalCase(name) %>(global.bf);
   });
