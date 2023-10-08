@@ -23,6 +23,7 @@ export class ActivitySettings extends BrowserforcePlugin {
         (el: HTMLInputElement) => el.checked
       )
     };
+    await page.close();
     return response;
   }
 
@@ -45,5 +46,6 @@ export class ActivitySettings extends BrowserforcePlugin {
       page.waitForNavigation(),
       page.click(SELECTORS.SUBMIT_BUTTON)
     ]);
+    await page.close();
   }
 }

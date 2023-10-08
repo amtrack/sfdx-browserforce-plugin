@@ -30,13 +30,14 @@ export class LightningExperienceSettings extends BrowserforcePlugin {
     const response = {
       activeThemeName: activeTheme.developerName
     };
+    await page.close();
     return response;
   }
 
   public async apply(config: Config): Promise<void> {
     const page = await this.browserforce.openPage(PATHS.BASE);
-
     await this.setActiveTheme(page, config.activeThemeName);
+    await page.close();
   }
 
   async getThemeData(page: Page): Promise<Theme[]> {

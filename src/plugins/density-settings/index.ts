@@ -24,7 +24,8 @@ export class DensitySettings extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
     const page = await this.browserforce.openPage(PATHS.BASE);
     const densities = await this.getDensities(page);
-    const selected = densities.find(input => input.checked);
+    const selected = densities.find((input) => input.checked);
+    await page.close();
     return {
       density: selected?.value
     };
@@ -33,6 +34,7 @@ export class DensitySettings extends BrowserforcePlugin {
   public async apply(config: Config): Promise<void> {
     const page = await this.browserforce.openPage(PATHS.BASE);
     await this.setDensity(page, config.density);
+    await page.close();
   }
 
   async getDensities(page: Page): Promise<Density[]> {

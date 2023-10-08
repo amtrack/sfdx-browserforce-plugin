@@ -29,6 +29,7 @@ export class EmailDeliverability extends BrowserforcePlugin {
       `${SELECTORS.ACCESS_LEVEL} > option[selected]`,
       options => options.map(option => option.textContent)
     );
+    await page.close();
     if (!selectedOptions) {
       throw new Error('Selected access level not found...')
     }
@@ -45,5 +46,6 @@ export class EmailDeliverability extends BrowserforcePlugin {
       page.waitForSelector(SELECTORS.CONFIRM_MESSAGE),
       page.click(SELECTORS.SAVE_BUTTON)
     ]);
+    await page.close();
   }
 }

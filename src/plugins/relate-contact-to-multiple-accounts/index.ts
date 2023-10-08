@@ -23,6 +23,7 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
         (el: HTMLInputElement) => el.checked
       )
     };
+    await page.close();
     return response;
   }
 
@@ -49,5 +50,6 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
       page.waitForNavigation(),
       page.click(SELECTORS.SAVE_BUTTON)
     ]);
+    await page.close();
   }
 }

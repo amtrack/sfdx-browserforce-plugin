@@ -32,6 +32,7 @@ export class DeferSharingCalculation extends BrowserforcePlugin {
         'Sharing recalculation is currently in progress, please wait until this has completed to plan'
       );
     }
+    await page.close();
     return {
       suspend: isSuspendDisabled
     };
@@ -44,14 +45,15 @@ export class DeferSharingCalculation extends BrowserforcePlugin {
       : SELECTORS.RESUME_BUTTON;
     await page.waitForSelector(button);
     await Promise.all([page.waitForNavigation(), page.click(button)]);
+    await page.close();
     if (!config.suspend) {
-      await page.close();
       const refreshedPage = await this.browserforce.openPage(PATHS.BASE);
       await refreshedPage.waitForSelector(SELECTORS.RECALCULATE_BUTTON);
       await Promise.all([
         refreshedPage.waitForNavigation(),
         refreshedPage.click(SELECTORS.RECALCULATE_BUTTON)
       ]);
+      await refreshedPage.close();
     }
   }
 }

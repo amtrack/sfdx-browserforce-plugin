@@ -83,5 +83,6 @@ export class NewFieldDependencyPage {
       this.page.click(this.saveButton)
     ]);
     await throwPageErrors(this.page);
+    await this.page.close();
   }
 }

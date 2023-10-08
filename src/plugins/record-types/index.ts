@@ -80,6 +80,7 @@ export class RecordTypes extends BrowserforcePlugin {
         newRecordTypeId = replacementRecordType.Id;
       }
       await deletePage.replace(newRecordTypeId);
+      await page.close();
     }
   }
 }

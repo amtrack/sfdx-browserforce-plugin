@@ -40,6 +40,7 @@ export class IdentityProvider extends BrowserforcePlugin {
         certNameHandle
       );
     }
+    await page.close();
     return response;
   }
 
@@ -97,6 +98,7 @@ export class IdentityProvider extends BrowserforcePlugin {
             page.waitForNavigation(),
             page.click(SELECTORS.SAVE_BUTTON)
           ]);
+          await page.close();
         },
         {
           retries: 5,
@@ -114,6 +116,7 @@ export class IdentityProvider extends BrowserforcePlugin {
         page.waitForNavigation(),
         page.click(SELECTORS.DISABLE_BUTTON)
       ]);
+      await page.close();
     }
   }
 }

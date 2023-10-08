@@ -23,6 +23,7 @@ export class Sharing extends BrowserforcePlugin {
       SELECTORS.EXTERNAL_SHARING_MODEL_BUTTON,
       (el: HTMLInputElement) => el.onclick.toString()
     );
+    await page.close();
     return {
       enableExternalSharingModel:
         buttonOnclick.indexOf(SELECTORS.MODAL_DIALOG) >= 0
@@ -46,5 +47,6 @@ export class Sharing extends BrowserforcePlugin {
         page.click(SELECTORS.DISABLE_BUTTON)
       ]);
     }
+    await page.close();
   }
 }

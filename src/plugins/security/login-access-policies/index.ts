@@ -23,6 +23,7 @@ export class LoginAccessPolicies extends BrowserforcePlugin {
         (el: HTMLInputElement) => el.checked
       )
     };
+    await page.close();
     return response;
   }
 
@@ -40,5 +41,6 @@ export class LoginAccessPolicies extends BrowserforcePlugin {
       page.waitForSelector(SELECTORS.CONFIRM_MESSAGE),
       page.click(SELECTORS.SAVE_BUTTON)
     ]);
+    await page.close();
   }
 }

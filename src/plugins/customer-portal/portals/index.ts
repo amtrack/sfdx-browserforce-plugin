@@ -86,6 +86,7 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
         `#${SELECTORS.PORTAL_SELF_REG_USER_DEFAULT_PROFILE_ID}`,
         (el: HTMLSelectElement) => el.selectedOptions[0].text
       );
+      await portalPage.close();
       // portalProfileMemberships
       const portalProfilePage = await this.browserforce.openPage(
         `${PATHS.PORTAL_PROFILE_MEMBERSHIP}?portalId=${portal._id}&setupid=CustomerSuccessPortalSettings`
@@ -117,7 +118,9 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
         });
       }
       portal.portalProfileMemberships = portalProfileMemberships;
+      await portalProfilePage.close();
     }
+    await page.close();
     return response;
   }
 
@@ -279,7 +282,9 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
             portalProfilePage.waitForNavigation(),
             portalProfilePage.click(SELECTORS.SAVE_BUTTON)
           ]);
+          await portalProfilePage.close();
         }
+        await page.close();
       }
     }
   }

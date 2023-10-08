@@ -63,6 +63,7 @@ export class Picklists extends BrowserforcePlugin {
         state._newValueExists =
           Boolean(newValueMatch) || action.newValue === null;
         result.picklistValues.push(state);
+        await page.close();
       }
     }
     if (definition.fieldDependencies) {
@@ -158,6 +159,7 @@ export class Picklists extends BrowserforcePlugin {
             action.replaceAllBlankValues
           );
         }
+        await page.close();
       }
     }
     if (config.fieldDependencies) {
