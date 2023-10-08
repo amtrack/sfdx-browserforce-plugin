@@ -1,3 +1,4 @@
+import { throwPageErrors } from '../../browserforce';
 import { BrowserforcePlugin } from '../../plugin';
 
 const PATHS = {
@@ -5,8 +6,11 @@ const PATHS = {
 };
 const SELECTORS = {
   ENABLED: 'input[id$=":sharedContactsCheckBox"]',
+  DISABLED_CHECKBOX: 'input[id$=":sharedContactsCheckBox"][disabled=disabled]',
   EDIT_BUTTON: 'input[id$=":edit"]',
-  SAVE_BUTTON: 'input[id$=":save"]'
+  SAVE_BUTTON: 'input[id$=":save"]',
+  CONFIRM_CHECKBOX: 'input#disable_confirm',
+  CONFIRM_BUTTON: 'input#sharedContactsDisableConfirmButton'
 };
 
 type Config = {
@@ -40,7 +44,7 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
     await Promise.all([
       page.waitForNavigation(),
       page.click(SELECTORS.EDIT_BUTTON)
-    ])
+    ]);
     // Change the value of the checkbox
     await page.waitForSelector(SELECTORS.ENABLED);
     await page.$eval(
@@ -53,9 +57,21 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
     // Save
     await page.waitForSelector(SELECTORS.SAVE_BUTTON);
     await Promise.all([
-      page.waitForNavigation(),
+      Promise.race([
+        page.waitForSelector(SELECTORS.DISABLED_CHECKBOX),
+        page.waitForSelector(SELECTORS.CONFIRM_CHECKBOX)
+      ]),
       page.click(SELECTORS.SAVE_BUTTON)
     ]);
+    if (await page.$(SELECTORS.CONFIRM_CHECKBOX)) {
+      await page.click(SELECTORS.CONFIRM_CHECKBOX);
+      await page.waitForSelector(SELECTORS.CONFIRM_BUTTON);
+      await Promise.all([
+        page.waitForNavigation(),
+        page.click(SELECTORS.CONFIRM_BUTTON)
+      ]);
+    }
+    await throwPageErrors(page);
     await page.close();
   }
 }
