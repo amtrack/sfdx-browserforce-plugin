@@ -58,8 +58,9 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
     await page.waitForSelector(SELECTORS.SAVE_BUTTON);
     await Promise.all([
       Promise.race([
-        page.waitForSelector(SELECTORS.DISABLED_CHECKBOX),
-        page.waitForSelector(SELECTORS.CONFIRM_CHECKBOX)
+        page.waitForNavigation(),
+        page.waitForSelector(SELECTORS.DISABLED_CHECKBOX, { visible: true }),
+        page.waitForSelector(SELECTORS.CONFIRM_CHECKBOX, { visible: true })
       ]),
       page.click(SELECTORS.SAVE_BUTTON)
     ]);
