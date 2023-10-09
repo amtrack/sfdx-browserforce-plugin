@@ -1,4 +1,3 @@
-import pRetry from 'p-retry';
 import { JSHandle, Page } from 'puppeteer';
 
 // table columns
@@ -22,13 +21,13 @@ export class PicklistPage {
   public async getPicklistValues(): Promise<Array<PicklistValue>> {
     // wait for New button in any related list
     await this.page.waitForSelector('body table input[name="new"]');
-    const resolvePicklistValueNames = async xpath => {
+    const resolvePicklistValueNames = async (xpath) => {
       const fullNameHandles = await this.page.$x(xpath);
       const innerTextJsHandles = await Promise.all<JSHandle<string>>(
-        fullNameHandles.map(handle => handle.getProperty('innerText'))
+        fullNameHandles.map((handle) => handle.getProperty('innerText'))
       );
       const fullNames = await Promise.all<string>(
-        innerTextJsHandles.map(handle => handle.jsonValue())
+        innerTextJsHandles.map((handle) => handle.jsonValue())
       );
       return fullNames;
     };
@@ -39,10 +38,10 @@ export class PicklistPage {
       `//tr[td[1]//a[contains(@href, "/setup/ui/picklist_masteractivate")]]//td[2]`
     );
     return [
-      ...active.map(x => {
+      ...active.map((x) => {
         return { value: x, active: true };
       }),
-      ...inactive.map(x => {
+      ...inactive.map((x) => {
         return { value: x, active: false };
       })
     ];
@@ -71,7 +70,9 @@ export class PicklistPage {
   public async clickDeleteActionForValue(
     picklistValueApiName: string
   ): Promise<PicklistReplaceAndDeletePage> {
-    const xpath = `//tr[td[2][text() = "${picklistValueApiName}"]]//td[1]//a[contains(@href, "/setup/ui/picklist_masterdelete.jsp") and contains(@href, "deleteType=0")]`;
+    // deactivate: deleteType=1
+    // delete: deleteType=0 or no deleteType=1
+    const xpath = `//tr[td[2][text() = "${picklistValueApiName}"]]//td[1]//a[contains(@href, "/setup/ui/picklist_masterdelete.jsp") and not(contains(@href, "deleteType=1"))]`;
     await this.page.waitForXPath(xpath);
     const deleteLink = (await this.page.$x(xpath))[0];
     this.page.on('dialog', async (dialog) => {
@@ -93,6 +94,8 @@ export class PicklistPage {
     if (active) {
       xpath = `//tr[td[2][text() = "${picklistValueApiName}"]]//td[1]//a[contains(@href, "/setup/ui/picklist_masteractivate.jsp")]`;
     } else {
+      // deactivate: deleteType=1
+      // delete: deleteType=0 or no deleteType=1
       xpath = `//tr[td[2][text() = "${picklistValueApiName}"]]//td[1]//a[contains(@href, "/setup/ui/picklist_masterdelete.jsp") and contains(@href, "deleteType=1")]`;
     }
     await this.page.waitForXPath(xpath);
@@ -127,29 +130,12 @@ export class DefaultPicklistAddPage {
   }
 
   async save(): Promise<void> {
-    await pRetry(
-      async () => {
-        await this.page.waitForSelector(this.saveButton);
-        await Promise.all([
-          this.page.waitForNavigation(),
-          this.page.click(this.saveButton)
-        ]);
-        await throwPageErrors(this.page);
-      },
-      {
-        onFailedAttempt: error => {
-          console.warn(
-            `retrying ${error.retriesLeft} more time(s) because of "${error}"`
-          );
-        },
-        retries: process.env.BROWSERFORCE_RETRY_MAX_RETRIES
-          ? parseInt(process.env.BROWSERFORCE_RETRY_MAX_RETRIES, 10)
-          : 6,
-        minTimeout: process.env.BROWSERFORCE_RETRY_TIMEOUT_MS
-          ? parseInt(process.env.BROWSERFORCE_RETRY_TIMEOUT_MS, 10)
-          : 4000
-      }
-    );
+    await this.page.waitForSelector(this.saveButton);
+    await Promise.all([
+      this.page.waitForNavigation(),
+      this.page.click(this.saveButton)
+    ]);
+    await throwPageErrors(this.page);
   }
 }
 
@@ -175,29 +161,12 @@ export class StatusPicklistAddPage {
   }
 
   async save(): Promise<void> {
-    await pRetry(
-      async () => {
-        await this.page.waitForSelector(this.saveButton);
-        await Promise.all([
-          this.page.waitForNavigation(),
-          this.page.click(this.saveButton)
-        ]);
-        await throwPageErrors(this.page);
-      },
-      {
-        onFailedAttempt: error => {
-          console.warn(
-            `retrying ${error.retriesLeft} more time(s) because of "${error}"`
-          );
-        },
-        retries: process.env.BROWSERFORCE_RETRY_MAX_RETRIES
-          ? parseInt(process.env.BROWSERFORCE_RETRY_MAX_RETRIES, 10)
-          : 6,
-        minTimeout: process.env.BROWSERFORCE_RETRY_TIMEOUT_MS
-          ? parseInt(process.env.BROWSERFORCE_RETRY_TIMEOUT_MS, 10)
-          : 4000
-      }
-    );
+    await this.page.waitForSelector(this.saveButton);
+    await Promise.all([
+      this.page.waitForNavigation(),
+      this.page.click(this.saveButton)
+    ]);
+    await throwPageErrors(this.page);
   }
 }
 
@@ -233,29 +202,12 @@ export class PicklistReplacePage {
   }
 
   async save(): Promise<void> {
-    await pRetry(
-      async () => {
-        await this.page.waitForSelector(this.saveButton);
-        await Promise.all([
-          this.page.waitForNavigation(),
-          this.page.click(this.saveButton)
-        ]);
-        await throwPageErrors(this.page);
-      },
-      {
-        onFailedAttempt: error => {
-          console.warn(
-            `retrying ${error.retriesLeft} more time(s) because of "${error}"`
-          );
-        },
-        retries: process.env.BROWSERFORCE_RETRY_MAX_RETRIES
-          ? parseInt(process.env.BROWSERFORCE_RETRY_MAX_RETRIES, 10)
-          : 6,
-        minTimeout: process.env.BROWSERFORCE_RETRY_TIMEOUT_MS
-          ? parseInt(process.env.BROWSERFORCE_RETRY_TIMEOUT_MS, 10)
-          : 4000
-      }
-    );
+    await this.page.waitForSelector(this.saveButton);
+    await Promise.all([
+      this.page.waitForNavigation(),
+      this.page.click(this.saveButton)
+    ]);
+    await throwPageErrors(this.page);
   }
 }
 
@@ -277,7 +229,6 @@ export class PicklistReplaceAndDeletePage extends PicklistReplacePage {
       await this.page.waitForSelector(REPLACE_WITH_BLANK_VALUE_RADIO_INPUT);
       await this.page.click(REPLACE_WITH_BLANK_VALUE_RADIO_INPUT);
     }
-    await this.save();
   }
 }
 
