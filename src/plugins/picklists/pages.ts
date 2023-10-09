@@ -70,7 +70,9 @@ export class PicklistPage {
   public async clickDeleteActionForValue(
     picklistValueApiName: string
   ): Promise<PicklistReplaceAndDeletePage> {
-    const xpath = `//tr[td[2][text() = "${picklistValueApiName}"]]//td[1]//a[contains(@href, "/setup/ui/picklist_masterdelete.jsp") and contains(@href, "deleteType=0")]`;
+    // deactivate: deleteType=1
+    // delete: deleteType=0 or no deleteType=1
+    const xpath = `//tr[td[2][text() = "${picklistValueApiName}"]]//td[1]//a[contains(@href, "/setup/ui/picklist_masterdelete.jsp") and not(contains(@href, "deleteType=1"))]`;
     await this.page.waitForXPath(xpath);
     const deleteLink = (await this.page.$x(xpath))[0];
     this.page.on('dialog', async (dialog) => {
@@ -92,6 +94,8 @@ export class PicklistPage {
     if (active) {
       xpath = `//tr[td[2][text() = "${picklistValueApiName}"]]//td[1]//a[contains(@href, "/setup/ui/picklist_masteractivate.jsp")]`;
     } else {
+      // deactivate: deleteType=1
+      // delete: deleteType=0 or no deleteType=1
       xpath = `//tr[td[2][text() = "${picklistValueApiName}"]]//td[1]//a[contains(@href, "/setup/ui/picklist_masterdelete.jsp") and contains(@href, "deleteType=1")]`;
     }
     await this.page.waitForXPath(xpath);
