@@ -21,9 +21,11 @@ describe(Picklists.name, function () {
     .settings.picklists;
 
   it('should deploy a CustomObject for testing', () => {
-    const sourceDeployCmd = child.spawnSync('sfdx', [
-      'force:source:deploy',
-      '-p',
+    const sourceDeployCmd = child.spawnSync('sf', [
+      'project',
+      'deploy',
+      'start',
+      '-d',
       path.join(__dirname, 'sfdx-source'),
       '--json'
     ]);

@@ -5,7 +5,7 @@
 [![Actions Status](https://github.com/amtrack/sfdx-browserforce-plugin/workflows/Test%20and%20Release/badge.svg)](https://github.com/amtrack/sfdx-browserforce-plugin/actions)
 
 Unlike the [Scratch Org Definition Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_scratch_orgs_def_file.htm) which can only be used **on the creation of a scratch org** (`sfdx force:org:create -f config/scratch-def.json`),
-the _Browserforce Configuration_ allows to "shape" **any org**, (e.g. scratch org, sandbox or production org) with **similar preferences and unofficial preferences** that are not (yet) available in the _Scratch Org Definition Configuration_ or as _Metadata_ (`sfdx browserforce:apply -f config/setup-admin-login-as-any.json -u myOrg@example.com`).
+the _Browserforce Configuration_ allows to "shape" **any org**, (e.g. scratch org, sandbox or production org) with **similar preferences and unofficial preferences** that are not (yet) available in the _Scratch Org Definition Configuration_ or as _Metadata_ (`sf browserforce:apply -f config/setup-admin-login-as-any.json -u myOrg@example.com`).
 
 Further benefits:
 
@@ -19,8 +19,8 @@ Further benefits:
 There are several different methods to install `sfdx-browserforce-plugin`:
 
 ```console
-# as an sfdx plugin globally
-sfdx plugins:install sfdx-browserforce-plugin
+# as an sf plugin globally
+sf plugins install sfdx-browserforce-plugin
 
 # or standalone globally
 npm install --global sfdx-browserforce-plugin
@@ -34,8 +34,8 @@ npm install --save-dev sfdx-browserforce-plugin
 Depending on your choice of installation, you can find the `browserforce` namespace:
 
 ```console
-# globally in the sfdx cli
-sfdx browserforce
+# globally in the sf cli
+sf browserforce
 
 # globally in the sfdx-browserforce-plugin executable
 sfdx-browserforce-plugin browserforce
@@ -80,7 +80,7 @@ Tip: If you use _Visual Studio Code_, you can leverage tab completion to build t
 Next apply the config:
 
 ```console
-$ sfdx browserforce:apply -f ./config/setup-admin-login-as-any.json --targetusername myOrg@example.com
+$ sf browserforce:apply -f ./config/setup-admin-login-as-any.json --targetusername myOrg@example.com
   logging in... done
   Applying definition file ./config/setup-admin-login-as-any.json to org myOrg@example.com
   [Security] retrieving state... done

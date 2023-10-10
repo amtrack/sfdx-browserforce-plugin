@@ -33,12 +33,12 @@ _help() {
 _main() {
   alias="${alias:-${DEFAULT_ALIAS}}"
   # shellcheck disable=SC2068
-  sfdx force:org:create -f config/project-scratch-def.json \
+  sf org create scratch -f config/project-scratch-def.json \
     -a "$alias" \
-    -s \
-    description="${alias}" ${POSITIONAL_ARGS[@]}
-  sfdx force:org:display -u "$alias"
-  sfdx force:source:push -u "$alias"
+    -d \
+    ${POSITIONAL_ARGS[@]}
+  sf org display -o "$alias"
+  sf project deploy start -o "$alias"
 }
 
 if [[ "$0" == "${BASH_SOURCE[0]}" ]]; then

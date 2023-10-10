@@ -16,18 +16,18 @@ jobs:
       - name: Install dependencies
         run: |
           yarn install
-          yarn global add sfdx-cli@7.172.0
+          yarn global add @salesforce/cli@${SF_CLI_VERSION:-"latest"}
       - name: Run unit tests
         run: yarn test
       - name: Authenticate DevHub and create scratch org
         env:
           SFDX_AUTH_URL_DEVHUB: ${{ secrets.SFDX_AUTH_URL_DEVHUB }}
         run: |
-          sfdx auth:sfdxurl:store -d -a devhub -f /dev/stdin <<< "${SFDX_AUTH_URL_DEVHUB}"
-          yarn develop release=preview
+          sf org login sfdx-url -d -a devhub -f /dev/stdin <<< "${SFDX_AUTH_URL_DEVHUB}"
+          yarn develop --release preview
       - name: Run end-to-end tests
         run: yarn test:e2e
       - name: Delete scratch org
         if: always()
         run: |
-          sfdx force:org:delete -p
+          sf org delete scratch -p

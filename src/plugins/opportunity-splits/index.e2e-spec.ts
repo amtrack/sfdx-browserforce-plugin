@@ -16,9 +16,11 @@ describe(OpportunitySplits.name, function () {
     enabled: false
   };
   it('should enable Opportunity Teams as prerequisite', () => {
-    const sourceDeployCmd = child.spawnSync('sfdx', [
-      'force:source:deploy',
-      '-p',
+    const sourceDeployCmd = child.spawnSync('sf', [
+      'project',
+      'deploy',
+      'start',
+      '-d',
       path.join(__dirname, 'sfdx-source'),
       '--json'
     ]);

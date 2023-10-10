@@ -50,7 +50,7 @@ Bravo 👏, you have just generated a working browserforce plugin!
 Create a scratch org and try it yourself:
 
 ```console
-sfdx force:org:create -f config/project-scratch-def.json -a browserforce-dev -s
+sf org create scratch -f config/project-scratch-def.json -a browserforce-dev -d
 BROWSER_DEBUG=true ./bin/run browserforce:apply -f src/plugins/admins-can-log-in-as-any-user/enable.json -u browserforce-dev
 BROWSER_DEBUG=true ./bin/run browserforce:apply -f src/plugins/admins-can-log-in-as-any-user/disable.json -u browserforce-dev
 ```
@@ -115,7 +115,7 @@ This allows to run multiple actions (from multiple plugins) using a single confi
 
 #### Implementation (`index.ts`)
 
-Plugins are written in [Typescript](https://www.typescriptlang.org), just like `sfdx` and most of the available sfdx plugins.
+Plugins are written in [Typescript](https://www.typescriptlang.org), just like `sf` and most of the available sf plugins.
 
 [Puppeteer](https://pptr.dev) is being used as a library for browser automation.
 If you need more inspiration regarding Puppeteer, checkout [this curated list](https://github.com/transitive-bullshit/awesome-puppeteer) of awesome Puppeteer resources.
@@ -167,7 +167,7 @@ To run the **end to end tests**, you might want to create a new **default scratc
 > Note: Your default scratch org will be used in the tests!
 
 ```console
-sfdx force:org:create -f config/project-scratch-def.json --setdefaultusername
+sf org create scratch -f config/project-scratch-def.json -d
 ```
 
 ```console
