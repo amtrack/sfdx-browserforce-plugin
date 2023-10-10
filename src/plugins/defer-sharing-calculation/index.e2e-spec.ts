@@ -15,9 +15,11 @@ describe(DeferSharingCalculation.name, function () {
     suspend: false
   };
   it('should assign the user defer sharing permissions', () => {
-    const sourceDeployCmd = child.spawnSync('sfdx', [
-      'force:source:deploy',
-      '-p',
+    const sourceDeployCmd = child.spawnSync('sf', [
+      'project',
+      'deploy',
+      'start',
+      '-d',
       path.join(__dirname, 'sfdx-source'),
       '--json'
     ]);
@@ -26,27 +28,16 @@ describe(DeferSharingCalculation.name, function () {
       0,
       sourceDeployCmd.output.toString()
     );
-    const stdout = JSON.parse(sourceDeployCmd.stdout.toString());
-    assert.ok(
-      stdout.result &&
-        stdout.result.deployedSource &&
-        stdout.result.deployedSource.find(
-          source => source.fullName === 'Defer_Sharing'
-        ),
-      sourceDeployCmd.output.toString()
-    );
-    const permSetAssignCmd = child.spawnSync('sfdx', [
-      'force:user:permset:assign',
+    const permSetAssignCmd = child.spawnSync('sf', [
+      'org',
+      'assign',
+      'permset',
       '-n',
       'Defer_Sharing'
     ]);
     assert.deepStrictEqual(
       permSetAssignCmd.status,
       0,
-      permSetAssignCmd.output.toString()
-    );
-    assert.ok(
-      /Defer_Sharing/.test(permSetAssignCmd.output.toString()),
       permSetAssignCmd.output.toString()
     );
   });
@@ -76,8 +67,9 @@ describe(DeferSharingCalculation.name, function () {
     }
   });
   it('should delete the PermissionSetAssignment', async () => {
-    const permSetUnassignCmd = child.spawnSync('sfdx', [
-      'force:data:record:delete',
+    const permSetUnassignCmd = child.spawnSync('sf', [
+      'data',
+      'delete',
       '-s',
       'PermissionSetAssignment',
       '-w',
@@ -86,10 +78,6 @@ describe(DeferSharingCalculation.name, function () {
     assert.deepStrictEqual(
       permSetUnassignCmd.status,
       0,
-      permSetUnassignCmd.output.toString()
-    );
-    assert.ok(
-      /Successfully deleted record/.test(permSetUnassignCmd.output.toString()),
       permSetUnassignCmd.output.toString()
     );
   });

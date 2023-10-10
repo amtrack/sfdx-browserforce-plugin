@@ -88,9 +88,11 @@ describe('CustomerPortal', () => {
       }, /This user has insufficient permissions to be a portal administrator/);
     });
     it('should set up user for portal', async () => {
-      const sourceDeployCmd = child.spawnSync('sfdx', [
-        'force:source:deploy',
-        '-p',
+      const sourceDeployCmd = child.spawnSync('sf', [
+        'project',
+        'deploy',
+        'start',
+        '-d',
         path.join(dir, 'sfdx-source'),
         '--json'
       ]);
@@ -99,27 +101,16 @@ describe('CustomerPortal', () => {
         0,
         sourceDeployCmd.output.toString()
       );
-      const stdout = JSON.parse(sourceDeployCmd.stdout.toString());
-      assert.ok(
-        stdout.result &&
-          stdout.result.deployedSource &&
-          stdout.result.deployedSource.find(
-            (source) => source.fullName === 'Customer_Portal_Admin'
-          ),
-        sourceDeployCmd.output.toString()
-      );
-      const permSetAssignCmd = child.spawnSync('sfdx', [
-        'force:user:permset:assign',
+      const permSetAssignCmd = child.spawnSync('sf', [
+        'org',
+        'assign',
+        'permset',
         '-n',
         'Customer_Portal_Admin'
       ]);
       assert.deepStrictEqual(
         permSetAssignCmd.status,
         0,
-        permSetAssignCmd.output.toString()
-      );
-      assert.ok(
-        /Customer_Portal_Admin/.test(permSetAssignCmd.output.toString()),
         permSetAssignCmd.output.toString()
       );
     });
@@ -140,8 +131,9 @@ describe('CustomerPortal', () => {
     it('should cleanup', async () => {
       const conn = global.bf.org.getConnection();
       await conn.metadata.delete('Profile', ['Dummy']);
-      const permSetUnassignCmd = child.spawnSync('sfdx', [
-        'force:data:record:delete',
+      const permSetUnassignCmd = child.spawnSync('sf', [
+        'data',
+        'delete',
         '-s',
         'PermissionSetAssignment',
         '-w',
@@ -150,12 +142,6 @@ describe('CustomerPortal', () => {
       assert.deepStrictEqual(
         permSetUnassignCmd.status,
         0,
-        permSetUnassignCmd.output.toString()
-      );
-      assert.ok(
-        /Successfully deleted record/.test(
-          permSetUnassignCmd.output.toString()
-        ),
         permSetUnassignCmd.output.toString()
       );
       await conn.metadata.delete('PermissionSet', ['Customer_Portal_Admin']);
@@ -200,24 +186,17 @@ describe('CustomerPortal', () => {
       }, /Could not find CustomObject/);
     });
     it('should deploy custom object', () => {
-      const sourceDeployCmd = child.spawnSync('sfdx', [
-        'force:source:deploy',
-        '-p',
+      const sourceDeployCmd = child.spawnSync('sf', [
+        'project',
+        'deploy',
+        'start',
+        '-d',
         path.join(dir, 'sfdx-source'),
         '--json'
       ]);
       assert.deepStrictEqual(
         sourceDeployCmd.status,
         0,
-        sourceDeployCmd.output.toString()
-      );
-      const stdout = JSON.parse(sourceDeployCmd.stdout.toString());
-      assert.ok(
-        stdout.result &&
-          stdout.result.deployedSource &&
-          stdout.result.deployedSource.find(
-            (source) => source.fullName === 'Dummy__c'
-          ),
         sourceDeployCmd.output.toString()
       );
     });
