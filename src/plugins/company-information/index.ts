@@ -9,7 +9,7 @@ const SELECTORS = {
   SAVE_BUTTON: 'input[class="btn"][type="submit"][name="save"]'
 };
 
-type Config = {
+export type Config = {
   defaultCurrencyIsoCode?: string;
 };
 
