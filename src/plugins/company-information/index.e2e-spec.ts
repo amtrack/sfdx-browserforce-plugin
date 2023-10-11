@@ -1,62 +1,38 @@
 import assert from 'assert';
-import * as child from 'child_process';
-import * as path from 'path';
-import { CompanyInformation } from '.';
-import Os from 'os';
+import { CompanyInformation, Config } from '.';
 
 describe(CompanyInformation.name, function () {
-  this.slow('30s');
-  this.timeout('2m');
+  let plugin: CompanyInformation;
+  before(() => {
+    plugin = new CompanyInformation(global.bf);
+  });
 
-  const execStr = path.resolve('bin', Os.platform().startsWith('win') ? 'run.cmd' : 'run');
+  const configZAR: Config = {
+    defaultCurrencyIsoCode: "English (South Africa) - ZAR"
+  }
+  const configIRE: Config = {
+    defaultCurrencyIsoCode: "English (Ireland) - EUR"
+  }
 
-  it('should set the currency to "English (South Africa) - ZAR" for next steps', () => {
-    const bffile = path.join(__dirname, 'currency-zar.json');
-    const apply = child.spawnSync(execStr, [
-      'browserforce:apply',
-      '-f',
-      bffile
-    ]);
-    assert.deepStrictEqual(apply.status, 0, apply.output.toString());
-    // no additional assertions are done here as this is a preparation for the followup tests
+  it('should set the currency to "English (South Africa) - ZAR" for next steps', async () => {
+    await plugin.run(configZAR);
   });
-  it('should change currency to "English (Ireland) - EUR"', () => {
-    const bffile = path.join(__dirname, 'currency-ireland.json');
-    const apply = child.spawnSync(execStr, [
-      'browserforce:apply',
-      '-f',
-      bffile
-    ]);
-    assert.deepStrictEqual(apply.status, 0, apply.output.toString());
-    assert.ok(
-      /to '"English \(Ireland\) - EUR"'/.test(apply.output.toString()),
-      apply.output.toString()
-    );
+  it('should change currency to "English (Ireland) - EUR"', async () => {
+    await plugin.run(configIRE);
   });
-  it('should respond to no action necessary for currency change', () => {
-    const bffile = path.join(__dirname, 'currency-ireland.json');
-    const apply = child.spawnSync(execStr, [
-      'browserforce:apply',
-      '-f',
-      bffile
-    ]);
-    assert.deepStrictEqual(apply.status, 0, apply.output.toString());
-    assert.ok(
-      /no action necessary/.test(apply.output.toString()),
-      apply.output.toString()
-    );
+  it('should respond to no action necessary for currency change', async () => {
+    const res = await plugin.run(configIRE);
+    assert.deepStrictEqual(res, { message: 'no action necessary' });
   });
-  it('should error on invalid input for invalid currency', () => {
-    const bffile = path.join(__dirname, 'currency-invalid.json');
-    const apply = child.spawnSync(execStr, [
-      'browserforce:apply',
-      '-f',
-      bffile
-    ]);
-    assert.notDeepStrictEqual(apply.status, 0, apply.output.toString());
-    assert.ok(
-      /Invalid currency provided/.test(apply.output.toString()),
-      apply.output.toString()
-    );
+  it('should error on invalid input for invalid currency', async () => {
+    let err;
+    try {
+      await plugin.apply({ defaultCurrencyIsoCode: "Invalid Currency" });
+    } catch (e) {
+      err = e;
+    }
+    assert.throws(() => {
+      throw err;
+    }, /Invalid currency provided/);
   });
 });
