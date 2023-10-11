@@ -21,7 +21,7 @@ export class HighVelocitySalesSetupPage {
     });
     await Promise.all([
       this.page.waitForSelector(ENABLE_TOGGLE, { timeout: 60_000 }),
-      await this.page.click(SET_UP_AND_ENABLE_HVS_BUTTON)
+      this.page.click(SET_UP_AND_ENABLE_HVS_BUTTON)
     ]);
     await throwPageErrors(this.page);
     await this.page.close();
