@@ -5,7 +5,7 @@ import { HighVelocitySalesSetupPage } from './page';
 const MSG_NOT_AVAILABLE = `HighVelocitySales is not available in this organization.
 Please add 'HighVelocitySales' to your Scratch Org Features or purchase a license.`;
 
-type Config = {
+export type Config = {
   setUpAndEnable: boolean;
 };
 

@@ -1,13 +1,13 @@
 import assert from 'assert';
-import { HighVelocitySalesSettings } from '.';
+import { Config, HighVelocitySalesSettings } from '.';
 
 describe(HighVelocitySalesSettings.name, function () {
-  let plugin;
+  let plugin: HighVelocitySalesSettings;
   before(() => {
     plugin = new HighVelocitySalesSettings(global.bf);
   });
 
-  const configEnabled = {
+  const configEnabled: Config = {
     setUpAndEnable: true
   };
   const configDisabled = {
