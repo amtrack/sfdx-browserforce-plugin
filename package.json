@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@mdapi-issues/listmetadata-standardvalueset": "2.0.3",
-    "@salesforce/command": "5.2.16",
+    "@salesforce/command": "5.3.9",
     "json-merge-patch": "1.0.2",
     "p-retry": "4.6.2",
     "puppeteer": "19.2.0",
