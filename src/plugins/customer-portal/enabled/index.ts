@@ -8,19 +8,13 @@ const SELECTORS = {
   SAVE_BUTTON: 'input[name="save"]'
 };
 
-export type Config = boolean;
+export type Config = boolean | undefined;
 
 export class CustomerPortalEnable extends BrowserforcePlugin {
-  public async retrieve(definition?: Config): Promise<Config> {
+  public async retrieve(): Promise<Config> {
     const conn = await this.browserforce.org.getConnection();
     const orgSettings = await conn.metadata.read('OrgSettings', 'Org');
-    return orgSettings.enableCustomerSuccessPortal;
-  }
-
-  public diff(state: Config, definition: Config): Config {
-    if (state !== definition) {
-      return definition;
-    }
+    return orgSettings.enableCustomerSuccessPortal ?? false;
   }
 
   public async apply(plan: Config): Promise<void> {
@@ -38,10 +32,7 @@ export class CustomerPortalEnable extends BrowserforcePlugin {
         },
         plan
       );
-      await Promise.all([
-        page.waitForNavigation(),
-        page.click(SELECTORS.SAVE_BUTTON)
-      ]);
+      await Promise.all([page.waitForNavigation(), page.click(SELECTORS.SAVE_BUTTON)]);
       await page.close();
     }
   }

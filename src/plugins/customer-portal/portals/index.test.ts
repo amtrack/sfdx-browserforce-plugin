@@ -25,13 +25,13 @@ const tests = [
     expected: [
       {
         _id: 'p1',
+        name: 'Customer Portal',
         description: 'new description'
       }
     ]
   },
   {
-    description:
-      'should only return portal and portalProfileMemberships fields',
+    description: 'should only return portal and portalProfileMemberships fields',
     source: [
       {
         name: 'Customer Portal',
@@ -61,9 +61,11 @@ const tests = [
     expected: [
       {
         _id: 'p1',
+        name: 'Customer Portal',
         portalProfileMemberships: [
           {
             _id: 'a1',
+            name: 'Customer Portal Manager Standard',
             active: false
           }
         ]
@@ -122,13 +124,13 @@ const tests = [
         ]
       }
     ],
-    expected: []
+    expected: undefined
   }
 ];
 
 describe('CustomerPortalSetup', () => {
   describe('diff()', () => {
-    const p = new CustomerPortalSetup(null);
+    const p = new CustomerPortalSetup(global.bf);
     for (const t of tests) {
       it(t.description, () => {
         const actual = p.diff(t.source, t.target);

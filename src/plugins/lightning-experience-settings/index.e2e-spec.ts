@@ -24,5 +24,16 @@ describe(LightningExperienceSettings.name, function () {
       const state = await plugin.retrieve();
       assert.deepStrictEqual(state, configLightning);
     });
+    it('should throw for invalid theme', async () => {
+      let err;
+      try {
+        await plugin.run({ activeThemeName: 'Foo' });
+      } catch (e) {
+        err = e;
+      }
+      assert.throws(() => {
+        throw err;
+      }, /Could not find theme/);
+    });
   });
 });

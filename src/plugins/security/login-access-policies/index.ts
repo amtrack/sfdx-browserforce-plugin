@@ -14,14 +14,11 @@ export type Config = {
 };
 
 export class LoginAccessPolicies extends BrowserforcePlugin {
-  public async retrieve(definition?: Config): Promise<Config> {
+  public async retrieve(): Promise<Config> {
     const page = await this.browserforce.openPage(PATHS.BASE);
     await page.waitForSelector(SELECTORS.ENABLED);
     const response = {
-      administratorsCanLogInAsAnyUser: await page.$eval(
-        SELECTORS.ENABLED,
-        (el: HTMLInputElement) => el.checked
-      )
+      administratorsCanLogInAsAnyUser: await page.$eval(SELECTORS.ENABLED, (el: HTMLInputElement) => el.checked)
     };
     await page.close();
     return response;
@@ -37,10 +34,7 @@ export class LoginAccessPolicies extends BrowserforcePlugin {
       },
       config.administratorsCanLogInAsAnyUser
     );
-    await Promise.all([
-      page.waitForSelector(SELECTORS.CONFIRM_MESSAGE),
-      page.click(SELECTORS.SAVE_BUTTON)
-    ]);
+    await Promise.all([page.waitForSelector(SELECTORS.CONFIRM_MESSAGE), page.click(SELECTORS.SAVE_BUTTON)]);
     await page.close();
   }
 }

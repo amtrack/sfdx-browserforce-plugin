@@ -8,7 +8,7 @@ const tests = [
       enabled: true
     },
     target: {},
-    expected: {}
+    expected: undefined
   },
   {
     description: 'should ignore a matching target flag',
@@ -18,7 +18,7 @@ const tests = [
     target: {
       enabled: true
     },
-    expected: {}
+    expected: undefined
   },
   {
     description: 'should detect a changed flag',
@@ -63,6 +63,7 @@ const tests = [
     expected: {
       portals: [
         {
+          name: 'Customer Portal',
           description: 'new description',
           _id: 'p1'
         }
@@ -73,7 +74,7 @@ const tests = [
 
 describe('CustomerPortal', () => {
   describe('diff()', () => {
-    const p = new CustomerPortal(null);
+    const p = new CustomerPortal(global.bf);
     for (const t of tests) {
       it(t.description, () => {
         const actual = p.diff(t.source, t.target);

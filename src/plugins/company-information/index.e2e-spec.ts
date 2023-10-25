@@ -8,11 +8,11 @@ describe(CompanyInformation.name, function () {
   });
 
   const configZAR: Config = {
-    defaultCurrencyIsoCode: "English (South Africa) - ZAR"
-  }
+    defaultCurrencyIsoCode: 'English (South Africa) - ZAR'
+  };
   const configIRE: Config = {
-    defaultCurrencyIsoCode: "English (Ireland) - EUR"
-  }
+    defaultCurrencyIsoCode: 'English (Ireland) - EUR'
+  };
 
   it('should set the currency to "English (South Africa) - ZAR" for next steps', async () => {
     await plugin.run(configZAR);
@@ -27,7 +27,7 @@ describe(CompanyInformation.name, function () {
   it('should error on invalid input for invalid currency', async () => {
     let err;
     try {
-      await plugin.apply({ defaultCurrencyIsoCode: "Invalid Currency" });
+      await plugin.apply({ defaultCurrencyIsoCode: 'Invalid Currency' });
     } catch (e) {
       err = e;
     }

@@ -1,7 +1,7 @@
 import { BrowserforcePlugin } from './plugin';
 
 type Drivers = {
-  [key: string]: unknown;
+  [key: string]: typeof BrowserforcePlugin;
 };
 
 type Data = {
@@ -16,8 +16,8 @@ type Config = {
 
 export class ConfigParser {
   public static parse(drivers: Drivers, data: Data): Config[] {
-    const settings = [];
-    if (data && data.settings) {
+    const settings: Config[] = [];
+    if (data?.settings) {
       for (const driverName of Object.keys(data.settings)) {
         if (drivers[driverName]) {
           settings.push({
@@ -26,17 +26,11 @@ export class ConfigParser {
             value: data.settings[driverName]
           });
         } else {
-          throw new Error(
-            `Could not find plugin named '${driverName}' in definition: ${JSON.stringify(
-              data
-            )}`
-          );
+          throw new Error(`Could not find plugin named '${driverName}' in definition: ${JSON.stringify(data)}`);
         }
       }
     } else {
-      throw new Error(
-        `Missing 'settings' attribute in definition: ${JSON.stringify(data)}`
-      );
+      throw new Error(`Missing 'settings' attribute in definition: ${JSON.stringify(data)}`);
     }
     return settings;
   }

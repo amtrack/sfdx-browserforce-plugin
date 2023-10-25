@@ -1,0 +1,10 @@
+{
+  "extends": "@salesforce/dev-config/tsconfig-test",
+  "include": ["./**/*.ts"],
+  "compilerOptions": {
+    "lib": ["dom", "es2021"],
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "esModuleInterop": true
+  }
+}

@@ -28,8 +28,7 @@ describe(`${CertificateAndKeyManagement.name} and ${IdentityProvider.name}`, fun
   const configImportFromKeystore = {
     importFromKeystore: [
       {
-        filePath:
-          './src/plugins/security/certificate-and-key-management/Dummy.jks',
+        filePath: './src/plugins/security/certificate-and-key-management/Dummy.jks',
         name: 'Dummy'
       }
     ]
@@ -69,7 +68,7 @@ describe(`${CertificateAndKeyManagement.name} and ${IdentityProvider.name}`, fun
     assert.deepStrictEqual(state.enabled, false);
   });
   it('should import a cert from a keystore', async () => {
-    await pluginCertificateManagement.apply(configImportFromKeystore);
+    await pluginCertificateManagement.run(configImportFromKeystore);
   });
   it('should not do anything if cert is already available in keystore', async () => {
     const res = await pluginCertificateManagement.run(configImportFromKeystore);

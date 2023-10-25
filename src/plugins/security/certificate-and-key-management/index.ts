@@ -1,15 +1,9 @@
 import { existsSync } from 'fs';
 import type { Record } from 'jsforce';
-import * as jsonMergePatch from 'json-merge-patch';
 import * as path from 'path';
 import type { ElementHandle } from 'puppeteer';
 import * as queryString from 'querystring';
 import { BrowserforcePlugin } from '../../../plugin';
-import {
-  removeEmptyValues,
-  removeNullValues,
-  semanticallyCleanObject
-} from '../../utils';
 
 const PATHS = {
   CERT_PREFIX: '0P1',
@@ -43,37 +37,30 @@ type Certificate = {
 
 type KeyStore = {
   name: string;
-  filePath: string;
+  filePath?: string;
   password?: string;
 };
 
 export class CertificateAndKeyManagement extends BrowserforcePlugin {
-  public async retrieve(definition?: Config): Promise<Config> {
+  public async retrieve(definition: Config): Promise<Config> {
     const response: Config = {
       certificates: [],
       importFromKeystore: []
     };
     let existingCertificates;
-    if (
-      definition?.certificates?.length ||
-      definition?.importFromKeystore?.length
-    ) {
-      existingCertificates = await this.org
-        .getConnection()
-        .tooling.query<CertificateRecord>(
-          `SELECT Id, DeveloperName, MasterLabel, OptionsIsPrivateKeyExportable, KeySize FROM Certificate`,
-          { scanAll: false }
-          // BUG in jsforce: query acts with scanAll:true and returns deleted CustomObjects.
-          // It cannot be disabled.
-        );
+    if (definition?.certificates?.length || definition?.importFromKeystore?.length) {
+      existingCertificates = await this.org.getConnection().tooling.query<CertificateRecord>(
+        `SELECT Id, DeveloperName, MasterLabel, OptionsIsPrivateKeyExportable, KeySize FROM Certificate`,
+        { scanAll: false }
+        // BUG in jsforce: query acts with scanAll:true and returns deleted CustomObjects.
+        // It cannot be disabled.
+      );
     }
     if (definition?.certificates?.length) {
       for (const cert of definition.certificates) {
-        const existingCert = existingCertificates.records.find(
-          co => co.DeveloperName === cert.name
-        );
+        const existingCert = existingCertificates.records.find((co) => co.DeveloperName === cert.name);
         if (existingCert) {
-          response.certificates.push({
+          response.certificates!.push({
             _id: existingCert.Id,
             name: existingCert.DeveloperName,
             label: existingCert.MasterLabel,
@@ -85,13 +72,10 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
     }
     if (definition?.importFromKeystore?.length) {
       for (const cert of definition.importFromKeystore) {
-        const existingCert = existingCertificates.records.find(
-          co => co.DeveloperName === cert.name
-        );
+        const existingCert = existingCertificates.records.find((co) => co.DeveloperName === cert.name);
         if (existingCert) {
-          response.importFromKeystore.push({
-            name: existingCert.DeveloperName,
-            filePath: null
+          response.importFromKeystore!.push({
+            name: existingCert.DeveloperName
           });
         }
       }
@@ -99,35 +83,33 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
     return response;
   }
 
-  public diff(state: Config, definition: Config): Config {
-    const response: Config = {
-      certificates: [],
-      importFromKeystore: []
-    };
+  public diff(state?: Config, definition?: Config): Config | undefined {
+    const response: Config = {};
     if (state && definition && state.certificates && definition.certificates) {
       for (const cert of definition.certificates) {
-        const existingCert = state.certificates.find(c => c.name === cert.name);
+        const existingCert = state.certificates.find((c) => c.name === cert.name);
         if (existingCert) {
-          // move id from state to definition to be retained and used
+          // copy id from state to definition to be retained and used
           cert._id = existingCert._id;
-          delete existingCert._id;
         }
-        const certDiff = semanticallyCleanObject(
-          removeNullValues(jsonMergePatch.generate(existingCert, cert)),
-          '_id'
-        );
-        if (certDiff) {
-          response.certificates.push(certDiff);
+        const certDiff = super.diff(existingCert, cert) as Certificate | undefined;
+        if (certDiff !== undefined) {
+          if (!response.certificates) {
+            response.certificates = [];
+          }
+          response.certificates!.push(certDiff);
         }
       }
     }
     if (definition?.importFromKeystore?.length) {
-      response.importFromKeystore =
-        definition?.importFromKeystore?.filter(
-          cert => !state.importFromKeystore.find(c => c.name === cert.name)
-        ) || [];
+      const importFromKeystore = definition?.importFromKeystore?.filter(
+        (cert) => !state?.importFromKeystore?.find((c) => c.name === cert.name)
+      );
+      if (importFromKeystore.length) {
+        response.importFromKeystore = importFromKeystore;
+      }
     }
-    return removeEmptyValues(response);
+    return Object.keys(response).length ? response : undefined;
   }
 
   public async apply(plan: Config): Promise<void> {
@@ -151,22 +133,20 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
             `${PATHS.CERT_PREFIX}/e?${queryString.stringify(urlAttributes)}`
           );
           await page.waitForSelector(SELECTORS.SAVE_BUTTON);
-          await Promise.all([
-            page.waitForNavigation(),
-            page.click(SELECTORS.SAVE_BUTTON)
-          ]);
+          await Promise.all([page.waitForNavigation(), page.click(SELECTORS.SAVE_BUTTON)]);
           await page.close();
         }
       }
     }
     if (plan.importFromKeystore) {
       for (const certificate of plan.importFromKeystore) {
-        const page = await this.browserforce.openPage(
-          `${PATHS.KEYSTORE_IMPORT}`
-        );
+        const page = await this.browserforce.openPage(`${PATHS.KEYSTORE_IMPORT}`);
         await page.waitForSelector(SELECTORS.FILE_UPLOAD);
-        const elementHandle = await page.$(SELECTORS.FILE_UPLOAD) as ElementHandle<HTMLInputElement>;
+        const elementHandle = (await page.$(SELECTORS.FILE_UPLOAD)) as ElementHandle<HTMLInputElement>;
         // TODO: make relative to this.command.flags.definitionfile
+        if (!certificate.filePath) {
+          throw new Error(`To import a certificate, the filePath is mandatory.`);
+        }
         const filePath = path.resolve(certificate.filePath);
         if (!existsSync(filePath)) {
           throw new Error(`file does not exist: ${filePath}`);
@@ -177,10 +157,7 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
           await page.type(SELECTORS.KEYSTORE_PASSWORD, certificate.password);
         }
         await page.waitForSelector(SELECTORS.SAVE_BUTTON);
-        await Promise.all([
-          page.waitForNavigation(),
-          page.click(SELECTORS.SAVE_BUTTON)
-        ]);
+        await Promise.all([page.waitForNavigation(), page.click(SELECTORS.SAVE_BUTTON)]);
         if (certificate.name) {
           // rename cert as it has the wrong name
           //  JKS aliases are case-insensitive (and so lowercase)
@@ -194,10 +171,7 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
             `${importedCert.Id}/e?MasterLabel=${certificate.name}&DeveloperName=${certificate.name}`
           );
           await certPage.waitForSelector(SELECTORS.SAVE_BUTTON);
-          await Promise.all([
-            certPage.waitForNavigation(),
-            certPage.click(SELECTORS.SAVE_BUTTON)
-          ]);
+          await Promise.all([certPage.waitForNavigation(), certPage.click(SELECTORS.SAVE_BUTTON)]);
           await certPage.close();
         }
         await page.close();
