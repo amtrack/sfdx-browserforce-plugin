@@ -23,10 +23,7 @@ export class SalesforceToSalesforce extends BrowserforcePlugin {
     };
     const inputEnable = await page.$(SELECTORS.ENABLED);
     if (inputEnable) {
-      response.enabled = await page.$eval(
-        SELECTORS.ENABLED,
-        (el: HTMLInputElement) => el.checked
-      );
+      response.enabled = await page.$eval(SELECTORS.ENABLED, (el: HTMLInputElement) => el.checked);
     }
     await page.close();
     return response;
@@ -47,10 +44,7 @@ export class SalesforceToSalesforce extends BrowserforcePlugin {
         },
         config.enabled
       );
-      await Promise.all([
-        page.waitForNavigation(),
-        page.click(SELECTORS.SAVE_BUTTON)
-      ]);
+      await Promise.all([page.waitForNavigation(), page.click(SELECTORS.SAVE_BUTTON)]);
       const result = await this.retrieve();
       await page.close();
       if (result.enabled !== config.enabled) {

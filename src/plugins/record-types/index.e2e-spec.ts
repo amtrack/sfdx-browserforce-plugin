@@ -42,11 +42,7 @@ describe(RecordTypes.name, function () {
       path.join(__dirname, 'sfdx-source'),
       '--json'
     ]);
-    assert.deepStrictEqual(
-      sourceDeployCmd.status,
-      0,
-      sourceDeployCmd.output.toString()
-    );
+    assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
   });
   it('should delete a record type', async () => {
     await plugin.run(configDelete);

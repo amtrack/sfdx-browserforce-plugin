@@ -8,18 +8,19 @@
   },
   "dependencies": {
     "@mdapi-issues/listmetadata-standardvalueset": "2.0.3",
-    "@salesforce/command": "5.2.16",
-    "json-merge-patch": "1.0.2",
+    "@salesforce/sf-plugins-core": "4.0.0",
     "p-retry": "4.6.2",
-    "puppeteer": "19.2.0",
-    "tslib": "2.4.0"
+    "puppeteer": "19.2.0"
   },
   "devDependencies": {
-    "@types/mocha": "10.0.3",
-    "@types/node": "18.18.7",
+    "@salesforce/dev-config": "4.1.0",
+    "@salesforce/prettier-config": "0.0.3",
+    "@types/mocha": "10.0.2",
+    "@types/node": "18.18.5",
     "mocha": "10.2.0",
     "nyc": "15.1.0",
-    "oclif": "4.0.3",
+    "oclif": "4.0.2",
+    "prettier": "3.0.3",
     "ts-node": "10.9.1",
     "typescript": "5.2.2"
   },
@@ -39,7 +40,8 @@
   ],
   "license": "MIT",
   "oclif": {
-    "bin": "sfdx-browserforce-plugin",
+    "bin": "sf",
+    "topicSeparator": " ",
     "commands": "./lib/commands",
     "topics": {
       "browserforce": {
@@ -58,7 +60,7 @@
     "generate:plugin": "npx hygen plugin new",
     "prepack": "yarn build",
     "prepare": "yarn build",
-    "test": "nyc --reporter=lcov --reporter=text mocha --require ts-node/register \"test/**/*.test.ts\" \"src/**/*.test.ts\"",
-    "test:e2e": "mocha --require ts-node/register --slow 30s --timeout 2m --file test/e2e-setup.ts \"test/**/*.e2e-spec.ts\" \"src/**/*.e2e-spec.ts\""
+    "test": "tsc -p test && nyc --reporter=lcov --reporter=text mocha --require ts-node/register \"test/**/*.test.ts\" \"src/**/*.test.ts\"",
+    "test:e2e": "tsc -p test && mocha --require ts-node/register --slow 30s --timeout 2m --file test/e2e-setup.ts \"test/**/*.e2e-spec.ts\" \"src/**/*.e2e-spec.ts\""
   }
 }

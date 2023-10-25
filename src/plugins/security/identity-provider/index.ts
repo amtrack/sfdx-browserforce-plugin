@@ -1,8 +1,6 @@
 import type { Record } from 'jsforce';
-import * as jsonMergePatch from 'json-merge-patch';
 import pRetry, { AbortError } from 'p-retry';
 import { BrowserforcePlugin } from '../../../plugin';
-import { removeNullValues } from '../../utils';
 
 const PATHS = {
   EDIT_VIEW: 'setup/secur/idp/IdpPage.apexp'
@@ -21,35 +19,30 @@ interface CertificateRecord extends Record {
 }
 
 export type Config = {
-  enabled?: boolean;
+  enabled: boolean;
   certificate?: string;
 };
 
 export class IdentityProvider extends BrowserforcePlugin {
-  public async retrieve(definition?: Config): Promise<Config> {
+  public async retrieve(): Promise<Config> {
     const page = await this.browserforce.openPage(PATHS.EDIT_VIEW);
     await page.waitForSelector(SELECTORS.EDIT_BUTTON);
     const disableButton = await page.$(SELECTORS.DISABLE_BUTTON);
-    const certNameHandle = await page.$(SELECTORS.CERT_NAME_SPAN);
-    const response = {
-      enabled: disableButton !== null
+    const enabled = disableButton !== null;
+    const response: Config = {
+      enabled
     };
-    if (certNameHandle) {
-      response['certificate'] = await page.evaluate(
-        (span: HTMLSpanElement) => span.innerText,
-        certNameHandle
-      );
+    if (enabled) {
+      const certNameHandle = await page.$(SELECTORS.CERT_NAME_SPAN);
+      response.certificate = await page.evaluate((span: HTMLSpanElement) => span.innerText, certNameHandle);
     }
     await page.close();
     return response;
   }
 
-  public diff(state: Config, definition: Config): Config {
-    return removeNullValues(jsonMergePatch.generate(state, definition));
-  }
-
   public async apply(plan: Config): Promise<void> {
     if (plan.enabled && plan.certificate && plan.certificate !== '') {
+      // enable with required certificate
       // wait for cert to become available in Identity Provider UI
       await pRetry(
         async () => {
@@ -59,21 +52,16 @@ export class IdentityProvider extends BrowserforcePlugin {
               `SELECT Id, DeveloperName FROM Certificate WHERE DeveloperName = '${plan.certificate}'`
             );
           if (!certsResponse.totalSize) {
-            throw new AbortError(
-              `Could not find Certificate '${plan.certificate}'`
-            );
+            throw new AbortError(`Could not find Certificate '${plan.certificate}'`);
           }
           const page = await this.browserforce.openPage(PATHS.EDIT_VIEW);
           await page.waitForSelector(SELECTORS.EDIT_BUTTON);
-          await Promise.all([
-            page.waitForNavigation(),
-            page.click(SELECTORS.EDIT_BUTTON)
-          ]);
+          await Promise.all([page.waitForNavigation(), page.click(SELECTORS.EDIT_BUTTON)]);
           await page.waitForSelector(SELECTORS.CHOOSE_CERT);
           const chooseCertOptions = await page.$$eval(
             `${SELECTORS.CHOOSE_CERT} option`,
             (options: HTMLOptionElement[]) => {
-              return options.map(option => {
+              return options.map((option) => {
                 return {
                   text: option.text,
                   value: option.value
@@ -81,23 +69,18 @@ export class IdentityProvider extends BrowserforcePlugin {
               });
             }
           );
-          const chooseCertOption = chooseCertOptions.find(
-            x => x.text === plan.certificate
-          );
+          const chooseCertOption = chooseCertOptions.find((x) => x.text === plan.certificate);
           if (!chooseCertOption) {
             throw new Error(
               `Waiting for Certificate '${plan.certificate}' to be available in Identity Provider picklist timed out`
             );
           }
           await page.select(SELECTORS.CHOOSE_CERT, chooseCertOption.value);
-          page.on('dialog', async dialog => {
+          page.on('dialog', async (dialog) => {
             await dialog.accept();
           });
           await page.waitForSelector(SELECTORS.SAVE_BUTTON);
-          await Promise.all([
-            page.waitForNavigation(),
-            page.click(SELECTORS.SAVE_BUTTON)
-          ]);
+          await Promise.all([page.waitForNavigation(), page.click(SELECTORS.SAVE_BUTTON)]);
           await page.close();
         },
         {
@@ -106,16 +89,14 @@ export class IdentityProvider extends BrowserforcePlugin {
         }
       );
     } else {
+      // disable
       const page = await this.browserforce.openPage(PATHS.EDIT_VIEW);
       await page.waitForSelector(SELECTORS.EDIT_BUTTON);
       await page.$(SELECTORS.DISABLE_BUTTON);
-      page.on('dialog', async dialog => {
+      page.on('dialog', async (dialog) => {
         await dialog.accept();
       });
-      await Promise.all([
-        page.waitForNavigation(),
-        page.click(SELECTORS.DISABLE_BUTTON)
-      ]);
+      await Promise.all([page.waitForNavigation(), page.click(SELECTORS.DISABLE_BUTTON)]);
       await page.close();
     }
   }

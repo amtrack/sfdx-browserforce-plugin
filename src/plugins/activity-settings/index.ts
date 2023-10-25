@@ -42,10 +42,7 @@ export class ActivitySettings extends BrowserforcePlugin {
       },
       config.allowUsersToRelateMultipleContactsToTasksAndEvents
     );
-    await Promise.all([
-      page.waitForNavigation(),
-      page.click(SELECTORS.SUBMIT_BUTTON)
-    ]);
+    await Promise.all([page.waitForNavigation(), page.click(SELECTORS.SUBMIT_BUTTON)]);
     await page.close();
   }
 }

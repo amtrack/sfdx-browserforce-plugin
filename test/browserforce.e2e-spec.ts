@@ -1,4 +1,4 @@
-import { UX } from '@salesforce/command';
+import { Ux } from '@salesforce/sf-plugins-core';
 import { Org } from '@salesforce/core';
 import assert from 'assert';
 import { Browserforce } from '../src/browserforce';
@@ -13,7 +13,7 @@ describe('Browser', function () {
     it('should fail login with invalid credentials', async () => {
       const fakeOrg = await Org.create({});
       fakeOrg.getConnection().accessToken = 'invalid';
-      const ux = await UX.create();
+      const ux = new Ux();
       const bf = new Browserforce(fakeOrg, ux);
       await assert.rejects(async () => {
         await bf.login();
@@ -42,30 +42,20 @@ describe('Browser', function () {
   describe('waitForSelectorInFrameOrPage()', () => {
     it('should query a selector in LEX and Classic UI', async () => {
       const page = await global.bf.openPage('lightning/setup/ExternalStrings/home');
-      const frame = await global.bf.waitForSelectorInFrameOrPage(
-        page,
-        'input[name="edit"]'
-      );
-      await Promise.all([
-        page.waitForNavigation(),
-        frame.click('input[name="edit"]')
-      ]);
+      const frame = await global.bf.waitForSelectorInFrameOrPage(page, 'input[name="edit"]');
+      await Promise.all([page.waitForNavigation(), frame.click('input[name="edit"]')]);
     });
   });
   describe('throwPageErrors()', () => {
     it('should throw the page error on internal errors', async () => {
       process.env.BROWSERFORCE_RETRY_TIMEOUT_MS = '0';
       await assert.rejects(async () => {
-        await global.bf.openPage(
-          '_ui/common/config/field/StandardFieldAttributes/d?type=Account&id=INVALID_Name'
-        );
+        await global.bf.openPage('_ui/common/config/field/StandardFieldAttributes/d?type=Account&id=INVALID_Name');
       }, /Insufficient Privileges/);
       delete process.env.BROWSERFORCE_RETRY_TIMEOUT_MS;
     });
     it('should not throw any error opening a page', async () => {
-      await global.bf.openPage(
-        '_ui/common/config/field/StandardFieldAttributes/d?type=Account&id=Name'
-      );
+      await global.bf.openPage('_ui/common/config/field/StandardFieldAttributes/d?type=Account&id=Name');
     });
   });
 });

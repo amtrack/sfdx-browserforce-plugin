@@ -5,7 +5,7 @@
 [![Actions Status](https://github.com/amtrack/sfdx-browserforce-plugin/workflows/Test%20and%20Release/badge.svg)](https://github.com/amtrack/sfdx-browserforce-plugin/actions)
 
 Unlike the [Scratch Org Definition Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_scratch_orgs_def_file.htm) which can only be used **on the creation of a scratch org** (`sfdx force:org:create -f config/scratch-def.json`),
-the _Browserforce Configuration_ allows to "shape" **any org**, (e.g. scratch org, sandbox or production org) with **similar preferences and unofficial preferences** that are not (yet) available in the _Scratch Org Definition Configuration_ or as _Metadata_ (`sf browserforce:apply -f config/setup-admin-login-as-any.json -u myOrg@example.com`).
+the _Browserforce Configuration_ allows to "shape" **any org**, (e.g. scratch org, sandbox or production org) with **similar preferences and unofficial preferences** that are not (yet) available in the _Scratch Org Definition Configuration_ or as _Metadata_ (`sf browserforce apply -f config/setup-admin-login-as-any.json -u myOrg@example.com`).
 
 Further benefits:
 
@@ -49,14 +49,14 @@ $ sfdx-browserforce browserforce -h
 browser automation
 
 USAGE
-  $ sfdx-browserforce-plugin browserforce:COMMAND
+  $ sfdx-browserforce-plugin browserforce COMMAND
 
 COMMANDS
-  browserforce:apply  apply a plan from a definition file
-  browserforce:plan   retrieve state and generate plan file
+  browserforce apply  apply a plan from a definition file
+  browserforce plan   retrieve state and generate plan file
 ```
 
-Both the `browserforce:apply` and `browserforce:plan` commands expect a config file and a target username or alias for the org.
+Both the `browserforce apply` and `browserforce plan` commands expect a config file and a target username or alias for the org.
 
 # Example
 
@@ -80,7 +80,7 @@ Tip: If you use _Visual Studio Code_, you can leverage tab completion to build t
 Next apply the config:
 
 ```console
-$ sf browserforce:apply -f ./config/setup-admin-login-as-any.json --targetusername myOrg@example.com
+$ sf browserforce apply -f ./config/setup-admin-login-as-any.json --target-org myOrg@example.com
   logging in... done
   Applying definition file ./config/setup-admin-login-as-any.json to org myOrg@example.com
   [Security] retrieving state... done

@@ -22,9 +22,11 @@ export class HighVelocitySalesSetupPage {
     await this.page.waitForSelector(`${AUTOMATION_TAB_ITEM}, ${SET_UP_AND_ENABLE_HVS_BUTTON}`, { timeout: 60_000 });
     if (await this.page.$(AUTOMATION_TAB_ITEM)) {
       await Promise.all([
-        this.page.waitForSelector(SET_UP_AND_ENABLE_HVS_BUTTON, { timeout: 60_000 }),
+        this.page.waitForSelector(SET_UP_AND_ENABLE_HVS_BUTTON, {
+          timeout: 60_000
+        }),
         this.page.click(AUTOMATION_TAB_ITEM)
-      ])
+      ]);
     }
     await Promise.all([
       this.page.waitForSelector(ENABLE_TOGGLE, { timeout: 60_000 }),

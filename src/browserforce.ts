@@ -1,8 +1,9 @@
 import { MyDomainResolver, Org } from '@salesforce/core';
+import { type Ux } from '@salesforce/sf-plugins-core';
 import pRetry, { AbortError } from 'p-retry';
-import { Browser, Frame, launch, Page, WaitForOptions } from 'puppeteer';
+import { Browser, Frame, Page, WaitForOptions, launch } from 'puppeteer';
 import * as querystring from 'querystring';
-import { parse, URL } from 'url';
+import { URL, parse } from 'url';
 
 const POST_LOGIN_PATH = 'setup/forcecomHomepage.apexp';
 
@@ -10,18 +11,12 @@ const ERROR_DIV_SELECTOR = '#errorTitle';
 const ERROR_DIVS_SELECTOR = 'div.errorMsg';
 const VF_IFRAME_SELECTOR = 'iframe[name^=vfFrameId]';
 
-export interface Logger {
-  log(...args: string[]): unknown;
-  warn(message: string): unknown;
-  error(...args: unknown[]): unknown;
-}
-
 export class Browserforce {
   public org: Org;
-  public logger: Logger;
+  public logger?: Ux;
   public browser: Browser;
   public page: Page;
-  constructor(org: Org, logger?: Logger) {
+  constructor(org: Org, logger?: Ux) {
     this.org = org;
     this.logger = logger;
   }
@@ -37,9 +32,7 @@ export class Browserforce {
       headless: !(process.env.BROWSER_DEBUG === 'true')
     });
     await this.openPage(
-      `secur/frontdoor.jsp?sid=${
-        this.org.getConnection().accessToken
-      }&retURL=${encodeURIComponent(POST_LOGIN_PATH)}`
+      `secur/frontdoor.jsp?sid=${this.org.getConnection().accessToken}&retURL=${encodeURIComponent(POST_LOGIN_PATH)}`
     );
     return this;
   }
@@ -51,10 +44,7 @@ export class Browserforce {
 
   public async resolveDomains(): Promise<void> {
     // resolve ip addresses of both LEX and classic domains
-    const salesforceUrls = [
-      this.getInstanceUrl(),
-      this.getLightningUrl()
-    ].filter((u) => u);
+    const salesforceUrls = [this.getInstanceUrl(), this.getLightningUrl()].filter((u) => u);
     for (const salesforceUrl of salesforceUrls) {
       const resolver = await MyDomainResolver.create({
         url: new URL(salesforceUrl)
@@ -68,19 +58,14 @@ export class Browserforce {
   }
 
   // path instead of url
-  public async openPage(
-    urlPath: string,
-    options?: WaitForOptions
-  ): Promise<Page> {
+  public async openPage(urlPath: string, options?: WaitForOptions): Promise<Page> {
     let page;
     const result = await pRetry(
       async () => {
         // there seems to be an issue with Enhanced Domains
         // await this.resolveDomains();
         page = await this.browser.newPage();
-        page.setDefaultNavigationTimeout(
-          parseInt(process.env.BROWSERFORCE_NAVIGATION_TIMEOUT_MS, 10) || 90000
-        );
+        page.setDefaultNavigationTimeout(parseInt(process.env.BROWSERFORCE_NAVIGATION_TIMEOUT_MS ?? '90000', 10));
         await page.setViewport({ width: 1024, height: 768 });
         const url = `${this.getInstanceUrl()}/${urlPath}`;
         const parsedUrl = parse(urlPath);
@@ -91,29 +76,17 @@ export class Browserforce {
             throw new Error(`${response.status()}: ${response.statusText()}`);
           }
           if (response.url().indexOf('/?ec=302') > 0) {
-            const salesforceUrls = [
-              this.getInstanceUrl(),
-              this.getLightningUrl()
-            ].filter((u) => u);
-            if (
-              salesforceUrls.some((salesforceUrl) =>
-                response.url().startsWith(salesforceUrl)
-              )
-            ) {
+            const salesforceUrls = [this.getInstanceUrl(), this.getLightningUrl()].filter((u) => u);
+            if (salesforceUrls.some((salesforceUrl) => response.url().startsWith(salesforceUrl))) {
               // the url looks ok so it is a login error
               throw new AbortError('login failed');
-            } else if (
-              parsedUrl.pathname === 'secur/frontdoor.jsp' &&
-              parsedUrl.query.includes('retURL=')
-            ) {
+            } else if (parsedUrl.pathname === 'secur/frontdoor.jsp' && parsedUrl.query?.includes('retURL=')) {
               if (this.logger) {
                 this.logger.warn('trying frontdoor workaround...');
               }
               // try opening page directly without frontdoor as login might have already been successful
               const qsUrl = querystring.parse(parsedUrl.query);
-              urlPath = Array.isArray(qsUrl.retURL)
-                ? qsUrl.retURL[0]
-                : qsUrl.retURL;
+              urlPath = Array.isArray(qsUrl.retURL) ? qsUrl.retURL[0] : qsUrl.retURL!;
               throw new Error('frontdoor error');
             } else {
               // the url is not as expected
@@ -137,9 +110,7 @@ export class Browserforce {
       {
         onFailedAttempt: async (error) => {
           if (this.logger) {
-            this.logger.warn(
-              `retrying ${error.retriesLeft} more time(s) because of "${error}"`
-            );
+            this.logger.warn(`retrying ${error.retriesLeft} more time(s) because of "${error}"`);
           }
           if (page) {
             try {
@@ -149,12 +120,8 @@ export class Browserforce {
             }
           }
         },
-        retries: process.env.BROWSERFORCE_RETRY_MAX_RETRIES
-          ? parseInt(process.env.BROWSERFORCE_RETRY_MAX_RETRIES, 10)
-          : 4,
-        minTimeout: process.env.BROWSERFORCE_RETRY_TIMEOUT_MS
-          ? parseInt(process.env.BROWSERFORCE_RETRY_TIMEOUT_MS, 10)
-          : 4000
+        retries: parseInt(process.env.BROWSERFORCE_RETRY_MAX_RETRIES ?? '4', 10),
+        minTimeout: parseInt(process.env.BROWSERFORCE_RETRY_TIMEOUT_MS ?? '4000', 10)
       }
     );
     return result;
@@ -163,16 +130,9 @@ export class Browserforce {
   // If LEX is enabled, the classic url will be opened in an iframe.
   // Wait for either the selector in the page or in the iframe.
   // returns the page or the frame
-  public async waitForSelectorInFrameOrPage(
-    page: Page,
-    selector: string
-  ): Promise<Page | Frame> {
-    await page.waitForSelector(
-      `pierce/force-aloha-page ${VF_IFRAME_SELECTOR}, ${VF_IFRAME_SELECTOR}, ${selector}`
-    );
-    const frameElementHandle = await page.$(
-      `pierce/force-aloha-page ${VF_IFRAME_SELECTOR}, ${VF_IFRAME_SELECTOR}`
-    );
+  public async waitForSelectorInFrameOrPage(page: Page, selector: string): Promise<Page | Frame> {
+    await page.waitForSelector(`pierce/force-aloha-page ${VF_IFRAME_SELECTOR}, ${VF_IFRAME_SELECTOR}, ${selector}`);
+    const frameElementHandle = await page.$(`pierce/force-aloha-page ${VF_IFRAME_SELECTOR}, ${VF_IFRAME_SELECTOR}`);
     let frameOrPage: Page | Frame = page;
     if (frameElementHandle) {
       const frame = await frameElementHandle.contentFrame();
@@ -184,7 +144,7 @@ export class Browserforce {
     return frameOrPage;
   }
 
-  public getMyDomain(): string {
+  public getMyDomain(): string | null {
     const instanceUrl = this.getInstanceUrl();
     // acme.my.salesforce.com
     // acme--<sandboxName>.csN.my.salesforce.com
@@ -209,7 +169,7 @@ export class Browserforce {
         return parts[0];
       }
     }
-    return null;
+    throw new Error(`Could not determine the instance URL from: ${instanceUrl}`);
   }
 
   public getInstanceUrl(): string {
@@ -224,17 +184,14 @@ export class Browserforce {
     if (myDomainOrInstance) {
       return `https://${myDomainOrInstance}.lightning.force.com`;
     }
-    return null;
+    throw new Error(`Could not determine the lightning URL from: ${myDomainOrInstance} and ${instanceDomain}`);
   }
 }
 
 export async function throwPageErrors(page: Page): Promise<void> {
   const errorHandle = await page.$(ERROR_DIV_SELECTOR);
   if (errorHandle) {
-    const errorMsg = await page.evaluate(
-      (div: HTMLDivElement) => div.innerText,
-      errorHandle
-    );
+    const errorMsg = await page.evaluate((div: HTMLDivElement) => div.innerText, errorHandle);
     await errorHandle.dispose();
     if (errorMsg && errorMsg.trim()) {
       throw new Error(errorMsg.trim());
@@ -242,9 +199,12 @@ export async function throwPageErrors(page: Page): Promise<void> {
   }
   const errorElements = await page.$$(ERROR_DIVS_SELECTOR);
   if (errorElements.length) {
-    const errorMessages = await page.evaluate((...errorDivs) => {
-      return errorDivs.map((div: HTMLDivElement) => div.innerText);
-    }, ...errorElements);
+    const errorMessages = await page.evaluate(
+      (...errorDivs) => {
+        return errorDivs.map((div: HTMLDivElement) => div.innerText);
+      },
+      ...errorElements
+    );
     const errorMsg = errorMessages
       .map((m) => m.trim())
       .join(' ')
@@ -255,21 +215,13 @@ export async function throwPageErrors(page: Page): Promise<void> {
   }
 }
 
-export async function retry<T>(
-  input: (attemptCount: number) => PromiseLike<T> | T
-): Promise<T> {
+export async function retry<T>(input: (attemptCount: number) => PromiseLike<T> | T): Promise<T> {
   const res = await pRetry(input, {
     onFailedAttempt: (error) => {
-      console.warn(
-        `retrying ${error.retriesLeft} more time(s) because of "${error}"`
-      );
+      console.warn(`retrying ${error.retriesLeft} more time(s) because of "${error}"`);
     },
-    retries: process.env.BROWSERFORCE_RETRY_MAX_RETRIES
-      ? parseInt(process.env.BROWSERFORCE_RETRY_MAX_RETRIES, 10)
-      : 6,
-    minTimeout: process.env.BROWSERFORCE_RETRY_TIMEOUT_MS
-      ? parseInt(process.env.BROWSERFORCE_RETRY_TIMEOUT_MS, 10)
-      : 4000
+    retries: parseInt(process.env.BROWSERFORCE_RETRY_MAX_RETRIES ?? '6', 10),
+    minTimeout: parseInt(process.env.BROWSERFORCE_RETRY_TIMEOUT_MS ?? '4000', 10)
   });
   return res;
 }
