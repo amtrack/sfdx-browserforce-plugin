@@ -2,16 +2,13 @@ import { Messages } from '@salesforce/core';
 import { BrowserforceCommand } from '../../browserforce-command';
 
 Messages.importMessagesDirectory(__dirname);
-const messages = Messages.loadMessages(
-  'sfdx-browserforce-plugin',
-  'browserforce'
-);
+const messages = Messages.loadMessages('sfdx-browserforce-plugin', 'browserforce');
 
 export class BrowserforceApply extends BrowserforceCommand {
   public static description = messages.getMessage('applyCommandDescription');
 
   public static examples = [
-    `$ sfdx <%= command.id %> -f ./config/setup-admin-login-as-any.json --targetusername myOrg@example.com
+    `$ <%= config.bin %> <%= command.id %> -f ./config/setup-admin-login-as-any.json --target-org myOrg@example.com
   logging in... done
   Applying definition file ./config/setup-admin-login-as-any.json to org myOrg@example.com
   [Security] retrieving state... done
@@ -21,42 +18,38 @@ export class BrowserforceApply extends BrowserforceCommand {
   ];
 
   public async run(): Promise<unknown> {
-    this.ux.log(
-      `Applying definition file ${
-        this.flags.definitionfile
-      } to org ${this.org.getUsername()}`
-    );
+    const { flags } = await this.parse(BrowserforceApply);
+    this.log(`Applying definition file ${flags.definitionfile} to org ${flags['target-org'].getUsername()}`);
     for (const setting of this.settings) {
       const driver = setting.Driver;
       const instance = new driver(this.bf);
-      this.ux.startSpinner(`[${driver.name}] retrieving state`);
+      this.spinner.start(`[${driver.name}] retrieving state`);
       let state;
       try {
         state = await instance.retrieve(setting.value);
       } catch (err) {
-        this.ux.stopSpinner('failed');
+        this.spinner.stop('failed');
         throw err;
       }
-      this.ux.stopSpinner();
-      const action = instance.diff(state, setting.value);
-      this.ux.stopSpinner();
-      if (action && Object.keys(action).length) {
-        this.ux.startSpinner(
-          `[${driver.name}] ${Object.keys(action)
+      this.spinner.stop();
+      const diff = instance.diff(state, setting.value);
+      if (diff !== undefined) {
+        this.spinner.start(
+          `[${driver.name}] ${Object.keys(diff)
             .map((key) => {
-              return `changing '${key}' to '${JSON.stringify(action[key])}'`;
+              return `changing '${key}' to '${JSON.stringify(diff[key])}'`;
             })
             .join('\n')}`
         );
         try {
-          await instance.apply(action);
+          await instance.apply(diff);
         } catch (err) {
-          this.ux.stopSpinner('failed');
+          this.spinner.stop('failed');
           throw err;
         }
-        this.ux.stopSpinner();
+        this.spinner.stop();
       } else {
-        this.ux.log(`[${driver.name}] no action necessary`);
+        this.log(`[${driver.name}] no action necessary`);
       }
     }
     return { success: true };

@@ -22,16 +22,10 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
     const page = await this.browserforce.openPage(PATHS.BASE);
     // First we have to click the 'Edit' button, to see the checkbox
     await page.waitForSelector(SELECTORS.EDIT_BUTTON);
-    await Promise.all([
-      page.waitForNavigation(),
-      page.click(SELECTORS.EDIT_BUTTON)
-    ]);
+    await Promise.all([page.waitForNavigation(), page.click(SELECTORS.EDIT_BUTTON)]);
     await page.waitForSelector(SELECTORS.ENABLED);
     const response = {
-      enabled: await page.$eval(
-        SELECTORS.ENABLED,
-        (el: HTMLInputElement) => el.checked
-      )
+      enabled: await page.$eval(SELECTORS.ENABLED, (el: HTMLInputElement) => el.checked)
     };
     await page.close();
     return response;
@@ -41,10 +35,7 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
     const page = await this.browserforce.openPage(PATHS.BASE);
     // First we have to click the 'Edit' button, to make the checkbox editable
     await page.waitForSelector(SELECTORS.EDIT_BUTTON);
-    await Promise.all([
-      page.waitForNavigation(),
-      page.click(SELECTORS.EDIT_BUTTON)
-    ]);
+    await Promise.all([page.waitForNavigation(), page.click(SELECTORS.EDIT_BUTTON)]);
     // Change the value of the checkbox
     await page.waitForSelector(SELECTORS.ENABLED);
     await page.$eval(
@@ -67,10 +58,7 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
     if (await page.$(SELECTORS.CONFIRM_CHECKBOX)) {
       await page.click(SELECTORS.CONFIRM_CHECKBOX);
       await page.waitForSelector(SELECTORS.CONFIRM_BUTTON);
-      await Promise.all([
-        page.waitForNavigation(),
-        page.click(SELECTORS.CONFIRM_BUTTON)
-      ]);
+      await Promise.all([page.waitForNavigation(), page.click(SELECTORS.CONFIRM_BUTTON)]);
     }
     await throwPageErrors(page);
     await page.close();

@@ -1,10 +1,10 @@
 import { Org } from '@salesforce/core';
 import { Browserforce } from '../src/browserforce';
-import { UX } from '@salesforce/command';
+import { Ux } from '@salesforce/sf-plugins-core';
 
 before('global setup', async () => {
   const org = await Org.create({});
-  const ux = await UX.create();
+  const ux = new Ux();
   const bf = new Browserforce(org, ux);
   global.bf = bf;
   await bf.login();
