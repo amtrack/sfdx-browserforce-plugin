@@ -10,7 +10,7 @@ const SELECTORS = {
 };
 
 export type Config = {
-  defaultCurrencyIsoCode?: string;
+  defaultCurrencyIsoCode: string;
 };
 
 export class CompanyInformation extends BrowserforcePlugin {
@@ -19,23 +19,21 @@ export class CompanyInformation extends BrowserforcePlugin {
     const page = await this.browserforce.openPage(path.BASE);
     await page.waitForSelector(SELECTORS.CURRENCY_DROPDOWN);
 
-    const response = {
+    const response: Config = {
       defaultCurrencyIsoCode: ''
     };
-    const selectedOptions = await page.$$eval(
-      `${SELECTORS.CURRENCY_DROPDOWN} > option[selected]`,
-      options => options.map(option => option.textContent)
+    const selectedOptions = await page.$$eval(`${SELECTORS.CURRENCY_DROPDOWN} > option[selected]`, (options) =>
+      options.map((option) => option.textContent)
     );
-    if (!selectedOptions) {
-      throw new Error('No available existing value');
+    if (selectedOptions?.length) {
+      response.defaultCurrencyIsoCode = selectedOptions[0] ?? '';
     }
-    response.defaultCurrencyIsoCode = selectedOptions[0];
     await page.close();
     return response;
   }
 
   public async apply(config: Config): Promise<void> {
-    if (config.defaultCurrencyIsoCode?.length > 0) {
+    if (config.defaultCurrencyIsoCode !== undefined) {
       const path = PATHS(this.org.getOrgId());
       const page = await this.browserforce.openPage(path.BASE);
 
@@ -46,29 +44,27 @@ export class CompanyInformation extends BrowserforcePlugin {
 
       // apply changes
       // await page.click(SELECTORS.CURRENCY_DROPDOWN);
-      const optionList = await page.$$eval(
-        `${SELECTORS.CURRENCY_DROPDOWN} > option`,
-        options => options.map(option => ({
+      const optionList = await page.$$eval(`${SELECTORS.CURRENCY_DROPDOWN} > option`, (options) =>
+        options.map((option) => ({
           value: (option as HTMLOptionElement).value,
           textContent: option.textContent
         }))
       );
-      const toBeSelectedOption = optionList.find(option => option.textContent == config.defaultCurrencyIsoCode);
+      const toBeSelectedOption = optionList.find((option) => option.textContent == config.defaultCurrencyIsoCode);
       if (!toBeSelectedOption) {
-        throw new Error(`Invalid currency provided. '${config.defaultCurrencyIsoCode}' is not a valid option available for currencies. Please use the exact name as it appears in the list.`);
+        throw new Error(
+          `Invalid currency provided. '${config.defaultCurrencyIsoCode}' is not a valid option available for currencies. Please use the exact name as it appears in the list.`
+        );
       }
-      await selectElem.select(toBeSelectedOption.value);
+      await selectElem!.select(toBeSelectedOption.value);
 
       // auto accept the dialog when it appears
-      page.on("dialog", (dialog) => {
+      page.on('dialog', (dialog) => {
         dialog.accept();
       });
 
       // save
-      await Promise.all([
-        page.waitForNavigation(),
-        page.click(SELECTORS.SAVE_BUTTON)
-      ]);
+      await Promise.all([page.waitForNavigation(), page.click(SELECTORS.SAVE_BUTTON)]);
       await page.close();
     }
   }

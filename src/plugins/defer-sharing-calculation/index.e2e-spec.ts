@@ -23,23 +23,9 @@ describe(DeferSharingCalculation.name, function () {
       path.join(__dirname, 'sfdx-source'),
       '--json'
     ]);
-    assert.deepStrictEqual(
-      sourceDeployCmd.status,
-      0,
-      sourceDeployCmd.output.toString()
-    );
-    const permSetAssignCmd = child.spawnSync('sf', [
-      'org',
-      'assign',
-      'permset',
-      '-n',
-      'Defer_Sharing'
-    ]);
-    assert.deepStrictEqual(
-      permSetAssignCmd.status,
-      0,
-      permSetAssignCmd.output.toString()
-    );
+    assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
+    const permSetAssignCmd = child.spawnSync('sf', ['org', 'assign', 'permset', '-n', 'Defer_Sharing']);
+    assert.deepStrictEqual(permSetAssignCmd.status, 0, permSetAssignCmd.output.toString());
   });
   it('should suspend', async () => {
     await plugin.run(configSuspend);
@@ -70,15 +56,12 @@ describe(DeferSharingCalculation.name, function () {
     const permSetUnassignCmd = child.spawnSync('sf', [
       'data',
       'delete',
+      'record',
       '-s',
       'PermissionSetAssignment',
       '-w',
       'PermissionSet.Name=Defer_Sharing'
     ]);
-    assert.deepStrictEqual(
-      permSetUnassignCmd.status,
-      0,
-      permSetUnassignCmd.output.toString()
-    );
+    assert.deepStrictEqual(permSetUnassignCmd.status, 0, permSetUnassignCmd.output.toString());
   });
 });

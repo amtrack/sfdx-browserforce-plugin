@@ -1,7 +1,14 @@
 import assert from 'assert';
 import { CustomerPortalEnable as CustomerPortalEnabled } from '.';
 
-const tests = [
+type T = {
+  description: string;
+  source: boolean;
+  target?: boolean;
+  expected?: boolean;
+};
+
+const tests: T[] = [
   {
     description: 'should ignore a non-existent target flag',
     source: true,
@@ -24,7 +31,7 @@ const tests = [
 
 describe('CustomerPortalEnabled', () => {
   describe('diff()', () => {
-    const p = new CustomerPortalEnabled(null);
+    const p = new CustomerPortalEnabled(global.bf);
     for (const t of tests) {
       it(t.description, () => {
         const actual = p.diff(t.source, t.target);

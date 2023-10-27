@@ -4,16 +4,13 @@ import * as path from 'path';
 import { BrowserforceCommand } from '../../browserforce-command';
 
 Messages.importMessagesDirectory(__dirname);
-const messages = Messages.loadMessages(
-  'sfdx-browserforce-plugin',
-  'browserforce'
-);
+const messages = Messages.loadMessages('sfdx-browserforce-plugin', 'browserforce');
 
 export class BrowserforcePlanCommand extends BrowserforceCommand {
   public static description = messages.getMessage('planCommandDescription');
 
   public static examples = [
-    `$ sfdx <%= command.id %> -f ./config/setup-admin-login-as-any.json --targetusername myOrg@example.com
+    `$ <%= config.bin %> <%= command.id %> -f ./config/setup-admin-login-as-any.json --target-org myOrg@example.com
   logging in... done
   Generating plan with definition file ./config/setup-admin-login-as-any.json from org myOrg@example.com
   [Security] retrieving state... done
@@ -23,10 +20,9 @@ export class BrowserforcePlanCommand extends BrowserforceCommand {
   ];
 
   public async run(): Promise<unknown> {
-    this.ux.log(
-      `Generating plan with definition file ${
-        this.flags.definitionfile
-      } from org ${this.org.getUsername()}`
+    const { flags } = await this.parse(BrowserforcePlanCommand);
+    this.log(
+      `Generating plan with definition file ${flags.definitionfile} from org ${flags['target-org'].getUsername()}`
     );
     const state = {
       settings: {}
@@ -37,36 +33,30 @@ export class BrowserforcePlanCommand extends BrowserforceCommand {
     for (const setting of this.settings) {
       const driver = setting.Driver;
       const instance = new driver(this.bf);
-      this.ux.startSpinner(`[${driver.name}] retrieving state`);
+      this.spinner.start(`[${driver.name}] retrieving state`);
       let driverState;
       try {
         driverState = await instance.retrieve(setting.value);
         state.settings[setting.key] = driverState;
       } catch (err) {
-        this.ux.stopSpinner('failed');
+        this.spinner.stop('failed');
         throw err;
       }
-      this.ux.stopSpinner();
-      this.ux.startSpinner(`[${driver.name}] generating plan`);
+      this.spinner.stop();
+      this.spinner.start(`[${driver.name}] generating plan`);
       const driverPlan = instance.diff(driverState, setting.value);
       plan.settings[setting.key] = driverPlan;
-      this.ux.stopSpinner();
+      this.spinner.stop();
     }
-    if (this.flags.statefile) {
-      this.ux.startSpinner('writing state file');
-      await writeFile(
-        path.resolve(this.flags.statefile),
-        JSON.stringify(state, null, 2)
-      );
-      this.ux.stopSpinner();
+    if (flags.statefile) {
+      this.spinner.start('writing state file');
+      await writeFile(path.resolve(flags.statefile), JSON.stringify(state, null, 2));
+      this.spinner.stop();
     }
-    if (this.flags.planfile) {
-      this.ux.startSpinner('writing plan file');
-      await writeFile(
-        path.resolve(this.flags.planfile),
-        JSON.stringify(plan, null, 2)
-      );
-      this.ux.stopSpinner();
+    if (flags.planfile) {
+      this.spinner.start('writing plan file');
+      await writeFile(path.resolve(flags.planfile), JSON.stringify(plan, null, 2));
+      this.spinner.stop();
     }
     return { success: true, plan };
   }

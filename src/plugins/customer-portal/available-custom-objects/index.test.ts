@@ -1,14 +1,19 @@
 import assert from 'assert';
-import { CustomerPortalAvailableCustomObjects } from '.';
+import { type Config, CustomerPortalAvailableCustomObjects } from '.';
 
-const tests = [
+type T = {
+  description: string;
+  source: Config;
+  target: Config;
+  expected: Config;
+};
+const tests: T[] = [
   {
     description: 'should only return necessary fields',
     source: [
       {
         _id: 'p1',
         name: 'Dummy',
-        namespacePrefix: null,
         available: false
       }
     ],
@@ -21,15 +26,16 @@ const tests = [
     expected: [
       {
         _id: 'p1',
+        name: 'Dummy',
         available: true
       }
-    ]
+    ] as Config
   }
 ];
 
 describe('CustomerPortalAvailableCustomObjects', () => {
   describe('diff()', () => {
-    const p = new CustomerPortalAvailableCustomObjects(null);
+    const p = new CustomerPortalAvailableCustomObjects(global.bf);
     for (const t of tests) {
       it(t.description, () => {
         const actual = p.diff(t.source, t.target);

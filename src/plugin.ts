@@ -1,7 +1,6 @@
 import { Org } from '@salesforce/core';
-import * as jsonMergePatch from 'json-merge-patch';
 import { Browserforce } from './browserforce';
-import { isEmpty } from './plugins/utils';
+import { deepDiff } from './plugins/utils';
 
 export abstract class BrowserforcePlugin {
   protected browserforce: Browserforce;
@@ -12,15 +11,20 @@ export abstract class BrowserforcePlugin {
     this.org = browserforce?.org;
   }
   public abstract retrieve(definition?: unknown): Promise<unknown>;
+  /**
+   * deep diff
+   * @param state
+   * @param definition
+   * @returns undefined when there is no diff
+   */
   public diff(state: unknown, definition: unknown): unknown {
-    return jsonMergePatch.generate(state, definition);
+    return deepDiff(state, definition);
   }
   public abstract apply(plan: unknown): Promise<unknown>;
-  public async run(plan: unknown): Promise<unknown> {
-    const state = await this.retrieve(plan);
-    const diff = this.diff(state, plan);
-    const needsAction = !isEmpty(diff);
-    if (needsAction) {
+  public async run(definition: unknown): Promise<unknown> {
+    const state = await this.retrieve(definition);
+    const diff = this.diff(state, definition);
+    if (diff !== undefined) {
       const result = await this.apply(diff);
       return result;
     }

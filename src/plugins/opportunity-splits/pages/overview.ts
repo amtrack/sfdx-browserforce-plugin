@@ -4,12 +4,10 @@ const IN_PRGOGRESS = '#enablingInProgress';
 const COMPLETED = '#prefSettingSucceeded';
 const DISABLE_LINK = 'div[id*=":disable_form:"] a';
 const DISABLE_CONFIRM_CHECKBOX = 'input#dis_confirm';
-const DISABLE_CONFIRM_BUTTON =
-  'input#splitsDisableConfirmDialog_overlayConfirmButton';
+const DISABLE_CONFIRM_BUTTON = 'input#splitsDisableConfirmDialog_overlayConfirmButton';
 
 export class OverviewPage {
-  static PATH =
-    'opp/opportunitySplitSetupOverview.apexp?setupid=OpportunitySplitSetup';
+  static PATH = 'opp/opportunitySplitSetupOverview.apexp?setupid=OpportunitySplitSetup';
   private page;
 
   constructor(page: Page) {
@@ -32,10 +30,7 @@ export class OverviewPage {
     await this.page.waitForSelector(DISABLE_CONFIRM_CHECKBOX);
     await this.page.click(DISABLE_CONFIRM_CHECKBOX);
     await this.page.waitForSelector(DISABLE_CONFIRM_BUTTON);
-    await Promise.all([
-      this.page.waitForNavigation(),
-      this.page.click(DISABLE_CONFIRM_BUTTON)
-    ]);
+    await Promise.all([this.page.waitForNavigation(), this.page.click(DISABLE_CONFIRM_BUTTON)]);
     return this;
   }
 

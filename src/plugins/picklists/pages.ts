@@ -18,7 +18,7 @@ export class PicklistPage {
     this.page = page;
   }
 
-  public async getPicklistValues(): Promise<Array<PicklistValue>> {
+  public async getPicklistValues(): Promise<PicklistValue[]> {
     // wait for New button in any related list
     await this.page.waitForSelector('body table input[name="new"]');
     const resolvePicklistValueNames = async (xpath) => {
@@ -26,9 +26,7 @@ export class PicklistPage {
       const innerTextJsHandles = await Promise.all<JSHandle<string>>(
         fullNameHandles.map((handle) => handle.getProperty('innerText'))
       );
-      const fullNames = await Promise.all<string>(
-        innerTextJsHandles.map((handle) => handle.jsonValue())
-      );
+      const fullNames = await Promise.all<string>(innerTextJsHandles.map((handle) => handle.jsonValue()));
       return fullNames;
     };
     const active = await resolvePicklistValueNames(
@@ -51,25 +49,17 @@ export class PicklistPage {
       '//tr[td[2]]//input[contains(@onclick, "/setup/ui/picklist_masteredit")][@value=" New "]';
     await this.page.waitForXPath(NEW_ACTION_BUTTON_XPATH);
     const newActionButton = (await this.page.$x(NEW_ACTION_BUTTON_XPATH))[0];
-    await Promise.all([
-      this.page.waitForNavigation(),
-      this.page.evaluate((e) => e.click(), newActionButton)
-    ]);
+    await Promise.all([this.page.waitForNavigation(), this.page.evaluate((e) => e.click(), newActionButton)]);
   }
 
   public async clickReplaceActionButton(): Promise<PicklistReplacePage> {
     const REPLACE_ACTION_BUTTON = 'input[name="replace"]';
     await this.page.waitForSelector(REPLACE_ACTION_BUTTON);
-    await Promise.all([
-      this.page.waitForNavigation(),
-      this.page.click(REPLACE_ACTION_BUTTON)
-    ]);
+    await Promise.all([this.page.waitForNavigation(), this.page.click(REPLACE_ACTION_BUTTON)]);
     return new PicklistReplacePage(this.page);
   }
 
-  public async clickDeleteActionForValue(
-    picklistValueApiName: string
-  ): Promise<PicklistReplaceAndDeletePage> {
+  public async clickDeleteActionForValue(picklistValueApiName: string): Promise<PicklistReplaceAndDeletePage> {
     // deactivate: deleteType=1
     // delete: deleteType=0 or no deleteType=1
     const xpath = `//tr[td[2][text() = "${picklistValueApiName}"]]//td[1]//a[contains(@href, "/setup/ui/picklist_masterdelete.jsp") and not(contains(@href, "deleteType=1"))]`;
@@ -78,10 +68,7 @@ export class PicklistPage {
     this.page.on('dialog', async (dialog) => {
       await dialog.accept();
     });
-    await Promise.all([
-      this.page.waitForNavigation(),
-      this.page.evaluate((e) => e.click(), deleteLink)
-    ]);
+    await Promise.all([this.page.waitForNavigation(), this.page.evaluate((e) => e.click(), deleteLink)]);
     await throwPageErrors(this.page);
     return new PicklistReplaceAndDeletePage(this.page);
   }
@@ -103,10 +90,7 @@ export class PicklistPage {
     this.page.on('dialog', async (dialog) => {
       await dialog.accept();
     });
-    await Promise.all([
-      this.page.waitForNavigation(),
-      this.page.evaluate((e) => e.click(), actionLink)
-    ]);
+    await Promise.all([this.page.waitForNavigation(), this.page.evaluate((e) => e.click(), actionLink)]);
     await throwPageErrors(this.page);
     return this.page;
   }
@@ -131,10 +115,7 @@ export class DefaultPicklistAddPage {
 
   async save(): Promise<void> {
     await this.page.waitForSelector(this.saveButton);
-    await Promise.all([
-      this.page.waitForNavigation(),
-      this.page.click(this.saveButton)
-    ]);
+    await Promise.all([this.page.waitForNavigation(), this.page.click(this.saveButton)]);
     await throwPageErrors(this.page);
   }
 }
@@ -162,10 +143,7 @@ export class StatusPicklistAddPage {
 
   async save(): Promise<void> {
     await this.page.waitForSelector(this.saveButton);
-    await Promise.all([
-      this.page.waitForNavigation(),
-      this.page.click(this.saveButton)
-    ]);
+    await Promise.all([this.page.waitForNavigation(), this.page.click(this.saveButton)]);
     await throwPageErrors(this.page);
   }
 }
@@ -178,11 +156,7 @@ export class PicklistReplacePage {
     this.page = page;
   }
 
-  async replace(
-    value: string,
-    newValue: string,
-    replaceAllBlankValues?: boolean
-  ): Promise<void> {
+  async replace(value: string, newValue: string, replaceAllBlankValues?: boolean): Promise<void> {
     const OLD_VALUE_SELECTOR = 'input#nf';
     const NEW_VALUE_SELECTOR = 'select#nv';
     const REPLACE_ALL_BLANK_VALUES_CHECKBOX = 'input#fnv';
@@ -203,10 +177,7 @@ export class PicklistReplacePage {
 
   async save(): Promise<void> {
     await this.page.waitForSelector(this.saveButton);
-    await Promise.all([
-      this.page.waitForNavigation(),
-      this.page.click(this.saveButton)
-    ]);
+    await Promise.all([this.page.waitForNavigation(), this.page.click(this.saveButton)]);
     await throwPageErrors(this.page);
   }
 }
@@ -217,10 +188,9 @@ export class PicklistReplaceAndDeletePage extends PicklistReplacePage {
     this.saveButton = 'input[name="delID"][type="submit"]';
   }
 
-  async replaceAndDelete(newValue: string): Promise<void> {
+  async replaceAndDelete(newValue?: string): Promise<void> {
     const NEW_VALUE_SELECTOR = 'select#p13';
-    const REPLACE_WITH_BLANK_VALUE_RADIO_INPUT =
-      'input#ReplaceValueWithNullValue';
+    const REPLACE_WITH_BLANK_VALUE_RADIO_INPUT = 'input#ReplaceValueWithNullValue';
     // select option value
     if (newValue !== undefined && newValue !== null) {
       await this.page.waitForSelector(NEW_VALUE_SELECTOR);
@@ -235,10 +205,7 @@ export class PicklistReplaceAndDeletePage extends PicklistReplacePage {
 async function throwPageErrors(page: Page): Promise<void> {
   const errorHandle = await page.$('div#validationError div.messageText');
   if (errorHandle) {
-    const errorMsg = await page.evaluate(
-      (div: HTMLDivElement) => div.innerText,
-      errorHandle
-    );
+    const errorMsg = await page.evaluate((div: HTMLDivElement) => div.innerText, errorHandle);
     await errorHandle.dispose();
     if (errorMsg && errorMsg.trim()) {
       throw new Error(errorMsg.trim());
