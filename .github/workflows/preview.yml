@@ -23,7 +23,7 @@ jobs:
         env:
           SFDX_AUTH_URL_DEVHUB: ${{ secrets.SFDX_AUTH_URL_DEVHUB }}
         run: |
-          sf org login sfdx-url -d -a devhub -f /dev/stdin <<< "${SFDX_AUTH_URL_DEVHUB}"
+          sf org login sfdx-url -d -a devhub -f <(echo "${SFDX_AUTH_URL_DEVHUB}")
           yarn develop --release preview
       - name: Run end-to-end tests
         run: yarn test:e2e
