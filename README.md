@@ -11,7 +11,7 @@ Further benefits:
 
 - comfortable configuration using JSON Schema (similar to the [Scratch Org Definition Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_scratch_orgs_def_file.htm))
 - idempotency of the `apply` command only applies what's necessary and allows re-execution (concept similar to [terraform](https://www.terraform.io/docs/commands/apply.html))
-- browser automation powered by [Puppeteer](https://github.com/GoogleChrome/puppeteer) (Chromium)
+- browser automation powered by Puppeteer and "Chrome for Testing", [learn more about Puppeteer and Browserforce](#puppeteer)
 - implement your own custom preferences (a.k.a. plugins; to be improved)
 
 # Installation
@@ -161,6 +161,31 @@ Here is a full blown example showing most of the supported settings in action:
 - `BROWSERFORCE_NAVIGATION_TIMEOUT_MS`: adjustable for slow internet connections (default: `90000`)
 - `BROWSERFORCE_RETRY_MAX_RETRIES`: number of retries on failures opening a page (default: `4`)
 - `BROWSERFORCE_RETRY_TIMEOUT_MS`: initial time between retries in exponential mode (default: `4000`)
+
+# Puppeteer
+
+We use [Puppeteer](https://github.com/puppeteer/puppeteer) for browser automation which comes with its own "Chrome for Testing" browser.
+
+The puppeteer [installation doc](https://github.com/puppeteer/puppeteer#installation) describes how this works:
+
+> When you install Puppeteer, it automatically downloads a recent version of
+> [Chrome for Testing](https://goo.gle/chrome-for-testing) (~170MB macOS, ~282MB Linux, ~280MB Windows) that is [guaranteed to
+> work](https://pptr.dev/faq#q-why-doesnt-puppeteer-vxxx-work-with-chromium-vyyy)
+> with Puppeteer. The browser is downloaded to the `$HOME/.cache/puppeteer` folder
+> by default (starting with Puppeteer v19.0.0).
+
+In most of the cases this just works! If you still want to skip the download and use another browser installation, you can do this as follows:
+
+```console
+export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+sf plugins install sfdx-browserforce-plugin
+export PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+sf browserforce:apply ...
+```
+
+Troubleshooting:
+
+- The installation is triggered via the `postinstall` hook of npm/yarn. If you've disabled running scripts with npm (`--ignore-scripts` or via config file), it will not download the browser.
 
 # Contributing
 
