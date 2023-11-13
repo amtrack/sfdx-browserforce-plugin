@@ -143,7 +143,7 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
         const pageUrl = getObjectPageUrl(customObject, isLEX);
         const editPage = await this.browserforce.openPage(pageUrl);
         const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(editPage, SELECTORS.SAVE_BUTTON);
-        await Promise.all([frameOrPage.waitForNavigation(), frameOrPage.click(SELECTORS.SAVE_BUTTON)]);
+        await Promise.all([editPage.waitForNavigation(), frameOrPage.click(SELECTORS.SAVE_BUTTON)]);
         await editPage.close();
       }
       await page.close();

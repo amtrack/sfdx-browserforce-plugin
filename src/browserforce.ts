@@ -137,6 +137,7 @@ export class Browserforce {
     if (frameElementHandle) {
       const frame = await frameElementHandle.contentFrame();
       if (frame) {
+        await frame.waitForNavigation();
         frameOrPage = frame;
       }
     }
