@@ -131,12 +131,13 @@ export class Browserforce {
   // Wait for either the selector in the page or in the iframe.
   // returns the page or the frame
   public async waitForSelectorInFrameOrPage(page: Page, selector: string): Promise<Page | Frame> {
-    await page.waitForSelector(`pierce/force-aloha-page ${VF_IFRAME_SELECTOR}, ${VF_IFRAME_SELECTOR}, ${selector}`);
-    const frameElementHandle = await page.$(`pierce/force-aloha-page ${VF_IFRAME_SELECTOR}, ${VF_IFRAME_SELECTOR}`);
+    await page.waitForSelector(`pierce/${VF_IFRAME_SELECTOR}, ${VF_IFRAME_SELECTOR}, ${selector}`);
+    const frameElementHandle = await page.$(`pierce/${VF_IFRAME_SELECTOR}, ${VF_IFRAME_SELECTOR}`);
     let frameOrPage: Page | Frame = page;
     if (frameElementHandle) {
       const frame = await frameElementHandle.contentFrame();
       if (frame) {
+        await frame.waitForNavigation();
         frameOrPage = frame;
       }
     }

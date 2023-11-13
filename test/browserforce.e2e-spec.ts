@@ -43,7 +43,11 @@ describe('Browser', function () {
     it('should query a selector in LEX and Classic UI', async () => {
       const page = await global.bf.openPage('lightning/setup/ExternalStrings/home');
       const frame = await global.bf.waitForSelectorInFrameOrPage(page, 'input[name="edit"]');
-      await Promise.all([page.waitForNavigation(), frame.click('input[name="edit"]')]);
+      const button = await frame.$('input[name="edit"]');
+      assert.ok(!page.url().includes('/page'));
+      await Promise.all([page.waitForNavigation(), frame.evaluate((x) => x.click(), button)]);
+      assert.ok(page.url().includes('/page'));
+      await page.close();
     });
   });
   describe('throwPageErrors()', () => {
