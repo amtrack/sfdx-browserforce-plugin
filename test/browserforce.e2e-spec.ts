@@ -18,7 +18,7 @@ describe('Browser', function () {
       await assert.rejects(async () => {
         await bf.login();
       }, /login failed/);
-      bf.logout();
+      await bf.logout();
     });
   });
   describe('getMyDomain()', () => {
