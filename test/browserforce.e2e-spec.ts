@@ -59,7 +59,8 @@ describe('Browser', function () {
       delete process.env.BROWSERFORCE_RETRY_TIMEOUT_MS;
     });
     it('should not throw any error opening a page', async () => {
-      await global.bf.openPage('_ui/common/config/field/StandardFieldAttributes/d?type=Account&id=Name');
+      const page = await global.bf.openPage('_ui/common/config/field/StandardFieldAttributes/d?type=Account&id=Name');
+      await page.close();
     });
   });
 });
