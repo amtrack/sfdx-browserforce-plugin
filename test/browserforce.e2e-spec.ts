@@ -24,19 +24,19 @@ describe('Browser', function () {
   describe('getMyDomain()', () => {
     it('should determine a my domain for a scratch org', async () => {
       const myDomain = global.bf.getMyDomain();
-      assert.notDeepStrictEqual(null, myDomain);
+      assert.notDeepStrictEqual(myDomain, null);
     });
   });
   describe('getInstanceDomain()', () => {
     it('should determine an instance domain for a scratch org with my domain', async () => {
       const instanceDomain = global.bf.getInstanceDomain();
-      assert.notDeepStrictEqual(null, instanceDomain);
+      assert.notDeepStrictEqual(instanceDomain, null);
     });
   });
   describe('getLightningUrl()', () => {
     it('should determine a LEX URL for a scratch org with my domain', async () => {
       const lexUrl = global.bf.getLightningUrl();
-      assert.notDeepStrictEqual(null, lexUrl);
+      assert.notDeepStrictEqual(lexUrl, null);
     });
   });
   describe('waitForSelectorInFrameOrPage()', () => {

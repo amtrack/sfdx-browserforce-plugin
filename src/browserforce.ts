@@ -151,7 +151,7 @@ export class Browserforce {
     // acme--<sandboxName>.csN.my.salesforce.com
     const matches = instanceUrl.match(/https:\/\/(.*)\.my\.salesforce\.com/);
     if (matches) {
-      return matches[1].split('.')[0];
+      return matches[1];
     }
     return null;
   }
@@ -165,7 +165,7 @@ export class Browserforce {
     if (matches) {
       const parts = matches[1].split('.');
       if (parts.length === 3 && parts[2] === 'my') {
-        return parts[1];
+        return `${parts[0]}.${parts[1]}`;
       } else if (!['test', 'login'].includes(parts[0])) {
         return parts[0];
       }
