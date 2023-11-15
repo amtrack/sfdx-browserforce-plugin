@@ -79,6 +79,7 @@ export class Browserforce {
             const salesforceUrls = [this.getInstanceUrl(), this.getLightningUrl()].filter((u) => u);
             if (salesforceUrls.some((salesforceUrl) => response.url().startsWith(salesforceUrl))) {
               // the url looks ok so it is a login error
+              await this.org.refreshAuth();
               throw new AbortError('login failed');
             } else if (parsedUrl.pathname === 'secur/frontdoor.jsp' && parsedUrl.query?.includes('retURL=')) {
               if (this.logger) {
