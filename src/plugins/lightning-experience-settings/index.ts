@@ -73,13 +73,13 @@ export class LightningExperienceSettings extends BrowserforcePlugin {
     const menuButton = await newActiveThemeRowElementHandle.$(
       'pierce/td lightning-primitive-cell-factory lightning-primitive-cell-actions lightning-button-menu'
     );
-    await menuButton!.click();
+    await page.evaluate((e: HTMLElement) => e.click(), menuButton);
     await page.waitForSelector(`${THEME_ROW_SELECTOR} lightning-button-menu slot lightning-menu-item`, {
       visible: true
     });
     const menuItems = await menuButton!.$$('pierce/slot lightning-menu-item');
     // second last item: [show, activate, preview]
     const activateMenuItem = menuItems[menuItems.length - 2];
-    await Promise.all([page.waitForNavigation(), activateMenuItem.click()]);
+    await Promise.all([page.waitForNavigation(), page.evaluate((e: HTMLElement) => e.click(), activateMenuItem)]);
   }
 }
