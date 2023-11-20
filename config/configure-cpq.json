@@ -1,0 +1,8 @@
+{
+  "$schema": "src/plugins/schema.json",
+  "settings": {
+    "cpqConfiguration": {
+      "hide": true
+    }
+  }
+}

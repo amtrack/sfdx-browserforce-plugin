@@ -1,0 +1,8 @@
+{
+  "$schema": "src/plugins/schema.json",
+  "settings": {
+    "companyInformation": {
+      "defaultCurrencyIsoCode": "aud"
+    }
+  }
+}

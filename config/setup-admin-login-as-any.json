@@ -1,0 +1,10 @@
+{
+  "$schema": "src/plugins/schema.json",
+  "settings": {
+    "security": {
+      "loginAccessPolicies": {
+        "administratorsCanLogInAsAnyUser": true
+      }
+    }
+  }
+}

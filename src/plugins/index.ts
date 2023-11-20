@@ -16,6 +16,8 @@ import { SalesforceToSalesforce as salesforceToSalesforce } from './salesforce-t
 import { Security as security } from './security';
 import { CompanyInformation as companyInformation } from './company-information';
 import { LinkedInSalesNavigatorSettings as linkedInSalesNavigatorSettings } from './linkedin-sales-navigator-settings';
+import { CpqConfiguration as cpqConfiguration } from './cpq-configuration';
+
 
 export {
   activitySettings,
@@ -35,5 +37,6 @@ export {
   salesforceToSalesforce,
   security,
   companyInformation,
-  linkedInSalesNavigatorSettings
+  linkedInSalesNavigatorSettings,
+  cpqConfiguration
 };

@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/home-page-layouts/schema.json",
+  "title": "Installed Packages",
+  "type": "object",
+  "description": "",
+  "properties": {
+    "hide": {
+      "title": "Hide Document Name",
+      "type": "boolean"
+    }
+  }
+}
