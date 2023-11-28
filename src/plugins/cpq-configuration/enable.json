@@ -2,7 +2,11 @@
   "$schema": "../schema.json",
   "settings": {
     "cpqConfiguration": {
-      "hide": true
+      "enableHideDocumentName": true,
+      "enableFullPagePreview": true,
+      "enableExcludeHiddenLinesInGroupTotals": true,
+      "enablePostToFeed": true,
+      "enableMultiLanguageTranslations": true
     }
   }
 }
