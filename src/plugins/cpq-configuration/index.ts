@@ -22,7 +22,7 @@ const SELECTORS = {
   CREATE_ORDER_WITHOUT_OPPORTUNITIES: 'input[id="page:form:pb:orderOptions:j_id257"]',
   SUBSCRIPTIONS_AND_RENEWALS: 'td[id="page:form:pb:j_id192_lbl"]',
   CONTRACT_IN_FOREGROUND: 'input[id="page:form:pb:subscriptionAndRenewalSettings:j_id219"]',
-  SAVE: 'input[value="Save"]'
+  SAVE: 'input[name="page:form:j_id2:j_id3:j_id11"]'
 };
 
 type Config = {
@@ -275,7 +275,7 @@ export class CpqConfiguration extends BrowserforcePlugin {
       config.contractInForeground
     )
 
-    await Promise.all([page.click(SELECTORS.SAVE)]);
+    await Promise.all([page.waitForNavigation(),page.click(SELECTORS.SAVE)]);
     await page.close();
   }
 }
