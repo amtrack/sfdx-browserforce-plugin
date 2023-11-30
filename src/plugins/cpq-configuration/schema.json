@@ -5,24 +5,48 @@
   "type": "object",
   "description": "",
   "properties": {
-    "enableHideDocumentName": {
+    "enableQuickCalculate": {
       "title": "Hide Document Name",
       "type": "boolean"
     },
-    "enableFullPagePreview": {
+    "calculateImmediately": {
       "title": "Full Page Preview",
       "type": "boolean"
     },
-    "enableExcludeHiddenLinesInGroupTotals": {
+    "enableUsageBasedPricing": {
       "title": "Exclude Hidden Lines In Group Totals",
       "type": "boolean"
     },
-    "enablePostToFeed": {
+    "visualizeProductHierarchy": {
       "title": "Post to Feed",
       "type": "boolean"
     },
-    "enableMultiLanguageTranslations": {
+    "keepBundleTogether": {
       "title": "Enable Multi-Language Translations",
+      "type": "boolean"
+    },
+    "totalsField": {
+      "title": "Totals Field",
+      "type": "string"
+    },
+    "lineSubtotalsTotalField": {
+      "title": "Line Subtotals Total Field",
+      "type": "string"
+    },
+    "multipleBundlesView": {
+      "title": "Multiple Bundles View",
+      "type": "string"
+    },
+    "quoteCalculatorPlugin": {
+      "title": "Quote Calculator Plugin",
+      "type": "string"
+    },
+    "createOrdersWithoutOpportunities": {
+      "title": "Create Orders Without Opportunities",
+      "type": "boolean"
+    },
+    "contractInForeground": {
+      "title": "Contract In Foreground",
       "type": "boolean"
     }
   }

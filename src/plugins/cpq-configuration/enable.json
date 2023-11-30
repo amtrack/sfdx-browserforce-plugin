@@ -2,11 +2,17 @@
   "$schema": "../schema.json",
   "settings": {
     "cpqConfiguration": {
-      "enableHideDocumentName": true,
-      "enableFullPagePreview": true,
-      "enableExcludeHiddenLinesInGroupTotals": true,
-      "enablePostToFeed": true,
-      "enableMultiLanguageTranslations": true
+      "enableQuickCalculate": true,
+      "calculateImmediately": true,
+      "enableUsageBasedPricing": true,
+      "visualizeProductHierarchy": true,
+      "keepBundleTogether": true,
+      "totalsField": "Quote Total",
+      "lineSubtotalsTotalField": "Do Not Display",
+      "multipleBundlesView": "Classic",
+      "quoteCalculatorPlugin": "customScript",
+      "createOrdersWithoutOpportunities": true,
+      "contractInForeground": true
     }
   }
 }

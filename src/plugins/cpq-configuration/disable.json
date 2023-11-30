@@ -2,11 +2,13 @@
   "$schema": "../schema.json",
   "settings": {
     "cpqConfiguration": {
-      "enableHideDocumentName": false,
-      "enableFullPagePreview": false,
-      "enableExcludeHiddenLinesInGroupTotals": false,
-      "enablePostToFeed": false,
-      "enableMultiLanguageTranslations": false
+      "enableQuickCalculate": false,
+      "calculateImmediately": false,
+      "enableUsageBasedPricing": false,
+      "visualizeProductHierarchy": false,
+      "keepBundleTogether": false,
+      "createOrdersWithoutOpportunities": false,
+      "contractInForeground": false
     }
   }
 }
