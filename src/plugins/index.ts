@@ -15,6 +15,7 @@ import { ReportsAndDashboards as reportsAndDashboards } from './reports-and-dash
 import { SalesforceToSalesforce as salesforceToSalesforce } from './salesforce-to-salesforce';
 import { Security as security } from './security';
 import { CompanyInformation as companyInformation } from './company-information';
+import { LinkedInSalesNavigatorSettings as linkedInSalesNavigatorSettings } from './linkedin-sales-navigator-settings';
 
 export {
   activitySettings,
@@ -33,5 +34,6 @@ export {
   reportsAndDashboards,
   salesforceToSalesforce,
   security,
-  companyInformation
+  companyInformation,
+  linkedInSalesNavigatorSettings
 };
