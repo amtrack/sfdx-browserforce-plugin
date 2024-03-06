@@ -16,7 +16,7 @@
     "@salesforce/dev-config": "4.1.0",
     "@salesforce/prettier-config": "0.0.3",
     "@types/mocha": "10.0.4",
-    "@types/node": "20.9.0",
+    "@types/node": "20.11.25",
     "mocha": "10.2.0",
     "nyc": "15.1.0",
     "oclif": "4.0.3",
