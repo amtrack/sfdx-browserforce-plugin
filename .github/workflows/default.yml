@@ -3,10 +3,10 @@ name: Test and Release
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
   workflow_dispatch:
   schedule:
     - cron: "0 4 * * 5" # every Friday 04:00
@@ -40,7 +40,7 @@ jobs:
         run: |
           sf org delete scratch -p
       - name: Release package
-        run: npx semantic-release
+        run: npx semantic-release -b main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -64,7 +64,7 @@ To enable `Setup -> Security Controls -> Login Access Policies -> Administrators
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/master/src/plugins/schema.json",
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
   "settings": {
     "security": {
       "loginAccessPolicies": {
@@ -96,7 +96,7 @@ Here is a full blown example showing most of the supported settings in action:
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/master/src/plugins/schema.json",
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
   "settings": {
     "communities": { "enabled": true },
     "customerPortal": { "enabled": true },
