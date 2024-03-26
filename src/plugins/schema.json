@@ -7,6 +7,9 @@
   "properties": {
     "settings": {
       "properties": {
+        "callResultsSettings": {
+          "$ref": "./call-results-settings/schema.json"
+        },
         "companyInformation": {
           "$ref": "./company-information/schema.json"
         },
