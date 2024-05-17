@@ -3,7 +3,7 @@ import { LightningExperienceSettings } from '.';
 
 describe(LightningExperienceSettings.name, function () {
   describe('activeThemeName', () => {
-    let plugin;
+    let plugin: LightningExperienceSettings;
     before(() => {
       plugin = new LightningExperienceSettings(global.bf);
     });

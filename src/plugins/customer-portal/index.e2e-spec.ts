@@ -7,7 +7,7 @@ import { CustomerPortalSetup } from './portals';
 
 describe('CustomerPortal', () => {
   describe(CustomerPortalEnable.name, function () {
-    let plugin;
+    let plugin: CustomerPortalEnable;
     before(() => {
       plugin = new CustomerPortalEnable(global.bf);
     });
@@ -33,7 +33,7 @@ describe('CustomerPortal', () => {
   });
 
   describe(CustomerPortalSetup.name, function () {
-    let plugin;
+    let plugin: CustomerPortalSetup;
     before(() => {
       plugin = new CustomerPortalSetup(global.bf);
     });
@@ -132,7 +132,7 @@ describe('CustomerPortal', () => {
   });
 
   describe(CustomerPortalAvailableCustomObjects.name, function () {
-    let plugin;
+    let plugin: CustomerPortalAvailableCustomObjects;
     before(() => {
       plugin = new CustomerPortalAvailableCustomObjects(global.bf);
     });

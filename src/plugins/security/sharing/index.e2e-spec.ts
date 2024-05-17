@@ -2,7 +2,7 @@ import assert from 'assert';
 import { Sharing } from '.';
 
 describe.skip(Sharing.name, function () {
-  let plugin;
+  let plugin: Sharing;
   before(() => {
     plugin = new Sharing(global.bf);
   });

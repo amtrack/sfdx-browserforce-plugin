@@ -2,7 +2,7 @@ import assert from 'assert';
 import { ActivitySettings } from '.';
 
 describe(ActivitySettings.name, function () {
-  let plugin;
+  let plugin: ActivitySettings;
   before(() => {
     plugin = new ActivitySettings(global.bf);
   });

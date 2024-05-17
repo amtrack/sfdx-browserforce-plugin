@@ -4,7 +4,7 @@ import * as path from 'path';
 import { OpportunitySplits } from '.';
 
 describe(OpportunitySplits.name, function () {
-  let plugin;
+  let plugin: OpportunitySplits;
   before(() => {
     plugin = new OpportunitySplits(global.bf);
   });

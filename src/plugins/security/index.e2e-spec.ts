@@ -4,7 +4,8 @@ import { CertificateAndKeyManagement } from './certificate-and-key-management';
 import { IdentityProvider } from './identity-provider';
 
 describe(`${CertificateAndKeyManagement.name} and ${IdentityProvider.name}`, function () {
-  let pluginIdentityProvider, pluginCertificateManagement;
+  let pluginIdentityProvider: IdentityProvider;
+  let pluginCertificateManagement: CertificateAndKeyManagement;
   before(() => {
     pluginIdentityProvider = new IdentityProvider(global.bf);
     pluginCertificateManagement = new CertificateAndKeyManagement(global.bf);

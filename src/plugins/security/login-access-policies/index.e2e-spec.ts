@@ -2,7 +2,7 @@ import assert from 'assert';
 import { type Config, LoginAccessPolicies } from '.';
 
 describe(LoginAccessPolicies.name, function () {
-  let plugin;
+  let plugin: LoginAccessPolicies;
   before(() => {
     plugin = new LoginAccessPolicies(global.bf);
   });

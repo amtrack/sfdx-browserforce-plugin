@@ -2,7 +2,7 @@ import assert from 'assert';
 import { HomePageLayouts } from '.';
 
 describe(HomePageLayouts.name, function () {
-  let plugin;
+  let plugin: HomePageLayouts;
   before(() => {
     plugin = new HomePageLayouts(global.bf);
   });

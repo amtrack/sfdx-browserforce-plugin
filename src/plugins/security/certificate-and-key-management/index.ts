@@ -47,18 +47,20 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
       certificates: [],
       importFromKeystore: []
     };
-    let existingCertificates;
+    let existingCertificates: CertificateRecord[] = [];
     if (definition?.certificates?.length || definition?.importFromKeystore?.length) {
-      existingCertificates = await this.org.getConnection().tooling.query<CertificateRecord>(
-        `SELECT Id, DeveloperName, MasterLabel, OptionsIsPrivateKeyExportable, KeySize FROM Certificate`,
-        { scanAll: false }
-        // BUG in jsforce: query acts with scanAll:true and returns deleted CustomObjects.
-        // It cannot be disabled.
-      );
+      existingCertificates = (
+        await this.org.getConnection().tooling.query<CertificateRecord>(
+          `SELECT Id, DeveloperName, MasterLabel, OptionsIsPrivateKeyExportable, KeySize FROM Certificate`,
+          { scanAll: false }
+          // BUG in jsforce: query acts with scanAll:true and returns deleted CustomObjects.
+          // It cannot be disabled.
+        )
+      )?.records;
     }
     if (definition?.certificates?.length) {
       for (const cert of definition.certificates) {
-        const existingCert = existingCertificates.records.find((co) => co.DeveloperName === cert.name);
+        const existingCert = existingCertificates.find((co) => co.DeveloperName === cert.name);
         if (existingCert) {
           response.certificates!.push({
             _id: existingCert.Id,
@@ -72,7 +74,7 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
     }
     if (definition?.importFromKeystore?.length) {
       for (const cert of definition.importFromKeystore) {
-        const existingCert = existingCertificates.records.find((co) => co.DeveloperName === cert.name);
+        const existingCert = existingCertificates.find((co) => co.DeveloperName === cert.name);
         if (existingCert) {
           response.importFromKeystore!.push({
             name: existingCert.DeveloperName

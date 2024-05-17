@@ -2,7 +2,7 @@ import assert from 'assert';
 import { DensitySettings } from '.';
 
 describe(DensitySettings.name, function () {
-  let plugin;
+  let plugin: DensitySettings;
   before(() => {
     plugin = new DensitySettings(global.bf);
   });

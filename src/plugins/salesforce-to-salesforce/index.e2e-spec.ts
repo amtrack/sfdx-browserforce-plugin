@@ -2,7 +2,7 @@ import assert from 'assert';
 import { SalesforceToSalesforce } from '.';
 
 describe(SalesforceToSalesforce.name, function () {
-  let plugin;
+  let plugin: SalesforceToSalesforce;
   before(() => {
     plugin = new SalesforceToSalesforce(global.bf);
   });

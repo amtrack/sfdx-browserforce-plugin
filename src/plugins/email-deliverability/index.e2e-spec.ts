@@ -2,7 +2,7 @@ import assert from 'assert';
 import { EmailDeliverability } from '.';
 
 describe(EmailDeliverability.name, function () {
-  let plugin;
+  let plugin: EmailDeliverability;
   before(() => {
     plugin = new EmailDeliverability(global.bf);
   });

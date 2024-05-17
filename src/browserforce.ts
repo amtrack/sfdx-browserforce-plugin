@@ -48,7 +48,7 @@ export class Browserforce {
 
   // path instead of url
   public async openPage(urlPath: string, options?: WaitForOptions): Promise<Page> {
-    let page;
+    let page: Page;
     const result = await pRetry(
       async () => {
         page = await this.browser.newPage();

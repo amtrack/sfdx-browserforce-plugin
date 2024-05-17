@@ -4,7 +4,7 @@ import * as path from 'path';
 import { DeferSharingCalculation } from '.';
 
 describe(DeferSharingCalculation.name, function () {
-  let plugin;
+  let plugin: DeferSharingCalculation;
   before(() => {
     plugin = new DeferSharingCalculation(global.bf);
   });

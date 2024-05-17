@@ -5,7 +5,7 @@ import { RecordTypes } from '.';
 
 describe(RecordTypes.name, function () {
   this.timeout('10m');
-  let plugin;
+  let plugin: RecordTypes;
   before(() => {
     plugin = new RecordTypes(global.bf);
   });

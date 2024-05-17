@@ -2,7 +2,7 @@ import assert from 'assert';
 import { Communities } from '.';
 
 describe.skip(Communities.name, function () {
-  let plugin;
+  let plugin: Communities;
   before(() => {
     plugin = new Communities(global.bf);
   });

@@ -2,7 +2,7 @@ import assert from 'assert';
 import { RelateContactToMultipleAccounts } from '.';
 
 describe(RelateContactToMultipleAccounts.name, function () {
-  let plugin;
+  let plugin: RelateContactToMultipleAccounts;
   before(() => {
     plugin = new RelateContactToMultipleAccounts(global.bf);
   });

@@ -6,7 +6,7 @@ import { FieldDependencies } from './field-dependencies';
 
 describe(Picklists.name, function () {
   this.timeout('10m');
-  let plugin;
+  let plugin: Picklists;
   before(() => {
     plugin = new Picklists(global.bf);
   });
@@ -63,7 +63,7 @@ describe(Picklists.name, function () {
 
 describe(FieldDependencies.name, function () {
   this.timeout('10m');
-  let plugin;
+  let plugin: FieldDependencies;
   before(() => {
     plugin = new FieldDependencies(global.bf);
   });
