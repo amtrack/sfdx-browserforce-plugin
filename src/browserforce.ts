@@ -1,9 +1,9 @@
-import { MyDomainResolver, Org } from '@salesforce/core';
+import { Org } from '@salesforce/core';
 import { type Ux } from '@salesforce/sf-plugins-core';
 import pRetry, { AbortError } from 'p-retry';
 import { Browser, Frame, Page, WaitForOptions, launch } from 'puppeteer';
 import * as querystring from 'querystring';
-import { URL, parse } from 'url';
+import { parse } from 'url';
 
 const POST_LOGIN_PATH = 'setup/forcecomHomepage.apexp';
 
@@ -42,17 +42,6 @@ export class Browserforce {
     return this;
   }
 
-  public async resolveDomains(): Promise<void> {
-    // resolve ip addresses of both LEX and classic domains
-    const salesforceUrls = [this.getInstanceUrl(), this.getLightningUrl()].filter((u) => u);
-    for (const salesforceUrl of salesforceUrls) {
-      const resolver = await MyDomainResolver.create({
-        url: new URL(salesforceUrl)
-      });
-      await resolver.resolve();
-    }
-  }
-
   public async throwPageErrors(page: Page): Promise<void> {
     await throwPageErrors(page);
   }
@@ -62,8 +51,6 @@ export class Browserforce {
     let page;
     const result = await pRetry(
       async () => {
-        // there seems to be an issue with Enhanced Domains
-        // await this.resolveDomains();
         page = await this.browser.newPage();
         page.setDefaultNavigationTimeout(parseInt(process.env.BROWSERFORCE_NAVIGATION_TIMEOUT_MS ?? '90000', 10));
         await page.setViewport({ width: 1024, height: 768 });
