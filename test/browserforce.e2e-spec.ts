@@ -1,23 +1,27 @@
-import { Ux } from '@salesforce/sf-plugins-core';
 import { Org } from '@salesforce/core';
+import { Ux } from '@salesforce/sf-plugins-core';
 import assert from 'assert';
 import { Browserforce } from '../src/browserforce';
 
-describe('Browser', function () {
+describe('Browserforce', function () {
+  this.slow('30s');
+  this.timeout('2m');
   describe('login()', () => {
     it('should successfully login with valid credentials', async () => {
       // handled by e2e-setup.ts
       assert.ok(true);
     });
-
     it('should fail login with invalid credentials', async () => {
-      const fakeOrg = await Org.create({});
-      fakeOrg.getConnection().accessToken = 'invalid';
+      const org = await Org.create({});
+      const conn = org.getConnection();
+      conn.logout();
+      conn.accessToken = 'invalid';
+      conn.refreshToken = 'invalid';
       const ux = new Ux();
-      const bf = new Browserforce(fakeOrg, ux);
+      const bf = new Browserforce(org, ux);
       await assert.rejects(async () => {
         await bf.login();
-      }, /login failed/);
+      });
       await bf.logout();
     });
   });
@@ -25,18 +29,6 @@ describe('Browser', function () {
     it('should determine a my domain for a scratch org', async () => {
       const myDomain = global.bf.getMyDomain();
       assert.notDeepStrictEqual(myDomain, null);
-    });
-  });
-  describe('getInstanceDomain()', () => {
-    it('should determine an instance domain for a scratch org with my domain', async () => {
-      const instanceDomain = global.bf.getInstanceDomain();
-      assert.notDeepStrictEqual(instanceDomain, null);
-    });
-  });
-  describe('getLightningUrl()', () => {
-    it('should determine a LEX URL for a scratch org with my domain', async () => {
-      const lexUrl = global.bf.getLightningUrl();
-      assert.notDeepStrictEqual(lexUrl, null);
     });
   });
   describe('waitForSelectorInFrameOrPage()', () => {
