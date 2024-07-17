@@ -14,6 +14,7 @@ import { RelateContactToMultipleAccounts as relateContactToMultipleAccounts } fr
 import { ReportsAndDashboards as reportsAndDashboards } from './reports-and-dashboards';
 import { SalesforceToSalesforce as salesforceToSalesforce } from './salesforce-to-salesforce';
 import { Security as security } from './security';
+import { ServiceChannelCapacity as serviceChannelCapacity } from './service-channel-capacity';
 import { CompanyInformation as companyInformation } from './company-information';
 import { LinkedInSalesNavigatorSettings as linkedInSalesNavigatorSettings } from './linkedin-sales-navigator-settings';
 
@@ -34,6 +35,7 @@ export {
   reportsAndDashboards,
   salesforceToSalesforce,
   security,
+  serviceChannelCapacity,
   companyInformation,
   linkedInSalesNavigatorSettings
 };

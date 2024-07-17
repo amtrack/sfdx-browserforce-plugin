@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/service-channel-capacity/schema.json",
+  "title": "Service Channel Capacity",
+  "type": "object",
+  "properties": {
+    "serviceChannel": {
+      "title": "Service Channel",
+      "description": "The name of the Service Channel to modify",
+      "type": "string"
+    },
+    "capacityModel": {
+      "title": "Capacity Model",
+      "description": "Choose the service channel Capacity Model",
+      "type": "string",
+      "enum": ["Tab-based", "Status-based"]
+    },
+    "statusField": {
+      "title": "Status Field",
+      "description": "Choose the email Deliverability Access Level required",
+      "type": "string",
+      "enum": ["No access", "System email only", "All email"]
+    },
+    "valuesForInProgress": {
+      "title": "Values for In-Progress",
+      "description": "Choose the field values for In-Progress work",
+      "type": "array"
+    },
+    "checkAgencyCapacityOnReopenedWorkItems": {
+      "title": "Check agent capacity on reopened work items",
+      "description": "Check agent capacity on reopened work items",
+      "type": "boolean"
+    },
+    "checkAgencyCapacityOnReassignedWorkItems": {
+      "title": "Check agent capacity on reassigned work items",
+      "description": "Check agent capacity on reassigned work items",
+      "type": "boolean"
+    }
+  },
+  "required": ["serviceChannel"],
+  "if": {
+    "properties": {
+      "capacityModel": { "const": "Status-based" }
+    }
+  },
+  "then": {
+    "required": ["statusField"]
+  },
+  "else": {
+    "not": {
+      "required": ["statusField"]
+    }
+  }
+}
