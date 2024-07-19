@@ -4,9 +4,9 @@
   "title": "Service Channel Capacity",
   "type": "object",
   "properties": {
-    "serviceChannel": {
+    "serviceChannelDeveloperName": {
       "title": "Service Channel",
-      "description": "The name of the Service Channel to modify",
+      "description": "The developer name of the Service Channel to modify",
       "type": "string"
     },
     "capacityModel": {
@@ -26,12 +26,12 @@
       "description": "Choose the field values for In-Progress work",
       "type": "array"
     },
-    "checkAgencyCapacityOnReopenedWorkItems": {
+    "checkAgentCapacityOnReopenedWorkItems": {
       "title": "Check agent capacity on reopened work items",
       "description": "Check agent capacity on reopened work items",
       "type": "boolean"
     },
-    "checkAgencyCapacityOnReassignedWorkItems": {
+    "checkAgentCapacityOnReassignedWorkItems": {
       "title": "Check agent capacity on reassigned work items",
       "description": "Check agent capacity on reassigned work items",
       "type": "boolean"
@@ -44,11 +44,11 @@
     }
   },
   "then": {
-    "required": ["statusField"]
+    "required": ["statusField", "valuesForInProgress"]
   },
   "else": {
     "not": {
-      "required": ["statusField"]
+      "required": ["statusField", "valuesForInProgress"]
     }
   }
 }
