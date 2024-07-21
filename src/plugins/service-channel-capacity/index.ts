@@ -23,7 +23,7 @@ export class ServiceChannelCapacity extends BrowserforcePlugin {
 
     // Open the service channel setup page
     console.log(`${PATHS.BASE}/page?address=%2F${serviceChannel.Id}`);
-    const page = await this.browserforce.openPage(`${PATHS.BASE}/page?address=%${serviceChannel.Id}`);
+    const page = await this.browserforce.openPage(`${serviceChannel.Id}`);
 
     // Retrieve the service channel config
     const capacityModel = await page.$eval('[id*="capacitySection:capacityModelSection"]', el => el.textContent

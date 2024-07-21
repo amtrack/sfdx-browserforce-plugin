@@ -7,6 +7,7 @@ import { EmailDeliverability as emailDeliverability } from './email-deliverabili
 import { HighVelocitySalesSettings as highVelocitySalesSettings } from './high-velocity-sales-settings';
 import { HomePageLayouts as homePageLayouts } from './home-page-layouts';
 import { LightningExperienceSettings as lightningExperienceSettings } from './lightning-experience-settings';
+import { OmniChannelSettings as omniChannelSettings } from './omni-channel-settings';
 import { OpportunitySplits as opportunitySplits } from './opportunity-splits';
 import { Picklists as picklists } from './picklists';
 import { RecordTypes as recordTypes } from './record-types';
@@ -28,6 +29,7 @@ export {
   highVelocitySalesSettings,
   homePageLayouts,
   lightningExperienceSettings,
+  omniChannelSettings,
   opportunitySplits,
   picklists,
   recordTypes,

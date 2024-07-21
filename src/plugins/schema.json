@@ -54,6 +54,12 @@
         },
         "security": {
           "$ref": "./security/schema.json"
+        },
+        "serviceChannelCapacity": {
+          "$ref": "./service-channel-capacity/schema.json"
+        },
+        "omniChannelSettings": {
+          "$ref": "./omni-channel-settings/schema.json"
         }
       }
     }
