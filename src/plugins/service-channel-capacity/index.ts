@@ -1,7 +1,11 @@
 import { BrowserforcePlugin } from '../../plugin';
 
-const PATHS = {
-  BASE: 'lightning/setup/ServiceChannel'
+const SELECTORS = {
+  CAPACITY_MODEL: 'select[id$=":capacityModelSection:editCapacityModel"]',
+  OWNER_CHANGE_CAPACITY: 'input[id$=":ownerChangeCapacityCheck"]',
+  STATUS_FIELD: 'select[id$=":statusFieldSection:editCapacityModel"]',
+  STATUS_CHANGE_CAPACITY: 'input[id$=":statusChangeCapacityCheck"]',
+  VALUES_IN_PROGRESS: 'select[id$=":statusFieldValues:duelingListBox:backingList_s"]'
 };
 
 type Config = {
@@ -22,21 +26,24 @@ export class ServiceChannelCapacity extends BrowserforcePlugin {
     const serviceChannel = await conn.singleRecordQuery(`SELECT Id FROM ServiceChannel WHERE DeveloperName='${serviceChannelDeveloperName}'`);
 
     // Open the service channel setup page
-    console.log(`${PATHS.BASE}/page?address=%2F${serviceChannel.Id}`);
-    const page = await this.browserforce.openPage(`${serviceChannel.Id}`);
+    const page = await this.browserforce.openPage(`${serviceChannel.Id}/e`);
 
     // Retrieve the service channel config
-    const capacityModel = await page.$eval('[id*="capacitySection:capacityModelSection"]', el => el.textContent
+    const capacityModel = await page.$eval(`${SELECTORS.CAPACITY_MODEL} > option[selected]`, el => el.textContent
     ) ?? "";
 
     if (capacityModel === "Status-based") {
-      const statusField = await page.$eval('[id*="capacitySection:statusFieldSection"]', el => el.textContent
+      console.log('statusField');
+      const statusField = await page.$eval(SELECTORS.STATUS_FIELD, el => el.textContent
       ) ?? "";
-      const valuesForInProgress = await page.$$eval('[id*="capacitySection:statusFieldValuesSection"]', (options) =>
+      console.log('valuesInProgress');
+      const valuesForInProgress = await page.$$eval(SELECTORS.VALUES_IN_PROGRESS, (options) =>
         options.map((option) => option.textContent ?? '')
       );
-      const checkAgentCapacityOnReopenedWorkItems = await page.$eval('[id*="capacitySection:statusChangeCapacityCheck"]', el => (el.getAttribute('checked') === "checked" ? true : false));
-      const checkAgentCapacityOnReasignedWorkItems = await page.$eval('[id*="capacitySection:ownerChangeCapacityCheck"]', el => (el.getAttribute('checked') === "checked" ? true : false));
+      console.log('checkStatus');
+      const checkAgentCapacityOnReopenedWorkItems = await page.$eval(SELECTORS.STATUS_CHANGE_CAPACITY, el => (el.getAttribute('checked') === "checked" ? true : false));
+      console.log('checkOwner');
+      const checkAgentCapacityOnReasignedWorkItems = await page.$eval(SELECTORS.OWNER_CHANGE_CAPACITY, el => (el.getAttribute('checked') === "checked" ? true : false));
 
       return { serviceChannelDeveloperName, capacityModel, statusField, valuesForInProgress, checkAgentCapacityOnReopenedWorkItems, checkAgentCapacityOnReasignedWorkItems, };
     }
