@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/service-channel-settings/schema.json",
+  "title": "Service Channel Settings",
+  "type": "object",
+  "properties": {
+    "serviceChannelDeveloperName": {
+      "title": "Service Channel",
+      "description": "The developer name of the Service Channel to modify",
+      "type": "string"
+    },
+    "capacity": {
+      "$ref": "./capacity/schema.json"
+    }
+  }
+}

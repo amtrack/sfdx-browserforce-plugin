@@ -1,14 +1,9 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/service-channel-capacity/schema.json",
-  "title": "Service Channel Capacity",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/service-channel-settings/schema.json",
+  "title": "Capacity Settings",
   "type": "object",
   "properties": {
-    "serviceChannelDeveloperName": {
-      "title": "Service Channel",
-      "description": "The developer name of the Service Channel to modify",
-      "type": "string"
-    },
     "capacityModel": {
       "title": "Capacity Model",
       "description": "Choose the service channel Capacity Model",
@@ -37,7 +32,6 @@
       "type": "boolean"
     }
   },
-  "required": ["serviceChannel"],
   "if": {
     "properties": {
       "capacityModel": { "const": "Status-based" }

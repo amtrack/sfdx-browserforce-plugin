@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/service-channel-capacity/schema.json",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/service-channel-settings/schema.json",
   "title": "Omni-Channel Settings",
   "type": "object",
   "properties": {
