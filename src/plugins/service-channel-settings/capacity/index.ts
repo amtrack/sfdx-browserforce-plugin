@@ -74,6 +74,10 @@ export class Capacity extends BrowserforcePlugin {
         return undefined
       }
 
+      if (definition.capacityModel !== state.capacityModel) {
+        response.capacityModel = definition.capacityModel;
+      }
+
       if (definition.statusField !== state.statusField) {
         response.statusField = definition.statusField;
       }
@@ -111,6 +115,30 @@ export class Capacity extends BrowserforcePlugin {
 
     if (configCapacity!.capacityModel) {
       await page.select(SELECTORS.CAPACITY_MODEL, configCapacity!.capacityModel);
+    }
+
+    if (configCapacity!.statusField) {
+      await page.select(SELECTORS.STATUS_FIELD, configCapacity!.statusField);
+    }
+
+    if (configCapacity?.checkAgentCapacityOnReasignedWorkItems !== undefined) {
+      await page.$eval(
+        SELECTORS.STATUS_CHANGE_CAPACITY,
+        (e: HTMLInputElement, v: boolean) => {
+          e.checked = v;
+        },
+        configCapacity.checkAgentCapacityOnReasignedWorkItems
+      );
+    }
+
+    if (configCapacity?.checkAgentCapacityOnReopenedWorkItems !== undefined) {
+      await page.$eval(
+        SELECTORS.OWNER_CHANGE_CAPACITY,
+        (e: HTMLInputElement, v: boolean) => {
+          e.checked = v;
+        },
+        configCapacity.checkAgentCapacityOnReopenedWorkItems
+      );
     }
 
     // Save the settings
