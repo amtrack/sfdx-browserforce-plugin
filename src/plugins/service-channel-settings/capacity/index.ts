@@ -66,31 +66,32 @@ export class Capacity extends BrowserforcePlugin {
     const response: CapacityConfig = {};
 
     if (state && definition) {
-      if (definition.capacityModel != state.capacityModel) {
-        if (definition.capacityModel === 'Tab-based') {
+      if (definition.capacityModel === 'Tab-based') {
+        if (definition.capacityModel !== state.capacityModel) {
           response.capacityModel = definition.capacityModel;
           return response;
         }
+        return undefined
       }
 
-      if (definition.statusField != state.statusField) {
+      if (definition.statusField !== state.statusField) {
         response.statusField = definition.statusField;
       }
 
-      if (definition.valuesForInProgress != state.valuesForInProgress) {
+      if (definition.valuesForInProgress !== state.valuesForInProgress) {
         response.valuesForInProgress = definition.valuesForInProgress;
       }
 
-      if (definition.checkAgentCapacityOnReasignedWorkItems != state.checkAgentCapacityOnReasignedWorkItems) {
+      if (definition.checkAgentCapacityOnReasignedWorkItems !== state.checkAgentCapacityOnReasignedWorkItems) {
         response.checkAgentCapacityOnReasignedWorkItems = definition.checkAgentCapacityOnReasignedWorkItems;
       }
 
-      if (definition.checkAgentCapacityOnReopenedWorkItems != state.checkAgentCapacityOnReopenedWorkItems) {
+      if (definition.checkAgentCapacityOnReopenedWorkItems !== state.checkAgentCapacityOnReopenedWorkItems) {
         response.checkAgentCapacityOnReopenedWorkItems = definition.checkAgentCapacityOnReopenedWorkItems;
       }
     }
 
-    return response;
+    return Object.keys(response).length ? response : undefined;
   }
 
   public async apply(config: Config): Promise<void> {
