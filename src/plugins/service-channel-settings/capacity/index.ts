@@ -1,11 +1,14 @@
 import { BrowserforcePlugin } from '../../../plugin';
 
 const SELECTORS = {
+  ADD_BUTTON: 'a[id$=":duelingListBox:backingList_add"]',
   CAPACITY_MODEL: 'select[id$=":capacityModelSection:editCapacityModel"]',
   OWNER_CHANGE_CAPACITY: 'input[name*=":ownerChangeCapacityCheck"]',
+  REMOVE_BUTTON: 'a[id$=":duelingListBox:backingList_remove"]',
   SAVE_BUTTON: 'input[id$=":save"]',
   STATUS_FIELD: 'select[id$=":statusFieldSection:editCapacityModel"]',
   STATUS_CHANGE_CAPACITY: 'input[name*=":statusChangeCapacityCheck"]',
+  VALUES_COMPLETED: 'select[id$=":statusFieldValues:duelingListBox:backingList_a"]',
   VALUES_IN_PROGRESS: 'select[id$=":statusFieldValues:duelingListBox:backingList_s"]'
 };
 
@@ -19,7 +22,7 @@ export type CapacityConfig = {
   statusField?: string;
   valuesForInProgress?: string[];
   checkAgentCapacityOnReopenedWorkItems?: boolean;
-  checkAgentCapacityOnReasignedWorkItems?: boolean;
+  checkAgentCapacityOnReassignedWorkItems?: boolean;
 }
 
 export class Capacity extends BrowserforcePlugin {
@@ -46,7 +49,7 @@ export class Capacity extends BrowserforcePlugin {
       const checkAgentCapacityOnReopenedWorkItems = await page.$eval(SELECTORS.STATUS_CHANGE_CAPACITY, (el) =>
         el.getAttribute('checked') === 'checked' ? true : false
       );
-      const checkAgentCapacityOnReasignedWorkItems = await page.$eval(SELECTORS.OWNER_CHANGE_CAPACITY, (el) =>
+      const checkAgentCapacityOnReassignedWorkItems = await page.$eval(SELECTORS.OWNER_CHANGE_CAPACITY, (el) =>
         el.getAttribute('checked') === 'checked' ? true : false
       );
 
@@ -55,7 +58,7 @@ export class Capacity extends BrowserforcePlugin {
         statusField,
         valuesForInProgress,
         checkAgentCapacityOnReopenedWorkItems,
-        checkAgentCapacityOnReasignedWorkItems
+        checkAgentCapacityOnReassignedWorkItems
       };
     }
 
@@ -86,8 +89,8 @@ export class Capacity extends BrowserforcePlugin {
         response.valuesForInProgress = definition.valuesForInProgress;
       }
 
-      if (definition.checkAgentCapacityOnReasignedWorkItems !== state.checkAgentCapacityOnReasignedWorkItems) {
-        response.checkAgentCapacityOnReasignedWorkItems = definition.checkAgentCapacityOnReasignedWorkItems;
+      if (definition.checkAgentCapacityOnReassignedWorkItems !== state.checkAgentCapacityOnReassignedWorkItems) {
+        response.checkAgentCapacityOnReassignedWorkItems = definition.checkAgentCapacityOnReassignedWorkItems;
       }
 
       if (definition.checkAgentCapacityOnReopenedWorkItems !== state.checkAgentCapacityOnReopenedWorkItems) {
@@ -113,21 +116,35 @@ export class Capacity extends BrowserforcePlugin {
     // Update the service channel config
     const configCapacity = config.capacity;
 
-    if (configCapacity!.capacityModel) {
+    if (configCapacity?.capacityModel) {
       await page.select(SELECTORS.CAPACITY_MODEL, configCapacity!.capacityModel);
+      if (configCapacity?.capacityModel === 'StatusBased') {
+        await page.waitForSelector(SELECTORS.STATUS_FIELD);
+      }
     }
 
-    if (configCapacity!.statusField) {
+    if (configCapacity?.statusField) {
       await page.select(SELECTORS.STATUS_FIELD, configCapacity!.statusField);
     }
 
-    if (configCapacity?.checkAgentCapacityOnReasignedWorkItems !== undefined) {
+    if (configCapacity?.valuesForInProgress) {
+      await page.$$eval(`${SELECTORS.VALUES_COMPLETED} > option`, (options) => {
+        options.forEach(async option => {
+          if (configCapacity.valuesForInProgress?.includes(option?.getAttribute('title') ?? '')) {
+            option.click()
+            await page.click(SELECTORS.ADD_BUTTON);
+          }
+        });
+      });
+    }
+
+    if (configCapacity?.checkAgentCapacityOnReassignedWorkItems !== undefined) {
       await page.$eval(
         SELECTORS.STATUS_CHANGE_CAPACITY,
         (e: HTMLInputElement, v: boolean) => {
           e.checked = v;
         },
-        configCapacity.checkAgentCapacityOnReasignedWorkItems
+        configCapacity.checkAgentCapacityOnReassignedWorkItems
       );
     }
 
