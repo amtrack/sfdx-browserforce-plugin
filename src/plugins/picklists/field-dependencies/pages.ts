@@ -19,7 +19,7 @@ export class FieldDependencyPage {
       0,
       15
     )}")]`;
-    const actionLinkHandles = await this.page.$x(xpath);
+    const actionLinkHandles = await this.page.$$(`xpath/.${xpath}`);
     if (actionLinkHandles.length) {
       this.page.on('dialog', async (dialog) => {
         await dialog.accept();
