@@ -22,7 +22,7 @@ export class PicklistPage {
     // wait for New button in any related list
     await this.page.waitForSelector('body table input[name="new"]');
     const resolvePicklistValueNames = async (xpath) => {
-      const fullNameHandles = await this.page.$x(xpath);
+      const fullNameHandles = await this.page.$$(`xpath/.${xpath}`);
       const innerTextJsHandles = await Promise.all<JSHandle<string>>(
         fullNameHandles.map((handle) => handle.getProperty('innerText'))
       );
@@ -47,8 +47,8 @@ export class PicklistPage {
   public async clickNewActionButton(): Promise<void> {
     const NEW_ACTION_BUTTON_XPATH =
       '//tr[td[2]]//input[contains(@onclick, "/setup/ui/picklist_masteredit")][@value=" New "]';
-    await this.page.waitForXPath(NEW_ACTION_BUTTON_XPATH);
-    const newActionButton = (await this.page.$x(NEW_ACTION_BUTTON_XPATH))[0];
+    await this.page.waitForSelector(`::-p-xpath(${NEW_ACTION_BUTTON_XPATH})`);
+    const newActionButton = (await this.page.$$(`xpath/.${NEW_ACTION_BUTTON_XPATH}`))[0];
     await Promise.all([this.page.waitForNavigation(), this.page.evaluate((e) => e.click(), newActionButton)]);
   }
 
@@ -63,8 +63,8 @@ export class PicklistPage {
     // deactivate: deleteType=1
     // delete: deleteType=0 or no deleteType=1
     const xpath = `//tr[td[2][text() = "${picklistValueApiName}"]]//td[1]//a[contains(@href, "/setup/ui/picklist_masterdelete.jsp") and not(contains(@href, "deleteType=1"))]`;
-    await this.page.waitForXPath(xpath);
-    const deleteLink = (await this.page.$x(xpath))[0];
+    await this.page.waitForSelector(`::-p-xpath(${xpath})`);
+    const deleteLink = (await this.page.$$(`xpath/.${xpath}`))[0];
     this.page.on('dialog', async (dialog) => {
       await dialog.accept();
     });
@@ -85,8 +85,8 @@ export class PicklistPage {
       // delete: deleteType=0 or no deleteType=1
       xpath = `//tr[td[2][text() = "${picklistValueApiName}"]]//td[1]//a[contains(@href, "/setup/ui/picklist_masterdelete.jsp") and contains(@href, "deleteType=1")]`;
     }
-    await this.page.waitForXPath(xpath);
-    const actionLink = (await this.page.$x(xpath))[0];
+    await this.page.waitForSelector(`::-p-xpath(${xpath})`);
+    const actionLink = (await this.page.$$(`xpath/.${xpath}`))[0];
     this.page.on('dialog', async (dialog) => {
       await dialog.accept();
     });

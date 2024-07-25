@@ -9,8 +9,8 @@ export class RecordTypePage {
 
   public async clickDeleteAction(recordTypeId: string): Promise<RecordTypeDeletePage> {
     const xpath = `//a[contains(@href, "setup/ui/recordtypedelete.jsp?id=${recordTypeId.slice(0, 15)}")]`;
-    await this.page.waitForXPath(xpath);
-    const deleteLink = (await this.page.$x(xpath))[0];
+    await this.page.waitForSelector(`::-p-xpath(${xpath})`);
+    const deleteLink = (await this.page.$$(`xpath/.${xpath}`))[0];
     await Promise.all([this.page.waitForNavigation(), this.page.evaluate((e) => e.click(), deleteLink)]);
     return new RecordTypeDeletePage(this.page);
   }

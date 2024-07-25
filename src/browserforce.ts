@@ -26,7 +26,7 @@ export class Browserforce {
         // workaround for navigating frames https://github.com/puppeteer/puppeteer/issues/5123
         '--disable-features=site-per-process'
       ],
-      headless: process.env.BROWSER_DEBUG === 'true' ? false : 'new'
+      headless: !(process.env.BROWSER_DEBUG === 'true')
     });
     const page = await this.getNewPage();
     try {

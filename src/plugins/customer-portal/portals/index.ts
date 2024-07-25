@@ -45,8 +45,8 @@ type PortalProfileMembership = {
 export class CustomerPortalSetup extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
     const page = await this.browserforce.openPage(PATHS.LIST_VIEW);
-    await page.waitForXPath(SELECTORS.LIST_VIEW_PORTAL_LINKS_XPATH);
-    const customerPortalLinks = await page.$x(SELECTORS.LIST_VIEW_PORTAL_LINKS_XPATH);
+    await page.waitForSelector(`::-p-xpath(${SELECTORS.LIST_VIEW_PORTAL_LINKS_XPATH})`);
+    const customerPortalLinks = await page.$$(`xpath/.${SELECTORS.LIST_VIEW_PORTAL_LINKS_XPATH}`);
     const response: Config = await page.evaluate(
       (...links) => {
         return links.map((a: HTMLAnchorElement) => {
@@ -195,8 +195,8 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
           const licenseValue = await page.evaluate(
             (option: HTMLOptionElement) => option.value,
             (
-              await page.$x(
-                `//select[@id="${SELECTORS.PORTAL_SELF_REG_USER_DEFAULT_LICENSE_ID}"]//option[text()="${portal.selfRegUserDefaultLicense}"]`
+              await page.$$(
+                `xpath/.//select[@id="${SELECTORS.PORTAL_SELF_REG_USER_DEFAULT_LICENSE_ID}"]//option[text()="${portal.selfRegUserDefaultLicense}"]`
               )
             )[0]
           );
@@ -206,8 +206,8 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
           const roleValue = await page.evaluate(
             (option: HTMLOptionElement) => option.value,
             (
-              await page.$x(
-                `//select[@id="${SELECTORS.PORTAL_SELF_REG_USER_DEFAULT_ROLE_ID}"]//option[text()="${portal.selfRegUserDefaultRole}"]`
+              await page.$$(
+                `xpath/.//select[@id="${SELECTORS.PORTAL_SELF_REG_USER_DEFAULT_ROLE_ID}"]//option[text()="${portal.selfRegUserDefaultRole}"]`
               )
             )[0]
           );
@@ -217,8 +217,8 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
           const profileValue = await page.evaluate(
             (option: HTMLOptionElement) => option.value,
             (
-              await page.$x(
-                `//select[@id="${SELECTORS.PORTAL_SELF_REG_USER_DEFAULT_PROFILE_ID}"]//option[text()="${portal.selfRegUserDefaultProfile}"]`
+              await page.$$(
+                `xpath/.//select[@id="${SELECTORS.PORTAL_SELF_REG_USER_DEFAULT_PROFILE_ID}"]//option[text()="${portal.selfRegUserDefaultProfile}"]`
               )
             )[0]
           );
