@@ -27,11 +27,9 @@ export type CapacityConfig = {
 
 export class Capacity extends BrowserforcePlugin {
   public async retrieve(definition: Config): Promise<CapacityConfig> {
-    const conn = this.org.getConnection();
-
     // Query for the service channel
     const serviceChannelDeveloperName = definition.serviceChannelDeveloperName;
-    const serviceChannel = await conn.singleRecordQuery(
+    const serviceChannel = await this.org.getConnection().singleRecordQuery(
       `SELECT Id FROM ServiceChannel WHERE DeveloperName='${serviceChannelDeveloperName}'`
     );
 
@@ -39,12 +37,16 @@ export class Capacity extends BrowserforcePlugin {
     const page = await this.browserforce.openPage(`${serviceChannel.Id}/e`);
 
     // Retrieve the service channel config
-    const capacityModel = (await page.$eval(`${SELECTORS.CAPACITY_MODEL} > option[selected]`, (el) => el.textContent)) ?? '';
+    if (!await page.$(SELECTORS.CAPACITY_MODEL)) {
+      return {};
+    }
 
-    if (capacityModel === 'Status-based') {
-      const statusField = (await page.$eval(`${SELECTORS.STATUS_FIELD} > option[selected]`, (el) => el.textContent)) ?? '';
-      const valuesForInProgress = await page.$$eval(`${SELECTORS.VALUES_IN_PROGRESS} > option[title]`, (options) => {
-        return options.map((option) => option.textContent ?? '');
+    const capacityModel = (await page.$eval(`${SELECTORS.CAPACITY_MODEL} > option[selected]`, (el) => el.value)) ?? '';
+
+    if (capacityModel === 'StatusBased') {
+      const statusField = (await page.$eval(`${SELECTORS.STATUS_FIELD} > option[selected]`, (el) => el.value)) ?? '';
+      const valuesForInProgress = await page.$$eval(`${SELECTORS.VALUES_IN_PROGRESS} > option`, (options) => {
+        return options.map((option) => option.title ?? '');
       });
       const checkAgentCapacityOnReopenedWorkItems = await page.$eval(SELECTORS.STATUS_CHANGE_CAPACITY, (el) =>
         el.getAttribute('checked') === 'checked' ? true : false
@@ -128,14 +130,28 @@ export class Capacity extends BrowserforcePlugin {
     }
 
     if (configCapacity?.valuesForInProgress) {
-      await page.$$eval(`${SELECTORS.VALUES_COMPLETED} > option`, (options) => {
-        options.forEach(async option => {
-          if (configCapacity.valuesForInProgress?.includes(option?.getAttribute('title') ?? '')) {
-            option.click()
-            await page.click(SELECTORS.ADD_BUTTON);
-          }
-        });
-      });
+      const completedElements = await page.$$(`${SELECTORS.VALUES_COMPLETED} > option`);
+
+      for (const completedElement of completedElements) {
+        const optionTitle = (await completedElement.evaluate(node => node.getAttribute('title')))?.toString() ?? '';
+        console.log(optionTitle);
+
+        if (configCapacity.valuesForInProgress.includes(optionTitle)) {
+          await completedElement.click();
+          await page.click(SELECTORS.ADD_BUTTON);
+        }
+      }
+
+      const inprogressElements = await page.$$(`${SELECTORS.VALUES_IN_PROGRESS} > option`);
+
+      for (const inprogressElement of inprogressElements) {
+        const optionTitle = (await inprogressElement.evaluate(node => node.getAttribute('title')))?.toString() ?? '';
+
+        if (!configCapacity.valuesForInProgress.includes(optionTitle)) {
+          await inprogressElement.click();
+          await page.click(SELECTORS.REMOVE_BUTTON);
+        }
+      }
     }
 
     if (configCapacity?.checkAgentCapacityOnReassignedWorkItems !== undefined) {
