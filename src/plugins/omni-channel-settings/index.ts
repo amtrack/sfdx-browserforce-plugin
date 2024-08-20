@@ -29,9 +29,11 @@ export class OmniChannelSettings extends BrowserforcePlugin {
     const page = await this.browserforce.openPage(PATHS.BASE);
     
     // Click the checkbox
+    await page.waitForSelector(SELECTORS.STATUS_CAPACITY_TOGGLE);
     await page.click(SELECTORS.STATUS_CAPACITY_TOGGLE);
 
     // Save the settings
+    await page.waitForSelector(SELECTORS.SAVE_BUTTON);
     await page.click(SELECTORS.SAVE_BUTTON);
     await page.close();
   }
