@@ -3,26 +3,27 @@ import { BrowserforcePlugin } from '../../plugin';
 const PATHS = {
   BASE:'0A3?setupid=ImportedPackage&retURL=%2Fui%2Fsetup%2FSetup%3Fsetupid%3DStudio'
 };
+
 const SELECTORS = {
   CONFIGURE: '.actionLink[title*="Configure"][title*="Salesforce CPQ"]',
-  PRICE_AND_CALCULATION: 'td[id="page:form:pb:j_id170_lbl"]',
-  ENABLE_QUICK_CALCULATE: 'input[id="page:form:pb:j_id171:j_id176"]',
-  CALCULATE_IMMEDIATELY: 'input[id="page:form:pb:j_id171:j_id175"]',
-  ENABLE_USER_BASED_PRICING: 'input[id="page:form:pb:j_id171:j_id179"]',
-  LINE_EDITOR: 'td[id="page:form:pb:j_id111_lbl"]',
-  VISUALIZE_PRODUCT_HIERARCHY: 'input[id="page:form:pb:j_id112:j_id121"]',
-  KEEP_BUNDLE_TOGETHER: 'input[id="page:form:pb:j_id112:j_id125"]',
-  TOTALS_FIELD: 'select[name="page:form:pb:j_id112:j_id127:j_id129"]',
-  LINE_SUBTOTALS_TOTAL_FIELD: 'select[name="page:form:pb:j_id112:j_id139:j_id141"]',
-  ADDITIONAL_SETTING: 'td[id="page:form:pb:j_id259_lbl"]',
-  MULTIPLE_BUNDLES_VIEW: 'select[name="page:form:pb:j_id260:j_id276:j_id278"]',
-  PLUGINS: 'td[id="page:form:pb:j_id158_lbl"]',
-  QUOTE_CALCULATOR_PLUGIN: 'input[id="page:form:pb:j_id159:j_id167"]',
-  ORDER: 'td[id="page:form:pb:j_id249_lbl"]',
-  CREATE_ORDER_WITHOUT_OPPORTUNITIES: 'input[id="page:form:pb:orderOptions:j_id257"]',
-  SUBSCRIPTIONS_AND_RENEWALS: 'td[id="page:form:pb:j_id192_lbl"]',
-  CONTRACT_IN_FOREGROUND: 'input[id="page:form:pb:subscriptionAndRenewalSettings:j_id219"]',
-  SAVE: 'input[name="page:form:j_id2:j_id3:j_id11"]'
+  PRICE_AND_CALCULATION: 'td[id="page:form:pb:j_id184_lbl"]', // Confirmed
+  ENABLE_QUICK_CALCULATE: 'input[id="page:form:pb:j_id185:j_id190"]', // Confirmed
+  CALCULATE_IMMEDIATELY: 'input[id="page:form:pb:j_id185:j_id189"]', // Confirmed
+  ENABLE_USER_BASED_PRICING: 'input[id="page:form:pb:j_id185:j_id193"]', // Confirmed
+  LINE_EDITOR: 'td[id="page:form:pb:j_id115_lbl"]', // Confirmed
+  VISUALIZE_PRODUCT_HIERARCHY: 'input[id="page:form:pb:j_id116:j_id125"]', // Confirmed
+  KEEP_BUNDLE_TOGETHER: 'input[id="page:form:pb:j_id126:j_id139"]', // Confirmed
+  TOTALS_FIELD: 'select[name="page:form:pb:j_id116:j_id131:j_id133"]', // Confirmed
+  LINE_SUBTOTALS_TOTAL_FIELD: 'select[name="page:form:pb:j_id116:j_id143:j_id145"]', // Confirmed
+  ADDITIONAL_SETTING: 'td[id="page:form:pb:j_id263_lbl"]', // Confirmed
+  MULTIPLE_BUNDLES_VIEW: 'select[name="page:form:pb:j_id264:j_id280:j_id282"]', // Confirmed
+  PLUGINS: 'td[id="page:form:pb:j_id162_lbl"]', // Confirmed
+  QUOTE_CALCULATOR_PLUGIN: 'input[id="page:form:pb:j_id163:j_id171"]', // Confirmed
+  ORDER: 'td[id="page:form:pb:j_id253_lbl"]', // Confirmed
+  // CREATE_ORDER_WITHOUT_OPPORTUNITIES: 'input[id="page:form:pb:orderOptions:j_id257"]',
+  SUBSCRIPTIONS_AND_RENEWALS: 'td[id="page:form:pb:j_id196_lbl"]', // Confirmed
+  CONTRACT_IN_FOREGROUND: 'input[id="page:form:pb:subscriptionAndRenewalSettings:j_id223"]', // Confirmed
+  SAVE: 'input[name="page:form:j_id2:j_id3:j_id15"]' // Confirmed
 };
 
 type Config = {
@@ -105,13 +106,13 @@ export class CpqConfiguration extends BrowserforcePlugin {
     await page.waitForSelector(SELECTORS.ORDER);
     await page.click(SELECTORS.ORDER);
 
-    const createOrdersWithoutOpportunitiesCheckbox = await page.$(SELECTORS.CREATE_ORDER_WITHOUT_OPPORTUNITIES);
-    if (createOrdersWithoutOpportunitiesCheckbox) {
-      response.createOrdersWithoutOpportunities = await page.$eval(
-        SELECTORS.CREATE_ORDER_WITHOUT_OPPORTUNITIES,
-        (el: HTMLInputElement) => el.checked
-      );
-    }
+    // const createOrdersWithoutOpportunitiesCheckbox = await page.$(SELECTORS.CREATE_ORDER_WITHOUT_OPPORTUNITIES);
+    // if (createOrdersWithoutOpportunitiesCheckbox) {
+    //   response.createOrdersWithoutOpportunities = await page.$eval(
+    //     SELECTORS.CREATE_ORDER_WITHOUT_OPPORTUNITIES,
+    //     (el: HTMLInputElement) => el.checked
+    //   );
+    // }
 
     await page.waitForSelector(SELECTORS.SUBSCRIPTIONS_AND_RENEWALS);
     await page.click(SELECTORS.SUBSCRIPTIONS_AND_RENEWALS);
@@ -255,13 +256,13 @@ export class CpqConfiguration extends BrowserforcePlugin {
     await page.waitForSelector(SELECTORS.ORDER);
     await page.click(SELECTORS.ORDER);
 
-    await page.$eval(
-      SELECTORS.CREATE_ORDER_WITHOUT_OPPORTUNITIES,
-      (e: HTMLInputElement, v: boolean) => {
-        e.checked = v;
-      },
-      config.createOrdersWithoutOpportunities
-    )
+    // await page.$eval(
+    //   SELECTORS.CREATE_ORDER_WITHOUT_OPPORTUNITIES,
+    //   (e: HTMLInputElement, v: boolean) => {
+    //     e.checked = v;
+    //   },
+    //   config.createOrdersWithoutOpportunities
+    // )
 
     //configure Subscriptions and Renewals
     await page.waitForSelector(SELECTORS.SUBSCRIPTIONS_AND_RENEWALS);
