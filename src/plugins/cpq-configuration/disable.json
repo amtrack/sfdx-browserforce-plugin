@@ -1,0 +1,14 @@
+{
+  "$schema": "../schema.json",
+  "settings": {
+    "cpqConfiguration": {
+      "enableQuickCalculate": false,
+      "calculateImmediately": false,
+      "enableUsageBasedPricing": false,
+      "visualizeProductHierarchy": false,
+      "keepBundleTogether": false,
+      "createOrdersWithoutOpportunities": false,
+      "contractInForeground": false
+    }
+  }
+}

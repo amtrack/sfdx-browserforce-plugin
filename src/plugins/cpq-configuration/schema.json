@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/cpq-configuration/schema.json",
+  "title": "Salesforce CPQ Managed Pacakge Settings",
+  "type": "object",
+  "description": "",
+  "properties": {
+    "enableQuickCalculate": {
+      "title": "Hide Document Name",
+      "type": "boolean"
+    },
+    "calculateImmediately": {
+      "title": "Full Page Preview",
+      "type": "boolean"
+    },
+    "enableUsageBasedPricing": {
+      "title": "Exclude Hidden Lines In Group Totals",
+      "type": "boolean"
+    },
+    "visualizeProductHierarchy": {
+      "title": "Post to Feed",
+      "type": "boolean"
+    },
+    "keepBundleTogether": {
+      "title": "Enable Multi-Language Translations",
+      "type": "boolean"
+    },
+    "totalsField": {
+      "title": "Totals Field",
+      "type": "string"
+    },
+    "lineSubtotalsTotalField": {
+      "title": "Line Subtotals Total Field",
+      "type": "string"
+    },
+    "multipleBundlesView": {
+      "title": "Multiple Bundles View",
+      "type": "string"
+    },
+    "quoteCalculatorPlugin": {
+      "title": "Quote Calculator Plugin",
+      "type": "string"
+    },
+    "createOrdersWithoutOpportunities": {
+      "title": "Create Orders Without Opportunities",
+      "type": "boolean"
+    },
+    "contractInForeground": {
+      "title": "Contract In Foreground",
+      "type": "boolean"
+    }
+  }
+}

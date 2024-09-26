@@ -54,6 +54,9 @@
         },
         "security": {
           "$ref": "./security/schema.json"
+        },
+        "cpqConfiguration": {
+          "$ref": "./cpq-configuration/schema.json"
         }
       }
     }

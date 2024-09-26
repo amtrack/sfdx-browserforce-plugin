@@ -1,0 +1,18 @@
+{
+  "$schema": "../schema.json",
+  "settings": {
+    "cpqConfiguration": {
+      "enableQuickCalculate": true,
+      "calculateImmediately": true,
+      "enableUsageBasedPricing": true,
+      "visualizeProductHierarchy": true,
+      "keepBundleTogether": true,
+      "totalsField": "Quote Total",
+      "lineSubtotalsTotalField": "Do Not Display",
+      "multipleBundlesView": "Classic",
+      "quoteCalculatorPlugin": "customScript",
+      "createOrdersWithoutOpportunities": true,
+      "contractInForeground": true
+    }
+  }
+}
