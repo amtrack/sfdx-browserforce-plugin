@@ -17,8 +17,10 @@ import { Security as security } from './security';
 import { Slack as slack } from './slack';
 import { CompanyInformation as companyInformation } from './company-information';
 import { LinkedInSalesNavigatorSettings as linkedInSalesNavigatorSettings } from './linkedin-sales-navigator-settings';
+import { SalesforceCpqConfig as salesforceCpqConfig } from './salesforce-cpq-config';
 
 export {
+  salesforceCpqConfig,
   activitySettings,
   communities,
   customerPortal,

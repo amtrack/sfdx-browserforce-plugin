@@ -1,0 +1,127 @@
+import { BrowserforcePlugin } from '../../plugin';
+import formConfigData from './formConfig.json';
+import { FormConfig } from './types';
+
+const formConfig: FormConfig = formConfigData
+
+const PATHS = {
+  BASE: '0A3?setupid=ImportedPackage&retURL=%2Fui%2Fsetup%2FSetup%3Fsetupid%3DStudio'
+};
+
+const SELECTORS = {
+  CONFIGURE: '.actionLink[title*="Configure"][title*="Salesforce CPQ"]',
+  GENERATE_INTEGRATION_USER_PERMISSIONS:'input[name="page:form:pb:j_id185:j_id197:setupIntegrationUserPermissions"]',
+  SAVE: 'input[name="page:form:j_id2:j_id3:j_id11"]'
+};
+
+export type Config = any
+
+export class SalesforceCpqConfig extends BrowserforcePlugin {
+  private logger = this.browserforce.logger;
+  public async retrieve(definition?: Config): Promise<Config> {
+    const page = await this.browserforce.openPage(PATHS.BASE);
+    await page.waitForSelector(SELECTORS.CONFIGURE);
+    await Promise.all([page.waitForNavigation(), page.click(SELECTORS.CONFIGURE)]);
+
+    const response = {} as Config;
+    if (definition) {
+      for (const [keyTab, valueTab] of Object.entries(formConfig)) {
+        if (definition[keyTab]) {
+          await page.waitForSelector(`td[id="${valueTab.id}"]`);
+          await page.click(`td[id="${valueTab.id}"]`);
+          for (const [keyItem, valueItem] of Object.entries(valueTab.properties)) {
+            if (definition[keyTab][keyItem]) {
+              const item = valueItem
+              response[keyTab] = response[keyTab] || {};
+              if (item.component === 'input' && item.type === 'boolean') {
+                response[keyTab][keyItem] = await page.$eval(`input[name="${item.name}"]`, (el: HTMLInputElement) => el.checked)
+              } else if (item.component === 'input' && item.type === 'string') {
+                response[keyTab][keyItem] = await page.$eval(`input[name="${item.name}"]`, (el: HTMLInputElement) => el.value)
+              }
+              else if (item.component === 'select') {
+                response[keyTab][keyItem] = await page.$eval(`select[name="${item.name}"]`, (el: HTMLSelectElement) => el.selectedOptions[0].text)
+              }
+            }
+          }
+        }
+      }
+    }
+    await page.close();
+    return response;
+  }
+
+  public async apply(config: Config): Promise<void> {
+    const page = await this.browserforce.openPage(PATHS.BASE);
+    await Promise.all([page.waitForNavigation(), page.click(SELECTORS.CONFIGURE)]);
+
+    /* 
+    This to click on the 'Generate Integration User Permissions button' for first time setup.
+    Once the button is clicked, it will not be available for the next time.
+    */
+    try {
+      await page.waitForSelector(`td[id="${formConfig.pricingAndCalculation.id}"]`);
+      await page.click(SELECTORS.GENERATE_INTEGRATION_USER_PERMISSIONS);
+    }catch(e){
+      if(e.message === `No element found for selector: ${SELECTORS.GENERATE_INTEGRATION_USER_PERMISSIONS}`){
+        this.logger?.log(`The button 'Generate Integration User Permissions' is not found. It might be already clicked before.`);
+      }else{
+        throw e;
+      }
+    }
+
+    /* 
+    This to loop through the formConfig and set the value based on the config provided.
+    */
+    for (const [keyTab, valueTab] of Object.entries(formConfig)) {
+      if (config[keyTab]) {
+        await page.waitForSelector(`td[id="${valueTab.id}"]`);
+        await page.click(`td[id="${valueTab.id}"]`);
+        for (const [keyItem, valueItem] of Object.entries(valueTab.properties)) {
+          if (config[keyTab][keyItem]) {
+            const item = valueItem
+            if (item.component === 'input' && item.type === 'boolean') {
+              await page.$eval(
+                `input[name="${item.name}"]`,
+                (e: HTMLInputElement, v: boolean) => {
+                  e.checked = v;
+                },
+                config[keyTab][keyItem]
+              );
+            } else if (item.component === 'input' && item.type === 'string') {
+              await page.$eval(
+                `input[name="${item.name}"]`,
+                (e: HTMLInputElement, v: string) => {
+                  e.value = v;
+                },
+                config[keyTab][keyItem]
+              );
+            }
+            else if (item.component === 'select') {
+              const selectFieldOptions = await page.$$eval(
+                `select[name="${item.name}"] option`,
+                (options: HTMLOptionElement[]) => {
+                  return options.map((option) => {
+                    return {
+                      text: option.text,
+                      value: option.value
+                    };
+                  });
+                }
+              );
+              const chooseFieldOption = selectFieldOptions.find((x) => x.text === config[keyTab][keyItem]);
+              if (!chooseFieldOption) {
+                const availableOption = selectFieldOptions.map(option => option.text);
+                throw new Error(
+                  `Fail to set '${item.label}' with value '${config[keyTab][keyItem]}'. \nPlease make sure to select one of this available options: ${JSON.stringify(availableOption)}\n`
+                );
+              }
+              await page.select(`select[name="${item.name}"]`, chooseFieldOption.value);
+            }
+          }
+        }
+      }
+      await Promise.all([page.waitForNavigation(), page.click(SELECTORS.SAVE)]);
+    }
+    await page.close();
+  }
+}
