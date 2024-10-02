@@ -4,11 +4,6 @@
   "title": "SalesforceCpqConfig Settings",
   "type": "object",
   "properties": {
-    "enabled": {
-      "title": "Enable SalesforceCpqConfig",
-      "description": "The description you want to be displayed as toolip when the user is editing the configuration",
-      "type": "boolean"
-    },
     "documents": {
       "type": "object",
       "title": "Documents",

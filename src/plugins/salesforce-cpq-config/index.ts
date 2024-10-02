@@ -10,7 +10,7 @@ const PATHS = {
 
 const SELECTORS = {
   CONFIGURE: '.actionLink[title*="Configure"][title*="Salesforce CPQ"]',
-  GENERATE_INTEGRATION_USER_PERMISSIONS:'input[name="page:form:pb:j_id185:j_id197:setupIntegrationUserPermissions"]',
+  GENERATE_INTEGRATION_USER_PERMISSIONS: 'input[name="page:form:pb:j_id185:j_id197:setupIntegrationUserPermissions"]',
   SAVE: 'input[name="page:form:j_id2:j_id3:j_id11"]'
 };
 
@@ -30,16 +30,24 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
           await page.waitForSelector(`td[id="${valueTab.id}"]`);
           await page.click(`td[id="${valueTab.id}"]`);
           for (const [keyItem, valueItem] of Object.entries(valueTab.properties)) {
-            if (definition[keyTab][keyItem]) {
+            if (!(definition[keyTab][keyItem] === undefined)) {
               const item = valueItem
               response[keyTab] = response[keyTab] || {};
-              if (item.component === 'input' && item.type === 'boolean') {
-                response[keyTab][keyItem] = await page.$eval(`input[name="${item.name}"]`, (el: HTMLInputElement) => el.checked)
-              } else if (item.component === 'input' && item.type === 'string') {
-                response[keyTab][keyItem] = await page.$eval(`input[name="${item.name}"]`, (el: HTMLInputElement) => el.value)
-              }
-              else if (item.component === 'select') {
-                response[keyTab][keyItem] = await page.$eval(`select[name="${item.name}"]`, (el: HTMLSelectElement) => el.selectedOptions[0].text)
+              try {
+                if (item.component === 'input' && item.type === 'boolean') {
+                  response[keyTab][keyItem] = await page.$eval(`${item.component}[name="${item.name}"]`, (el: HTMLInputElement) => el.checked)
+                } else if (item.component === 'input' && item.type === 'string') {
+                  response[keyTab][keyItem] = await page.$eval(`${item.component}[name="${item.name}"]`, (el: HTMLInputElement) => el.value)
+                }
+                else if (item.component === 'select') {
+                  response[keyTab][keyItem] = await page.$eval(`${item.component}[name="${item.name}"]`, (el: HTMLSelectElement) => el.selectedOptions[0].text)
+                }
+              } catch (e) {
+                if (e.message === `Error: failed to find element matching selector "${item.component}[name="${item.name}"]"`) {
+                  this.logger?.warn(`Label '${item.label}' '${keyTab}.${keyItem}' with component '${item.component}[name="${item.name}"]' is not found`);
+                } else {
+                  throw e;
+                }
               }
             }
           }
@@ -61,10 +69,10 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
     try {
       await page.waitForSelector(`td[id="${formConfig.pricingAndCalculation.id}"]`);
       await page.click(SELECTORS.GENERATE_INTEGRATION_USER_PERMISSIONS);
-    }catch(e){
-      if(e.message === `No element found for selector: ${SELECTORS.GENERATE_INTEGRATION_USER_PERMISSIONS}`){
+    } catch (e) {
+      if (e.message === `No element found for selector: ${SELECTORS.GENERATE_INTEGRATION_USER_PERMISSIONS}`) {
         this.logger?.log(`The button 'Generate Integration User Permissions' is not found. It might be already clicked before.`);
-      }else{
+      } else {
         throw e;
       }
     }
@@ -77,51 +85,60 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
         await page.waitForSelector(`td[id="${valueTab.id}"]`);
         await page.click(`td[id="${valueTab.id}"]`);
         for (const [keyItem, valueItem] of Object.entries(valueTab.properties)) {
-          if (config[keyTab][keyItem]) {
+          if (!(config[keyTab][keyItem] === undefined)) {
             const item = valueItem
-            if (item.component === 'input' && item.type === 'boolean') {
-              await page.$eval(
-                `input[name="${item.name}"]`,
-                (e: HTMLInputElement, v: boolean) => {
-                  e.checked = v;
-                },
-                config[keyTab][keyItem]
-              );
-            } else if (item.component === 'input' && item.type === 'string') {
-              await page.$eval(
-                `input[name="${item.name}"]`,
-                (e: HTMLInputElement, v: string) => {
-                  e.value = v;
-                },
-                config[keyTab][keyItem]
-              );
-            }
-            else if (item.component === 'select') {
-              const selectFieldOptions = await page.$$eval(
-                `select[name="${item.name}"] option`,
-                (options: HTMLOptionElement[]) => {
-                  return options.map((option) => {
-                    return {
-                      text: option.text,
-                      value: option.value
-                    };
-                  });
-                }
-              );
-              const chooseFieldOption = selectFieldOptions.find((x) => x.text === config[keyTab][keyItem]);
-              if (!chooseFieldOption) {
-                const availableOption = selectFieldOptions.map(option => option.text);
-                throw new Error(
-                  `Fail to set '${item.label}' with value '${config[keyTab][keyItem]}'. \nPlease make sure to select one of this available options: ${JSON.stringify(availableOption)}\n`
+            try {
+              if (item.component === 'input' && item.type === 'boolean') {
+                await page.$eval(
+                  `input[name="${item.name}"]`,
+                  (e: HTMLInputElement, v: boolean) => {
+                    e.checked = v;
+                  },
+                  config[keyTab][keyItem]
+                );
+              } else if (item.component === 'input' && item.type === 'string') {
+                await page.$eval(
+                  `input[name="${item.name}"]`,
+                  (e: HTMLInputElement, v: string) => {
+                    e.value = v;
+                  },
+                  config[keyTab][keyItem]
                 );
               }
-              await page.select(`select[name="${item.name}"]`, chooseFieldOption.value);
+              else if (item.component === 'select') {
+                const selectFieldOptions = await page.$$eval(
+                  `select[name="${item.name}"] option`,
+                  (options: HTMLOptionElement[]) => {
+                    return options.map((option) => {
+                      return {
+                        text: option.text,
+                        value: option.value
+                      };
+                    });
+                  }
+                );
+                const chooseFieldOption = selectFieldOptions.find((x) => x.text === config[keyTab][keyItem]);
+                if (!chooseFieldOption) {
+                  const availableOption = selectFieldOptions.map(option => option.text);
+                  throw new Error(
+                    `Fail to set '${item.label}' with value '${config[keyTab][keyItem]}'. \nPlease make sure to select one of this available options: ${JSON.stringify(availableOption)}\n`
+                  );
+                }
+                await page.select(`select[name="${item.name}"]`, chooseFieldOption.value);
+              }
+            } catch (e) {
+              if (e.message === `Error: failed to find element matching selector "${item.component}[name="${item.name}"]"`) {
+                this.logger?.warn(`Label '${item.label}' '${keyTab}.${keyItem}' with component '${item.component}[name="${item.name}"]' is not found`);
+              } else {
+                throw e;
+              }
             }
           }
         }
       }
       await Promise.all([page.waitForNavigation(), page.click(SELECTORS.SAVE)]);
     }
+
     await page.close();
   }
 }
