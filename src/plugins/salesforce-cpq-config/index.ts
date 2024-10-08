@@ -67,12 +67,15 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
     Once the button is clicked, it will not be available for the next time.
     */
     try {
+      this.logger?.log(`Clicking on 'Generate Integration User Permissions' button`);
       await page.waitForSelector(`td[id="${formConfig.pricingAndCalculation.id}"]`);
+      await page.click(`td[id="${formConfig.pricingAndCalculation.id}"]`);
       await page.click(SELECTORS.GENERATE_INTEGRATION_USER_PERMISSIONS);
     } catch (e) {
       if (e.message === `No element found for selector: ${SELECTORS.GENERATE_INTEGRATION_USER_PERMISSIONS}`) {
         this.logger?.log(`The button 'Generate Integration User Permissions' is not found. It might be already clicked before.`);
       } else {
+        this.logger?.warn(`Error clicking 'Generate Integration User Permissions' button with message: ${e.message}`);
         throw e;
       }
     }
@@ -130,6 +133,7 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
               if (e.message === `Error: failed to find element matching selector "${item.component}[name="${item.name}"]"`) {
                 this.logger?.warn(`Label '${item.label}' '${keyTab}.${keyItem}' with component '${item.component}[name="${item.name}"]' is not found`);
               } else {
+                this.logger?.warn(`Error: at Label '${item.label}' '${keyTab}.${keyItem}' with component '${item.component}[name="${item.name}"]' with message: ${e.message}`);
                 throw e;
               }
             }
