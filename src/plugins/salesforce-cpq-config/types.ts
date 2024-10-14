@@ -9,7 +9,7 @@ export type FormConfig = {
         component: string; // 'input' | 'select'
         type: string; // 'string' | 'boolean' | 'number'
         name: string;
-        isNameRefType?: boolean;
+        immediatelySave?: boolean;
       };
     };
   };
