@@ -314,12 +314,6 @@
         "type": "boolean",
         "name": "page:form:pb:j_id185:j_id194"
       },
-      "quoteLineEditsForUsageBasedPricing": {
-        "label": "Quote Line Edits for Usage Based Pricing",
-        "component": "input",
-        "type": "boolean",
-        "name": "page:form:pb:j_id185:j_id196"
-      },
       "useLegacyCalculator": {
         "label": "Use Legacy Calculator",
         "component": "input",
@@ -348,7 +342,14 @@
         "label": "Enable Usage Based Pricing",
         "component": "input",
         "type": "boolean",
-        "name": "page:form:pb:j_id185:j_id193"
+        "name": "page:form:pb:j_id185:j_id193",
+        "immediatelySave": true
+      },
+      "quoteLineEditsForUsageBasedPricing": {
+        "label": "Quote Line Edits for Usage Based Pricing",
+        "component": "input",
+        "type": "boolean",
+        "name": "page:form:pb:j_id185:j_id196"
       },
       "hideUncalculatedQuoteWarning": {
         "label": "Hide Uncalculated Quote Warning",

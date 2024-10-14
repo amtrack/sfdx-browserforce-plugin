@@ -91,6 +91,7 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
           if (!(config[keyTab][keyItem] === undefined)) {
             const item = valueItem
             try {
+              this.logger?.log(`Updating: '${keyTab}.${keyItem}' (${item.label}) with component '${item.component}[name="${item.name}"]' with value: '${config[keyTab][keyItem]}'`);
               if (item.component === 'input' && item.type === 'boolean') {
                 await page.$eval(
                   `input[name="${item.name}"]`,
@@ -128,6 +129,9 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
                   );
                 }
                 await page.select(`select[name="${item.name}"]`, chooseFieldOption.value);
+              }
+              if(item.immediatelySave){
+                await Promise.all([page.waitForNavigation(), page.click(SELECTORS.SAVE)]);
               }
             } catch (e) {
               if (e.message === `Error: failed to find element matching selector "${item.component}[name="${item.name}"]"`) {
