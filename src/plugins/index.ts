@@ -16,8 +16,10 @@ import { SalesforceToSalesforce as salesforceToSalesforce } from './salesforce-t
 import { Security as security } from './security';
 import { CompanyInformation as companyInformation } from './company-information';
 import { LinkedInSalesNavigatorSettings as linkedInSalesNavigatorSettings } from './linkedin-sales-navigator-settings';
+import { SalesforceCpqConfig as salesforceCpqConfig } from './salesforce-cpq-config';
 
 export {
+  salesforceCpqConfig,
   activitySettings,
   communities,
   customerPortal,

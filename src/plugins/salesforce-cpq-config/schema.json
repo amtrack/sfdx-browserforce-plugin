@@ -1,0 +1,450 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/salesforce-cpq-config/schema.json",
+  "title": "SalesforceCpqConfig Settings",
+  "type": "object",
+  "properties": {
+    "documents": {
+      "type": "object",
+      "title": "Documents",
+      "properties": {
+        "documentFolder": {
+          "type": "string",
+          "title": "Document Folder"
+        },
+        "hideDocumentName": {
+          "type": "boolean",
+          "title": "Hide Document Name"
+        },
+        "fullPagePreview": {
+          "type": "boolean",
+          "title": "Full Page Preview"
+        },
+        "excludeHiddenLinesInGroupTotals": {
+          "type": "boolean",
+          "title": "Exclude Hidden Lines In Group Totals"
+        },
+        "attachmentTarget": {
+          "type": "string",
+          "title": "Attachment Target"
+        },
+        "postToFeed": {
+          "type": "boolean",
+          "title": "Post to Feed?"
+        },
+        "enableMultiLanguageTranslations": {
+          "type": "boolean",
+          "title": "Enable Multi-Language Translations"
+        }
+      }
+    },
+    "groups": {
+      "type": "object",
+      "title": "Groups",
+      "properties": {
+        "solutionGroupsEnabled": {
+          "type": "boolean",
+          "title": "Solution Groups Enabled"
+        },
+        "object": {
+          "type": "string",
+          "title": "Object"
+        },
+        "nameField": {
+          "type": "string",
+          "title": "Name Field"
+        },
+        "descriptionField": {
+          "type": "string",
+          "title": "Description Field"
+        },
+        "requireGroupName": {
+          "type": "boolean",
+          "title": "Require Group Name"
+        }
+      }
+    },
+    "lineEditor": {
+      "type": "object",
+      "title": "Line Editor",
+      "properties": {
+        "hideRenewedAssetsWhenEditing": {
+          "type": "boolean",
+          "title": "Hide Renewed Assets When Editing"
+        },
+        "visualizeProductHierarchy": {
+          "type": "boolean",
+          "title": "Visualize Product Hierarchy"
+        },
+        "preserveBundleStructure": {
+          "type": "boolean",
+          "title": "Preserve Bundle Structure"
+        },
+        "keepBundleTogether": {
+          "type": "boolean",
+          "title": "Keep Bundle Together"
+        },
+        "totalsField": {
+          "type": "string",
+          "title": "Totals Field"
+        },
+        "lineSubtotalsTotalField": {
+          "type": "string",
+          "title": "Line Subtotals Total Field"
+        },
+        "largeQuoteThreshold": {
+          "type": "number",
+          "title": "Large Quote Threshold"
+        },
+        "quoteBatchSize": {
+          "type": "number",
+          "title": "Quote Batch Size"
+        },
+        "enableExpandCollapseBundles": {
+          "type": "boolean",
+          "title": "Enable Expand/Collapse Bundles"
+        },
+        "defaultBundleSetting": {
+          "type": "string",
+          "title": "Default Bundle Setting"
+        },
+        "actionsColumnPlacement": {
+          "type": "string",
+          "title": "Actions Column Placement"
+        },
+        "enableMultiLineDelete": {
+          "type": "boolean",
+          "title": "Enable Multi Line Delete"
+        },
+        "productConfigurationInitializer": {
+          "type": "string",
+          "title": "Product Configuration Initializer"
+        },
+        "enableAssetUpgrades": {
+          "type": "boolean",
+          "title": "Enable Asset Upgrades"
+        },
+        "groupSubtotalsField": {
+          "type": "string",
+          "title": "Group Subtotals Field"
+        },
+        "wrapButtons": {
+          "type": "boolean",
+          "title": "Wrap Buttons"
+        },
+        "validateLargeQuotes": {
+          "type": "boolean",
+          "title": "Validate Large Quotes"
+        },
+        "enableCompactMode": {
+          "type": "boolean",
+          "title": "Enable Compact Mode"
+        },
+        "enableLargeQuoteExperience": {
+          "type": "boolean",
+          "title": "Enable Large Quote Experience"
+        },
+        "enableColumnResizing": {
+          "type": "boolean",
+          "title": "Enable Column Resizing"
+        }
+      }
+    },
+    "plugins": {
+      "type": "object",
+      "title": "Plugins",
+      "properties": {
+        "legacyPageSecurityPlugin": {
+          "type": "string",
+          "title": "Legacy Page Security Plugin"
+        },
+        "electronicSignaturePlugin": {
+          "type": "string",
+          "title": "Electronic Signature Plugin"
+        },
+        "billingPlugin": {
+          "type": "string",
+          "title": "Billing Plugin"
+        },
+        "productSearchPlugin": {
+          "type": "string",
+          "title": "Product Search Plugin"
+        },
+        "recommendedProductsPlugin": {
+          "type": "string",
+          "title": "Recommended Products Plugin"
+        },
+        "legacyQuoteCalculatorPlugin": {
+          "type": "string",
+          "title": "Legacy Quote Calculator Plugin"
+        },
+        "documentStorePlugin": {
+          "type": "string",
+          "title": "Document Store Plugin"
+        },
+        "quoteCalculatorPlugin": {
+          "type": "string",
+          "title": "Quote Calculator Plugin"
+        },
+        "orderManagementPlugin": {
+          "type": "string",
+          "title": "Order Management Plugin"
+        },
+        "qleCustomActionPlugin": {
+          "type": "string",
+          "title": "QLE Custom Action Plugin"
+        }
+      }
+    },
+    "pricingAndCalculation": {
+      "type": "object",
+      "title": "Pricing and Calculation",
+      "properties": {
+        "currencySymbol": {
+          "type": "string",
+          "title": "Currency Symbol"
+        },
+        "useInactivePrices": {
+          "type": "boolean",
+          "title": "Use Inactive Prices"
+        },
+        "unitPriceScale": {
+          "type": "number",
+          "title": "Unit Price Scale"
+        },
+        "calculateImmediately": {
+          "type": "boolean",
+          "title": "Calculate Immediately"
+        },
+        "enableQuickCalculate": {
+          "type": "boolean",
+          "title": "Enable Quick Calculate"
+        },
+        "allowNonConsecutiveCustomSegments": {
+          "type": "boolean",
+          "title": "Allow Non-Consecutive Custom Segments"
+        },
+        "enablePricingGuidance": {
+          "type": "boolean",
+          "title": "Enable Pricing Guidance"
+        },
+        "quoteLineEditsForUsageBasedPricing": {
+          "type": "boolean",
+          "title": "Quote Line Edits for Usage Based Pricing"
+        },
+        "useLegacyCalculator": {
+          "type": "boolean",
+          "title": "Use Legacy Calculator"
+        },
+        "disableBackgroundCalculationRefresh": {
+          "type": "boolean",
+          "title": "Disable Background Calculation Refresh"
+        },
+        "enableUsageBasedPricing": {
+          "type": "boolean",
+          "title": "Enable Usage Based Pricing"
+        },
+        "hideUncalculatedQuoteWarning": {
+          "type": "boolean",
+          "title": "Hide Uncalculated Quote Warning"
+        },
+        "useIntegrationUserForCalculations": {
+          "type": "boolean",
+          "title": "Use Integration User for Calculations"
+        }
+      }
+    },
+    "subscriptionsAndRenewals": {
+      "type": "object",
+      "title": "Subscriptions and Renewals",
+      "properties": {
+        "renewalModel": {
+          "type": "string",
+          "title": "Renewal Model"
+        },
+        "disableAddSubscriptions": {
+          "type": "boolean",
+          "title": "Disable Add Subscriptions"
+        },
+        "allowRenewalQuotesWithoutAssets": {
+          "type": "boolean",
+          "title": "Allow Renewal Quotes Without Assets"
+        },
+        "subscriptionProratePrecision": {
+          "type": "string",
+          "title": "Subscription Prorate Precision"
+        },
+        "includeNetNewProductsInMaintenance": {
+          "type": "boolean",
+          "title": "Include Net-new Products in Maintenance"
+        },
+        "contractInForeground": {
+          "type": "boolean",
+          "title": "Contract In Foreground"
+        },
+        "enableEvergreenSubscriptions": {
+          "type": "boolean",
+          "title": "Enable Evergreen Subscriptions"
+        },
+        "legacyAmendRenewService": {
+          "type": "boolean",
+          "title": "Legacy Amend/Renew Service"
+        },
+        "amendContractsInBackground": {
+          "type": "boolean",
+          "title": "Amend Contracts in Background"
+        },
+        "bypassPreserveBundleStructure": {
+          "type": "boolean",
+          "title": "Bypass Preserve Bundle Structure"
+        },
+        "subscriptionTermUnit": {
+          "type": "string",
+          "title": "Subscription Term Unit"
+        },
+        "reEvaluateBundleLogicOnRenewals": {
+          "type": "boolean",
+          "title": "Re-evaluate Bundle Logic on Renewals"
+        },
+        "poTRenewalsContractingFromOrders": {
+          "type": "boolean",
+          "title": "PoT Renewals (Contracting from Orders)"
+        },
+        "disableProductBundleSubTypeChecks": {
+          "type": "boolean",
+          "title": "Disable Product Bundle Sub Type Checks"
+        },
+        "useCurrentSubscriptionOnAssets": {
+          "type": "boolean",
+          "title": "Use Current Subscription on Assets"
+        }
+      }
+    },
+    "quote": {
+      "type": "object",
+      "title": "Quote",
+      "properties": {
+        "disableInitialQuoteSync": {
+          "type": "boolean",
+          "title": "Disable Initial Quote Sync"
+        },
+        "disableQuoteContactDefaulting": {
+          "type": "boolean",
+          "title": "Disable Quote Contact Defaulting"
+        },
+        "allowOptionDeletion": {
+          "type": "boolean",
+          "title": "Allow Option Deletion"
+        },
+        "disableQuoteAddressDefaulting": {
+          "type": "boolean",
+          "title": "Disable Quote Address Defaulting"
+        },
+        "primaryQuoteKeepsOpportunityProducts": {
+          "type": "boolean",
+          "title": "Primary Quote Keeps Opportunity Products"
+        },
+        "defaultQuoteValidityDays": {
+          "type": "number",
+          "title": "Default Quote Validity (Days)"
+        }
+      }
+    },
+    "order": {
+      "type": "object",
+      "title": "Order",
+      "properties": {
+        "requireApprovedQuote": {
+          "type": "boolean",
+          "title": "Require Approved Quote"
+        },
+        "defaultOrderStartDate": {
+          "type": "string",
+          "title": "Default Order Start Date"
+        },
+        "allowMultipleOrders": {
+          "type": "boolean",
+          "title": "Allow Multiple Orders"
+        },
+        "createOrdersWithoutOpportunities": {
+          "type": "boolean",
+          "title": "Create Orders Without Opportunities"
+        }
+      }
+    },
+    "additionalSettings": {
+      "type": "object",
+      "title": "Additional Settings",
+      "properties": {
+        "triggersDisabled": {
+          "type": "boolean",
+          "title": "Triggers Disabled"
+        },
+        "quantityScale": {
+          "type": "number",
+          "title": "Quantity Scale"
+        },
+        "sortProductsInMemory": {
+          "type": "boolean",
+          "title": "Sort Products In Memory"
+        },
+        "multipleBundlesView": {
+          "type": "string",
+          "title": "Multiple Bundles View"
+        },
+        "externalConfiguratorUrl": {
+          "type": "string",
+          "title": "External Configurator URL"
+        },
+        "thirdPartyConfigurator": {
+          "type": "boolean",
+          "title": "Third Party Configurator"
+        },
+        "openSearchFilterByDefault": {
+          "type": "boolean",
+          "title": "Open Search Filter By Default"
+        },
+        "hideFeaturesWithHiddenOptions": {
+          "type": "boolean",
+          "title": "Hide Features with Hidden Options"
+        },
+        "hideProductSearchBar": {
+          "type": "boolean",
+          "title": "Hide Product Search Bar"
+        },
+        "productResultsGroupFieldName": {
+          "type": "string",
+          "title": "Product Results Group Field Name"
+        },
+        "productDescriptionField": {
+          "type": "string",
+          "title": "Product Description Field"
+        },
+        "theme": {
+          "type": "string",
+          "title": "Theme"
+        },
+        "useGlobalHeaderPermission": {
+          "type": "boolean",
+          "title": "Use Global Header Permission"
+        },
+        "serviceRegion": {
+          "type": "string",
+          "title": "Service Region"
+        },
+        "enableProductOptionDrawer": {
+          "type": "boolean",
+          "title": "Enable Product Option Drawer"
+        },
+        "enableLargeConfigurations": {
+          "type": "boolean",
+          "title": "Enable Large Configurations"
+        },
+        "nestedBundlesForExternalConfigurator": {
+          "type": "boolean",
+          "title": "Nested Bundles for External Configurator"
+        }
+      }
+    }
+  }
+}
