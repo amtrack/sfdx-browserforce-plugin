@@ -54,6 +54,9 @@
         },
         "security": {
           "$ref": "./security/schema.json"
+        },
+        "slack": {
+          "$ref": "./slack/schema.json"
         }
       }
     }

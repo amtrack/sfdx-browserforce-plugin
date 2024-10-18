@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/slack/schema.json",
+  "title": "Slack Apps Setup",
+  "type": "object",
+  "properties": {
+    "agreeToTermsAndConditions": {
+      "title": "Agree to Termns and Conditions",
+      "description": "Once the terms have been accepted, this cannot be reverted.",
+      "type": "boolean"
+    },
+    "enableSalesCloudForSlack": {
+      "title": "Enable the 'Sales Cloud for Slack' Slack App",
+      "type": "boolean"
+    }
+  }
+}
