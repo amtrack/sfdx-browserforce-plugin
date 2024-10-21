@@ -13,6 +13,10 @@ describe(SalesforceCpqConfig.name, function () {
     await plugin.run(configDefault);
   });
 
+  it('should apply', async () => {
+    await plugin.apply(configDefault);
+  });
+
   it('should retrieve', async () => {
     const res = await plugin.retrieve(configDefault);
     assert.deepStrictEqual(res, {
