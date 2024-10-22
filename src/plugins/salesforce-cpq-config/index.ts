@@ -218,13 +218,11 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
         this.logger?.log(
           `The link Authorize New Calculation Service' is not found. It might be already clicked before.`
         );
-      }
-      else if (e.message === `Waiting for selector \`input[name="save"]\` failed: waitForFunction failed: frame got detached.`) {
-        this.logger?.log(
-          `ALLOW button is not found. It might be already clicked before.`
-        );
-      } 
-      else {
+      } else if (
+        e.message === `Waiting for selector \`input[name="save"]\` failed: waitForFunction failed: frame got detached.`
+      ) {
+        this.logger?.log(`ALLOW button is not found. It might be already clicked before.`);
+      } else {
         this.logger?.warn(`Error clicking Authorize New Calculation Service' button with message: ${e.message}`);
         throw e;
       }
