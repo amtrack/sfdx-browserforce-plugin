@@ -190,7 +190,7 @@
         "label": "Validate Large Quotes",
         "component": "input",
         "type": "boolean",
-        "name": "page:form:pb:j_id126:j_id159"
+        "name": "page:form:pb:j_id126:j_id161"
       },
       "enableCompactMode": {
         "label": "Enable Compact Mode",

@@ -13,4 +13,4 @@ export type FormConfig = {
       };
     };
   };
-}
+};
