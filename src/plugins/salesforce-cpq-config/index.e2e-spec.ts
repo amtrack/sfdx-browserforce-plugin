@@ -2,7 +2,8 @@ import assert from 'assert';
 import { SalesforceCpqConfig } from '.';
 import defaultConfig from './default.json';
 
-describe(SalesforceCpqConfig.name, function () {
+const describeOrSkip = process.env['CPQ'] === 'true' ? describe : describe.skip;
+describeOrSkip(SalesforceCpqConfig.name, function () {
   let plugin: SalesforceCpqConfig;
   before(() => {
     plugin = new SalesforceCpqConfig(global.bf);

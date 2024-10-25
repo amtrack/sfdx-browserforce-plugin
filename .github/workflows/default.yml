@@ -11,6 +11,9 @@ on:
   schedule:
     - cron: "0 4 * * 5" # every Friday 04:00
 
+env:
+  CPQ: ${{ vars.CPQ }}
+
 jobs:
   default:
     runs-on: ubuntu-latest
