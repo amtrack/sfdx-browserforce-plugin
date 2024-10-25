@@ -9,5 +9,6 @@
     "strictNullChecks": true,
     "esModuleInterop": true,
     "declaration": false,
+    "resolveJsonModule": true
   }
 }

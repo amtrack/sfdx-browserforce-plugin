@@ -7,6 +7,9 @@
   "properties": {
     "settings": {
       "properties": {
+        "salesforceCpqConfig": {
+          "$ref": "./salesforce-cpq-config/schema.json"
+        },
         "companyInformation": {
           "$ref": "./company-information/schema.json"
         },

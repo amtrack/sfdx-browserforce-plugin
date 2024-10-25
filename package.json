@@ -60,7 +60,7 @@
     "generate:plugin": "npx hygen plugin new",
     "prepack": "yarn build",
     "prepare": "yarn build",
-    "test": "tsc -p test && nyc --reporter=lcov --reporter=text mocha --require ts-node/register \"test/**/*.test.ts\" \"src/**/*.test.ts\"",
-    "test:e2e": "tsc -p test && mocha --require ts-node/register --slow 30s --timeout 2m --file test/e2e-setup.ts \"test/**/*.e2e-spec.ts\" \"src/**/*.e2e-spec.ts\""
+    "test": "tsc --resolveJsonModule -p test && nyc --reporter=lcov --reporter=text mocha --require ts-node/register \"test/**/*.test.ts\" \"src/**/*.test.ts\"",
+    "test:e2e": "tsc --resolveJsonModule -p test && mocha --require ts-node/register --slow 30s --timeout 2m --file test/e2e-setup.ts \"test/**/*.e2e-spec.ts\" \"src/**/*.e2e-spec.ts\""
   }
 }
