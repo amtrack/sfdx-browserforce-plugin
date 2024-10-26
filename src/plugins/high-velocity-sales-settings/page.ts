@@ -1,5 +1,5 @@
 import { Page } from 'puppeteer';
-import { throwPageErrors } from '../../browserforce';
+import { throwPageErrors } from '../../browserforce.js';
 
 const SET_UP_AND_ENABLE_HVS_BUTTON = 'button.setupAndEnableButton';
 const ENABLE_TOGGLE = '#toggleHighVelocitySalesPref';

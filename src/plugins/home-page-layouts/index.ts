@@ -1,5 +1,5 @@
 import type { Record } from 'jsforce';
-import { BrowserforcePlugin } from '../../plugin';
+import { BrowserforcePlugin } from '../../plugin.js';
 
 const PATHS = {
   BASE: 'setup/ui/assignhomelayoutedit.jsp'

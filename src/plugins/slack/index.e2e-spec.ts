@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { type Config, Slack } from '.';
+import { type Config, Slack } from './index.js';
 
 describe(Slack.name, function () {
   let plugin: Slack;

@@ -1,11 +1,11 @@
-import { BrowserforcePlugin } from '../../plugin';
+import { BrowserforcePlugin } from '../../plugin.js';
 import {
   CertificateAndKeyManagement,
   Config as CertificateAndKeyManagementConfig
-} from './certificate-and-key-management';
-import { IdentityProvider, Config as IdentityProviderConfig } from './identity-provider';
-import { LoginAccessPolicies, Config as LoginAccessPoliciesConfig } from './login-access-policies';
-import { Sharing, Config as SharingConfig } from './sharing';
+} from './certificate-and-key-management/index.js';
+import { IdentityProvider, Config as IdentityProviderConfig } from './identity-provider/index.js';
+import { LoginAccessPolicies, Config as LoginAccessPoliciesConfig } from './login-access-policies/index.js';
+import { Sharing, Config as SharingConfig } from './sharing/index.js';
 
 type Config = {
   certificateAndKeyManagement?: CertificateAndKeyManagementConfig;

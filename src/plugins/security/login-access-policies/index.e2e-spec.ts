@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { type Config, LoginAccessPolicies } from '.';
+import { type Config, LoginAccessPolicies } from './index.js';
 
 describe(LoginAccessPolicies.name, function () {
   let plugin: LoginAccessPolicies;

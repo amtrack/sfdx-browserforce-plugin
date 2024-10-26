@@ -1,7 +1,7 @@
 import { Org } from '@salesforce/core';
 import assert from 'assert';
-import { CertificateAndKeyManagement } from './certificate-and-key-management';
-import { IdentityProvider } from './identity-provider';
+import { CertificateAndKeyManagement } from './certificate-and-key-management/index.js';
+import { IdentityProvider } from './identity-provider/index.js';
 
 describe(`${CertificateAndKeyManagement.name} and ${IdentityProvider.name}`, function () {
   let pluginIdentityProvider: IdentityProvider;

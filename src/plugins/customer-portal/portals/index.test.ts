@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { CustomerPortalSetup } from '.';
+import { CustomerPortalSetup } from './index.js';
 
 const tests = [
   {

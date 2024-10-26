@@ -1,6 +1,6 @@
 import { Connection } from '@salesforce/core';
-import { BrowserforcePlugin } from '../../plugin';
-import { RecordTypePage } from './pages';
+import { BrowserforcePlugin } from '../../plugin.js';
+import { RecordTypePage } from './pages.js';
 
 type Config = {
   deletions: RecordTypeConfig[];

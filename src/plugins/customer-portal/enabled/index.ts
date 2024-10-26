@@ -1,4 +1,4 @@
-import { BrowserforcePlugin } from '../../../plugin';
+import { BrowserforcePlugin } from '../../../plugin.js';
 
 const PATHS = {
   EDIT_VIEW: '_ui/core/portal/CustomerSuccessPortalSetup/e'

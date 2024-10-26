@@ -1,14 +1,10 @@
 {
-  "extends": "@salesforce/dev-config/tsconfig",
-  "include": ["./src/**/*.ts"],
+  "extends": "@salesforce/dev-config/tsconfig-esm.json",
   "compilerOptions": {
     "outDir": "lib",
     "rootDir": "src",
-    "lib": ["dom", "es2021"],
     "skipLibCheck": true,
-    "strictNullChecks": true,
-    "esModuleInterop": true,
-    "declaration": false,
-    "resolveJsonModule": true
-  }
+    "lib": ["ES2023", "DOM"]
+  },
+  "include": ["./src/**/*.ts"]
 }

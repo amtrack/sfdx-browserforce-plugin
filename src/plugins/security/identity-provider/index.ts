@@ -1,6 +1,6 @@
 import type { Record } from 'jsforce';
 import pRetry, { AbortError } from 'p-retry';
-import { BrowserforcePlugin } from '../../../plugin';
+import { BrowserforcePlugin } from '../../../plugin.js';
 
 const PATHS = {
   EDIT_VIEW: 'setup/secur/idp/IdpPage.apexp'

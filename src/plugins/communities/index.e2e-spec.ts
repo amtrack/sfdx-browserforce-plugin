@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { Communities } from '.';
+import { Communities } from './index.js';
 
 describe.skip(Communities.name, function () {
   let plugin: Communities;

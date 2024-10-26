@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { DensitySettings } from '.';
+import { DensitySettings } from './index.js';
 
 describe(DensitySettings.name, function () {
   let plugin: DensitySettings;

@@ -1,12 +1,11 @@
-import { Messages } from '@salesforce/core';
-import { BrowserforceCommand } from '../../browserforce-command';
+import { BrowserforceCommand } from '../../browserforce-command.js';
 
-Messages.importMessagesDirectory(__dirname);
-const messages = Messages.loadMessages('sfdx-browserforce-plugin', 'browserforce');
+type BrowserforceApplyResponse = {
+  success: boolean;
+}
 
-export class BrowserforceApply extends BrowserforceCommand {
-  public static description = messages.getMessage('applyCommandDescription');
-
+export class BrowserforceApply extends BrowserforceCommand<BrowserforceApplyResponse> {
+  public static description = 'apply a plan from a definition file';
   public static examples = [
     `$ <%= config.bin %> <%= command.id %> -f ./config/setup-admin-login-as-any.json --target-org myOrg@example.com
   logging in... done
@@ -17,7 +16,7 @@ export class BrowserforceApply extends BrowserforceCommand {
   `
   ];
 
-  public async run(): Promise<unknown> {
+  public async run(): Promise<BrowserforceApplyResponse> {
     const { flags } = await this.parse(BrowserforceApply);
     this.log(`Applying definition file ${flags.definitionfile} to org ${flags['target-org'].getUsername()}`);
     for (const setting of this.settings) {
@@ -52,6 +51,8 @@ export class BrowserforceApply extends BrowserforceCommand {
         this.log(`[${driver.name}] no action necessary`);
       }
     }
-    return { success: true };
+    return {
+      success: true
+    };
   }
 }

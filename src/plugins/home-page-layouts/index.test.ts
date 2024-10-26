@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { HomePageLayouts } from '.';
+import { HomePageLayouts } from './index.js';
 
 const tests = [
   {

@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { Sharing } from '.';
+import { Sharing } from './index.js';
 
 describe.skip(Sharing.name, function () {
   let plugin: Sharing;

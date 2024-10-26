@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { Config, HighVelocitySalesSettings } from '.';
+import { Config, HighVelocitySalesSettings } from './index.js';
 
 describe(HighVelocitySalesSettings.name, function () {
   let plugin: HighVelocitySalesSettings;

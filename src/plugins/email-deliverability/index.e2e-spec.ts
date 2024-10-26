@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { EmailDeliverability } from '.';
+import { EmailDeliverability } from './index.js';
 
 describe(EmailDeliverability.name, function () {
   let plugin: EmailDeliverability;
