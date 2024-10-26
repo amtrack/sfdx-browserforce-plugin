@@ -33,7 +33,9 @@ describe('Browserforce', function () {
   });
   describe('waitForSelectorInFrameOrPage()', () => {
     it('should query a selector in LEX and Classic UI', async () => {
-      const page = await global.bf.openPage('lightning/setup/ExternalStrings/home');
+      const page = await global.bf.openPage('lightning/setup/ExternalStrings/home', {
+        waitUntil: ['load', 'networkidle2']
+      });
       const frame = await global.bf.waitForSelectorInFrameOrPage(page, 'input[name="edit"]');
       const button = await frame.$('input[name="edit"]');
       assert.ok(!page.url().includes('/page'));
