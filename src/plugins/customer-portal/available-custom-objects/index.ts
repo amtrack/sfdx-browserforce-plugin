@@ -1,4 +1,4 @@
-import type { Record } from 'jsforce';
+import type { Record } from '@jsforce/jsforce-node';
 import { BrowserforcePlugin } from '../../../plugin.js';
 import { semanticallyCleanObject } from '../../utils.js';
 
