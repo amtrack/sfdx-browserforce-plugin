@@ -1,5 +1,5 @@
 import { existsSync } from 'fs';
-import type { Record } from 'jsforce';
+import type { Record } from '@jsforce/jsforce-node';
 import * as path from 'path';
 import type { ElementHandle } from 'puppeteer';
 import * as queryString from 'querystring';

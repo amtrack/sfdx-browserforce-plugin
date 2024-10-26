@@ -1,4 +1,4 @@
-import type { Record } from 'jsforce';
+import type { Record } from '@jsforce/jsforce-node';
 import pRetry, { AbortError } from 'p-retry';
 import { BrowserforcePlugin } from '../../../plugin.js';
 

@@ -1,4 +1,4 @@
-import type { FileProperties } from 'jsforce/api/metadata';
+import type { FileProperties } from '@jsforce/jsforce-node/lib/api/metadata.js';
 import { retry } from '../../browserforce.js';
 import { ensureArray } from '../../jsforce-utils.js';
 import { BrowserforcePlugin } from '../../plugin.js';
