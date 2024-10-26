@@ -2,7 +2,7 @@ import { Org } from '@salesforce/core';
 import { type Ux } from '@salesforce/sf-plugins-core';
 import pRetry from 'p-retry';
 import { Browser, Frame, launch, Page, WaitForOptions } from 'puppeteer';
-import { LoginPage } from './pages/login';
+import { LoginPage } from './pages/login.js';
 
 const ERROR_DIV_SELECTOR = '#errorTitle';
 const ERROR_DIVS_SELECTOR = 'div.errorMsg';

@@ -1,7 +1,7 @@
 import { Org } from '@salesforce/core';
 import { Ux } from '@salesforce/sf-plugins-core';
 import assert from 'assert';
-import { Browserforce } from '../src/browserforce';
+import { Browserforce } from '../src/browserforce.js';
 
 describe('Browserforce', function () {
   this.slow('30s');

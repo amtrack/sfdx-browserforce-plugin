@@ -1,5 +1,5 @@
-import { BrowserforcePlugin } from '../../plugin';
-import { FolderSharing, Config as FolderSharingConfig } from './folder-sharing';
+import { BrowserforcePlugin } from '../../plugin.js';
+import { FolderSharing, Config as FolderSharingConfig } from './folder-sharing/index.js';
 
 type Config = {
   folderSharing?: FolderSharingConfig;

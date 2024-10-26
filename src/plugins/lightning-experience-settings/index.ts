@@ -1,5 +1,5 @@
 import { ElementHandle, Page } from 'puppeteer';
-import { BrowserforcePlugin } from '../../plugin';
+import { BrowserforcePlugin } from '../../plugin.js';
 
 const PATHS = {
   BASE: 'lightning/setup/ThemingAndBranding/home'

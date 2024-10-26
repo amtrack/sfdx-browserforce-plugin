@@ -1,5 +1,5 @@
 import { Org } from '@salesforce/core';
-import { Browserforce } from '../src/browserforce';
+import { Browserforce } from '../src/browserforce.js';
 import { Ux } from '@salesforce/sf-plugins-core';
 
 before('global setup', async () => {

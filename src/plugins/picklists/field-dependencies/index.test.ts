@@ -1,6 +1,6 @@
 import assert from 'assert';
-import { Config } from '.';
-import { deepDiff } from '../../utils';
+import { Config } from './index.js';
+import { deepDiff } from '../../utils.js';
 
 type T = {
   description: string;

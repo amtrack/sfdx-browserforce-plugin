@@ -1,7 +1,7 @@
 import { Page } from 'puppeteer';
-import { BrowserforcePlugin } from '../../plugin';
-import { OverviewPage } from './pages/overview';
-import { SetupPage } from './pages/setup';
+import { BrowserforcePlugin } from '../../plugin.js';
+import { OverviewPage } from './pages/overview.js';
+import { SetupPage } from './pages/setup.js';
 
 type Config = {
   enabled: boolean;

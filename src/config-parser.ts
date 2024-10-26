@@ -1,4 +1,4 @@
-import { BrowserforcePlugin } from './plugin';
+import { BrowserforcePlugin } from './plugin.js';
 
 type Drivers = {
   [key: string]: typeof BrowserforcePlugin;

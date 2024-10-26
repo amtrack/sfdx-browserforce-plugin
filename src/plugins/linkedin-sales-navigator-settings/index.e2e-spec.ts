@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { Config, LinkedInSalesNavigatorSettings } from '.';
+import { Config, LinkedInSalesNavigatorSettings } from './index.js';
 
 describe(LinkedInSalesNavigatorSettings.name, function () {
   let plugin: LinkedInSalesNavigatorSettings;

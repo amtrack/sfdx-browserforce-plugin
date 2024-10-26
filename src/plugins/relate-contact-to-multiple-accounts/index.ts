@@ -1,6 +1,6 @@
 import { Page } from 'puppeteer';
-import { retry, throwPageErrors } from '../../browserforce';
-import { BrowserforcePlugin } from '../../plugin';
+import { retry, throwPageErrors } from '../../browserforce.js';
+import { BrowserforcePlugin } from '../../plugin.js';
 
 const PATHS = {
   BASE: 'accounts/accountSetup.apexp'

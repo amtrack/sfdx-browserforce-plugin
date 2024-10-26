@@ -1,5 +1,5 @@
 import { Page } from 'puppeteer';
-import { OverviewPage } from './overview';
+import { OverviewPage } from './overview.js';
 
 const SAVE_BUTTON = 'input[id$=":save"]';
 

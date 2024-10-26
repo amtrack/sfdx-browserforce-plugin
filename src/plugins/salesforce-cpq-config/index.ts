@@ -1,8 +1,14 @@
-import { BrowserforcePlugin } from '../../plugin';
-import formConfigData from './formConfig.json';
-import { FormConfig } from './types';
+import { readFileSync } from 'node:fs';
+import { BrowserforcePlugin } from '../../plugin.js';
+import { FormConfig } from './types.js';
 
-const formConfig: FormConfig = formConfigData;
+// import formConfig from './formConfig.json' with { type: 'json'};
+const formConfig: FormConfig = JSON.parse(
+  readFileSync(
+    new URL('./formConfig.json', import.meta.url),
+    "utf8"
+  )
+);
 
 const PATHS = {
   BASE: '0A3?setupid=ImportedPackage&retURL=%2Fui%2Fsetup%2FSetup%3Fsetupid%3DStudio'
@@ -79,7 +85,7 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
     const page = await this.browserforce.openPage(PATHS.BASE);
     await Promise.all([page.waitForNavigation(), page.click(SELECTORS.CONFIGURE)]);
 
-    /* 
+    /*
     This to click on the 'Generate Integration User Permissions button' for first time setup.
     Once the button is clicked, it will not be available for the next time.
     */
@@ -99,7 +105,7 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
       }
     }
 
-    /* 
+    /*
     This to loop through the formConfig and set the value based on the config provided.
     */
     for (const [keyTab, valueTab] of Object.entries(formConfig)) {
@@ -177,7 +183,7 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
       await Promise.all([page.waitForNavigation(), page.click(SELECTORS.SAVE)]);
     }
 
-    /* 
+    /*
     This to click on the 'Authorize New Calculation Service' link under Pricing and Calculation tab.
     Once authorized, it will not appear the next time.
     */

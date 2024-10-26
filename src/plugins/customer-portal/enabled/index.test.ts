@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { CustomerPortalEnable as CustomerPortalEnabled } from '.';
+import { CustomerPortalEnable as CustomerPortalEnabled } from './index.js';
 
 type T = {
   description: string;

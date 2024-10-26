@@ -1,6 +1,6 @@
 import { Connection } from '@salesforce/core';
-import { BrowserforcePlugin } from '../../plugin';
-import { HighVelocitySalesSetupPage } from './page';
+import { BrowserforcePlugin } from '../../plugin.js';
+import { HighVelocitySalesSetupPage } from './page.js';
 
 const MSG_NOT_AVAILABLE = `HighVelocitySales is not available in this organization.
 Please add 'HighVelocitySales' to your Scratch Org Features or purchase a license.`;

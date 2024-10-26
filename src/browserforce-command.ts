@@ -1,42 +1,39 @@
-import { Messages } from '@salesforce/core';
 import { Flags, SfCommand, Ux, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
 import { promises } from 'fs';
 import * as path from 'path';
-import { Browserforce } from './browserforce';
-import { ConfigParser } from './config-parser';
-import * as DRIVERS from './plugins';
+import { Browserforce } from './browserforce.js';
+import { ConfigParser } from './config-parser.js';
+import * as DRIVERS from './plugin.js';
 
-Messages.importMessagesDirectory(__dirname);
-const messages = Messages.loadMessages('sfdx-browserforce-plugin', 'browserforce');
+const baseFlags = {
+  'target-org': requiredOrgFlagWithDeprecations,
+  definitionfile: Flags.string({
+    char: 'f',
+    description: 'path to a browserforce state file'
+  }),
+  planfile: Flags.string({
+    char: 'p',
+    name: 'plan',
+    description: 'path to a browserforce plan file'
+  }),
+  statefile: Flags.string({
+    char: 's',
+    name: 'state',
+    description: 'path to a browserforce definition file\nThe schema is similar to the scratch org definition file.\nSee https://github.com/amtrack/sfdx-browserforce-plugin#supported-org-preferences for supported values.'
+  })
+};
 
-export class BrowserforceCommand extends SfCommand<unknown> {
-  public static readonly flags = {
-    'target-org': requiredOrgFlagWithDeprecations,
-    definitionfile: Flags.string({
-      char: 'f',
-      summary: messages.getMessage('definitionFileDescription'),
-      description: messages.getMessage('definitionFileDescription')
-    }),
-    planfile: Flags.string({
-      char: 'p',
-      name: 'plan',
-      summary: messages.getMessage('planFileDescription'),
-      description: messages.getMessage('planFileDescription')
-    }),
-    statefile: Flags.string({
-      char: 's',
-      name: 'state',
-      summary: messages.getMessage('stateFileDescription'),
-      description: messages.getMessage('stateFileDescription')
-    })
-  };
+export abstract class BrowserforceCommand<T> extends SfCommand<T> {
 
   protected bf: Browserforce;
   protected settings: any[];
 
   public async init(): Promise<void> {
-    const { flags } = await this.parse(BrowserforceCommand);
     await super.init();
+    const { flags } = await this.parse({
+      flags: this.ctor.flags,
+      baseFlags
+    });
     let definition;
     if (flags.definitionfile) {
       const definitionFileData = await promises.readFile(path.resolve(flags.definitionfile), 'utf8');
@@ -52,10 +49,6 @@ export class BrowserforceCommand extends SfCommand<unknown> {
     this.spinner.start('logging in');
     await this.bf.login();
     this.spinner.stop();
-  }
-
-  public async run(): Promise<unknown> {
-    throw new Error('BrowserforceCommand should not be run directly');
   }
 
   public async finally(err?: Error): Promise<void> {

@@ -3,7 +3,7 @@ import type { Record } from 'jsforce';
 import * as path from 'path';
 import type { ElementHandle } from 'puppeteer';
 import * as queryString from 'querystring';
-import { BrowserforcePlugin } from '../../../plugin';
+import { BrowserforcePlugin } from '../../../plugin.js';
 
 const PATHS = {
   CERT_PREFIX: '0P1',

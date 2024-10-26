@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { SalesforceToSalesforce } from '.';
+import { SalesforceToSalesforce } from './index.js';
 
 describe(SalesforceToSalesforce.name, function () {
   let plugin: SalesforceToSalesforce;

@@ -2,7 +2,7 @@
 to: src/plugins/<%= h.changeCase.paramCase(name) %>/index.e2e-spec.ts
 ---
 import assert from 'assert';
-import { type Config, <%= h.changeCase.pascalCase(name) %> } from '.';
+import { type Config, <%= h.changeCase.pascalCase(name) %> } from './index.js';
 
 describe(<%= h.changeCase.pascalCase(name) %>.name, function() {
   let plugin: <%= h.changeCase.pascalCase(name) %>;

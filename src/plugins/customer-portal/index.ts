@@ -1,10 +1,10 @@
-import { BrowserforcePlugin } from '../../plugin';
+import { BrowserforcePlugin } from '../../plugin.js';
 import {
   CustomerPortalAvailableCustomObjects,
   Config as CustomerPortalAvailableCustomObjectsConfig
-} from './available-custom-objects';
-import { CustomerPortalEnable, Config as CustomerPortalEnableConfig } from './enabled';
-import { CustomerPortalSetup, Config as CustomerPortalSetupConfig } from './portals';
+} from './available-custom-objects/index.js';
+import { CustomerPortalEnable, Config as CustomerPortalEnableConfig } from './enabled/index.js';
+import { CustomerPortalSetup, Config as CustomerPortalSetupConfig } from './portals/index.js';
 
 type Config = {
   enabled?: CustomerPortalEnableConfig;

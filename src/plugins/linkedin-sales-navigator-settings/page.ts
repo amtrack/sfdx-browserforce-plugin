@@ -1,5 +1,5 @@
 import { Page } from 'puppeteer';
-import { throwPageErrors } from '../../browserforce';
+import { throwPageErrors } from '../../browserforce.js';
 
 const ENABLE_TOGGLE = 'div[data-aura-class="setup_sales_linkedinLinkedInSetupRow"] input[type="checkbox"]';
 const CONFIRM_CHECKBOX =

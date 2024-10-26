@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { CompanyInformation, Config } from '.';
+import { CompanyInformation, Config } from './index.js';
 
 describe(CompanyInformation.name, function () {
   let plugin: CompanyInformation;

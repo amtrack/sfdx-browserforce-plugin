@@ -1,7 +1,7 @@
-import { retry } from '../../../browserforce';
-import { ensureArray } from '../../../jsforce-utils';
-import { BrowserforcePlugin } from '../../../plugin';
-import { FieldDependencyPage, NewFieldDependencyPage } from './pages';
+import { retry } from '../../../browserforce.js';
+import { ensureArray } from '../../../jsforce-utils.js';
+import { BrowserforcePlugin } from '../../../plugin.js';
+import { FieldDependencyPage, NewFieldDependencyPage } from './pages.js';
 
 export type FieldDependencyConfig = {
   object: string;

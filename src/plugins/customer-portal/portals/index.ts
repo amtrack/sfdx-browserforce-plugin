@@ -1,6 +1,6 @@
 import * as queryString from 'querystring';
-import { BrowserforcePlugin } from '../../../plugin';
-import { semanticallyCleanObject } from '../../utils';
+import { BrowserforcePlugin } from '../../../plugin.js';
+import { semanticallyCleanObject } from '../../utils.js';
 
 const PATHS = {
   LIST_VIEW: '_ui/core/portal/CustomerSuccessPortalSetup/d',

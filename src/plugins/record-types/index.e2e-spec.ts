@@ -1,7 +1,10 @@
 import assert from 'assert';
 import * as child from 'child_process';
+import { fileURLToPath } from 'node:url';
 import * as path from 'path';
-import { RecordTypes } from '.';
+import { RecordTypes } from './index.js';
+
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 describe(RecordTypes.name, function () {
   this.timeout('10m');
