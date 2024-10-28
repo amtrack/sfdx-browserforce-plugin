@@ -3,7 +3,7 @@ import { promises } from 'fs';
 import * as path from 'path';
 import { Browserforce } from './browserforce.js';
 import { ConfigParser } from './config-parser.js';
-import * as DRIVERS from './plugin.js';
+import * as DRIVERS from './plugins/index.js';
 
 const baseFlags = {
   'target-org': requiredOrgFlagWithDeprecations,
