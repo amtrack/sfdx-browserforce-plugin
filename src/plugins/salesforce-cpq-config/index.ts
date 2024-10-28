@@ -1,14 +1,5 @@
-import { readFileSync } from 'node:fs';
 import { BrowserforcePlugin } from '../../plugin.js';
-import { FormConfig } from './types.js';
-
-// import formConfig from './formConfig.json' with { type: 'json'};
-const formConfig: FormConfig = JSON.parse(
-  readFileSync(
-    new URL('./formConfig.json', import.meta.url),
-    "utf8"
-  )
-);
+import { formConfig } from './formConfig.js';
 
 const PATHS = {
   BASE: '0A3?setupid=ImportedPackage&retURL=%2Fui%2Fsetup%2FSetup%3Fsetupid%3DStudio'
