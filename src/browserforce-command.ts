@@ -5,34 +5,32 @@ import { Browserforce } from './browserforce.js';
 import { ConfigParser } from './config-parser.js';
 import * as DRIVERS from './plugins/index.js';
 
-const baseFlags = {
-  'target-org': requiredOrgFlagWithDeprecations,
-  definitionfile: Flags.string({
-    char: 'f',
-    description: 'path to a browserforce state file'
-  }),
-  planfile: Flags.string({
-    char: 'p',
-    name: 'plan',
-    description: 'path to a browserforce plan file'
-  }),
-  statefile: Flags.string({
-    char: 's',
-    name: 'state',
-    description: 'path to a browserforce definition file\nThe schema is similar to the scratch org definition file.\nSee https://github.com/amtrack/sfdx-browserforce-plugin#supported-org-preferences for supported values.'
-  })
-};
-
 export abstract class BrowserforceCommand<T> extends SfCommand<T> {
-
+  static baseFlags = {
+    ...SfCommand.baseFlags,
+    'target-org': requiredOrgFlagWithDeprecations,
+    definitionfile: Flags.string({
+      char: 'f',
+      description: 'path to a browserforce state file'
+    }),
+    planfile: Flags.string({
+      char: 'p',
+      name: 'plan',
+      description: 'path to a browserforce plan file'
+    }),
+    statefile: Flags.string({
+      char: 's',
+      name: 'state',
+      description: 'path to a browserforce definition file\nThe schema is similar to the scratch org definition file.\nSee https://github.com/amtrack/sfdx-browserforce-plugin#supported-org-preferences for supported values.'
+    })
+  };
   protected bf: Browserforce;
   protected settings: any[];
 
   public async init(): Promise<void> {
     await super.init();
     const { flags } = await this.parse({
-      flags: this.ctor.flags,
-      baseFlags
+      baseFlags: BrowserforceCommand.baseFlags
     });
     let definition;
     if (flags.definitionfile) {
