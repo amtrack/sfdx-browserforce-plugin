@@ -14,7 +14,7 @@
     "puppeteer": "23.6.0"
   },
   "devDependencies": {
-    "@salesforce/dev-scripts": "10.2.10",
+    "@salesforce/dev-scripts": "10.2.11",
     "oclif": "4.15.24"
   },
   "files": [
