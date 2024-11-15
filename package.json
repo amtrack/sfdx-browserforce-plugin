@@ -10,7 +10,7 @@
   "dependencies": {
     "@mdapi-issues/listmetadata-standardvalueset": "2.0.4",
     "@salesforce/sf-plugins-core": "12.0.11",
-    "p-retry": "6.2.0",
+    "p-retry": "6.2.1",
     "puppeteer": "23.6.0"
   },
   "devDependencies": {
