@@ -6,7 +6,7 @@ const PATHS = {
 };
 
 const SELECTORS = {
-  PICKER_ITEMS: 'pierce/one-density-visual-picker one-density-visual-picker-item input'
+  PICKER_ITEMS: 'one-density-visual-picker one-density-visual-picker-item input'
 };
 
 type Config = {

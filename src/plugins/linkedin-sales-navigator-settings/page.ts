@@ -3,7 +3,7 @@ import { throwPageErrors } from '../../browserforce.js';
 
 const ENABLE_TOGGLE = 'div[data-aura-class="setup_sales_linkedinLinkedInSetupRow"] input[type="checkbox"]';
 const CONFIRM_CHECKBOX =
-  'pierce/lightning-primitive-input-checkbox input[name="LinkedIn Sales Navigator Integration Acceptance Checkbox"]';
+  'lightning-input lightning-primitive-input-checkbox input[name="LinkedIn Sales Navigator Integration Acceptance Checkbox"]';
 const ACCEPT_BUTTON =
   'section[data-aura-class="setup_sales_linkedinLinkedInSetupAcceptTermsModal"] div div button:not(:disabled):nth-child(2)';
 
@@ -27,7 +27,8 @@ export class LinkedInSalesNavigatorPage {
 
   public async setStatus(enable: boolean): Promise<void> {
     await this.page.waitForSelector(ENABLE_TOGGLE, { visible: true });
-    await this.page.click(ENABLE_TOGGLE);
+    const toggle = await this.page.$(ENABLE_TOGGLE);
+    await toggle?.evaluate((input: HTMLInputElement) => input.click());
 
     if (enable) {
       await this.page.waitForSelector(CONFIRM_CHECKBOX, { visible: true });
