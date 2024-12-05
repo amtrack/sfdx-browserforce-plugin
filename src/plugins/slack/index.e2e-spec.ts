@@ -19,10 +19,10 @@ describe(Slack.name, function () {
     agreeToTermsAndConditions: false,
     enableSalesCloudForSlack: false
   };
-  it('should accept terms and conditions', async () => {
+  it('should accept terms and conditions and enable Sales Cloud for Slack', async () => {
     await plugin.run(configEnable);
   });
-  it('should already be accepted', async () => {
+  it('should already be accepted and enabled', async () => {
     const res = await plugin.run(configEnable);
     assert.deepStrictEqual(res, { message: 'no action necessary' });
   });
