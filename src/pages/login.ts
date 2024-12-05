@@ -19,14 +19,14 @@ export class LoginPage {
       throw new Error('login failed');
     }
     const conn = org.getConnection();
-    await this.page.goto(
-      `${conn.instanceUrl}/${PATH}?sid=${conn.accessToken}&retURL=${encodeURIComponent(POST_LOGIN_PATH)}`,
+    const response = await this.page.goto(
+      `${conn.instanceUrl.replace(/\/$/, '')}/${PATH}?sid=${conn.accessToken}&retURL=${encodeURIComponent(POST_LOGIN_PATH)}`,
       {
         // should have waited at least 500ms for network connections, redirects should probably have happened already
         waitUntil: ['load', 'networkidle2']
       }
     );
-    const url = new URL(this.page.url());
+    const url = new URL(response.url());
     if (url.searchParams.has('startURL')) {
       // when query param startURL exists, the login failed
       // e.g. /?ec=302&startURL=https...
