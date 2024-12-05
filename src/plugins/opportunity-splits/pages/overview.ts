@@ -1,6 +1,5 @@
 import { Page } from 'puppeteer';
 
-const IN_PRGOGRESS = '#enablingInProgress';
 const COMPLETED = '#prefSettingSucceeded';
 const DISABLE_LINK = 'div[id*=":disable_form:"] a';
 const DISABLE_CONFIRM_CHECKBOX = 'input#dis_confirm';
@@ -18,8 +17,7 @@ export class OverviewPage {
     return (await this.page.$(DISABLE_LINK)) !== null;
   }
 
-  public async waitUntilEnabled(): Promise<void> {
-    await this.page.waitForSelector(IN_PRGOGRESS);
+  public async waitUntilCompleted(): Promise<void> {
     // 10 minutes
     await this.page.waitForSelector(COMPLETED, { timeout: 10 * 60 * 1000 });
   }
@@ -32,9 +30,5 @@ export class OverviewPage {
     await this.page.waitForSelector(DISABLE_CONFIRM_BUTTON);
     await Promise.all([this.page.waitForNavigation(), this.page.click(DISABLE_CONFIRM_BUTTON)]);
     return this;
-  }
-
-  public async waitUntilDisabled(): Promise<void> {
-    await this.page.waitForSelector(COMPLETED);
   }
 }

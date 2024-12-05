@@ -25,12 +25,12 @@ export class OpportunitySplits extends BrowserforcePlugin {
       const setupPage = new SetupPage(page);
       const layoutSelectionPage = await setupPage.enable();
       const overviewPage = await layoutSelectionPage.choose();
-      await overviewPage.waitUntilEnabled();
+      await overviewPage.waitUntilCompleted();
     } else {
       page = await this.browserforce.openPage(OverviewPage.PATH);
       const overviewPage = new OverviewPage(page);
       await overviewPage.disable();
-      await overviewPage.waitUntilDisabled();
+      await overviewPage.waitUntilCompleted();
     }
     await page.close();
   }
