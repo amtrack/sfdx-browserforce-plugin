@@ -37,8 +37,6 @@ _main() {
     -a "$alias" \
     -d \
     ${POSITIONAL_ARGS[@]}
-  sf org display -o "$alias"
-  sf project deploy start -o "$alias"
   if [[ "${CPQ}" == "true" ]]; then
     # Salesforce CPQ (SBQQ) 252.3.0.1
     sf package install --package "04t6T000000t6QXQAY" --no-prompt --wait 30
