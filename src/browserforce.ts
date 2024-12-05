@@ -62,7 +62,7 @@ export class Browserforce {
     const result = await pRetry(
       async () => {
         page = await this.getNewPage();
-        const url = `${this.getInstanceUrl()}/${urlPath}`;
+        const url = `${this.getSetupUrl()}/${urlPath}`;
         const response = await page.goto(url, options);
         if (response) {
           if (!response.ok()) {
@@ -123,6 +123,10 @@ export class Browserforce {
   public getInstanceUrl(): string {
     // sometimes the instanceUrl includes a trailing slash
     return this.org.getConnection().instanceUrl?.replace(/\/$/, '');
+  }
+
+  public getSetupUrl(): string {
+    return this.getInstanceUrl().replace('.salesforce.com', '.salesforce-setup.com');
   }
 }
 
