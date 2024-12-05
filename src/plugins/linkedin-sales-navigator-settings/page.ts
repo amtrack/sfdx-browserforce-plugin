@@ -3,7 +3,7 @@ import { throwPageErrors } from '../../browserforce.js';
 
 const ENABLE_TOGGLE = 'div[data-aura-class="setup_sales_linkedinLinkedInSetupRow"] input[type="checkbox"]';
 const CONFIRM_CHECKBOX =
-  'pierce/lightning-primitive-input-checkbox input[name="LinkedIn Sales Navigator Integration Acceptance Checkbox"]';
+  'lightning-primitive-input-checkbox >>> input[name="LinkedIn Sales Navigator Integration Acceptance Checkbox"]';
 const ACCEPT_BUTTON =
   'section[data-aura-class="setup_sales_linkedinLinkedInSetupAcceptTermsModal"] div div button:not(:disabled):nth-child(2)';
 

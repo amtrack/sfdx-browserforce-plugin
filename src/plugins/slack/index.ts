@@ -5,9 +5,9 @@ const PATHS = {
 };
 const SELECTORS = {
   TOS_LIGHTNING_INPUT:
-    'pierce/setup_service-slack-setup-assistant-container setup_service-slack-agree-to-terms lightning-input',
+    'setup_service-slack-setup-assistant-container >>> setup_service-slack-agree-to-terms >>> lightning-input',
   SALES_CLOUD_FOR_SLACK_TOGGLE:
-    'pierce/setup_service-slack-setup-assistant-container setup_service-stage setup_service-steps setup_service-step lightning-input:has(lightning-primitive-input-toggle input[name="SlkSetupStepSalesCloudForSlack"])',
+    'setup_service-slack-setup-assistant-container >>> setup_service-stage >>> setup_service-steps >>> setup_service-step >>> lightning-input:has(lightning-primitive-input-toggle input[name="SlkSetupStepSalesCloudForSlack"])',
   TOAST_MESSAGE: 'div[id^="toastDescription"]'
 };
 
