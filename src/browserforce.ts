@@ -6,7 +6,7 @@ import { LoginPage } from './pages/login.js';
 
 const ERROR_DIV_SELECTOR = '#errorTitle';
 const ERROR_DIVS_SELECTOR = 'div.errorMsg';
-const VF_IFRAME_SELECTOR = 'iframe[name^=vfFrameId]';
+const VF_IFRAME_SELECTOR = 'force-aloha-page iframe[name^=vfFrameId]';
 
 export class Browserforce {
   public org: Org;
@@ -99,8 +99,8 @@ export class Browserforce {
   // Wait for either the selector in the page or in the iframe.
   // returns the page or the frame
   public async waitForSelectorInFrameOrPage(page: Page, selector: string): Promise<Page | Frame> {
-    await page.waitForSelector(`pierce/${VF_IFRAME_SELECTOR}, ${selector}`);
-    const frameElementHandle = await page.$(`pierce/${VF_IFRAME_SELECTOR}`);
+    await page.waitForSelector(`${selector}, ${VF_IFRAME_SELECTOR}`);
+    const frameElementHandle = await page.$(VF_IFRAME_SELECTOR);
     let frameOrPage: Page | Frame = page;
     if (frameElementHandle) {
       const frame = await page.waitForFrame(
