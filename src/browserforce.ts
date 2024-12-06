@@ -13,6 +13,8 @@ export class Browserforce {
   public logger?: Ux;
   public browser: Browser;
   public page: Page;
+  public lightningSetupUrl: string;
+
   constructor(org: Org, logger?: Ux) {
     this.org = org;
     this.logger = logger;
@@ -62,7 +64,8 @@ export class Browserforce {
     const result = await pRetry(
       async () => {
         page = await this.getNewPage();
-        const url = `${this.getInstanceUrl()}/${urlPath}`;
+        const setupUrl = urlPath.startsWith("lightning") ? await this.getLightningSetupUrl() : this.getInstanceUrl();
+        const url = `${setupUrl}/${urlPath}`;
         const response = await page.goto(url, options);
         if (response) {
           if (!response.ok()) {
@@ -123,6 +126,22 @@ export class Browserforce {
   public getInstanceUrl(): string {
     // sometimes the instanceUrl includes a trailing slash
     return this.org.getConnection().instanceUrl?.replace(/\/$/, '');
+  }
+
+  /**
+   * @returns the setup url (e.g. https://[MyDomainName].my.salesforce-setup.com)
+   */
+  public async getLightningSetupUrl(): Promise<string> {
+    if (!this.lightningSetupUrl) {
+      const page = await this.getNewPage();
+      try {
+        const lightningResponse = await page.goto(`${this.getInstanceUrl()}/lightning/setup/SetupOneHome/home`, {waitUntil: ["load", "networkidle2"]});
+        this.lightningSetupUrl = new URL(lightningResponse.url()).origin;
+      } finally {
+        await page.close();
+      }
+    }
+    return this.lightningSetupUrl;
   }
 }
 
