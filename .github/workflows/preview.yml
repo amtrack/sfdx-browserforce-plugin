@@ -15,18 +15,18 @@ jobs:
           node-version-file: .node-version
       - name: Install dependencies
         run: |
-          yarn install
-          yarn global add @salesforce/cli@${SF_CLI_VERSION:-"latest"}
+          npm ci
+          npm install --global @salesforce/cli@${SF_CLI_VERSION:-"latest"}
       - name: Run unit tests
-        run: yarn test
+        run: npm run test
       - name: Authenticate DevHub and create scratch org
         env:
           SFDX_AUTH_URL_DEVHUB: ${{ secrets.SFDX_AUTH_URL_DEVHUB }}
         run: |
           sf org login sfdx-url -d -a devhub -f <(echo "${SFDX_AUTH_URL_DEVHUB}")
-          yarn develop --release preview
+          npm run develop --release preview
       - name: Run end-to-end tests
-        run: yarn test:e2e
+        run: npm run test:e2e
       - name: Delete scratch org
         if: always()
         run: |

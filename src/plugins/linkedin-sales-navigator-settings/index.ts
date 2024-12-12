@@ -1,5 +1,5 @@
-import { BrowserforcePlugin } from '../../plugin';
-import { LinkedInSalesNavigatorPage } from './page';
+import { BrowserforcePlugin } from '../../plugin.js';
+import { LinkedInSalesNavigatorPage } from './page.js';
 
 export type Config = {
   enabled: boolean;

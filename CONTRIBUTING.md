@@ -19,7 +19,7 @@
 > Note: Make sure to run these commands in your `sfdx-browserforce-plugin` directory.
 
 ```console
-yarn install
+npm ci
 ```
 
 ## Scaffolding a new plugin
@@ -29,7 +29,7 @@ Let's say you want to develop a new plugin to enable/disable `Administrators Can
 You can scaffold a new plugin by running:
 
 ```console
-yarn run generate:plugin --name AdminsCanLogInAsAnyUser
+npm run generate:plugin --name AdminsCanLogInAsAnyUser
 ```
 
 Run `git status` afterwards to see what files have been generated.
@@ -42,7 +42,7 @@ TypeScript code needs to be transpiled to JavaScript.
 To do this, run the following command:
 
 ```console
-yarn run build
+npm run build
 ```
 
 Bravo 👏, you have just generated a working browserforce plugin!
@@ -159,7 +159,7 @@ To run **unit tests**:
 > Note: Make sure to run these commands in your sfdx-browserforce-plugin directory.
 
 ```console
-yarn test
+npm run test
 ```
 
 To run the **end to end tests**, you might want to create a new **default scratch org** first.
@@ -171,8 +171,8 @@ sf org create scratch -f config/project-scratch-def.json -d
 ```
 
 ```console
-yarn run test:e2e
-yarn run test:e2e -- -g "AdminsCanLogInAsAnyUser" # will only run tests matching `AdminsCanLogInAsAnyUser`
+npm run test:e2e
+npm run test:e2e -- -g "AdminsCanLogInAsAnyUser" # will only run tests matching `AdminsCanLogInAsAnyUser`
 ```
 
 > Note: You can run the e2e tests in non-headless mode (opening a browser) by setting the environment variable `BROWSER_DEBUG=true`.

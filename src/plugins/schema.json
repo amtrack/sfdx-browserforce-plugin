@@ -7,6 +7,9 @@
   "properties": {
     "settings": {
       "properties": {
+        "salesforceCpqConfig": {
+          "$ref": "./salesforce-cpq-config/schema.json"
+        },
         "companyInformation": {
           "$ref": "./company-information/schema.json"
         },
@@ -49,6 +52,9 @@
         "homePageLayouts": {
           "$ref": "./home-page-layouts/schema.json"
         },
+        "omniChannelSettings": {
+          "$ref": "./omni-channel-settings/schema.json"
+        },
         "salesforceToSalesforce": {
           "$ref": "./salesforce-to-salesforce/schema.json"
         },
@@ -58,8 +64,8 @@
         "serviceChannelSettings": {
           "$ref": "./service-channel-settings/schema.json"
         },
-        "omniChannelSettings": {
-          "$ref": "./omni-channel-settings/schema.json"
+        "slack": {
+          "$ref": "./slack/schema.json"
         }
       }
     }

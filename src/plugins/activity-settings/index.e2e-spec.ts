@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { ActivitySettings } from '.';
+import { ActivitySettings } from './index.js';
 
 describe(ActivitySettings.name, function () {
   let plugin: ActivitySettings;

@@ -1,10 +1,10 @@
-import type { FileProperties } from 'jsforce/api/metadata';
-import { retry } from '../../browserforce';
-import { ensureArray } from '../../jsforce-utils';
-import { BrowserforcePlugin } from '../../plugin';
-import { FieldDependencies, Config as FieldDependenciesConfig } from './field-dependencies';
-import { DefaultPicklistAddPage, PicklistPage, StatusPicklistAddPage } from './pages';
-import { determineStandardValueSetEditUrl } from './standard-value-set';
+import type { FileProperties } from '@jsforce/jsforce-node/lib/api/metadata.js';
+import { retry } from '../../browserforce.js';
+import { ensureArray } from '../../jsforce-utils.js';
+import { BrowserforcePlugin } from '../../plugin.js';
+import { FieldDependencies, Config as FieldDependenciesConfig } from './field-dependencies/index.js';
+import { DefaultPicklistAddPage, PicklistPage, StatusPicklistAddPage } from './pages.js';
+import { determineStandardValueSetEditUrl } from './standard-value-set.js';
 
 type Config = {
   picklistValues?: PicklistValuesConfig[];

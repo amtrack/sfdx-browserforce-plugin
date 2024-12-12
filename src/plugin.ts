@@ -1,6 +1,6 @@
 import { Org } from '@salesforce/core';
-import { Browserforce } from './browserforce';
-import { deepDiff } from './plugins/utils';
+import { Browserforce } from './browserforce.js';
+import { deepDiff } from './plugins/utils.js';
 
 export abstract class BrowserforcePlugin {
   protected browserforce: Browserforce;

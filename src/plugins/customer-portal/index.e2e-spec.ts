@@ -1,9 +1,12 @@
 import assert from 'assert';
 import * as child from 'child_process';
+import { fileURLToPath } from 'node:url';
 import * as path from 'path';
-import { CustomerPortalAvailableCustomObjects } from './available-custom-objects';
-import { CustomerPortalEnable } from './enabled';
-import { CustomerPortalSetup } from './portals';
+import { CustomerPortalAvailableCustomObjects } from './available-custom-objects/index.js';
+import { CustomerPortalEnable } from './enabled/index.js';
+import { CustomerPortalSetup } from './portals/index.js';
+
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 describe('CustomerPortal', () => {
   describe(CustomerPortalEnable.name, function () {

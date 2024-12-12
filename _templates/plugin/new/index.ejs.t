@@ -2,7 +2,7 @@
 to: src/plugins/<%= h.changeCase.paramCase(name) %>/index.ts
 sh: "npx prettier --write 'src/plugins/<%= h.changeCase.paramCase(name) %>/*' 'src/plugins/index.ts'"
 ---
-import { BrowserforcePlugin } from '../../plugin';
+import { BrowserforcePlugin } from '../../plugin.js';
 
 const PATHS = {
   BASE: 'partnerbt/loginAccessPolicies.apexp'

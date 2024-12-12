@@ -1,0 +1,9 @@
+{
+  "$schema": "../schema.json",
+  "settings": {
+    "slack": {
+      "agreeToTermsAndConditions": true,
+      "enableSalesCloudForSlack": true
+    }
+  }
+}

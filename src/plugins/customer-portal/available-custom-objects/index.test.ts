@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { type Config, CustomerPortalAvailableCustomObjects } from '.';
+import { type Config, CustomerPortalAvailableCustomObjects } from './index.js';
 
 type T = {
   description: string;

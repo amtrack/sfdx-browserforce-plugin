@@ -1,5 +1,5 @@
 import { Page } from 'puppeteer';
-import { LayoutSelectionPage } from './layout-selection';
+import { LayoutSelectionPage } from './layout-selection.js';
 
 const SAVE_BUTTON = 'input[id$=":form:SaveButton"]';
 const MODAL_CONFIRM_BUTTON = 'input[id="splitsMassOperationConfirmDialog_overlayConfirmButton"]';

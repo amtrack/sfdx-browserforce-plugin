@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { LightningExperienceSettings } from '.';
+import { LightningExperienceSettings } from './index.js';
 
 describe(LightningExperienceSettings.name, function () {
   describe('activeThemeName', () => {

@@ -2,17 +2,19 @@ import { Org } from '@salesforce/core';
 import { type Ux } from '@salesforce/sf-plugins-core';
 import pRetry from 'p-retry';
 import { Browser, Frame, launch, Page, WaitForOptions } from 'puppeteer';
-import { LoginPage } from './pages/login';
+import { LoginPage } from './pages/login.js';
 
 const ERROR_DIV_SELECTOR = '#errorTitle';
 const ERROR_DIVS_SELECTOR = 'div.errorMsg';
-const VF_IFRAME_SELECTOR = 'iframe[name^=vfFrameId]';
+const VF_IFRAME_SELECTOR = 'force-aloha-page iframe[name^=vfFrameId]';
 
 export class Browserforce {
   public org: Org;
   public logger?: Ux;
   public browser: Browser;
   public page: Page;
+  public lightningSetupUrl: string;
+
   constructor(org: Org, logger?: Ux) {
     this.org = org;
     this.logger = logger;
@@ -62,7 +64,8 @@ export class Browserforce {
     const result = await pRetry(
       async () => {
         page = await this.getNewPage();
-        const url = `${this.getInstanceUrl()}/${urlPath}`;
+        const setupUrl = urlPath.startsWith("lightning") ? await this.getLightningSetupUrl() : this.getInstanceUrl();
+        const url = `${setupUrl}/${urlPath}`;
         const response = await page.goto(url, options);
         if (response) {
           if (!response.ok()) {
@@ -96,8 +99,8 @@ export class Browserforce {
   // Wait for either the selector in the page or in the iframe.
   // returns the page or the frame
   public async waitForSelectorInFrameOrPage(page: Page, selector: string): Promise<Page | Frame> {
-    await page.waitForSelector(`pierce/${VF_IFRAME_SELECTOR}, ${selector}`);
-    const frameElementHandle = await page.$(`pierce/${VF_IFRAME_SELECTOR}`);
+    await page.waitForSelector(`${selector}, ${VF_IFRAME_SELECTOR}`);
+    const frameElementHandle = await page.$(VF_IFRAME_SELECTOR);
     let frameOrPage: Page | Frame = page;
     if (frameElementHandle) {
       const frame = await page.waitForFrame(
@@ -123,6 +126,22 @@ export class Browserforce {
   public getInstanceUrl(): string {
     // sometimes the instanceUrl includes a trailing slash
     return this.org.getConnection().instanceUrl?.replace(/\/$/, '');
+  }
+
+  /**
+   * @returns the setup url (e.g. https://[MyDomainName].my.salesforce-setup.com)
+   */
+  public async getLightningSetupUrl(): Promise<string> {
+    if (!this.lightningSetupUrl) {
+      const page = await this.getNewPage();
+      try {
+        const lightningResponse = await page.goto(`${this.getInstanceUrl()}/lightning/setup/SetupOneHome/home`, {waitUntil: ["load", "networkidle2"]});
+        this.lightningSetupUrl = new URL(lightningResponse.url()).origin;
+      } finally {
+        await page.close();
+      }
+    }
+    return this.lightningSetupUrl;
   }
 }
 

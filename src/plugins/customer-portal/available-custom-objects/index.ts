@@ -1,6 +1,6 @@
-import type { Record } from 'jsforce';
-import { BrowserforcePlugin } from '../../../plugin';
-import { semanticallyCleanObject } from '../../utils';
+import type { Record } from '@jsforce/jsforce-node';
+import { BrowserforcePlugin } from '../../../plugin.js';
+import { semanticallyCleanObject } from '../../utils.js';
 
 const SELECTORS = {
   SAVE_BUTTON: 'input[name="save"]',

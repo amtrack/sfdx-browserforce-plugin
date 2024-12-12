@@ -1,11 +1,11 @@
 import { ElementHandle, Page } from 'puppeteer';
-import { BrowserforcePlugin } from '../../plugin';
+import { BrowserforcePlugin } from '../../plugin.js';
 
 const PATHS = {
   BASE: 'lightning/setup/ThemingAndBranding/home'
 };
 
-const THEME_ROW_SELECTOR = 'pierce/#setupComponent lightning-datatable table > tbody > tr';
+const THEME_ROW_SELECTOR = '#setupComponent lightning-datatable table > tbody > tr';
 const SELECTORS = {
   DEVELOPER_NAMES: `${THEME_ROW_SELECTOR} > td:nth-child(2) > lightning-primitive-cell-factory lightning-base-formatted-text`,
   STATES: `${THEME_ROW_SELECTOR} > td:nth-child(6) > lightning-primitive-cell-factory`
@@ -71,13 +71,13 @@ export class LightningExperienceSettings extends BrowserforcePlugin {
       visible: true
     });
     const menuButton = await newActiveThemeRowElementHandle.$(
-      'pierce/td lightning-primitive-cell-factory lightning-primitive-cell-actions lightning-button-menu'
+      'td lightning-primitive-cell-factory lightning-primitive-cell-actions lightning-button-menu'
     );
     await page.evaluate((e: HTMLElement) => e.click(), menuButton);
     await page.waitForSelector(`${THEME_ROW_SELECTOR} lightning-button-menu slot lightning-menu-item`, {
       visible: true
     });
-    const menuItems = await menuButton!.$$('pierce/slot lightning-menu-item');
+    const menuItems = await menuButton!.$$('slot lightning-menu-item');
     // second last item: [show, activate, preview]
     const activateMenuItem = menuItems[menuItems.length - 2];
     await Promise.all([page.waitForNavigation(), page.evaluate((e: HTMLElement) => e.click(), activateMenuItem)]);

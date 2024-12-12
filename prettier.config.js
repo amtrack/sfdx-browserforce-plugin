@@ -1,6 +1,6 @@
-const salesforcePrettierConfig = require('@salesforce/prettier-config');
+import salesforcePrettierConfig from '@salesforce/prettier-config';
 
-module.exports = {
+export default {
   ...salesforcePrettierConfig,
-  trailingComma: 'none'
+  singleQuote: false
 };

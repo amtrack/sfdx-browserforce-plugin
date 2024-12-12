@@ -1,10 +1,8 @@
 {
-  "extends": "@salesforce/dev-config/tsconfig-test",
+  "extends": "@salesforce/dev-config/tsconfig-test-esm.json",
   "include": ["./**/*.ts"],
   "compilerOptions": {
-    "lib": ["dom", "es2021"],
     "skipLibCheck": true,
-    "strictNullChecks": true,
-    "esModuleInterop": true
+    "lib": ["ES2023", "DOM"]
   }
 }

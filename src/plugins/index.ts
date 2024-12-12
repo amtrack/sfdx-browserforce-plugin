@@ -1,27 +1,30 @@
-import { ActivitySettings as activitySettings } from './activity-settings';
-import { Communities as communities } from './communities';
-import { CustomerPortal as customerPortal } from './customer-portal';
-import { DeferSharingCalculation as deferSharingCalculation } from './defer-sharing-calculation';
-import { DensitySettings as densitySettings } from './density-settings';
-import { EmailDeliverability as emailDeliverability } from './email-deliverability';
-import { HighVelocitySalesSettings as highVelocitySalesSettings } from './high-velocity-sales-settings';
-import { HomePageLayouts as homePageLayouts } from './home-page-layouts';
-import { LightningExperienceSettings as lightningExperienceSettings } from './lightning-experience-settings';
-import { OmniChannelSettings as omniChannelSettings } from './omni-channel-settings';
-import { OpportunitySplits as opportunitySplits } from './opportunity-splits';
-import { Picklists as picklists } from './picklists';
-import { RecordTypes as recordTypes } from './record-types';
-import { RelateContactToMultipleAccounts as relateContactToMultipleAccounts } from './relate-contact-to-multiple-accounts';
-import { ReportsAndDashboards as reportsAndDashboards } from './reports-and-dashboards';
-import { SalesforceToSalesforce as salesforceToSalesforce } from './salesforce-to-salesforce';
-import { Security as security } from './security';
-import { ServiceChannelSettings as serviceChannelSettings } from './service-channel-settings';
-import { CompanyInformation as companyInformation } from './company-information';
-import { LinkedInSalesNavigatorSettings as linkedInSalesNavigatorSettings } from './linkedin-sales-navigator-settings';
+import { ActivitySettings as activitySettings } from './activity-settings/index.js';
+import { Communities as communities } from './communities/index.js';
+import { CompanyInformation as companyInformation } from './company-information/index.js';
+import { CustomerPortal as customerPortal } from './customer-portal/index.js';
+import { DeferSharingCalculation as deferSharingCalculation } from './defer-sharing-calculation/index.js';
+import { DensitySettings as densitySettings } from './density-settings/index.js';
+import { EmailDeliverability as emailDeliverability } from './email-deliverability/index.js';
+import { HighVelocitySalesSettings as highVelocitySalesSettings } from './high-velocity-sales-settings/index.js';
+import { HomePageLayouts as homePageLayouts } from './home-page-layouts/index.js';
+import { LightningExperienceSettings as lightningExperienceSettings } from './lightning-experience-settings/index.js';
+import { LinkedInSalesNavigatorSettings as linkedInSalesNavigatorSettings } from './linkedin-sales-navigator-settings/index.js';
+import { OmniChannelSettings as omniChannelSettings } from './omni-channel-settings/index.js';
+import { OpportunitySplits as opportunitySplits } from './opportunity-splits/index.js';
+import { Picklists as picklists } from './picklists/index.js';
+import { RecordTypes as recordTypes } from './record-types/index.js';
+import { RelateContactToMultipleAccounts as relateContactToMultipleAccounts } from './relate-contact-to-multiple-accounts/index.js';
+import { ReportsAndDashboards as reportsAndDashboards } from './reports-and-dashboards/index.js';
+import { SalesforceCpqConfig as salesforceCpqConfig } from './salesforce-cpq-config/index.js';
+import { SalesforceToSalesforce as salesforceToSalesforce } from './salesforce-to-salesforce/index.js';
+import { Security as security } from './security/index.js';
+import { ServiceChannelSettings as serviceChannelSettings } from './service-channel-settings/index.js';
+import { Slack as slack } from './slack/index.js';
 
 export {
   activitySettings,
   communities,
+  companyInformation,
   customerPortal,
   deferSharingCalculation,
   densitySettings,
@@ -29,15 +32,16 @@ export {
   highVelocitySalesSettings,
   homePageLayouts,
   lightningExperienceSettings,
+  linkedInSalesNavigatorSettings,
   omniChannelSettings,
   opportunitySplits,
   picklists,
   recordTypes,
   relateContactToMultipleAccounts,
   reportsAndDashboards,
+  salesforceCpqConfig,
   salesforceToSalesforce,
   security,
   serviceChannelSettings,
-  companyInformation,
-  linkedInSalesNavigatorSettings
+  slack
 };

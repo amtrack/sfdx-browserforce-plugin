@@ -1,8 +1,20 @@
 import assert from 'assert';
 import * as child from 'child_process';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import * as path from 'path';
-import { Picklists } from '.';
-import { FieldDependencies } from './field-dependencies';
+import { Picklists } from './index.js';
+import { FieldDependencies } from './field-dependencies/index.js';
+
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
+const readJsonFile = function(u: string) {
+  return JSON.parse(
+    readFileSync(
+      new URL(u, import.meta.url),
+      "utf8"
+    )
+  );
+}
 
 describe(Picklists.name, function () {
   this.timeout('10m');
@@ -11,12 +23,12 @@ describe(Picklists.name, function () {
     plugin = new Picklists(global.bf);
   });
 
-  const configNew = require('./new.json').settings.picklists;
-  const configReplace = require('./replace.json').settings.picklists;
-  const configReplaceAndDelete = require('./replace-and-delete.json').settings.picklists;
-  const configDeactivate = require('./deactivate.json').settings.picklists;
-  const configActivate = require('./activate.json').settings.picklists;
-  const configReplaceAndDeactivate = require('./replace-and-deactivate.json').settings.picklists;
+  const configNew = readJsonFile('./new.json').settings.picklists;
+  const configReplace = readJsonFile('./replace.json').settings.picklists;
+  const configReplaceAndDelete = readJsonFile('./replace-and-delete.json').settings.picklists;
+  const configDeactivate = readJsonFile('./deactivate.json').settings.picklists;
+  const configActivate = readJsonFile('./activate.json').settings.picklists;
+  const configReplaceAndDeactivate = readJsonFile('./replace-and-deactivate.json').settings.picklists;
 
   it('should deploy a CustomObject for testing', () => {
     const sourceDeployCmd = child.spawnSync('sf', [
@@ -68,9 +80,9 @@ describe(FieldDependencies.name, function () {
     plugin = new FieldDependencies(global.bf);
   });
 
-  const configSet = require('./field-dependencies/set.json').settings.picklists.fieldDependencies;
-  const configUnset = require('./field-dependencies/unset.json').settings.picklists.fieldDependencies;
-  const configChange = require('./field-dependencies/change.json').settings.picklists.fieldDependencies;
+  const configSet = readJsonFile('./field-dependencies/set.json').settings.picklists.fieldDependencies;
+  const configUnset = readJsonFile('./field-dependencies/unset.json').settings.picklists.fieldDependencies;
+  const configChange = readJsonFile('./field-dependencies/change.json').settings.picklists.fieldDependencies;
 
   it('should not do anything when the dependency is already set', async () => {
     const res = await plugin.run(configSet);

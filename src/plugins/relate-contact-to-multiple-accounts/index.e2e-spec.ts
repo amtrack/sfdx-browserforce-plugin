@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { RelateContactToMultipleAccounts } from '.';
+import { RelateContactToMultipleAccounts } from './index.js';
 
 describe(RelateContactToMultipleAccounts.name, function () {
   let plugin: RelateContactToMultipleAccounts;

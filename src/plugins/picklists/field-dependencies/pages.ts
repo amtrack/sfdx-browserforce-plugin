@@ -1,5 +1,5 @@
 import { Page } from 'puppeteer';
-import { throwPageErrors } from '../../../browserforce';
+import { throwPageErrors } from '../../../browserforce.js';
 
 export class FieldDependencyPage {
   private page;

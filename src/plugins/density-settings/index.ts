@@ -1,12 +1,12 @@
 import { ElementHandle, Page } from 'puppeteer';
-import { BrowserforcePlugin } from '../../plugin';
+import { BrowserforcePlugin } from '../../plugin.js';
 
 const PATHS = {
   BASE: 'lightning/setup/DensitySetup/home'
 };
 
 const SELECTORS = {
-  PICKER_ITEMS: 'pierce/one-density-visual-picker one-density-visual-picker-item input'
+  PICKER_ITEMS: 'one-density-visual-picker one-density-visual-picker-item input'
 };
 
 type Config = {

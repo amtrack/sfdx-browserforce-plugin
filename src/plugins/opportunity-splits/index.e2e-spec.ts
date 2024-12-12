@@ -1,9 +1,13 @@
 import assert from 'assert';
 import * as child from 'child_process';
+import { fileURLToPath } from 'node:url';
 import * as path from 'path';
-import { OpportunitySplits } from '.';
+import { OpportunitySplits } from './index.js';
+
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 describe(OpportunitySplits.name, function () {
+  this.timeout('10m');
   let plugin: OpportunitySplits;
   before(() => {
     plugin = new OpportunitySplits(global.bf);

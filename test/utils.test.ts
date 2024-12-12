@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { isEmptyObjectOrArray, semanticallyCleanObject } from '../src/plugins/utils';
+import { isEmptyObjectOrArray, semanticallyCleanObject } from '../src/plugins/utils.js';
 
 describe('semanticallyCleanObject', () => {
   it('should clean object', async () => {

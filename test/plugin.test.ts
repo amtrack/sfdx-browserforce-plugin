@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { BrowserforcePlugin } from '../src/plugin';
+import { BrowserforcePlugin } from '../src/plugin.js';
 
 class DummyPlugin extends BrowserforcePlugin {
   public async retrieve(definition: JSON) {

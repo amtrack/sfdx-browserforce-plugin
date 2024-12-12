@@ -1,14 +1,13 @@
 import { writeFile } from 'fs/promises';
-import { Messages } from '@salesforce/core';
 import * as path from 'path';
-import { BrowserforceCommand } from '../../browserforce-command';
+import { BrowserforceCommand } from '../../browserforce-command.js';
 
-Messages.importMessagesDirectory(__dirname);
-const messages = Messages.loadMessages('sfdx-browserforce-plugin', 'browserforce');
+type BrowserforceApplyResponse = {
+  success: boolean;
+}
 
-export class BrowserforcePlanCommand extends BrowserforceCommand {
-  public static description = messages.getMessage('planCommandDescription');
-
+export class BrowserforcePlanCommand extends BrowserforceCommand<BrowserforceApplyResponse> {
+  public static description = 'retrieve state and generate plan file';
   public static examples = [
     `$ <%= config.bin %> <%= command.id %> -f ./config/setup-admin-login-as-any.json --target-org myOrg@example.com
   logging in... done
@@ -19,7 +18,7 @@ export class BrowserforcePlanCommand extends BrowserforceCommand {
   `
   ];
 
-  public async run(): Promise<unknown> {
+  public async run(): Promise<BrowserforceApplyResponse> {
     const { flags } = await this.parse(BrowserforcePlanCommand);
     this.log(
       `Generating plan with definition file ${flags.definitionfile} from org ${flags['target-org'].getUsername()}`
@@ -58,6 +57,6 @@ export class BrowserforcePlanCommand extends BrowserforceCommand {
       await writeFile(path.resolve(flags.planfile), JSON.stringify(plan, null, 2));
       this.spinner.stop();
     }
-    return { success: true, plan };
+    return { success: true };
   }
 }

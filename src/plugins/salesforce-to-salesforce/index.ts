@@ -1,5 +1,5 @@
 import pRetry from 'p-retry';
-import { BrowserforcePlugin } from '../../plugin';
+import { BrowserforcePlugin } from '../../plugin.js';
 
 const PATHS = {
   BASE: '_ui/s2s/ui/PartnerNetworkEnable/e'

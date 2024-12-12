@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { CertificateAndKeyManagement, Config } from '.';
+import { CertificateAndKeyManagement, Config } from './index.js';
 
 type T = {
   description: string;
