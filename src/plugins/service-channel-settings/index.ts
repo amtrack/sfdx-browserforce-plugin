@@ -1,5 +1,5 @@
-import { BrowserforcePlugin } from '../../plugin';
-import { Capacity, CapacityConfig } from './capacity';
+import { BrowserforcePlugin } from '../../plugin.js';
+import { Capacity, CapacityConfig } from './capacity/index.js';
 
 type Config = {
   serviceChannelDeveloperName: string;

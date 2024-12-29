@@ -1,4 +1,4 @@
-import { BrowserforcePlugin } from '../../../plugin';
+import { BrowserforcePlugin } from '../../../plugin.js';
 
 const SELECTORS = {
   ADD_BUTTON: 'a[id$=":duelingListBox:backingList_add"]',

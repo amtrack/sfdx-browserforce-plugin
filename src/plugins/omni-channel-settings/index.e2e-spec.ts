@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { OmniChannelSettings } from '.';
+import { OmniChannelSettings } from './index.js';
 
 describe(OmniChannelSettings.name, function () {
   this.timeout('10m');

@@ -1,4 +1,4 @@
-import { BrowserforcePlugin } from '../../plugin';
+import { BrowserforcePlugin } from '../../plugin.js';
 
 const PATHS = {
   BASE: 'omnichannel/settings.apexp'
@@ -27,7 +27,7 @@ export class OmniChannelSettings extends BrowserforcePlugin {
   public async apply(config: Config): Promise<void> {
     // Open the omni-channel setup page
     const page = await this.browserforce.openPage(PATHS.BASE);
-    
+
     // Click the checkbox
     const capacityModel = await page.waitForSelector(SELECTORS.STATUS_CAPACITY_TOGGLE);
     await capacityModel?.click();
