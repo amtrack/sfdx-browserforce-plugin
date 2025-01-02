@@ -19,6 +19,7 @@ export class OmniChannelSettings extends BrowserforcePlugin {
     const page = await this.browserforce.openPage(PATHS.BASE);
 
     // Retrieve the service channel config
+    await page.waitForSelector(SELECTORS.STATUS_CAPACITY_TOGGLE);
     const enableStatusBasedCapacityModel = await page.$eval(SELECTORS.STATUS_CAPACITY_TOGGLE, el => (el.getAttribute('checked') === "checked" ? true : false));
 
     return { enableStatusBasedCapacityModel };
@@ -30,11 +31,14 @@ export class OmniChannelSettings extends BrowserforcePlugin {
 
     // Click the checkbox
     const capacityModel = await page.waitForSelector(SELECTORS.STATUS_CAPACITY_TOGGLE);
-    await capacityModel?.click();
+    await capacityModel.click();
 
     // Save the settings
     const saveButton = await page.waitForSelector(SELECTORS.SAVE_BUTTON);
-    await saveButton?.click();
+    await saveButton.click();
+  
+    // Wait for the page to refresh
+    await page.waitForNavigation()
 
     // Close the page
     await page.close();

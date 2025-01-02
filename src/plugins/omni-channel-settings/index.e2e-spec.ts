@@ -17,16 +17,12 @@ describe(OmniChannelSettings.name, function () {
 
   it('should enable status based capacity model', async () => {
     await plugin.run(configEnableStatusBasedCapacityModel);
-  });
-  it('should already be set to true', async () => {
     const res = await plugin.retrieve();
     assert.deepStrictEqual(res, configEnableStatusBasedCapacityModel);
   });
 
   it('should disable status based capacity model', async () => {
     await plugin.run(configDisableStatusBasedCapacityModel);
-  });
-  it('should already be set to false', async () => {
     const res = await plugin.retrieve();
     assert.deepStrictEqual(res, configDisableStatusBasedCapacityModel);
   });
