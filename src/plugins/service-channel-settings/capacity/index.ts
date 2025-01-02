@@ -114,22 +114,24 @@ export class Capacity extends BrowserforcePlugin {
 
     // Open the service channel setup page
     const page = await this.browserforce.openPage(`${serviceChannel.Id}/e`);
-
+    
     // Update the service channel config
     const configCapacity = config.capacity;
 
     if (configCapacity?.capacityModel) {
+      await page.waitForSelector(SELECTORS.CAPACITY_MODEL);
       await page.select(SELECTORS.CAPACITY_MODEL, configCapacity!.capacityModel);
-      if (configCapacity?.capacityModel === 'StatusBased') {
-        await page.waitForSelector(SELECTORS.STATUS_FIELD);
-      }
     }
 
     if (configCapacity?.statusField) {
+      await page.waitForSelector(SELECTORS.STATUS_FIELD);
       await page.select(SELECTORS.STATUS_FIELD, configCapacity!.statusField);
     }
 
     if (configCapacity?.valuesForInProgress) {
+      await page.waitForSelector(SELECTORS.VALUES_COMPLETED);
+      await page.waitForSelector(SELECTORS.VALUES_IN_PROGRESS);
+
       const completedElements = await page.$$(`${SELECTORS.VALUES_COMPLETED} > option`);
 
       for (const completedElement of completedElements) {
