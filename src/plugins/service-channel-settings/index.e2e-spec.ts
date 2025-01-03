@@ -1,0 +1,44 @@
+import assert from 'assert';
+import * as child from 'child_process';
+import { fileURLToPath } from 'node:url';
+import * as path from 'path';
+import { ServiceChannelSettings } from './index.js';
+
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
+
+describe(ServiceChannelSettings.name, function () {
+  this.timeout('10m');
+  let plugin: ServiceChannelSettings;
+  before(() => {
+    plugin = new ServiceChannelSettings(global.bf);
+  });
+
+  const configureServiceChannelStatusBased = {
+    serviceChannelDeveloperName: "Test",
+    capacity: {
+      capacityModel: "StatusBased",
+      statusField: "Case.Type",
+      valuesForInProgress: ["Electrical", "Mechanical"],
+      checkAgentCapacityOnReopenedWorkItems: true,
+      checkAgentCapacityOnReassignedWorkItems: true
+    }
+  };
+
+  it('should create service channel as a prerequisite', () => {
+    const sourceDeployCmd = child.spawnSync('sf', [
+      'project',
+      'deploy',
+      'start',
+      '-d',
+      path.join(__dirname, 'sfdx-source'),
+      '--json'
+    ]);
+    assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
+    });
+
+  it('should configure status based capacity model for service channel', async () => {
+    await plugin.run(configureServiceChannelStatusBased);
+    const res = await plugin.retrieve(configureServiceChannelStatusBased);
+    assert.deepStrictEqual(res, configureServiceChannelStatusBased);
+  });
+});
