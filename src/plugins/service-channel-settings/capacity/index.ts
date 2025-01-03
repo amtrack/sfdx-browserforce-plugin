@@ -8,13 +8,13 @@ const SELECTORS = {
   SAVE_BUTTON: 'input[id$=":save"]',
   STATUS_FIELD: 'select[id$=":statusFieldSection:editCapacityModel"]',
   STATUS_CHANGE_CAPACITY: 'input[name*=":statusChangeCapacityCheck"]',
-  VALUES_COMPLETED: 'select[id$=":statusFieldValues:duelingListBox:backingList_a"]',
-  VALUES_IN_PROGRESS: 'select[id$=":statusFieldValues:duelingListBox:backingList_s"]'
+  VALUES_COMPLETED: 'select[id$=":statusFieldValues:duelingListBox:backingList_a"]:not([disabled="disabled"])',
+  VALUES_IN_PROGRESS: 'select[id$=":statusFieldValues:duelingListBox:backingList_s"]:not([disabled="disabled"])'
 };
 
 type Config = {
-  serviceChannelDeveloperName?: string,
-  capacity?: CapacityConfig;
+  serviceChannelDeveloperName: string,
+  capacity: CapacityConfig;
 }
 
 export type CapacityConfig = {
@@ -129,8 +129,7 @@ export class Capacity extends BrowserforcePlugin {
     }
 
     if (configCapacity?.valuesForInProgress) {
-      await page.waitForSelector(SELECTORS.VALUES_COMPLETED);
-      await page.waitForSelector(SELECTORS.VALUES_IN_PROGRESS);
+      await page.waitForSelector(`${SELECTORS.VALUES_COMPLETED} > option`);
 
       const completedElements = await page.$$(`${SELECTORS.VALUES_COMPLETED} > option`);
 
@@ -143,6 +142,7 @@ export class Capacity extends BrowserforcePlugin {
         }
       }
 
+      await page.waitForSelector(`${SELECTORS.VALUES_IN_PROGRESS} > option`);
       const inprogressElements = await page.$$(`${SELECTORS.VALUES_IN_PROGRESS} > option`);
 
       for (const inprogressElement of inprogressElements) {
@@ -177,6 +177,11 @@ export class Capacity extends BrowserforcePlugin {
 
     // Save the settings
     await page.click(SELECTORS.SAVE_BUTTON);
+
+    // Wait for the page to refresh
+    await page.waitForNavigation()
+
+    // Close the page
     await page.close();
   }
 }

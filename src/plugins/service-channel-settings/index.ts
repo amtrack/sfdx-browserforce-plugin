@@ -2,42 +2,60 @@ import { BrowserforcePlugin } from '../../plugin.js';
 import { Capacity, CapacityConfig } from './capacity/index.js';
 
 type Config = {
+  serviceChannelConfigurations: ServiceChannelConfiguration[];
+};
+
+type ServiceChannelConfiguration = {
   serviceChannelDeveloperName: string;
-  capacity?: CapacityConfig;
+  capacity: CapacityConfig;
 };
 
 export class ServiceChannelSettings extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {
-    const response: Config = {
-      serviceChannelDeveloperName: definition!.serviceChannelDeveloperName
-    };
-    if (definition) {
-      if (definition.capacity) {
-        const pluginCapacity = new Capacity(this.browserforce);
-        response.capacity = await pluginCapacity.retrieve(definition);
-      }
+    const pluginCapacity = new Capacity(this.browserforce);
+
+    const serviceChannelConfigurations: ServiceChannelConfiguration[] = [];
+
+    for await (const serviceChannelConfiguration of definition.serviceChannelConfigurations) {
+      serviceChannelConfigurations.push({
+        serviceChannelDeveloperName: serviceChannelConfiguration.serviceChannelDeveloperName,
+        capacity: await pluginCapacity.retrieve(serviceChannelConfiguration)
+      });
     }
-    return response;
+
+    return { serviceChannelConfigurations };
   }
 
   public diff(state: Config, definition: Config): Config | undefined {
-    const pluginCapacity = new Capacity(this.browserforce).diff(
-      state.capacity,
-      definition.capacity
-    );
-    const response: Config = {
-      serviceChannelDeveloperName: definition!.serviceChannelDeveloperName
-    };
-    if (pluginCapacity !== undefined) {
-      response.capacity = pluginCapacity;
+    const pluginCapacity = new Capacity(this.browserforce);
+
+    const serviceChannelConfigurations: ServiceChannelConfiguration[] = [];
+
+    for (const serviceChannelDefinition of definition.serviceChannelConfigurations) {
+      const serviceChannelState = state.serviceChannelConfigurations.find(
+        (serviceChannelConfiguration) => serviceChannelConfiguration.serviceChannelDeveloperName === serviceChannelDefinition.serviceChannelDeveloperName
+      );
+      
+      const capacity = pluginCapacity.diff(serviceChannelState.capacity, serviceChannelDefinition.capacity);
+
+      if (capacity !== undefined) {
+        serviceChannelConfigurations.push({
+          serviceChannelDeveloperName: serviceChannelDefinition.serviceChannelDeveloperName, 
+          capacity
+        });
+      }
     }
-    return Object.keys(response).length ? response : undefined;
+
+    return { serviceChannelConfigurations };
   }
 
   public async apply(plan: Config): Promise<void> {
-    if (plan.capacity) {
+    if (plan.serviceChannelConfigurations) {
       const pluginCapacity = new Capacity(this.browserforce);
-      await pluginCapacity.apply(plan);
+
+      for await (const serviceChannelConfiguration of plan.serviceChannelConfigurations) {
+        await pluginCapacity.apply(serviceChannelConfiguration);
+      }
     }
   }
 }

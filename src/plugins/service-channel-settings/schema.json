@@ -4,13 +4,27 @@
   "title": "Service Channel Settings",
   "type": "object",
   "properties": {
-    "serviceChannelDeveloperName": {
-      "title": "Service Channel",
-      "description": "The developer name of the Service Channel to modify",
-      "type": "string"
-    },
-    "capacity": {
-      "$ref": "./capacity/schema.json"
+    "serviceChannelConfigurations": {
+      "title": "Service Channel Configuration",
+      "type": "array",
+      "items": { "$ref": "#/definitions/serviceChannelConfiguration" },
+      "default": []
+    }
+  },
+  "definitions": {
+    "serviceChannelConfiguration": {
+      "type": "object",
+      "properties": {
+        "serviceChannelDeveloperName": {
+          "title": "Service Channel",
+          "description": "The developer name of the Service Channel to modify",
+          "type": "string"
+        },
+        "capacity": {
+          "$ref": "./capacity/schema.json"
+        }
+      },
+      "required": ["serviceChannelDeveloperName"]
     }
   }
 }

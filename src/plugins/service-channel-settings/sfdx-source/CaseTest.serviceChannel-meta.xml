@@ -3,6 +3,6 @@
     <doesMinimizeWidgetOnAccept>false</doesMinimizeWidgetOnAccept>
     <hasAutoAcceptEnabled>false</hasAutoAcceptEnabled>
     <isInterruptible>false</isInterruptible>
-    <label>Test</label>
+    <label>CaseTest</label>
     <relatedEntityType>Case</relatedEntityType>
 </ServiceChannel>

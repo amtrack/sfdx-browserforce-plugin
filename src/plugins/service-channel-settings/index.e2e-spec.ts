@@ -14,14 +14,28 @@ describe(ServiceChannelSettings.name, function () {
   });
 
   const configureServiceChannelStatusBased = {
-    serviceChannelDeveloperName: "Test",
-    capacity: {
-      capacityModel: "StatusBased",
-      statusField: "Case.Type",
-      valuesForInProgress: ["Electrical", "Mechanical"],
-      checkAgentCapacityOnReopenedWorkItems: true,
-      checkAgentCapacityOnReassignedWorkItems: true
-    }
+    serviceChannelConfigurations: [
+      {
+        serviceChannelDeveloperName: "CaseTest",
+        capacity: {
+          capacityModel: "StatusBased",
+          statusField: "Case.Type",
+          valuesForInProgress: ["Electrical", "Mechanical"],
+          checkAgentCapacityOnReopenedWorkItems: true,
+          checkAgentCapacityOnReassignedWorkItems: true
+        }
+      },
+      {
+        serviceChannelDeveloperName: "LeadTest",
+        capacity: {
+          capacityModel: "StatusBased",
+          statusField: "Lead.Industry",
+          valuesForInProgress: ["Agriculture", "Chemicals"],
+          checkAgentCapacityOnReopenedWorkItems: true,
+          checkAgentCapacityOnReassignedWorkItems: true
+        }
+      }
+    ]
   };
 
   it('should create service channel as a prerequisite', () => {
@@ -36,7 +50,7 @@ describe(ServiceChannelSettings.name, function () {
     assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
     });
 
-  it('should configure status based capacity model for service channel', async () => {
+  it('should configure status based capacity model for service channels', async () => {
     await plugin.run(configureServiceChannelStatusBased);
     const res = await plugin.retrieve(configureServiceChannelStatusBased);
     assert.deepStrictEqual(res, configureServiceChannelStatusBased);
