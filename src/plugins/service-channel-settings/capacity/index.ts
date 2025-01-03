@@ -135,10 +135,9 @@ export class Capacity extends BrowserforcePlugin {
       const completedElements = await page.$$(`${SELECTORS.VALUES_COMPLETED} > option`);
 
       for (const completedElement of completedElements) {
-        const optionTitle = (await completedElement.evaluate(node => node.getAttribute('title')))?.toString() ?? '';
-        console.log(optionTitle);
+        const optionTitle = (await completedElement.evaluate(node => node.getAttribute('title')))?.toString();
 
-        if (configCapacity.valuesForInProgress.includes(optionTitle)) {
+        if (optionTitle && configCapacity.valuesForInProgress.includes(optionTitle)) {
           await completedElement.click();
           await page.click(SELECTORS.ADD_BUTTON);
         }
@@ -147,9 +146,9 @@ export class Capacity extends BrowserforcePlugin {
       const inprogressElements = await page.$$(`${SELECTORS.VALUES_IN_PROGRESS} > option`);
 
       for (const inprogressElement of inprogressElements) {
-        const optionTitle = (await inprogressElement.evaluate(node => node.getAttribute('title')))?.toString() ?? '';
+        const optionTitle = (await inprogressElement.evaluate(node => node.getAttribute('title')))?.toString();
 
-        if (!configCapacity.valuesForInProgress.includes(optionTitle)) {
+        if (optionTitle && !configCapacity.valuesForInProgress.includes(optionTitle)) {
           await inprogressElement.click();
           await page.click(SELECTORS.REMOVE_BUTTON);
         }
