@@ -11,6 +11,7 @@ import { LightningExperienceSettings as lightningExperienceSettings } from './li
 import { LinkedInSalesNavigatorSettings as linkedInSalesNavigatorSettings } from './linkedin-sales-navigator-settings/index.js';
 import { OmniChannelSettings as omniChannelSettings } from './omni-channel-settings/index.js';
 import { OpportunitySplits as opportunitySplits } from './opportunity-splits/index.js';
+import { PermissionSets as permissionSets } from './permission-sets/index.js';
 import { Picklists as picklists } from './picklists/index.js';
 import { RecordTypes as recordTypes } from './record-types/index.js';
 import { RelateContactToMultipleAccounts as relateContactToMultipleAccounts } from './relate-contact-to-multiple-accounts/index.js';
@@ -35,6 +36,7 @@ export {
   linkedInSalesNavigatorSettings,
   omniChannelSettings,
   opportunitySplits,
+  permissionSets,
   picklists,
   recordTypes,
   relateContactToMultipleAccounts,

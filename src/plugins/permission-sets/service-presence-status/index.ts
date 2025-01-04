@@ -1,24 +1,24 @@
 import { BrowserforcePlugin } from '../../../plugin.js';
 
 const SELECTORS = {
-  ADD_BUTTON: 'a[id$=":duelingListBox:add"]',
-  REMOVE_BUTTON: 'a[id$=":duelingListBox:remove"]',
+  ADD_BUTTON: 'a[id$=":duelingListBox:backingList_add"]',
+  REMOVE_BUTTON: 'a[id$=":duelingListBox:backingList_remove"]',
   SAVE_BUTTON: 'input[id$=":button_pc_save"]',
-  VALUES_AVAILABLE: 'select[id$=":statusFieldValues:duelingListBox:backingList_a"]:not([disabled="disabled"])',
-  VALUES_ENABLED: 'select[id$=":statusFieldValues:duelingListBox:backingList_s"]:not([disabled="disabled"])'
+  VALUES_AVAILABLE: 'select[id$=":duelingListBox:backingList_a"]:not([disabled="disabled"])',
+  VALUES_ENABLED: 'select[id$=":duelingListBox:backingList_s"]:not([disabled="disabled"])'
 };
 
 type PermissionSet = {
-  permissionSetDeveloperName: string;
+  permissionSetName: string;
   servicePresenceStatuses: string[];
 };
 
 export class ServicePresenceStatus extends BrowserforcePlugin {
   public async retrieve(definition: PermissionSet): Promise<string[]> {
     // Query for the permission set
-    const permissionSetDeveloperName = definition.permissionSetDeveloperName;
+    const permissionSetName = definition.permissionSetName;
     const permissionSet = await this.org.getConnection().singleRecordQuery(
-      `SELECT Id FROM PermissionSet WHERE DeveloperName='${permissionSetDeveloperName}'`
+      `SELECT Id FROM PermissionSet WHERE Name='${permissionSetName}'`
     );
 
     // Open the permission set setup page
@@ -33,9 +33,9 @@ export class ServicePresenceStatus extends BrowserforcePlugin {
 
   public async apply(config: PermissionSet): Promise<void> {
     // Query for the permission set
-    const permissionSetDeveloperName = config.permissionSetDeveloperName;
+    const permissionSetName = config.permissionSetName;
     const permissionSet = await this.org.getConnection().singleRecordQuery(
-      `SELECT Id FROM PermissionSet WHERE DeveloperName='${permissionSetDeveloperName}'`
+      `SELECT Id FROM PermissionSet WHERE Name='${permissionSetName}'`
     );
 
     // Open the permission set setup page

@@ -15,8 +15,8 @@ describe(PermissionSets.name, function () {
 
   const configurePermissionSet = [
     {
-      permissionSetDeveloperName: "ServicePresenceTest",
-      servicePresenceStatuses: ["TestStatus"]
+      permissionSetName: "ServicePresenceTest",
+      servicePresenceStatuses: ["TestStatus", "TestStatus3"]
     }
   ];
 
@@ -32,7 +32,7 @@ describe(PermissionSets.name, function () {
     assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
   });
 
-  it('should configure permission set presence statsu', async () => {
+  it('should configure permission set presence status', async () => {
     await plugin.run(configurePermissionSet);
     const res = await plugin.retrieve(configurePermissionSet);
     assert.deepStrictEqual(res, configurePermissionSet);

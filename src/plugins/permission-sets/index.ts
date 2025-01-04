@@ -2,7 +2,7 @@ import { BrowserforcePlugin } from '../../plugin.js';
 import { ServicePresenceStatus } from './service-presence-status/index.js';
 
 type PermissionSet = {
-  permissionSetDeveloperName: string;
+  permissionSetName: string;
   servicePresenceStatuses: string[];
 };
 
@@ -14,7 +14,7 @@ export class PermissionSets extends BrowserforcePlugin {
 
     for await (const permissionSet of definition) {
       permissionSets.push({
-        permissionSetDeveloperName: permissionSet.permissionSetDeveloperName,
+        permissionSetName: permissionSet.permissionSetName,
         servicePresenceStatuses: await pluginServicePresenceStatus.retrieve(permissionSet)
       });
     }

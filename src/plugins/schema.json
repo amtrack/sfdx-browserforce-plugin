@@ -55,6 +55,9 @@
         "omniChannelSettings": {
           "$ref": "./omni-channel-settings/schema.json"
         },
+        "permissionSets": {
+          "$ref": "./permission-sets/schema.json"
+        },
         "salesforceToSalesforce": {
           "$ref": "./salesforce-to-salesforce/schema.json"
         },
