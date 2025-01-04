@@ -46,7 +46,7 @@ describe(ServiceChannels.name, function () {
       '--json'
     ]);
     assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
-    });
+  });
 
   it('should configure status based capacity model for service channels', async () => {
     await plugin.run(configureServiceChannels);
