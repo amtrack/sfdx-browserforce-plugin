@@ -61,8 +61,8 @@
         "security": {
           "$ref": "./security/schema.json"
         },
-        "serviceChannelSettings": {
-          "$ref": "./service-channel-settings/schema.json"
+        "serviceChannels": {
+          "$ref": "./service-channels/schema.json"
         },
         "slack": {
           "$ref": "./slack/schema.json"
