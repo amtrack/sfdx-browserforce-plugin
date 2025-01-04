@@ -8,163 +8,64 @@ const SELECTORS = {
   VALUES_ENABLED: 'select[id$=":statusFieldValues:duelingListBox:backingList_s"]:not([disabled="disabled"])'
 };
 
-type Config = {
-  permissionSetDeveloperName: string,
-  servicePresenceStatuses: ServicePresenceStatuses;
-}
-
-export type ServicePresenceStatuses = {
-  statuses?: string[];
-}
+type PermissionSet = {
+  permissionSetDeveloperName: string;
+  servicePresenceStatuses: string[];
+};
 
 export class ServicePresenceStatus extends BrowserforcePlugin {
-  public async retrieve(definition: Config): Promise<ServicePresenceStatuses> {
-    // Query for the service channel
+  public async retrieve(definition: PermissionSet): Promise<string[]> {
+    // Query for the permission set
     const permissionSetDeveloperName = definition.permissionSetDeveloperName;
     const permissionSet = await this.org.getConnection().singleRecordQuery(
       `SELECT Id FROM PermissionSet WHERE DeveloperName='${permissionSetDeveloperName}'`
     );
 
-    // Open the service channel setup page
+    // Open the permission set setup page
     const page = await this.browserforce.openPage(`${permissionSet.Id}/e?s=ServicePresenceStatusAccess`);
+    
+    const enabledServicePresenceStatuses = await page.$$eval(`${SELECTORS.VALUES_ENABLED} > option`, (options) => {
+      return options.map((option) => option.title ?? '');
+    });
 
-    // Retrieve the service channel config
-    if (!await page.$(SELECTORS.CAPACITY_MODEL)) {
-      return {};
-    }
-
-    const capacityModel = (await page.$eval(`${SELECTORS.CAPACITY_MODEL} > option[selected]`, (el) => el.value)) ?? '';
-
-    if (capacityModel === 'StatusBased') {
-      const statusField = (await page.$eval(`${SELECTORS.STATUS_FIELD} > option[selected]`, (el) => el.value)) ?? '';
-      const valuesForInProgress = await page.$$eval(`${SELECTORS.VALUES_IN_PROGRESS} > option`, (options) => {
-        return options.map((option) => option.title ?? '');
-      });
-      const checkAgentCapacityOnReopenedWorkItems = await page.$eval(SELECTORS.STATUS_CHANGE_CAPACITY, (el) =>
-        el.getAttribute('checked') === 'checked' ? true : false
-      );
-      const checkAgentCapacityOnReassignedWorkItems = await page.$eval(SELECTORS.OWNER_CHANGE_CAPACITY, (el) =>
-        el.getAttribute('checked') === 'checked' ? true : false
-      );
-
-      return {
-        capacityModel,
-        statusField,
-        valuesForInProgress,
-        checkAgentCapacityOnReopenedWorkItems,
-        checkAgentCapacityOnReassignedWorkItems
-      };
-    }
-
-    return { capacityModel };
+    return enabledServicePresenceStatuses;
   }
 
-  public diff(state?: CapacityConfig, definition?: CapacityConfig): CapacityConfig | undefined {
-    const response: CapacityConfig = {};
-
-    if (state && definition) {
-      if (definition.capacityModel === 'Tab-based') {
-        if (definition.capacityModel !== state.capacityModel) {
-          response.capacityModel = definition.capacityModel;
-          return response;
-        }
-        return undefined
-      }
-
-      if (definition.capacityModel !== state.capacityModel) {
-        response.capacityModel = definition.capacityModel;
-      }
-
-      if (definition.statusField !== state.statusField) {
-        response.statusField = definition.statusField;
-      }
-
-      if (definition.valuesForInProgress !== state.valuesForInProgress) {
-        response.valuesForInProgress = definition.valuesForInProgress;
-      }
-
-      if (definition.checkAgentCapacityOnReassignedWorkItems !== state.checkAgentCapacityOnReassignedWorkItems) {
-        response.checkAgentCapacityOnReassignedWorkItems = definition.checkAgentCapacityOnReassignedWorkItems;
-      }
-
-      if (definition.checkAgentCapacityOnReopenedWorkItems !== state.checkAgentCapacityOnReopenedWorkItems) {
-        response.checkAgentCapacityOnReopenedWorkItems = definition.checkAgentCapacityOnReopenedWorkItems;
-      }
-    }
-
-    return Object.keys(response).length ? response : undefined;
-  }
-
-  public async apply(config: Config): Promise<void> {
-    const conn = this.org.getConnection();
-
-    // Query for the service channel
-    const serviceChannelDeveloperName = config.serviceChannelDeveloperName;
-    const serviceChannel = await conn.singleRecordQuery(
-      `SELECT Id FROM ServiceChannel WHERE DeveloperName='${serviceChannelDeveloperName}'`
+  public async apply(config: PermissionSet): Promise<void> {
+    // Query for the permission set
+    const permissionSetDeveloperName = config.permissionSetDeveloperName;
+    const permissionSet = await this.org.getConnection().singleRecordQuery(
+      `SELECT Id FROM PermissionSet WHERE DeveloperName='${permissionSetDeveloperName}'`
     );
 
-    // Open the service channel setup page
-    const page = await this.browserforce.openPage(`${serviceChannel.Id}/e`);
-    
-    // Update the service channel config
-    const configCapacity = config.capacity;
+    // Open the permission set setup page
+    const page = await this.browserforce.openPage(`${permissionSet.Id}/e?s=ServicePresenceStatusAccess`);
+  
+    if (config?.servicePresenceStatuses) {
+      await page.waitForSelector(`${SELECTORS.VALUES_AVAILABLE} > option`);
 
-    if (configCapacity?.capacityModel) {
-      await page.waitForSelector(SELECTORS.CAPACITY_MODEL);
-      await page.select(SELECTORS.CAPACITY_MODEL, configCapacity!.capacityModel);
-    }
+      const availableElements = await page.$$(`${SELECTORS.VALUES_AVAILABLE} > option`);
 
-    if (configCapacity?.statusField) {
-      await page.waitForSelector(SELECTORS.STATUS_FIELD);
-      await page.select(SELECTORS.STATUS_FIELD, configCapacity!.statusField);
-    }
+      for (const availableElement of availableElements) {
+        const optionTitle = (await availableElement.evaluate(node => node.getAttribute('title')))?.toString();
 
-    if (configCapacity?.valuesForInProgress) {
-      await page.waitForSelector(`${SELECTORS.VALUES_COMPLETED} > option`);
-
-      const completedElements = await page.$$(`${SELECTORS.VALUES_COMPLETED} > option`);
-
-      for (const completedElement of completedElements) {
-        const optionTitle = (await completedElement.evaluate(node => node.getAttribute('title')))?.toString();
-
-        if (optionTitle && configCapacity.valuesForInProgress.includes(optionTitle)) {
-          await completedElement.click();
+        if (optionTitle && config.servicePresenceStatuses.includes(optionTitle)) {
+          await availableElement.click();
           await page.click(SELECTORS.ADD_BUTTON);
         }
       }
 
-      await page.waitForSelector(`${SELECTORS.VALUES_IN_PROGRESS} > option`);
-      const inprogressElements = await page.$$(`${SELECTORS.VALUES_IN_PROGRESS} > option`);
+      await page.waitForSelector(`${SELECTORS.VALUES_ENABLED} > option`);
+      const enabledElements = await page.$$(`${SELECTORS.VALUES_ENABLED} > option`);
 
-      for (const inprogressElement of inprogressElements) {
-        const optionTitle = (await inprogressElement.evaluate(node => node.getAttribute('title')))?.toString();
+      for (const enabledElement of enabledElements) {
+        const optionTitle = (await enabledElement.evaluate(node => node.getAttribute('title')))?.toString();
 
-        if (optionTitle && !configCapacity.valuesForInProgress.includes(optionTitle)) {
-          await inprogressElement.click();
+        if (optionTitle && !config.servicePresenceStatuses.includes(optionTitle)) {
+          await enabledElement.click();
           await page.click(SELECTORS.REMOVE_BUTTON);
         }
       }
-    }
-
-    if (configCapacity?.checkAgentCapacityOnReassignedWorkItems !== undefined) {
-      await page.$eval(
-        SELECTORS.STATUS_CHANGE_CAPACITY,
-        (e: HTMLInputElement, v: boolean) => {
-          e.checked = v;
-        },
-        configCapacity.checkAgentCapacityOnReassignedWorkItems
-      );
-    }
-
-    if (configCapacity?.checkAgentCapacityOnReopenedWorkItems !== undefined) {
-      await page.$eval(
-        SELECTORS.OWNER_CHANGE_CAPACITY,
-        (e: HTMLInputElement, v: boolean) => {
-          e.checked = v;
-        },
-        configCapacity.checkAgentCapacityOnReopenedWorkItems
-      );
     }
 
     // Save the settings

@@ -2,43 +2,25 @@ import assert from 'assert';
 import * as child from 'child_process';
 import { fileURLToPath } from 'node:url';
 import * as path from 'path';
-import { ServiceChannelSettings } from './index.js';
+import { PermissionSets } from './index.js';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
-describe(ServiceChannelSettings.name, function () {
+describe(PermissionSets.name, function () {
   this.timeout('10m');
-  let plugin: ServiceChannelSettings;
+  let plugin: PermissionSets;
   before(() => {
-    plugin = new ServiceChannelSettings(global.bf);
+    plugin = new PermissionSets(global.bf);
   });
 
-  const configureServiceChannelStatusBased = {
-    serviceChannelConfigurations: [
-      {
-        serviceChannelDeveloperName: "CaseTest",
-        capacity: {
-          capacityModel: "StatusBased",
-          statusField: "Case.Type",
-          valuesForInProgress: ["Electrical", "Mechanical"],
-          checkAgentCapacityOnReopenedWorkItems: true,
-          checkAgentCapacityOnReassignedWorkItems: true
-        }
-      },
-      {
-        serviceChannelDeveloperName: "LeadTest",
-        capacity: {
-          capacityModel: "StatusBased",
-          statusField: "Lead.Industry",
-          valuesForInProgress: ["Agriculture", "Chemicals"],
-          checkAgentCapacityOnReopenedWorkItems: true,
-          checkAgentCapacityOnReassignedWorkItems: true
-        }
-      }
-    ]
-  };
+  const configurePermissionSet = [
+    {
+      permissionSetDeveloperName: "ServicePresenceTest",
+      servicePresenceStatuses: ["TestStatus"]
+    }
+  ];
 
-  it('should create service channel as a prerequisite', () => {
+  it('should create permission set and service presence status as a prerequisite', () => {
     const sourceDeployCmd = child.spawnSync('sf', [
       'project',
       'deploy',
@@ -48,11 +30,11 @@ describe(ServiceChannelSettings.name, function () {
       '--json'
     ]);
     assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
-    });
+  });
 
-  it('should configure status based capacity model for service channels', async () => {
-    await plugin.run(configureServiceChannelStatusBased);
-    const res = await plugin.retrieve(configureServiceChannelStatusBased);
-    assert.deepStrictEqual(res, configureServiceChannelStatusBased);
+  it('should configure permission set presence statsu', async () => {
+    await plugin.run(configurePermissionSet);
+    const res = await plugin.retrieve(configurePermissionSet);
+    assert.deepStrictEqual(res, configurePermissionSet);
   });
 });

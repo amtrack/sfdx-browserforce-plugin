@@ -1,61 +1,32 @@
 import { BrowserforcePlugin } from '../../plugin.js';
-import { Capacity, ServicePresenceStatuses } from './service-presence-status/index.js';
+import { ServicePresenceStatus } from './service-presence-status/index.js';
 
-type Config = {
-  serviceChannelConfigurations: ServiceChannelConfiguration[];
+type PermissionSet = {
+  permissionSetDeveloperName: string;
+  servicePresenceStatuses: string[];
 };
 
-type ServiceChannelConfiguration = {
-  serviceChannelDeveloperName: string;
-  capacity: CapacityConfig;
-};
+export class PermissionSets extends BrowserforcePlugin {
+  public async retrieve(definition?: PermissionSet[]): Promise<PermissionSet[]> {
+    const pluginServicePresenceStatus = new ServicePresenceStatus(this.browserforce);
 
-export class ServiceChannelSettings extends BrowserforcePlugin {
-  public async retrieve(definition?: Config): Promise<Config> {
-    const pluginCapacity = new Capacity(this.browserforce);
+    const permissionSets: PermissionSet[] = [];
 
-    const serviceChannelConfigurations: ServiceChannelConfiguration[] = [];
-
-    for await (const serviceChannelConfiguration of definition.serviceChannelConfigurations) {
-      serviceChannelConfigurations.push({
-        serviceChannelDeveloperName: serviceChannelConfiguration.serviceChannelDeveloperName,
-        capacity: await pluginCapacity.retrieve(serviceChannelConfiguration)
+    for await (const permissionSet of definition) {
+      permissionSets.push({
+        permissionSetDeveloperName: permissionSet.permissionSetDeveloperName,
+        servicePresenceStatuses: await pluginServicePresenceStatus.retrieve(permissionSet)
       });
     }
 
-    return { serviceChannelConfigurations };
+    return permissionSets;
   }
 
-  public diff(state: Config, definition: Config): Config | undefined {
-    const pluginCapacity = new Capacity(this.browserforce);
+  public async apply(plan: PermissionSet[]): Promise<void> {
+    const pluginServicePresenceStatus = new ServicePresenceStatus(this.browserforce);
 
-    const serviceChannelConfigurations: ServiceChannelConfiguration[] = [];
-
-    for (const serviceChannelDefinition of definition.serviceChannelConfigurations) {
-      const serviceChannelState = state.serviceChannelConfigurations.find(
-        (serviceChannelConfiguration) => serviceChannelConfiguration.serviceChannelDeveloperName === serviceChannelDefinition.serviceChannelDeveloperName
-      );
-      
-      const capacity = pluginCapacity.diff(serviceChannelState.capacity, serviceChannelDefinition.capacity);
-
-      if (capacity !== undefined) {
-        serviceChannelConfigurations.push({
-          serviceChannelDeveloperName: serviceChannelDefinition.serviceChannelDeveloperName, 
-          capacity
-        });
-      }
-    }
-
-    return { serviceChannelConfigurations };
-  }
-
-  public async apply(plan: Config): Promise<void> {
-    if (plan.serviceChannelConfigurations) {
-      const pluginCapacity = new Capacity(this.browserforce);
-
-      for await (const serviceChannelConfiguration of plan.serviceChannelConfigurations) {
-        await pluginCapacity.apply(serviceChannelConfiguration);
-      }
+    for await (const permissionSet of plan) {
+      await pluginServicePresenceStatus.apply(permissionSet);
     }
   }
 }

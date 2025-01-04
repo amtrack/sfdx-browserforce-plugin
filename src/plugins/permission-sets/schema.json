@@ -2,17 +2,11 @@
   "$schema": "http://json-schema.org/draft-07/schema",
   "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/permission-sets/schema.json",
   "title": "Permission Sets",
-  "type": "object",
-  "properties": {
-    "permissionSetConfigurations": {
-      "title": "Permission Set Configuration",
-      "type": "array",
-      "items": { "$ref": "#/definitions/permissionSetConfiguration" },
-      "default": []
-    }
-  },
+  "type": "array",
+  "items": { "$ref": "#/definitions/permissionSet" },
+  "default": [],
   "definitions": {
-    "permissionSetConfiguration": {
+    "permissionSet": {
       "type": "object",
       "properties": {
         "permissionSetDeveloperName": {
