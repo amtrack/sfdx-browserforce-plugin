@@ -1,18 +1,12 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/service-channel-settings/schema.json",
-  "title": "Service Channel Settings",
-  "type": "object",
-  "properties": {
-    "serviceChannelConfigurations": {
-      "title": "Service Channel Configuration",
-      "type": "array",
-      "items": { "$ref": "#/definitions/serviceChannelConfiguration" },
-      "default": []
-    }
-  },
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/service-channels/schema.json",
+  "title": "Service Channels",
+  "type": "array",
+  "items": { "$ref": "#/definitions/serviceChannel" },
+  "default": [],
   "definitions": {
-    "serviceChannelConfiguration": {
+    "serviceChannel": {
       "type": "object",
       "properties": {
         "serviceChannelDeveloperName": {

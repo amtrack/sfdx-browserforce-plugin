@@ -18,7 +18,7 @@ import { ReportsAndDashboards as reportsAndDashboards } from './reports-and-dash
 import { SalesforceCpqConfig as salesforceCpqConfig } from './salesforce-cpq-config/index.js';
 import { SalesforceToSalesforce as salesforceToSalesforce } from './salesforce-to-salesforce/index.js';
 import { Security as security } from './security/index.js';
-import { ServiceChannelSettings as serviceChannelSettings } from './service-channel-settings/index.js';
+import { ServiceChannels as serviceChannels } from './service-channels/index.js';
 import { Slack as slack } from './slack/index.js';
 
 export {
@@ -42,6 +42,6 @@ export {
   salesforceCpqConfig,
   salesforceToSalesforce,
   security,
-  serviceChannelSettings,
+  serviceChannels,
   slack
 };
