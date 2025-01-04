@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/service-channel-settings/schema.json",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/service-channels/capacity/schema.json",
   "title": "Capacity Settings",
   "type": "object",
   "properties": {

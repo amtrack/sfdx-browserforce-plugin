@@ -12,7 +12,7 @@ const SELECTORS = {
   VALUES_IN_PROGRESS: 'select[id$=":statusFieldValues:duelingListBox:backingList_s"]:not([disabled="disabled"])'
 };
 
-type Config = {
+type ServiceChannel = {
   serviceChannelDeveloperName: string,
   capacity: CapacityConfig;
 }
@@ -26,7 +26,7 @@ export type CapacityConfig = {
 }
 
 export class Capacity extends BrowserforcePlugin {
-  public async retrieve(definition: Config): Promise<CapacityConfig> {
+  public async retrieve(definition: ServiceChannel): Promise<CapacityConfig> {
     // Query for the service channel
     const serviceChannelDeveloperName = definition.serviceChannelDeveloperName;
     const serviceChannel = await this.org.getConnection().singleRecordQuery(
@@ -87,7 +87,7 @@ export class Capacity extends BrowserforcePlugin {
         response.statusField = definition.statusField;
       }
 
-      if (definition.valuesForInProgress !== state.valuesForInProgress) {
+      if (JSON.stringify(definition.valuesForInProgress) !== JSON.stringify(state.valuesForInProgress)) {
         response.valuesForInProgress = definition.valuesForInProgress;
       }
 
@@ -103,7 +103,7 @@ export class Capacity extends BrowserforcePlugin {
     return Object.keys(response).length ? response : undefined;
   }
 
-  public async apply(config: Config): Promise<void> {
+  public async apply(config: ServiceChannel): Promise<void> {
     const conn = this.org.getConnection();
 
     // Query for the service channel
