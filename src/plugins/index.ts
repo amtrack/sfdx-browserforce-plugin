@@ -9,6 +9,7 @@ import { HighVelocitySalesSettings as highVelocitySalesSettings } from './high-v
 import { HomePageLayouts as homePageLayouts } from './home-page-layouts/index.js';
 import { LightningExperienceSettings as lightningExperienceSettings } from './lightning-experience-settings/index.js';
 import { LinkedInSalesNavigatorSettings as linkedInSalesNavigatorSettings } from './linkedin-sales-navigator-settings/index.js';
+import { OmniChannelSettings as omniChannelSettings } from './omni-channel-settings/index.js';
 import { OpportunitySplits as opportunitySplits } from './opportunity-splits/index.js';
 import { Picklists as picklists } from './picklists/index.js';
 import { RecordTypes as recordTypes } from './record-types/index.js';
@@ -17,6 +18,7 @@ import { ReportsAndDashboards as reportsAndDashboards } from './reports-and-dash
 import { SalesforceCpqConfig as salesforceCpqConfig } from './salesforce-cpq-config/index.js';
 import { SalesforceToSalesforce as salesforceToSalesforce } from './salesforce-to-salesforce/index.js';
 import { Security as security } from './security/index.js';
+import { ServiceChannels as serviceChannels } from './service-channels/index.js';
 import { Slack as slack } from './slack/index.js';
 
 export {
@@ -31,6 +33,7 @@ export {
   homePageLayouts,
   lightningExperienceSettings,
   linkedInSalesNavigatorSettings,
+  omniChannelSettings,
   opportunitySplits,
   picklists,
   recordTypes,
@@ -39,5 +42,6 @@ export {
   salesforceCpqConfig,
   salesforceToSalesforce,
   security,
+  serviceChannels,
   slack
 };
