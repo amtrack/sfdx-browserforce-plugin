@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@salesforce/dev-scripts": "10.2.11",
-    "oclif": "4.16.0"
+    "oclif": "4.17.7"
   },
   "files": [
     "/bin",
