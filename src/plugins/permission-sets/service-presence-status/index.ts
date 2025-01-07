@@ -68,11 +68,11 @@ export class ServicePresenceStatus extends BrowserforcePlugin {
       }
     }
 
-    // Save the settings
-    await page.click(SELECTORS.SAVE_BUTTON);
-
-    // Wait for the page to refresh
-    await page.waitForNavigation()
+    // Save the settings and wait for page refresh
+    await Promise.all([
+      page.waitForNavigation(),
+      page.click(SELECTORS.SAVE_BUTTON)
+    ]);
 
     // Close the page
     await page.close();
