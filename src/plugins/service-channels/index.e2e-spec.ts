@@ -3,6 +3,7 @@ import * as child from 'child_process';
 import { fileURLToPath } from 'node:url';
 import * as path from 'path';
 import { ServiceChannels } from './index.js';
+import { OmniChannelSettings } from '../omni-channel-settings/index.js';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
@@ -46,6 +47,11 @@ describe(ServiceChannels.name, function () {
       '--json'
     ]);
     assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
+  });
+
+  it('should enable status based capacity model as a prerequisite', async () => {
+    const omnniChannelPlugin = new OmniChannelSettings(global.bf);
+    await omnniChannelPlugin.run({ enableStatusBasedCapacityModel: true });
   });
 
   it('should configure status based capacity model for service channels', async () => {
