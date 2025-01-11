@@ -176,3 +176,4 @@ npm run test:e2e -- -g "AdminsCanLogInAsAnyUser" # will only run tests matching 
 ```
 
 > Note: You can run the e2e tests in non-headless mode (opening a browser) by setting the environment variable `BROWSER_DEBUG=true`.
+> Note: You can also slow down the e2e test in non-headless mode by setting the environmnet variable, where the number is milliseconds of delay `BROWSER_SLOWMO=250`.
