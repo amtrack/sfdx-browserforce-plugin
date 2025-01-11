@@ -52,11 +52,20 @@
         "homePageLayouts": {
           "$ref": "./home-page-layouts/schema.json"
         },
+        "omniChannelSettings": {
+          "$ref": "./omni-channel-settings/schema.json"
+        },
+        "permissionSets": {
+          "$ref": "./permission-sets/schema.json"
+        },
         "salesforceToSalesforce": {
           "$ref": "./salesforce-to-salesforce/schema.json"
         },
         "security": {
           "$ref": "./security/schema.json"
+        },
+        "serviceChannels": {
+          "$ref": "./service-channels/schema.json"
         },
         "slack": {
           "$ref": "./slack/schema.json"

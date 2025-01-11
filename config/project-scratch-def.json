@@ -2,9 +2,12 @@
   "orgName": "Browserforce",
   "edition": "Developer",
   "language": "en_US",
-  "features": [
-    "CPQ",
-    "DeferSharingCalc",
-    "HighVelocitySales"
-  ]
+  "features": ["CPQ", "DeferSharingCalc", "HighVelocitySales", "ServiceCloud"],
+  "settings": {
+    "omniChannelSettings": {
+      "enableOmniChannel": true,
+      "enableOmniSkillsRouting": true,
+      "enableOmniSecondaryRoutingPriority": true
+    }
+  }
 }

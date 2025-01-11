@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/service-channels/capacity/schema.json",
+  "title": "Capacity Settings",
+  "type": "object",
+  "properties": {
+    "capacityModel": {
+      "title": "Capacity Model",
+      "description": "Choose the service channel Capacity Model",
+      "type": "string",
+      "enum": ["TabBased", "StatusBased"]
+    },
+    "statusField": {
+      "title": "Status Field",
+      "description": "API Name of the field used to track status",
+      "type": "string"
+    },
+    "valuesForInProgress": {
+      "title": "Values for In-Progress",
+      "description": "Choose the field values for In-Progress work",
+      "type": "array"
+    },
+    "checkAgentCapacityOnReopenedWorkItems": {
+      "title": "Check agent capacity on reopened work items",
+      "description": "Check agent capacity on reopened work items",
+      "type": "boolean"
+    },
+    "checkAgentCapacityOnReassignedWorkItems": {
+      "title": "Check agent capacity on reassigned work items",
+      "description": "Check agent capacity on reassigned work items",
+      "type": "boolean"
+    }
+  },
+  "if": {
+    "properties": {
+      "capacityModel": { "const": "Status-based" }
+    }
+  },
+  "then": {
+    "required": ["statusField", "valuesForInProgress"]
+  },
+  "else": {
+    "not": {
+      "required": ["statusField", "valuesForInProgress"]
+    }
+  }
+}
