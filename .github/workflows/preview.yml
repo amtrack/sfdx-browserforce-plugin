@@ -23,11 +23,11 @@ jobs:
         env:
           SFDX_AUTH_URL_DEVHUB: ${{ secrets.SFDX_AUTH_URL_DEVHUB }}
         run: |
-          sf org login sfdx-url -d -a devhub -f <(echo "${SFDX_AUTH_URL_DEVHUB}")
-          npm run develop --release preview
+          echo "${SFDX_AUTH_URL_DEVHUB}" | sf org login sfdx-url --set-default-dev-hub --alias devhub --sfdx-url-stdin
+          npm run develop -- --release preview
       - name: Run end-to-end tests
         run: npm run test:e2e
       - name: Delete scratch org
         if: always()
         run: |
-          sf org delete scratch -p
+          sf org delete scratch --no-prompt

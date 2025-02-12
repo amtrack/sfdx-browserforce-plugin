@@ -34,8 +34,8 @@ _main() {
   alias="${alias:-${DEFAULT_ALIAS}}"
   # shellcheck disable=SC2068
   sf org create scratch -f config/project-scratch-def.json \
-    -a "$alias" \
-    -d \
+    --alias "$alias" \
+    --set-default \
     ${POSITIONAL_ARGS[@]}
   if [[ "${CPQ}" == "true" ]]; then
     # Salesforce CPQ (SBQQ) 252.3.0.1
