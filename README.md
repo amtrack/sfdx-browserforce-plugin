@@ -4,7 +4,7 @@
 
 [![Actions Status](https://github.com/amtrack/sfdx-browserforce-plugin/actions/workflows/default.yml/badge.svg?branch=main)](https://github.com/amtrack/sfdx-browserforce-plugin/actions?query=branch:main)
 
-Unlike the [Scratch Org Definition Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_scratch_orgs_def_file.htm) which can only be used **on the creation of a scratch org** (`sfdx force:org:create -f config/scratch-def.json`),
+Unlike the [Scratch Org Definition Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_scratch_orgs_def_file.htm) which can only be used **on the creation of a scratch org** (`sf org create scratch -f config/scratch-def.json`),
 the _Browserforce Configuration_ allows to "shape" **any org**, (e.g. scratch org, sandbox or production org) with **similar preferences and unofficial preferences** that are not (yet) available in the _Scratch Org Definition Configuration_ or as _Metadata_ (`sf browserforce apply -f config/setup-admin-login-as-any.json -u myOrg@example.com`).
 
 Further benefits:

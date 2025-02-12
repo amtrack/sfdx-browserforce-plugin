@@ -25,7 +25,9 @@
   "keywords": [
     "salesforce",
     "sfdx",
-    "sfdx-plugin"
+    "sfdx-plugin",
+    "sf",
+    "sf-plugin"
   ],
   "license": "MIT",
   "oclif": {
