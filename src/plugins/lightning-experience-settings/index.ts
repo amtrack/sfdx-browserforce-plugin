@@ -5,7 +5,8 @@ const PATHS = {
   BASE: 'lightning/setup/ThemingAndBranding/home'
 };
 
-const THEME_ROW_SELECTOR = '#setupComponent lightning-datatable table > tbody > tr';
+// Spring 25 changed "lightning-datatable" to "one-theme-datatable"
+const THEME_ROW_SELECTOR = '#setupComponent table > tbody > tr';
 const SELECTORS = {
   DEVELOPER_NAMES: `${THEME_ROW_SELECTOR} > td:nth-child(2) > lightning-primitive-cell-factory lightning-base-formatted-text`,
   STATES: `${THEME_ROW_SELECTOR} > td:nth-child(6) > lightning-primitive-cell-factory`
