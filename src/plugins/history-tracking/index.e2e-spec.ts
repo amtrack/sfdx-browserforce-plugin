@@ -2,42 +2,44 @@ import assert from 'assert';
 import * as child from 'child_process';
 import { fileURLToPath } from 'node:url';
 import * as path from 'path';
-import { ServiceChannels } from './index.js';
-import { OmniChannelSettings } from '../omni-channel-settings/index.js';
+import { HistoryTracking } from './index.js';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
-describe(ServiceChannels.name, function () {
-  this.timeout('10m');
-  let plugin: ServiceChannels;
+describe(HistoryTracking.name, function () {
+  let plugin: HistoryTracking;
   before(() => {
-    plugin = new ServiceChannels(global.bf);
+    plugin = new HistoryTracking(global.bf);
   });
 
-  const configureServiceChannels = [
+  const historyTracking = [
     {
-      serviceChannelDeveloperName: "CaseTest",
-      capacity: {
-        capacityModel: "StatusBased",
-        statusField: "Case.Type",
-        valuesForInProgress: ["Electrical", "Mechanical"],
-        checkAgentCapacityOnReopenedWorkItems: true,
-        checkAgentCapacityOnReassignedWorkItems: true
-      }
+      objectApiName: "Account",
+      enableHistoryTracking: true,
+      fieldHistoryTracking: [
+        {
+          fieldApiName: "PersonBirthdate",
+          enableHistoryTracking: true
+        },
+        {
+          fieldApiName: "Test",
+          enableHistoryTracking: true
+        }
+      ]
     },
     {
-      serviceChannelDeveloperName: "LeadTest",
-      capacity: {
-        capacityModel: "StatusBased",
-        statusField: "Lead.Industry",
-        valuesForInProgress: ["Agriculture", "Chemicals"],
-        checkAgentCapacityOnReopenedWorkItems: true,
-        checkAgentCapacityOnReassignedWorkItems: true
-      }
+      objectApiName: "Opportunity",
+      enableHistoryTracking: true,
+      fieldHistoryTracking: [
+        {
+          fieldApiName: "Type",
+          enableHistoryTracking: true
+        }
+      ]
     }
   ];
 
-  it('should create service channel as a prerequisite', () => {
+  it('should create custom field as a prerequisite', () => {
     const sourceDeployCmd = child.spawnSync('sf', [
       'project',
       'deploy',
@@ -49,14 +51,9 @@ describe(ServiceChannels.name, function () {
     assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
   });
 
-  it('should enable status based capacity model as a prerequisite', async () => {
-    const omnniChannelPlugin = new OmniChannelSettings(global.bf);
-    await omnniChannelPlugin.run({ enableStatusBasedCapacityModel: true });
-  });
-
-  it('should configure status based capacity model for service channels', async () => {
-    await plugin.run(configureServiceChannels);
-    const res = await plugin.retrieve(configureServiceChannels);
-    assert.deepStrictEqual(res, configureServiceChannels);
+  it('should enable history tracking for objects and fields', async () => {
+    await plugin.run(historyTracking);
+    const res = await plugin.retrieve(historyTracking);
+    assert.deepStrictEqual(res, historyTracking);
   });
 });
