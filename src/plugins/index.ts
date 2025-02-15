@@ -6,6 +6,7 @@ import { DeferSharingCalculation as deferSharingCalculation } from './defer-shar
 import { DensitySettings as densitySettings } from './density-settings/index.js';
 import { EmailDeliverability as emailDeliverability } from './email-deliverability/index.js';
 import { HighVelocitySalesSettings as highVelocitySalesSettings } from './high-velocity-sales-settings/index.js';
+import { HistoryTracking as historyTracking } from './history-tracking/index.js';
 import { HomePageLayouts as homePageLayouts } from './home-page-layouts/index.js';
 import { LightningExperienceSettings as lightningExperienceSettings } from './lightning-experience-settings/index.js';
 import { LinkedInSalesNavigatorSettings as linkedInSalesNavigatorSettings } from './linkedin-sales-navigator-settings/index.js';
@@ -31,6 +32,7 @@ export {
   densitySettings,
   emailDeliverability,
   highVelocitySalesSettings,
+  historyTracking,
   homePageLayouts,
   lightningExperienceSettings,
   linkedInSalesNavigatorSettings,
