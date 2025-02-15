@@ -1,11 +1,11 @@
 import { BrowserforcePlugin } from '../../plugin.js';
 
 const PATHS = {
-  BASE: 'lightning/setup/ObjectManager/{APINAME}/FieldsAndRelationships/setTrackingHistory',
+  BASE: 'lightning/setup/ObjectManager/{APINAME}/FieldsAndRelationships/setHistoryTracking',
 };
 
 const SELECTORS = {
-  ENABLE_HISTORY: 'input[id$="enable"]',
+  ENABLE_HISTORY: 'input[id="enable"]',
   ENABLE_FIELD_HISTORY: 'input[id$="{APINAME}_fht"]',
   SAVE_BUTTON: 'input[id$=":save"]',
 };
@@ -30,14 +30,14 @@ export class HistoryTracking extends BrowserforcePlugin {
     // We need to retrieve the CustomObject details for all custom objects specified in the config
     // This is because later on, we need the Id when retrieving any CustomField definitions
     const customObjectsByDeveloperName = new Map();
-
+    
     const customObjectApiNames = definition
       .filter((historyTracking) =>
         historyTracking.objectApiName.includes('__c')
       )
       .map((historyTracking) => `'${historyTracking.objectApiName}'`);
 
-    if (customObjectApiNames) {
+    if (customObjectApiNames.length > 0) {
       const customObjectsQuery = await this.org
         .getConnection()
         .tooling.query(
@@ -63,6 +63,7 @@ export class HistoryTracking extends BrowserforcePlugin {
       );
 
       // Retrieve the object history tracking
+      await page.waitForSelector(`${SELECTORS.ENABLE_HISTORY}`);
       historyTrackingResult.enableHistoryTracking = await page.$eval(
         SELECTORS.ENABLE_HISTORY,
         (el) => (el.getAttribute('checked') === 'checked' ? true : false)
@@ -70,6 +71,7 @@ export class HistoryTracking extends BrowserforcePlugin {
 
       // If we have no field history tracking, there is nothing more to do
       if (!historyTrackingConfig.fieldHistoryTracking) {
+        historyTrackingConfigs.push(historyTrackingResult);
         continue;
       }
 
@@ -122,12 +124,11 @@ export class HistoryTracking extends BrowserforcePlugin {
         fieldHistoryTrackingConfigs.push(fieldHistoryTrackingResult);
       }
 
-      historyTrackingConfig.fieldHistoryTracking = fieldHistoryTrackingConfigs;
-
+      historyTrackingResult.fieldHistoryTracking = fieldHistoryTrackingConfigs;
+      historyTrackingConfigs.push(historyTrackingResult);
     }
 
     return historyTrackingConfigs;
-
   }
 
   public async apply(plan: HistoryTrackingConfig[]): Promise<void> {}

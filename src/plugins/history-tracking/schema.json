@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/service-channels/schema.json",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/history-tracking/schema.json",
   "title": "History Tracking",
   "type": "array",
   "items": { "$ref": "#/definitions/historyTracking" },
