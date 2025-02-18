@@ -7,7 +7,7 @@ const PATHS = {
 const SELECTORS = {
   ENABLE_HISTORY: 'input[id="enable"][type="checkbox"][name="enable"]',
   ENABLE_FIELD_HISTORY: 'input[id="{APINAME}_fht"]',
-  SAVE_BUTTON: 'input[id$=":save"]',
+  SAVE_BUTTON: 'input[id="save"]',
 };
 
 type HistoryTrackingConfig = {

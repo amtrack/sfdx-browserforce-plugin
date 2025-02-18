@@ -22,7 +22,7 @@ describe(HistoryTracking.name, function () {
           enableHistoryTracking: true
         },
         {
-          fieldApiName: "Test",
+          fieldApiName: "Test__pc",
           enableHistoryTracking: true
         }
       ]
@@ -34,12 +34,26 @@ describe(HistoryTracking.name, function () {
         {
           fieldApiName: "Type",
           enableHistoryTracking: true
+        },
+        {
+          fieldApiName: "Test__c",
+          enableHistoryTracking: true
+        }
+      ]
+    },
+    {
+      objectApiName: "Test__c",
+      enableHistoryTracking: true,
+      fieldHistoryTracking: [
+        {
+          fieldApiName: "Test__c",
+          enableHistoryTracking: true
         }
       ]
     }
   ];
 
-  it('should create custom field as a prerequisite', () => {
+  it('should create custom object and fields as a prerequisite', () => {
     const sourceDeployCmd = child.spawnSync('sf', [
       'project',
       'deploy',
