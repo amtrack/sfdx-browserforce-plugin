@@ -102,7 +102,73 @@ export class HistoryTracking extends BrowserforcePlugin {
     return historyTrackingConfigs;
   }
 
-  public async apply(plan: HistoryTrackingConfig[]): Promise<void> {}
+  public async apply(plan: HistoryTrackingConfig[]): Promise<void> {
+    // We first need to retrieve the corresponding CustomField.TableOrEnumId for all objects
+    // This is in case we are configuring field tracking for custom fields
+    const tableOrEnumIdByObjectApiName =
+      await this.getTableOrEnumIdByObjectApiName(plan);
+
+    // Now we can iterate over all history tracking configurations in the plan
+    for await (const historyTrackingConfig of plan) {
+      // Open the object history tracking setup page
+      const page = await this.browserforce.openPage(
+        PATHS.BASE.replace('{APINAME}', historyTrackingConfig.objectApiName)
+      );
+
+      // Retrieve the object history tracking
+      await page.waitForSelector(SELECTORS.ENABLE_HISTORY);
+
+      const historyTrackingEnabled = await page.$eval(
+        SELECTORS.ENABLE_HISTORY,
+        (el) => (el.getAttribute('checked') === 'checked' ? true : false)
+      );
+
+      if (historyTrackingConfig.enableHistoryTracking !== historyTrackingEnabled) {
+        // Click the checkbox
+        const enableHistoryTracking = await page.waitForSelector(SELECTORS.ENABLE_HISTORY);
+        await enableHistoryTracking.click();
+      }
+
+      // We need to determine the correct html selector for each field that is configured
+      // This is because custom fields are identified using their CustomField.Id value
+      const fieldSelectorByFieldApiName =
+        await this.getFieldSelectorByFieldApiName(
+          tableOrEnumIdByObjectApiName.get(historyTrackingConfig.objectApiName),
+          historyTrackingConfig.fieldHistoryTracking
+        );
+
+      // We can now retrieve the field history settings for the fields specified for the object
+      for await (const fieldHistoryTracking of historyTrackingConfig.fieldHistoryTracking) {
+
+        const fieldApiName = fieldSelectorByFieldApiName.get(
+          fieldHistoryTracking.fieldApiName
+        );
+
+        const fieldSelector = SELECTORS.ENABLE_FIELD_HISTORY.replace('{APINAME}', fieldApiName);
+
+        const fieldHistoryTrackingEnabled = await page.$eval(
+          fieldSelector,
+          (el) => (el.getAttribute('checked') === 'checked' ? true : false)
+        );
+
+        if (historyTrackingConfig.enableHistoryTracking !== fieldHistoryTrackingEnabled) {
+          // Click the checkbox
+          const enableFieldHistoryTracking = await page.waitForSelector(fieldSelector);
+          await enableFieldHistoryTracking.click();
+        }
+      }
+      
+      // Save the settings
+      const saveButton = await page.waitForSelector(SELECTORS.SAVE_BUTTON);
+      await saveButton.click();
+  
+      // Wait for the page to refresh
+      await page.waitForNavigation()
+
+      // Close the page
+      await page.close();
+    }
+  }
 
   private async getFieldSelectorByFieldApiName(
     tableEnumOrId: String,
@@ -122,7 +188,6 @@ export class HistoryTracking extends BrowserforcePlugin {
         personAccountFieldApiNames.push(
           `'${fieldHistoryTrackingConfig.fieldApiName.replace('__pc', '')}'`
         );
-        console.log(personAccountFieldApiNames);
         continue;
       }
 
