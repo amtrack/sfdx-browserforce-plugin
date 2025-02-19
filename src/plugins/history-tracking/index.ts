@@ -7,7 +7,7 @@ const PATHS = {
 const SELECTORS = {
   ENABLE_HISTORY: 'input[id="enable"][type="checkbox"][name="enable"]',
   ENABLE_FIELD_HISTORY: 'input[id="{APINAME}_fht"]',
-  SAVE_BUTTON: 'input[id="save"]',
+  SAVE_BUTTON: 'input[class="btn"][type="submit"][name="save"][title="Save"]',
 };
 
 type HistoryTrackingConfig = {
@@ -161,7 +161,7 @@ export class HistoryTracking extends BrowserforcePlugin {
       // Save the settings
       const saveButton = await page.waitForSelector(SELECTORS.SAVE_BUTTON);
       await saveButton.click();
-  
+
       // Wait for the page to refresh
       await page.waitForNavigation()
 
