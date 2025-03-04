@@ -1,10 +1,10 @@
 import assert from 'assert';
-//import * as child from 'child_process';
-//import { fileURLToPath } from 'node:url';
-//import * as path from 'path';
+import * as child from 'child_process';
+import { fileURLToPath } from 'node:url';
+import * as path from 'path';
 import { HistoryTracking } from './index.js';
 
-//const __dirname = fileURLToPath(new URL('.', import.meta.url));
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 describe(HistoryTracking.name, function () {
   let plugin: HistoryTracking;
@@ -39,7 +39,6 @@ describe(HistoryTracking.name, function () {
     },
     {
       objectApiName: "Test__c",
-      enableHistoryTracking: true,
       fieldHistoryTracking: [
         {
           fieldApiName: "Test__c",
@@ -49,7 +48,7 @@ describe(HistoryTracking.name, function () {
     }
   ];
 
- /* it('should create custom object and fields as a prerequisite', () => {
+  it('should create custom object and fields as a prerequisite', () => {
     const sourceDeployCmd = child.spawnSync('sf', [
       'project',
       'deploy',
@@ -59,7 +58,7 @@ describe(HistoryTracking.name, function () {
       '--json'
     ]);
     assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
-  });*/
+  });
 
   it('should enable history tracking for objects and fields', async () => {
     await plugin.run(historyTracking);
