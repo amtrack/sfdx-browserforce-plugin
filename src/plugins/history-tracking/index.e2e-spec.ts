@@ -12,7 +12,7 @@ describe(HistoryTracking.name, function () {
     plugin = new HistoryTracking(global.bf);
   });
 
-  const historyTracking = [
+  const enableHistoryTracking = [
     {
       objectApiName: "Account",
       enableHistoryTracking: true,
@@ -41,8 +41,52 @@ describe(HistoryTracking.name, function () {
       objectApiName: "Test__c",
       fieldHistoryTracking: [
         {
+          fieldApiName: "OwnerId",
+          enableHistoryTracking: true
+        },
+        {
           fieldApiName: "Test__c",
           enableHistoryTracking: true
+        }
+      ]
+    }
+  ];
+
+  const disableHistoryTracking = [
+    {
+      objectApiName: "Account",
+      enableHistoryTracking: true,
+      fieldHistoryTracking: [
+        {
+          fieldApiName: "PersonBirthdate",
+          enableHistoryTracking: false
+        },
+        {
+          fieldApiName: "Test__pc",
+          enableHistoryTracking: true
+        }
+      ]
+    },
+    {
+      objectApiName: "Opportunity",
+      enableHistoryTracking: true,
+      fieldHistoryTracking: [
+        {
+          fieldApiName: "Type",
+          enableHistoryTracking: true
+        }
+      ]
+    },
+    {
+      objectApiName: "Test__c",
+      fieldHistoryTracking: [
+        {
+          fieldApiName: "Owner",
+          enableHistoryTracking: true
+        },
+        {
+          fieldApiName: "Test__c",
+          enableHistoryTracking: false
         }
       ]
     }
@@ -61,8 +105,14 @@ describe(HistoryTracking.name, function () {
   });
 
   it('should enable history tracking for objects and fields', async () => {
-    await plugin.run(historyTracking);
-    const res = await plugin.retrieve(historyTracking);
-    assert.deepStrictEqual(res, historyTracking);
+    await plugin.run(enableHistoryTracking);
+    const res = await plugin.retrieve(enableHistoryTracking);
+    assert.deepStrictEqual(res, enableHistoryTracking);
+  });
+
+  it('should disable history tracking for objects and fields', async () => {
+    await plugin.run(disableHistoryTracking);
+    const res = await plugin.retrieve(disableHistoryTracking);
+    assert.deepStrictEqual(res, disableHistoryTracking);
   });
 });
