@@ -115,7 +115,7 @@ export class HistoryTracking extends BrowserforcePlugin {
     for await (const historyTrackingConfig of plan) {
       // Open the object history tracking setup page
       const page = await this.browserforce.openPage(
-        PATHS.BASE.replace('{APINAME}', historyTrackingConfig.objectApiName)
+        PATHS.BASE.replace('{APINAME}', tableEnumOrIdByObjectApiName.get(historyTrackingConfig.objectApiName))
       );
 
       // Retrieve the object history tracking
