@@ -12,8 +12,8 @@ const SELECTORS = {
 
 type HistoryTrackingConfig = {
   objectApiName: string;
-  enableHistoryTracking: boolean;
-  fieldHistoryTracking: FieldHistoryTrackingConfig[];
+  enableHistoryTracking?: boolean;
+  fieldHistoryTracking?: FieldHistoryTrackingConfig[];
 };
 
 export type FieldHistoryTrackingConfig = {

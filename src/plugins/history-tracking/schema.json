@@ -41,7 +41,8 @@
           "description": "If history tracking should be enabled.",
           "type": "boolean"
         }
-      }
+      },
+      "required": ["fieldApiName", "enableHistoryTracking"]
     }
   }
 }
