@@ -41,7 +41,7 @@ describe(HistoryTracking.name, function () {
       objectApiName: "Test__c",
       fieldHistoryTracking: [
         {
-          fieldApiName: "OwnerId",
+          fieldApiName: "Owner",
           enableHistoryTracking: true
         },
         {
@@ -69,13 +69,7 @@ describe(HistoryTracking.name, function () {
     },
     {
       objectApiName: "Opportunity",
-      enableHistoryTracking: true,
-      fieldHistoryTracking: [
-        {
-          fieldApiName: "Type",
-          enableHistoryTracking: true
-        }
-      ]
+      enableHistoryTracking: false
     },
     {
       objectApiName: "Test__c",

@@ -61,7 +61,8 @@ export class HistoryTracking extends BrowserforcePlugin {
       const fieldHistoryTrackingConfigs: FieldHistoryTrackingConfig[] = [];
 
       // If the object history tracking is false, then we already know all field history tracking is false
-      if (!historyTrackingResult.enableHistoryTracking) {
+      // Only so long as this is a standard object
+      if (!historyTrackingResult.enableHistoryTracking && !historyTrackingConfig.objectApiName.includes('__c')) {
         for (const fieldHistoryTracking of historyTrackingConfig.fieldHistoryTracking) {
           fieldHistoryTrackingConfigs.push({
             ...fieldHistoryTracking,
@@ -135,38 +136,34 @@ export class HistoryTracking extends BrowserforcePlugin {
         }
       }
 
-      // If we have no field history tracking, there is nothing more to do
-      if (!historyTrackingConfig.fieldHistoryTracking) {
-        continue;
-      }
-      
+      if (historyTrackingConfig.fieldHistoryTracking) {
+        // We need to determine the correct html selector for each field that is configured
+        // This is because custom fields are identified using their CustomField.Id value
+        const fieldSelectorByFieldApiName =
+          await this.getFieldSelectorByFieldApiName(
+            tableEnumOrIdByObjectApiName.get(historyTrackingConfig.objectApiName),
+            historyTrackingConfig.fieldHistoryTracking
+          );
 
-      // We need to determine the correct html selector for each field that is configured
-      // This is because custom fields are identified using their CustomField.Id value
-      const fieldSelectorByFieldApiName =
-        await this.getFieldSelectorByFieldApiName(
-          tableEnumOrIdByObjectApiName.get(historyTrackingConfig.objectApiName),
-          historyTrackingConfig.fieldHistoryTracking
-        );
+        // We can now retrieve the field history settings for the fields specified for the object
+        for await (const fieldHistoryTracking of historyTrackingConfig.fieldHistoryTracking) {
 
-      // We can now retrieve the field history settings for the fields specified for the object
-      for await (const fieldHistoryTracking of historyTrackingConfig.fieldHistoryTracking) {
+          const fieldApiName = fieldSelectorByFieldApiName.get(
+            fieldHistoryTracking.fieldApiName
+          );
 
-        const fieldApiName = fieldSelectorByFieldApiName.get(
-          fieldHistoryTracking.fieldApiName
-        );
+          const fieldSelector = SELECTORS.ENABLE_FIELD_HISTORY.replace('{APINAME}', fieldApiName);
 
-        const fieldSelector = SELECTORS.ENABLE_FIELD_HISTORY.replace('{APINAME}', fieldApiName);
+          const fieldHistoryTrackingEnabled = await page.$eval(
+            fieldSelector,
+            (el) => (el.getAttribute('checked') === 'checked' ? true : false)
+          );
 
-        const fieldHistoryTrackingEnabled = await page.$eval(
-          fieldSelector,
-          (el) => (el.getAttribute('checked') === 'checked' ? true : false)
-        );
-
-        if (historyTrackingConfig.enableHistoryTracking !== fieldHistoryTrackingEnabled) {
-          // Click the checkbox
-          const enableFieldHistoryTracking = await page.waitForSelector(fieldSelector);
-          await enableFieldHistoryTracking.evaluate((node) => (node as HTMLElement).click());
+          if (fieldHistoryTracking.enableHistoryTracking !== fieldHistoryTrackingEnabled) {
+            // Click the checkbox
+            const enableFieldHistoryTracking = await page.waitForSelector(fieldSelector);
+            await enableFieldHistoryTracking.evaluate((node) => (node as HTMLElement).click());
+          }
         }
       }
       
