@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/history-tracking/schema.json",
+  "title": "History Tracking",
+  "type": "array",
+  "items": { "$ref": "#/definitions/historyTracking" },
+  "default": [],
+  "definitions": {
+    "historyTracking": {
+      "type": "object",
+      "properties": {
+        "objectApiName": {
+          "title": "Object API Name",
+          "description": "The API name of the object to manage history tracking for.",
+          "type": "string"
+        },
+        "enableHistoryTracking": {
+          "title": "Enable History Tracking",
+          "description": "If history tracking should be enabled.",
+          "type": "boolean"
+        },
+        "fieldHistoryTracking": {
+          "title": "Field History Tracking",
+          "type": "array",
+          "items": { "$ref": "#/definitions/fieldHistory" },
+          "default": []
+        }
+      },
+      "required": ["objectApiName"]
+    },
+    "fieldHistory": {
+      "type": "object",
+      "properties": {
+        "fieldApiName": {
+          "title": "Field API Name",
+          "description": "The API name of the field to manage history tracking for.",
+          "type": "string"
+        },
+        "enableHistoryTracking": {
+          "title": "Enable History Tracking",
+          "description": "If history tracking should be enabled.",
+          "type": "boolean"
+        }
+      },
+      "required": ["fieldApiName", "enableHistoryTracking"]
+    }
+  }
+}

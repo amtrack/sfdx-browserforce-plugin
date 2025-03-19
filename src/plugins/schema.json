@@ -49,6 +49,9 @@
         "densitySettings": {
           "$ref": "./density-settings/schema.json"
         },
+        "historyTracking": {
+          "$ref": "./history-tracking/schema.json"
+        },
         "homePageLayouts": {
           "$ref": "./home-page-layouts/schema.json"
         },

@@ -2,7 +2,7 @@
   "orgName": "Browserforce",
   "edition": "Developer",
   "language": "en_US",
-  "features": ["CPQ", "DeferSharingCalc", "HighVelocitySales", "ServiceCloud"],
+  "features": ["CPQ", "DeferSharingCalc", "HighVelocitySales", "PersonAccounts", "ServiceCloud"],
   "settings": {
     "omniChannelSettings": {
       "enableOmniChannel": true,
