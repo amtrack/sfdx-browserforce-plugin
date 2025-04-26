@@ -6,12 +6,15 @@ import {
 import { IdentityProvider, Config as IdentityProviderConfig } from './identity-provider/index.js';
 import { LoginAccessPolicies, Config as LoginAccessPoliciesConfig } from './login-access-policies/index.js';
 import { Sharing, Config as SharingConfig } from './sharing/index.js';
+import { AuthenticationConfiguration, Config as AuthenticationConfigurationConfig} from './authentication-configuration/index.js';
+
 
 type Config = {
   certificateAndKeyManagement?: CertificateAndKeyManagementConfig;
   identityProvider?: IdentityProviderConfig;
   loginAccessPolicies?: LoginAccessPoliciesConfig;
   sharing?: SharingConfig;
+  authenticationConfiguration?: AuthenticationConfigurationConfig
 };
 
 export class Security extends BrowserforcePlugin {
@@ -34,6 +37,10 @@ export class Security extends BrowserforcePlugin {
         const pluginSharing = new Sharing(this.browserforce);
         response.sharing = await pluginSharing.retrieve();
       }
+      if (definition.authenticationConfiguration) {
+        response.authenticationConfiguration =
+            await new AuthenticationConfiguration(this.browserforce).retrieve(definition.authenticationConfiguration);
+      }
     }
     return response;
   }
@@ -52,6 +59,10 @@ export class Security extends BrowserforcePlugin {
       definition.loginAccessPolicies
     ) as LoginAccessPoliciesConfig | undefined;
     const sharing = new Sharing(this.browserforce).diff(state.sharing, definition.sharing) as SharingConfig | undefined;
+    const authenticationConfiguration = new AuthenticationConfiguration(this.browserforce).diff(
+        state.authenticationConfiguration,
+        definition.authenticationConfiguration
+      ) as AuthenticationConfigurationConfig | undefined;
     const response: Config = {};
     if (certificateAndKeyManagement !== undefined) {
       response.certificateAndKeyManagement = certificateAndKeyManagement;
@@ -67,6 +78,9 @@ export class Security extends BrowserforcePlugin {
     }
     if (sharing !== undefined) {
       response.sharing = sharing;
+    }
+    if (authenticationConfiguration !== undefined) {
+      response.authenticationConfiguration = authenticationConfiguration;
     }
     return Object.keys(response).length ? response : undefined;
   }
@@ -87,6 +101,10 @@ export class Security extends BrowserforcePlugin {
     if (plan.sharing) {
       const pluginSharing = new Sharing(this.browserforce);
       await pluginSharing.apply(plan.sharing);
+    }
+    if (plan.authenticationConfiguration) {
+      const pluginAuthConfig = new AuthenticationConfiguration(this.browserforce)
+      await pluginAuthConfig.apply(plan.authenticationConfiguration);
     }
   }
 }
