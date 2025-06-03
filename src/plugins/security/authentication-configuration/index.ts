@@ -8,21 +8,26 @@ export type Config = {
 };
 
 const PATHS = {
-  EDIT_VIEW: 'domainname/EditLogin.apexp'
+  EDIT_VIEW: 'lightning/setup/OrgDomain/page?address=%2Fdomainname%2FEditLogin.apexp'
 };
 
 const SELECTORS = {
+  SETUP_FORM: 'form[id="BrandSetup:brandSetupForm"]',
   SERVICE_CHECKBOX: 'input.authOption[type="checkbox"]',
-  SAVE_BUTTON: 'input[value="Save"]'
+  SAVE_BUTTON: 'input[id$=":Save"]'
 };
 
 export class AuthenticationConfiguration extends BrowserforcePlugin {
   public async retrieve(definition: Config): Promise<Config> {
     const page = await this.browserforce.openPage(PATHS.EDIT_VIEW);
 
-    await page.waitForSelector(SELECTORS.SERVICE_CHECKBOX);
+   const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(
+      page,
+      SELECTORS.SETUP_FORM
+    );
+    await frameOrPage.waitForSelector(SELECTORS.SERVICE_CHECKBOX);
 
-    const services = await page.$$eval(
+    const services = await frameOrPage.$$eval(
       SELECTORS.SERVICE_CHECKBOX,
       (inputs, definedServices) =>
       (inputs as HTMLInputElement[])
