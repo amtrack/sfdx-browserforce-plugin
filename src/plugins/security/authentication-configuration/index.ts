@@ -52,10 +52,14 @@ export class AuthenticationConfiguration extends BrowserforcePlugin {
   public async apply(plan: Config): Promise<void> {
     const page = await this.browserforce.openPage(PATHS.EDIT_VIEW);
 
-    await page.waitForSelector(SELECTORS.SERVICE_CHECKBOX);
+    const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(
+      page,
+      SELECTORS.SETUP_FORM
+    );
+    await frameOrPage.waitForSelector(SELECTORS.SERVICE_CHECKBOX);
 
     for (const svc of plan.services) {
-      const checkboxId = await page.$$eval(
+      const checkboxId = await frameOrPage.$$eval(
         SELECTORS.SERVICE_CHECKBOX,
         (inputs, serviceName) => {
           for (const inp of inputs as HTMLInputElement[]) {
@@ -74,20 +78,20 @@ export class AuthenticationConfiguration extends BrowserforcePlugin {
       }
 
       const selector = `[id="${checkboxId}"]`;
-      const isChecked = await page.$eval(
+      const isChecked = await frameOrPage.$eval(
         selector,
         (el) => (el as HTMLInputElement).checked
       );
 
       if (svc.enabled !== isChecked) {
-        await page.click(selector);
+        await frameOrPage.click(selector);
       }
     }
 
-    await page.waitForSelector(SELECTORS.SAVE_BUTTON);
+    await frameOrPage.waitForSelector(SELECTORS.SAVE_BUTTON);
     await Promise.all([
-      page.waitForNavigation({ waitUntil: 'networkidle0' }),
-      page.click(SELECTORS.SAVE_BUTTON)
+      frameOrPage.waitForNavigation({ waitUntil: 'networkidle0' }),
+      frameOrPage.click(SELECTORS.SAVE_BUTTON)
     ]);
 
     await page.close();
