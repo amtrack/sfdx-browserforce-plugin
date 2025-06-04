@@ -89,21 +89,20 @@ export class AuthenticationConfiguration extends BrowserforcePlugin {
       }
     }
 
+    const anyChecked = await frameOrPage.$$eval(
+      SELECTORS.SERVICE_CHECKBOX,
+      (inputs) => (inputs as HTMLInputElement[]).some((cb) => cb.checked)
+    );
+    if (!anyChecked) {
+      throw new Error(
+        'Change failed: “You must select at least one authentication service.”'
+      );
+    }
     await frameOrPage.waitForSelector(SELECTORS.SAVE_BUTTON);
     await Promise.all([
       frameOrPage.waitForNavigation({ waitUntil: 'networkidle0' }),
       frameOrPage.click(SELECTORS.SAVE_BUTTON)
     ]);
-  try {
-    await frameOrPage.waitForSelector(SELECTORS.SAVE_BUTTON, { hidden: true, timeout: 1000 });
-  } catch {
-    const foundError = await frameOrPage.$(SELECTORS.ERROR_SPAN);
-    if (foundError) {
-      throw new Error(
-        'Change failed: “You must select at least one authentication service.”'
-      );
-    }
-  }
     await page.close();
   }
 }
