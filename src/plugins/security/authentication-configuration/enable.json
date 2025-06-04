@@ -1,0 +1,19 @@
+{
+  "$schema": "../../schema.json",
+  "settings": {
+    "security": {
+      "authenticationConfiguration": {
+        "services": [
+          {
+            "label" : "TestAuthMethod",
+            "enabled": true
+          },
+          {
+            "label" : "Login Form",
+            "enabled": true
+          }
+        ]
+      }
+    }
+  }
+}

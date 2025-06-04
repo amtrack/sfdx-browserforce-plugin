@@ -51,8 +51,8 @@ Create a scratch org and try it yourself:
 
 ```console
 sf org create scratch -f config/project-scratch-def.json -a browserforce-dev -d
-BROWSER_DEBUG=true ./bin/run browserforce apply -f src/plugins/admins-can-log-in-as-any-user/enable.json -u browserforce-dev
-BROWSER_DEBUG=true ./bin/run browserforce apply -f src/plugins/admins-can-log-in-as-any-user/disable.json -u browserforce-dev
+BROWSER_DEBUG=true ./bin/run browserforce apply -f src/plugins/admins-can-log-in-as-any-user/enable.json -o browserforce-dev
+BROWSER_DEBUG=true ./bin/run browserforce apply -f src/plugins/admins-can-log-in-as-any-user/disable.json -o browserforce-dev
 ```
 
 Now it's your turn!

@@ -15,6 +15,9 @@
     },
     "sharing": {
       "$ref": "./sharing/schema.json"
+    },
+    "authenticationConfiguration": {
+      "$ref": "./authentication-configuration/schema.json"
     }
   }
 }

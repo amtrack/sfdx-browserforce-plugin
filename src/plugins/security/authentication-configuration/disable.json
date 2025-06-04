@@ -1,0 +1,15 @@
+{
+  "$schema": "../../schema.json",
+  "settings": {
+    "security": {
+      "authenticationConfiguration": {
+        "services": [
+          {
+            "label" : "Login Form",
+            "enabled": false
+          }
+        ]
+      }
+    }
+  }
+}
