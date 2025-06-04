@@ -36,6 +36,12 @@ describe(AuthenticationConfiguration.name, function () {
         { label: 'FakeAuthMethod', enabled: true }
       ]
     };
+    const resetTestState: Config = {
+      services: [
+        { label: 'Login Form', enabled: true },
+        { label: 'TestAuthMethod', enabled: false }
+      ]
+    };
 
     it('should retrieve the single enabled Login Form auth', async () => {
       const res = await plugin.retrieve(configRetrieveSingle);
@@ -88,5 +94,25 @@ describe(AuthenticationConfiguration.name, function () {
         throw err;
       }, /not found/);
     });
+
+    it('should reset auth services back to default', async () => {
+      await plugin.apply(resetTestState);
+      const res = await plugin.retrieve(resetTestState);
+      assert.deepStrictEqual(res, resetTestState);
+    });
+
+    it('should remove the testing AuthProvider', () => {
+      const sourceDeployCmd = child.spawnSync('sf', [
+        'project',
+        'delete',
+        'source',
+        '--metadata',
+        'AuthProvider:TestAuthMethod',
+        '--no-prompt',
+        '--json'
+      ]);
+      assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
+    });
+    
   });
 });
