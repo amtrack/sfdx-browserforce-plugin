@@ -9,13 +9,13 @@
   },
   "dependencies": {
     "@mdapi-issues/listmetadata-standardvalueset": "3.1.0",
-    "@salesforce/sf-plugins-core": "12.2.1",
+    "@salesforce/sf-plugins-core": "12.2.2",
     "p-retry": "6.2.1",
-    "puppeteer": "24.4.0"
+    "puppeteer": "24.9.0"
   },
   "devDependencies": {
-    "@salesforce/dev-scripts": "10.2.12",
-    "oclif": "4.17.37"
+    "@salesforce/dev-scripts": "11.0.2",
+    "oclif": "4.17.46"
   },
   "files": [
     "/bin",

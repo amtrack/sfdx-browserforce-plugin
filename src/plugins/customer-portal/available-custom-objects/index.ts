@@ -33,17 +33,16 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
       const customObjects = await this.org
         .getConnection()
         .tooling.query<CustomObjectRecord>(
-          `SELECT Id, DeveloperName, NamespacePrefix FROM CustomObject WHERE DeveloperName IN (${availableCustomObjectList})`,
+          `SELECT Id, DeveloperName, NamespacePrefix FROM CustomObject WHERE DeveloperName IN (${availableCustomObjectList}) ORDER BY CreatedDate DESC`,
           { scanAll: false }
         );
+      // Note: Unfortunately scanAll=false has no impact and returns deleted CustomObjects.
+      // Workaround: Order by CreatedDate DESC to get the latest CustomObject first.
       for (const record of customObjects?.records) {
         if (record.NamespacePrefix === null) {
           record.NamespacePrefix = undefined;
         }
       }
-      // BUG in jsforce: query acts with scanAll:true and returns deleted CustomObjects.
-      // It cannot be disabled.
-      // This will throw a timeout error waitingFor('#options_9')
       const page = await this.browserforce.openPage('');
       // new URLs for LEX: https://help.salesforce.com/articleView?id=FAQ-for-the-New-URL-Format-for-Lightning-Experience-and-the-Salesforce-Mobile-App&type=1
       const isLEX = page.url().includes('/one/one.app') || page.url().includes('/lightning/');
