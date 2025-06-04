@@ -14,7 +14,8 @@ const PATHS = {
 const SELECTORS = {
   SETUP_FORM: 'form[id="BrandSetup:brandSetupForm"]',
   SERVICE_CHECKBOX: 'input.authOption[type="checkbox"]',
-  SAVE_BUTTON: 'input[id$=":Save"]'
+  SAVE_BUTTON: 'input[id$=":Save"]',
+  ERROR_SPAN: '[id="BrandSetup:brandSetupForm:settingsDetail:es1:es14:authError"]'
 };
 
 export class AuthenticationConfiguration extends BrowserforcePlugin {
@@ -93,7 +94,16 @@ export class AuthenticationConfiguration extends BrowserforcePlugin {
       frameOrPage.waitForNavigation({ waitUntil: 'networkidle0' }),
       frameOrPage.click(SELECTORS.SAVE_BUTTON)
     ]);
-
+  try {
+    await frameOrPage.waitForSelector(SELECTORS.SAVE_BUTTON, { hidden: true, timeout: 1000 });
+  } catch {
+    const foundError = await frameOrPage.$(SELECTORS.ERROR_SPAN);
+    if (foundError) {
+      throw new Error(
+        'Change failed: “You must select at least one authentication service.”'
+      );
+    }
+  }
     await page.close();
   }
 }

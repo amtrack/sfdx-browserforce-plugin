@@ -5,7 +5,7 @@
       "authenticationConfiguration": {
         "services": [
           {
-            "label" : "Quip",
+            "label" : "Login Form",
             "enabled": false
           }
         ]
