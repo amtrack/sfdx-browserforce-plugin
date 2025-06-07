@@ -1,9 +1,10 @@
 import { Page } from 'puppeteer';
 import { throwPageErrors } from '../../browserforce.js';
 
-const ENABLE_TOGGLE = 'div[data-aura-class="setup_sales_linkedinLinkedInSetupRow"] input[type="checkbox"]';
+const ENABLE_TOGGLE =
+  'div[data-aura-class="setup_sales_linkedinLinkedInSetupRow"] input[type="checkbox"]:not(:disabled)';
 const CONFIRM_CHECKBOX =
-  'lightning-input lightning-primitive-input-checkbox input[name="LinkedIn Sales Navigator Integration Acceptance Checkbox"]';
+  'lightning-input lightning-primitive-input-checkbox input[name="LinkedIn Sales Navigator Integration Acceptance Checkbox"]:not(:disabled)';
 const ACCEPT_BUTTON =
   'section[data-aura-class="setup_sales_linkedinLinkedInSetupAcceptTermsModal"] div div button:not(:disabled):nth-child(2)';
 
@@ -19,23 +20,27 @@ export class LinkedInSalesNavigatorPage {
   }
 
   public async getStatus(): Promise<boolean> {
-    await this.page.waitForSelector(ENABLE_TOGGLE, { visible: true });
-    const isEnabled = await this.page.$eval(ENABLE_TOGGLE, (el: HTMLInputElement) => el.checked);
+    const isEnabled = await this.page
+      .locator(ENABLE_TOGGLE)
+      .map((checkbox) => checkbox.checked)
+      .wait();
     await this.page.close();
     return isEnabled;
   }
 
   public async setStatus(enable: boolean): Promise<void> {
-    await this.page.waitForSelector(ENABLE_TOGGLE, { visible: true });
-    const toggle = await this.page.$(ENABLE_TOGGLE);
-    await toggle?.evaluate((input: HTMLInputElement) => input.click());
+    // NOTE: Unfortunately a simple click() on the locator does not work here
+    await (
+      await this.page.locator(ENABLE_TOGGLE).waitHandle()
+    ).evaluate((checkbox) => checkbox.click());
 
     if (enable) {
-      await this.page.waitForSelector(CONFIRM_CHECKBOX, { visible: true });
-      const checkbox = await this.page.$(CONFIRM_CHECKBOX);
-      await checkbox?.evaluate((input: HTMLInputElement) => input.click());
-      await this.page.waitForSelector(ACCEPT_BUTTON, { visible: true });
-      await this.page.click(ACCEPT_BUTTON);
+      await (
+        await this.page.locator(CONFIRM_CHECKBOX).waitHandle()
+      ).evaluate((checkbox) => checkbox.click());
+      await (
+        await this.page.locator(ACCEPT_BUTTON).waitHandle()
+      ).evaluate((button) => button.click());
     }
 
     await throwPageErrors(this.page);
