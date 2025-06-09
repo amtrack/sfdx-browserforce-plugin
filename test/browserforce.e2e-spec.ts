@@ -36,8 +36,9 @@ describe('Browserforce', function () {
       const page = await global.bf.openPage('lightning/setup/ExternalStrings/home');
       const frame = await global.bf.waitForSelectorInFrameOrPage(page, 'input[name="edit"]');
       const button = await frame.$('input[name="edit"]');
+      assert.notDeepStrictEqual(button, null);
       assert.ok(!page.url().includes('/page'));
-      await Promise.all([page.waitForNavigation(), frame.evaluate((x) => x.click(), button)]);
+      await Promise.all([page.waitForNavigation(), button.click()]);
       assert.ok(page.url().includes('/page'));
       await page.close();
     });

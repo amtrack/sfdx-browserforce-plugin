@@ -8,7 +8,7 @@ const MODAL_CONFIRM_BUTTON =
 export class SetupPage {
   static PATH =
     'opp/opportunitySplitSetupEdit.apexp?setupid=OpportunitySplitSetup';
-  private page;
+  private page: Page;
 
   constructor(page: Page) {
     this.page = page;

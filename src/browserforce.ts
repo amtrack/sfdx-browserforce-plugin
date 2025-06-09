@@ -100,7 +100,7 @@ export class Browserforce {
   // Wait for either the selector in the page or in the iframe.
   // returns the page or the frame
   public async waitForSelectorInFrameOrPage(page: Page, selector: string): Promise<Page | Frame> {
-    await page.waitForSelector(`${selector}, ${VF_IFRAME_SELECTOR}`);
+    await page.locator(`${selector}, ${VF_IFRAME_SELECTOR}`).wait();
     const frameElementHandle = await page.$(VF_IFRAME_SELECTOR);
     let frameOrPage: Page | Frame = page;
     if (frameElementHandle) {
@@ -109,7 +109,7 @@ export class Browserforce {
       );
       frameOrPage = frame;
     }
-    await frameOrPage.waitForSelector(selector);
+    await frameOrPage.locator(selector).wait();
     return frameOrPage;
   }
 

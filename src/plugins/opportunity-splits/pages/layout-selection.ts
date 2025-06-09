@@ -6,7 +6,7 @@ const SAVE_BUTTON = 'input[id$=":save"]';
 export class LayoutSelectionPage {
   static PATH =
     'opp/opportunitySplitSetupLayout.apexp?setupid=OpportunitySplitSetup';
-  private page;
+  private page: Page;
 
   constructor(page: Page) {
     this.page = page;
