@@ -12,7 +12,7 @@ export class OpportunitySplits extends BrowserforcePlugin {
     const page = await this.browserforce.openPage(OverviewPage.PATH);
     const overviewPage = new OverviewPage(page);
     const response = {
-      enabled: await overviewPage.isEnabled()
+      enabled: await overviewPage.isEnabled(),
     };
     await page.close();
     return response;

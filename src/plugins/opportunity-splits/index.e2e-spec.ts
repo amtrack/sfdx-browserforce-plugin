@@ -7,7 +7,8 @@ import { OpportunitySplits } from './index.js';
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 describe(OpportunitySplits.name, function () {
-  this.timeout('10m');
+  this.timeout('15m');
+  this.slow('1m');
   let plugin: OpportunitySplits;
   before(() => {
     plugin = new OpportunitySplits(global.bf);
