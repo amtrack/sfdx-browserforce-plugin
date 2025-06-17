@@ -1,0 +1,12 @@
+{
+  "$schema": "../schema.json",
+  "settings": {
+    "omnistudioSettings": {
+      "OmniStudioMetadata": false,
+      "StandardOmniStudioRuntime": false,
+      "OmniStudioCoreBuilderPref": false,
+      "LwcRedeploy": false,
+      "SldsPlusUIToggle": false
+    }
+  }
+}
