@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/omnistudio-settings/schema.json",
+  "title": "OmniStudio Settings",
+  "type": "object",
+  "properties": {
+    "OmniStudioMetadata": {
+      "title": "Enable OmniStudio Metadata",
+      "description": "Enable or disable OmniStudio Metadata settings.",
+      "type": "boolean"
+    },
+    "StandardOmniStudioRuntime": {
+      "title": "Enable Standard OmniStudio Runtime",
+      "description": "Enable or disable the Standard OmniStudio Runtime.",
+      "type": "boolean"
+    },
+    "OmniStudioCoreBuilderPref": {
+      "title": "Enable OmniStudio Core Builder Preferences",
+      "description": "Enable or disable preferences for the OmniStudio Core Builder.",
+      "type": "boolean"
+    },
+    "LwcRedeploy": {
+      "title": "Enable LWC Redeploy",
+      "description": "Enable or disable the redeployment of Lightning Web Components (LWC).",
+      "type": "boolean"
+    },
+    "SldsPlusUIToggle": {
+      "title": "Enable SLDS+ UI Toggle",
+      "description": "Enable or disable the SLDS+ UI toggle feature.",
+      "type": "boolean"
+    }
+  }
+}
