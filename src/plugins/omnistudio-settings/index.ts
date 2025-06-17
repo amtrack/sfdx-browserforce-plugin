@@ -53,7 +53,7 @@ export class OmnistudioSettings extends BrowserforcePlugin {
     for (const key of Object.keys(config) as (keyof Config)[]) {
       if (state[key] !== config[key]) {
         await page.$eval(
-          `${SELECTORS.CHECKBOXES}[name="toggle-${key}"]`,
+          `${SELECTORS.CHECKBOXES} input[name="toggle-${key}"]`,
           (e: HTMLInputElement, v: boolean) => {
             e.checked = v;
           },
