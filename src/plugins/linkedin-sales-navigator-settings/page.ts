@@ -1,7 +1,7 @@
 import { Page } from 'puppeteer';
 import { throwPageErrors } from '../../browserforce.js';
 
-const ENABLE_TOGGLE =
+const TOGGLE =
   'div[data-aura-class="setup_sales_linkedinLinkedInSetupRow"] input[type="checkbox"]:not(:disabled)';
 const CONFIRM_CHECKBOX =
   'lightning-input lightning-primitive-input-checkbox input[name="LinkedIn Sales Navigator Integration Acceptance Checkbox"]:not(:disabled)';
@@ -21,7 +21,7 @@ export class LinkedInSalesNavigatorPage {
 
   public async getStatus(): Promise<boolean> {
     const isEnabled = await this.page
-      .locator(ENABLE_TOGGLE)
+      .locator(TOGGLE)
       .map((checkbox) => checkbox.checked)
       .wait();
     await this.page.close();
@@ -29,19 +29,29 @@ export class LinkedInSalesNavigatorPage {
   }
 
   public async setStatus(enable: boolean): Promise<void> {
-    // NOTE: Unfortunately a simple click() on the locator does not work here
-    await (
-      await this.page.locator(ENABLE_TOGGLE).waitHandle()
-    ).evaluate((checkbox) => checkbox.click());
-
+    const promises = [
+      this.page.waitForResponse((response) => {
+        return (
+          response.url().includes('LinkedInIntegrationSetup.updatePref=1') &&
+          response.ok()
+        );
+      }),
+      // NOTE: Unfortunately a simple click() on the locator does not work here
+      (await this.page.locator(TOGGLE).waitHandle()).evaluate((checkbox) =>
+        checkbox.click()
+      ),
+    ];
     if (enable) {
-      await (
-        await this.page.locator(CONFIRM_CHECKBOX).waitHandle()
-      ).evaluate((checkbox) => checkbox.click());
-      await (
-        await this.page.locator(ACCEPT_BUTTON).waitHandle()
-      ).evaluate((button) => button.click());
+      promises.push(
+        (await this.page.locator(CONFIRM_CHECKBOX).waitHandle()).evaluate(
+          (checkbox) => checkbox.click()
+        ),
+        (await this.page.locator(ACCEPT_BUTTON).waitHandle()).evaluate(
+          (button) => button.click()
+        )
+      );
     }
+    await Promise.all(promises);
 
     await throwPageErrors(this.page);
     await this.page.close();
