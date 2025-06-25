@@ -7,31 +7,24 @@ export type Config = {
   }>;
 };
 
-const PATHS = {
-  EDIT_VIEW:
-    'lightning/setup/OrgDomain/page?address=%2Fdomainname%2FEditLogin.apexp',
-};
+const EDIT_VIEW_PATH =
+  'lightning/setup/OrgDomain/page?address=%2Fdomainname%2FEditLogin.apexp';
 
-const SELECTORS = {
-  SETUP_FORM: 'form[id="BrandSetup:brandSetupForm"]',
-  SERVICE_CHECKBOX: 'input.authOption[type="checkbox"]',
-  SAVE_BUTTON: 'input[id$=":Save"]',
-  ERROR_SPAN:
-    '[id="BrandSetup:brandSetupForm:settingsDetail:es1:es14:authError"]',
-};
+const SETUP_FORM_SELECTOR = 'form[id="BrandSetup:brandSetupForm"]';
+const SERVICE_CHECKBOX_SELECTOR = 'input.authOption[type="checkbox"]';
+const SAVE_BUTTON_SELECTOR = 'input[id$=":Save"]';
 
 export class AuthenticationConfiguration extends BrowserforcePlugin {
   public async retrieve(definition: Config): Promise<Config> {
-    const page = await this.browserforce.openPage(PATHS.EDIT_VIEW);
-
+    const page = await this.browserforce.openPage(EDIT_VIEW_PATH);
     const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(
       page,
-      SELECTORS.SETUP_FORM
+      SETUP_FORM_SELECTOR
     );
-    await frameOrPage.waitForSelector(SELECTORS.SERVICE_CHECKBOX);
+    await frameOrPage.waitForSelector(SERVICE_CHECKBOX_SELECTOR);
 
     const services = await frameOrPage.$$eval(
-      SELECTORS.SERVICE_CHECKBOX,
+      SERVICE_CHECKBOX_SELECTOR,
       (inputs, definedServices) =>
         (inputs as HTMLInputElement[])
           .map((cb) => {
@@ -59,17 +52,16 @@ export class AuthenticationConfiguration extends BrowserforcePlugin {
   }
 
   public async apply(plan: Config): Promise<void> {
-    const page = await this.browserforce.openPage(PATHS.EDIT_VIEW);
-
+    const page = await this.browserforce.openPage(EDIT_VIEW_PATH);
     const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(
       page,
-      SELECTORS.SETUP_FORM
+      SETUP_FORM_SELECTOR
     );
-    await frameOrPage.waitForSelector(SELECTORS.SERVICE_CHECKBOX);
+    await frameOrPage.waitForSelector(SERVICE_CHECKBOX_SELECTOR);
 
     for (const svc of plan.services) {
       const checkboxId = (await frameOrPage.$$eval(
-        SELECTORS.SERVICE_CHECKBOX,
+        SERVICE_CHECKBOX_SELECTOR,
         (inputs, serviceName) => {
           for (const inp of inputs as HTMLInputElement[]) {
             const labelElement = document.querySelector(
@@ -103,7 +95,7 @@ export class AuthenticationConfiguration extends BrowserforcePlugin {
     }
 
     const anyChecked = await frameOrPage.$$eval(
-      SELECTORS.SERVICE_CHECKBOX,
+      SERVICE_CHECKBOX_SELECTOR,
       (inputs) => (inputs as HTMLInputElement[]).some((cb) => cb.checked)
     );
     if (!anyChecked) {
@@ -111,10 +103,10 @@ export class AuthenticationConfiguration extends BrowserforcePlugin {
         'Change failed: “You must select at least one authentication service.”'
       );
     }
-    await frameOrPage.waitForSelector(SELECTORS.SAVE_BUTTON);
+    await frameOrPage.waitForSelector(SAVE_BUTTON_SELECTOR);
     await Promise.all([
       frameOrPage.waitForNavigation({ waitUntil: 'networkidle0' }),
-      frameOrPage.click(SELECTORS.SAVE_BUTTON),
+      frameOrPage.click(SAVE_BUTTON_SELECTOR),
     ]);
     await page.close();
   }

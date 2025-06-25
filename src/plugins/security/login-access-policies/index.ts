@@ -1,13 +1,10 @@
 import { BrowserforcePlugin } from '../../../plugin.js';
 
-const PATHS = {
-  BASE: 'partnerbt/loginAccessPolicies.apexp',
-};
-const SELECTORS = {
-  ENABLED: 'input[id$="adminsCanLogInAsAny"]',
-  CONFIRM_MESSAGE: '.message.confirmM3',
-  SAVE_BUTTON: 'input[id$=":save"]',
-};
+const BASE_PATH = 'partnerbt/loginAccessPolicies.apexp';
+
+const ENABLED_SELECTOR = 'input[id$="adminsCanLogInAsAny"]';
+const CONFIRM_MESSAGE_SELECTOR = '.message.confirmM3';
+const SAVE_BUTTON_SELECTOR = 'input[id$=":save"]';
 
 export type Config = {
   administratorsCanLogInAsAnyUser: boolean;
@@ -15,11 +12,11 @@ export type Config = {
 
 export class LoginAccessPolicies extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
-    const page = await this.browserforce.openPage(PATHS.BASE);
-    await page.waitForSelector(SELECTORS.ENABLED);
+    const page = await this.browserforce.openPage(BASE_PATH);
+    await page.waitForSelector(ENABLED_SELECTOR);
     const response = {
       administratorsCanLogInAsAnyUser: await page.$eval(
-        SELECTORS.ENABLED,
+        ENABLED_SELECTOR,
         (el: HTMLInputElement) => el.checked
       ),
     };
@@ -28,18 +25,18 @@ export class LoginAccessPolicies extends BrowserforcePlugin {
   }
 
   public async apply(config: Config): Promise<void> {
-    const page = await this.browserforce.openPage(PATHS.BASE);
-    await page.waitForSelector(SELECTORS.ENABLED);
+    const page = await this.browserforce.openPage(BASE_PATH);
+    await page.waitForSelector(ENABLED_SELECTOR);
     await page.$eval(
-      SELECTORS.ENABLED,
+      ENABLED_SELECTOR,
       (e: HTMLInputElement, v: boolean) => {
         e.checked = v;
       },
       config.administratorsCanLogInAsAnyUser
     );
     await Promise.all([
-      page.waitForSelector(SELECTORS.CONFIRM_MESSAGE),
-      page.click(SELECTORS.SAVE_BUTTON),
+      page.waitForSelector(CONFIRM_MESSAGE_SELECTOR),
+      page.click(SAVE_BUTTON_SELECTOR),
     ]);
     await page.close();
   }

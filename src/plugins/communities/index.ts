@@ -1,14 +1,11 @@
 import { BrowserforcePlugin } from '../../plugin.js';
 
-const PATHS = {
-  BASE: '_ui/networks/setup/NetworkSettingsPage',
-};
-const SELECTORS = {
-  BASE: 'div.pbBody',
-  ENABLE_CHECKBOX: 'input[id$=":enableNetworkPrefId"]',
-  DOMAIN_NAME_INPUT_TEXT: 'input[id$=":inputSubdomain"]',
-  SAVE_BUTTON: 'input[id$=":saveId"]',
-};
+const BASE_PATH = '_ui/networks/setup/NetworkSettingsPage';
+
+const BASE_SELECTOR = 'div.pbBody';
+const ENABLE_CHECKBOX_SELECTOR = 'input[id$=":enableNetworkPrefId"]';
+const DOMAIN_NAME_INPUT_TEXT_SELECTOR = 'input[id$=":inputSubdomain"]';
+const SAVE_BUTTON_SELECTOR = 'input[id$=":saveId"]';
 
 type Config = {
   enabled?: boolean;
@@ -17,18 +14,18 @@ type Config = {
 
 export class Communities extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
-    const page = await this.browserforce.openPage(PATHS.BASE);
+    const page = await this.browserforce.openPage(BASE_PATH);
     const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(
       page,
-      SELECTORS.BASE
+      BASE_SELECTOR
     );
     const response = {
       enabled: true,
     };
-    const inputEnable = await frameOrPage.$(SELECTORS.ENABLE_CHECKBOX);
+    const inputEnable = await frameOrPage.$(ENABLE_CHECKBOX_SELECTOR);
     if (inputEnable) {
       response.enabled = await frameOrPage.$eval(
-        SELECTORS.ENABLE_CHECKBOX,
+        ENABLE_CHECKBOX_SELECTOR,
         (el: HTMLInputElement) => el.checked
       );
     }
@@ -41,26 +38,26 @@ export class Communities extends BrowserforcePlugin {
       throw new Error('`enabled` cannot be disabled once enabled');
     }
 
-    const page = await this.browserforce.openPage(PATHS.BASE);
+    const page = await this.browserforce.openPage(BASE_PATH);
     const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(
       page,
-      SELECTORS.ENABLE_CHECKBOX
+      ENABLE_CHECKBOX_SELECTOR
     );
-    await frameOrPage.click(SELECTORS.ENABLE_CHECKBOX);
+    await frameOrPage.click(ENABLE_CHECKBOX_SELECTOR);
     const domainName = (
       config.domainName ||
       this.browserforce.getMyDomain() ||
       `comm-${Math.random().toString(36).substr(2)}`
     ).substring(0, 22);
-    await frameOrPage.waitForSelector(SELECTORS.DOMAIN_NAME_INPUT_TEXT);
-    await frameOrPage.type(SELECTORS.DOMAIN_NAME_INPUT_TEXT, domainName);
+    await frameOrPage.waitForSelector(DOMAIN_NAME_INPUT_TEXT_SELECTOR);
+    await frameOrPage.type(DOMAIN_NAME_INPUT_TEXT_SELECTOR, domainName);
     page.on('dialog', async (dialog) => {
       await dialog.accept();
     });
-    await frameOrPage.waitForSelector(SELECTORS.SAVE_BUTTON);
+    await frameOrPage.waitForSelector(SAVE_BUTTON_SELECTOR);
     await Promise.all([
       page.waitForNavigation(),
-      frameOrPage.click(SELECTORS.SAVE_BUTTON),
+      frameOrPage.click(SAVE_BUTTON_SELECTOR),
     ]);
     await page.close();
   }

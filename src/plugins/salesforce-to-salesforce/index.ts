@@ -1,14 +1,11 @@
 import pRetry from 'p-retry';
 import { BrowserforcePlugin } from '../../plugin.js';
 
-const PATHS = {
-  BASE: '_ui/s2s/ui/PartnerNetworkEnable/e',
-};
-const SELECTORS = {
-  ENABLED: '#penabled',
-  BASE: 'table.detailList',
-  SAVE_BUTTON: 'input[name="save"]',
-};
+const BASE_PATH = '_ui/s2s/ui/PartnerNetworkEnable/e';
+
+const ENABLED_SELECTOR = '#penabled';
+const BASE_SELECTOR = 'table.detailList';
+const SAVE_BUTTON_SELECTOR = 'input[name="save"]';
 
 type Config = {
   enabled: boolean;
@@ -16,15 +13,15 @@ type Config = {
 
 export class SalesforceToSalesforce extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
-    const page = await this.browserforce.openPage(PATHS.BASE);
-    await page.waitForSelector(SELECTORS.BASE);
+    const page = await this.browserforce.openPage(BASE_PATH);
+    await page.waitForSelector(BASE_SELECTOR);
     const response = {
       enabled: true,
     };
-    const inputEnable = await page.$(SELECTORS.ENABLED);
+    const inputEnable = await page.$(ENABLED_SELECTOR);
     if (inputEnable) {
       response.enabled = await page.$eval(
-        SELECTORS.ENABLED,
+        ENABLED_SELECTOR,
         (el: HTMLInputElement) => el.checked
       );
     }
@@ -38,10 +35,10 @@ export class SalesforceToSalesforce extends BrowserforcePlugin {
     }
     // sometimes the setting is not being applied although no error is being displayed
     await pRetry(async () => {
-      const page = await this.browserforce.openPage(PATHS.BASE);
-      await page.waitForSelector(SELECTORS.ENABLED);
+      const page = await this.browserforce.openPage(BASE_PATH);
+      await page.waitForSelector(ENABLED_SELECTOR);
       await page.$eval(
-        SELECTORS.ENABLED,
+        ENABLED_SELECTOR,
         (e: HTMLInputElement, v: boolean) => {
           e.checked = v;
         },
@@ -49,7 +46,7 @@ export class SalesforceToSalesforce extends BrowserforcePlugin {
       );
       await Promise.all([
         page.waitForNavigation(),
-        page.click(SELECTORS.SAVE_BUTTON),
+        page.click(SAVE_BUTTON_SELECTOR),
       ]);
       const result = await this.retrieve();
       await page.close();

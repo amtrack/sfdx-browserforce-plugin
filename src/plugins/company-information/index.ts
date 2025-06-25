@@ -1,13 +1,9 @@
 import { BrowserforcePlugin } from '../../plugin.js';
 
-const PATHS = (orgId: string) => ({
-  BASE: `/${orgId}/e`,
-});
-const SELECTORS = {
-  BASE: 'div.pbBody',
-  CURRENCY_DROPDOWN: '#DefaultCurrencyIsoCode',
-  SAVE_BUTTON: 'input[class="btn"][type="submit"][name="save"]',
-};
+const getUrl = (orgId: string) => `/${orgId}/e`;
+
+const CURRENCY_DROPDOWN_SELECTOR = '#DefaultCurrencyIsoCode';
+const SAVE_BUTTON_SELECTOR = 'input[class="btn"][type="submit"][name="save"]';
 
 export type Config = {
   defaultCurrencyIsoCode: string;
@@ -15,15 +11,14 @@ export type Config = {
 
 export class CompanyInformation extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
-    const path = PATHS(this.org.getOrgId());
-    const page = await this.browserforce.openPage(path.BASE);
-    await page.waitForSelector(SELECTORS.CURRENCY_DROPDOWN);
+    const page = await this.browserforce.openPage(getUrl(this.org.getOrgId()));
+    await page.waitForSelector(CURRENCY_DROPDOWN_SELECTOR);
 
     const response: Config = {
       defaultCurrencyIsoCode: '',
     };
     const selectedOptions = await page.$$eval(
-      `${SELECTORS.CURRENCY_DROPDOWN} > option[selected]`,
+      `${CURRENCY_DROPDOWN_SELECTOR} > option[selected]`,
       (options) => options.map((option) => option.textContent)
     );
     if (selectedOptions?.length) {
@@ -35,18 +30,18 @@ export class CompanyInformation extends BrowserforcePlugin {
 
   public async apply(config: Config): Promise<void> {
     if (config.defaultCurrencyIsoCode !== undefined) {
-      const path = PATHS(this.org.getOrgId());
-      const page = await this.browserforce.openPage(path.BASE);
-
+      const page = await this.browserforce.openPage(
+        getUrl(this.org.getOrgId())
+      );
       // wait for selectors
-      await page.waitForSelector(SELECTORS.CURRENCY_DROPDOWN);
-      const selectElem = await page.$(SELECTORS.CURRENCY_DROPDOWN);
-      await page.waitForSelector(SELECTORS.SAVE_BUTTON);
+      await page.waitForSelector(CURRENCY_DROPDOWN_SELECTOR);
+      const selectElem = await page.$(CURRENCY_DROPDOWN_SELECTOR);
+      await page.waitForSelector(SAVE_BUTTON_SELECTOR);
 
       // apply changes
-      // await page.click(SELECTORS.CURRENCY_DROPDOWN);
+      // await page.click(CURRENCY_DROPDOWN_SELECTOR);
       const optionList = await page.$$eval(
-        `${SELECTORS.CURRENCY_DROPDOWN} > option`,
+        `${CURRENCY_DROPDOWN_SELECTOR} > option`,
         (options) =>
           options.map((option) => ({
             value: (option as HTMLOptionElement).value,
@@ -71,7 +66,7 @@ export class CompanyInformation extends BrowserforcePlugin {
       // save
       await Promise.all([
         page.waitForNavigation(),
-        page.click(SELECTORS.SAVE_BUTTON),
+        page.click(SAVE_BUTTON_SELECTOR),
       ]);
       await page.close();
     }

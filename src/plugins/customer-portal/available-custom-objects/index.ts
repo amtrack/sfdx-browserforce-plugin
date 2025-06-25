@@ -2,10 +2,8 @@ import type { Record } from '@jsforce/jsforce-node';
 import { BrowserforcePlugin } from '../../../plugin.js';
 import { semanticallyCleanObject } from '../../utils.js';
 
-const SELECTORS = {
-  SAVE_BUTTON: 'input[name="save"]',
-  CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL: '#options_9',
-};
+const SAVE_BUTTON_SELECTOR = 'input[name="save"]';
+const CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL_SELECTOR = '#options_9';
 
 interface CustomObjectRecord extends Record {
   DeveloperName: string;
@@ -83,12 +81,12 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
         const frameOrPage =
           await this.browserforce.waitForSelectorInFrameOrPage(
             editPage,
-            SELECTORS.CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL
+            CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL_SELECTOR
           );
         response.push({
           ...result,
           available: await frameOrPage.$eval(
-            SELECTORS.CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL,
+            CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL_SELECTOR,
             (el: HTMLInputElement) => el.checked
           ),
         });
@@ -157,11 +155,11 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
         const frameOrPage =
           await this.browserforce.waitForSelectorInFrameOrPage(
             editPage,
-            SELECTORS.SAVE_BUTTON
+            SAVE_BUTTON_SELECTOR
           );
         await Promise.all([
           editPage.waitForNavigation(),
-          frameOrPage.click(SELECTORS.SAVE_BUTTON),
+          frameOrPage.click(SAVE_BUTTON_SELECTOR),
         ]);
         await editPage.close();
       }

@@ -2,20 +2,16 @@ import { Page } from 'puppeteer';
 import { retry, throwPageErrors } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
 
-const PATHS = {
-  BASE: 'accounts/accountSetup.apexp',
-};
-const SELECTORS = {
-  ENABLED: 'input[id$=":sharedContactsCheckBox"]',
-  DISABLED_CHECKBOX: 'input[id$=":sharedContactsCheckBox"][disabled=disabled]',
-  EDIT_BUTTON: 'input[id$=":edit"]',
-  SAVE_BUTTON: 'input[id$=":save"]',
-  DISABLE_CONFIRM_CHECKBOX: 'input#disable_confirm',
-  DISABLE_CONFIRM_BUTTON: 'input#sharedContactsDisableConfirmButton',
-  ENABLING_IN_PROGRESS: '#enablingInProgress',
-  DISABLING_IN_PROGRESS: '#disablingInProgress',
-  APPLYING_SETTING_SUCEEDED: '#prefSettingSucceeded',
-};
+const BASE_PATH = 'accounts/accountSetup.apexp';
+
+const ENABLED_SELECTOR = 'input[id$=":sharedContactsCheckBox"]';
+const EDIT_BUTTON_SELECTOR = 'input[id$=":edit"]';
+const SAVE_BUTTON_SELECTOR = 'input[id$=":save"]';
+const DISABLE_CONFIRM_CHECKBOX_SELECTOR = 'input#disable_confirm';
+const DISABLE_CONFIRM_BUTTON_SELECTOR =
+  'input#sharedContactsDisableConfirmButton';
+const ENABLING_IN_PROGRESS_SELECTOR = '#enablingInProgress';
+const DISABLING_IN_PROGRESS_SELECTOR = '#disablingInProgress';
 
 type Config = {
   enabled: boolean;
@@ -23,11 +19,11 @@ type Config = {
 
 export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {
-    const page = await this.browserforce.openPage(PATHS.BASE);
-    await page.waitForSelector(SELECTORS.ENABLED, { visible: true });
+    const page = await this.browserforce.openPage(BASE_PATH);
+    await page.waitForSelector(ENABLED_SELECTOR, { visible: true });
     const response = {
       enabled: await page.$eval(
-        SELECTORS.ENABLED,
+        ENABLED_SELECTOR,
         (el: HTMLInputElement) => el.checked
       ),
     };
@@ -36,35 +32,35 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
   }
 
   public async apply(config: Config): Promise<void> {
-    const page = await this.browserforce.openPage(PATHS.BASE);
+    const page = await this.browserforce.openPage(BASE_PATH);
     await this.waitForProcessFinished(page);
     // First we have to click the 'Edit' button, to make the checkbox editable
-    await page.waitForSelector(SELECTORS.EDIT_BUTTON);
+    await page.waitForSelector(EDIT_BUTTON_SELECTOR);
     await Promise.all([
       page.waitForNavigation(),
-      page.click(SELECTORS.EDIT_BUTTON),
+      page.click(EDIT_BUTTON_SELECTOR),
     ]);
     // Change the value of the checkbox
-    await page.waitForSelector(SELECTORS.ENABLED, { visible: true });
-    await page.click(SELECTORS.ENABLED);
+    await page.waitForSelector(ENABLED_SELECTOR, { visible: true });
+    await page.click(ENABLED_SELECTOR);
     // Save
     if (config.enabled) {
-      await page.waitForSelector(SELECTORS.SAVE_BUTTON);
+      await page.waitForSelector(SAVE_BUTTON_SELECTOR);
       await Promise.all([
         page.waitForNavigation(),
-        page.click(SELECTORS.SAVE_BUTTON),
+        page.click(SAVE_BUTTON_SELECTOR),
       ]);
     } else {
-      await page.waitForSelector(SELECTORS.SAVE_BUTTON);
-      await page.click(SELECTORS.SAVE_BUTTON);
-      await page.waitForSelector(SELECTORS.DISABLE_CONFIRM_CHECKBOX, {
+      await page.waitForSelector(SAVE_BUTTON_SELECTOR);
+      await page.click(SAVE_BUTTON_SELECTOR);
+      await page.waitForSelector(DISABLE_CONFIRM_CHECKBOX_SELECTOR, {
         visible: true,
       });
-      await page.click(SELECTORS.DISABLE_CONFIRM_CHECKBOX);
-      await page.waitForSelector(SELECTORS.DISABLE_CONFIRM_BUTTON);
+      await page.click(DISABLE_CONFIRM_CHECKBOX_SELECTOR);
+      await page.waitForSelector(DISABLE_CONFIRM_BUTTON_SELECTOR);
       await Promise.all([
         page.waitForNavigation(),
-        page.click(SELECTORS.DISABLE_CONFIRM_BUTTON),
+        page.click(DISABLE_CONFIRM_BUTTON_SELECTOR),
       ]);
     }
     await throwPageErrors(page);
@@ -73,14 +69,14 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
 
   async waitForProcessFinished(page: Page): Promise<void> {
     await retry(async () => {
-      const enabling = await page.$(SELECTORS.ENABLING_IN_PROGRESS);
+      const enabling = await page.$(ENABLING_IN_PROGRESS_SELECTOR);
       if (enabling) {
         const message = await enabling.evaluate(
           (div: HTMLDivElement) => div.innerText
         );
         throw new Error(message);
       }
-      const disabling = await page.$(SELECTORS.DISABLING_IN_PROGRESS);
+      const disabling = await page.$(DISABLING_IN_PROGRESS_SELECTOR);
       if (disabling) {
         const message = await disabling.evaluate(
           (div: HTMLDivElement) => div.innerText

@@ -1,32 +1,29 @@
 import { BrowserforcePlugin } from '../../plugin.js';
 import { formConfig } from './formConfig.js';
 
-const PATHS = {
-  BASE: '0A3?setupid=ImportedPackage&retURL=%2Fui%2Fsetup%2FSetup%3Fsetupid%3DStudio',
-};
+const BASE_PATH =
+  '0A3?setupid=ImportedPackage&retURL=%2Fui%2Fsetup%2FSetup%3Fsetupid%3DStudio';
+const AUTH_PATH = 'setup/secur/RemoteAccessAuthorizationPage.apexp';
 
-const SELECTORS = {
-  CONFIGURE: '.actionLink[title*="Configure"][title*="Salesforce CPQ"]',
-  GENERATE_INTEGRATION_USER_PERMISSIONS:
-    'input[name="page:form:pb:j_id185:j_id197:setupIntegrationUserPermissions"]',
-  SAVE: 'input[name="page:form:j_id2:j_id3:j_id11"]',
-  AUTHORIZE_NEW_CALCULATION_SERVICE:
-    'span#page\\:form\\:pb\\:calculatorOptions\\:j_id201\\:j_id203 a',
-  ALLOW: 'input[name="save"]',
-};
-
-const authorizationURL = 'setup/secur/RemoteAccessAuthorizationPage.apexp';
+const CONFIGURE_SELECTOR =
+  '.actionLink[title*="Configure"][title*="Salesforce CPQ"]';
+const GENERATE_INTEGRATION_USER_PERMISSIONS_SELECTOR =
+  'input[name="page:form:pb:j_id185:j_id197:setupIntegrationUserPermissions"]';
+const SAVE_SELECTOR = 'input[name="page:form:j_id2:j_id3:j_id11"]';
+const AUTHORIZE_NEW_CALCULATION_SERVICE_SELECTOR =
+  'span#page\\:form\\:pb\\:calculatorOptions\\:j_id201\\:j_id203 a';
+const ALLOW_SELECTOR = 'input[name="save"]';
 
 export type Config = any;
 
 export class SalesforceCpqConfig extends BrowserforcePlugin {
   private logger = this.browserforce.logger;
   public async retrieve(definition?: Config): Promise<Config> {
-    const page = await this.browserforce.openPage(PATHS.BASE);
-    await page.waitForSelector(SELECTORS.CONFIGURE);
+    const page = await this.browserforce.openPage(BASE_PATH);
+    await page.waitForSelector(CONFIGURE_SELECTOR);
     await Promise.all([
       page.waitForNavigation(),
-      page.click(SELECTORS.CONFIGURE),
+      page.click(CONFIGURE_SELECTOR),
     ]);
 
     const response = {} as Config;
@@ -83,10 +80,10 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
   }
 
   public async apply(config: Config): Promise<void> {
-    const page = await this.browserforce.openPage(PATHS.BASE);
+    const page = await this.browserforce.openPage(BASE_PATH);
     await Promise.all([
       page.waitForNavigation(),
-      page.click(SELECTORS.CONFIGURE),
+      page.click(CONFIGURE_SELECTOR),
     ]);
 
     /*
@@ -101,11 +98,11 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
         `td[id="${formConfig.pricingAndCalculation.id}"]`
       );
       await page.click(`td[id="${formConfig.pricingAndCalculation.id}"]`);
-      await page.click(SELECTORS.GENERATE_INTEGRATION_USER_PERMISSIONS);
+      await page.click(GENERATE_INTEGRATION_USER_PERMISSIONS_SELECTOR);
     } catch (e) {
       if (
         e.message ===
-        `No element found for selector: ${SELECTORS.GENERATE_INTEGRATION_USER_PERMISSIONS}`
+        `No element found for selector: ${GENERATE_INTEGRATION_USER_PERMISSIONS_SELECTOR}`
       ) {
         this.logger?.log(
           `The button 'Generate Integration User Permissions' is not found. It might be already clicked before.`
@@ -185,7 +182,7 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
               if (item.immediatelySave) {
                 await Promise.all([
                   page.waitForNavigation(),
-                  page.click(SELECTORS.SAVE),
+                  page.click(SAVE_SELECTOR),
                 ]);
               }
             } catch (e) {
@@ -206,7 +203,7 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
           }
         }
       }
-      await Promise.all([page.waitForNavigation(), page.click(SELECTORS.SAVE)]);
+      await Promise.all([page.waitForNavigation(), page.click(SAVE_SELECTOR)]);
     }
 
     /*
@@ -221,24 +218,24 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
       await page.click(`td[id="${formConfig.pricingAndCalculation.id}"]`);
 
       const authorizeLink = await page.$(
-        SELECTORS.AUTHORIZE_NEW_CALCULATION_SERVICE
+        AUTHORIZE_NEW_CALCULATION_SERVICE_SELECTOR
       );
 
       if (authorizeLink) {
         // Click on 'Authorize New Calculation Service' link
-        await page.waitForSelector(SELECTORS.AUTHORIZE_NEW_CALCULATION_SERVICE);
-        await page.click(SELECTORS.AUTHORIZE_NEW_CALCULATION_SERVICE);
+        await page.waitForSelector(AUTHORIZE_NEW_CALCULATION_SERVICE_SELECTOR);
+        await page.click(AUTHORIZE_NEW_CALCULATION_SERVICE_SELECTOR);
 
         // Wait for popup window with the expected URL
         const newWindowTarget = await page
           .browser()
-          .waitForTarget((target) => target.url().includes(authorizationURL));
+          .waitForTarget((target) => target.url().includes(AUTH_PATH));
         const newPage = await newWindowTarget.page();
 
         if (newPage) {
           // Click on'Allow' button
-          await newPage.waitForSelector(SELECTORS.ALLOW, { visible: true });
-          await newPage.click(SELECTORS.ALLOW);
+          await newPage.waitForSelector(ALLOW_SELECTOR, { visible: true });
+          await newPage.click(ALLOW_SELECTOR);
           await page.waitForNavigation(); // Wait for the main page to refresh
 
           this.logger?.log('The main page has refreshed after allowing.');
@@ -254,7 +251,7 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
     } catch (e) {
       if (
         e.message ===
-        `No element found for selector: ${SELECTORS.AUTHORIZE_NEW_CALCULATION_SERVICE}`
+        `No element found for selector: ${AUTHORIZE_NEW_CALCULATION_SERVICE_SELECTOR}`
       ) {
         this.logger?.log(
           `The link Authorize New Calculation Service' is not found. It might be already clicked before.`

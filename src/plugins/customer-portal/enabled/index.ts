@@ -1,6 +1,7 @@
 import { BrowserforcePlugin } from '../../../plugin.js';
 
-const EDIT_VIEW = '_ui/core/portal/CustomerSuccessPortalSetup/e';
+const BASE_PATH = '_ui/core/portal/CustomerSuccessPortalSetup/e';
+
 const SAVE_BUTTON = 'input[name="save"]';
 const ENABLE_CHECKBOX = 'input[type="checkbox"][id="penabled"]';
 
@@ -17,7 +18,7 @@ export class CustomerPortalEnable extends BrowserforcePlugin {
     if (plan === false) {
       throw new Error('`enabled` cannot be disabled once enabled');
     }
-    const page = await this.browserforce.openPage(EDIT_VIEW);
+    const page = await this.browserforce.openPage(BASE_PATH);
     await page
       .locator(ENABLE_CHECKBOX)
       .map((checkbox) => (checkbox.checked = true))
