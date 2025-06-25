@@ -1,4 +1,4 @@
-import { Page } from 'puppeteer';
+import { type Page } from 'puppeteer';
 import { BrowserforcePlugin } from '../../plugin.js';
 import { OverviewPage } from './pages/overview.js';
 import { SetupPage } from './pages/setup.js';

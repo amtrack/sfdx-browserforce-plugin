@@ -1,7 +1,13 @@
 import { Org } from '@salesforce/core';
 import { type Ux } from '@salesforce/sf-plugins-core';
 import pRetry from 'p-retry';
-import { Browser, Frame, launch, Page, WaitForOptions } from 'puppeteer';
+import {
+  type Browser,
+  type Frame,
+  launch,
+  type Page,
+  type WaitForOptions,
+} from 'puppeteer';
 import { LoginPage } from './pages/login.js';
 
 const ERROR_DIV_SELECTOR = '#errorTitle';
@@ -57,7 +63,7 @@ export class Browserforce {
     page.setDefaultNavigationTimeout(
       parseInt(process.env.BROWSERFORCE_NAVIGATION_TIMEOUT_MS ?? '90000', 10)
     );
-    await page.setViewport({ width: 1024, height: 768 });
+    await page.setViewport({ width: 1024, height: 768 * 2 });
     return page;
   }
 
@@ -109,6 +115,30 @@ export class Browserforce {
       }
     );
     return result;
+  }
+
+  public async isLEX(): Promise<boolean> {
+    const page = await this.openPage('');
+    // new URLs for LEX: https://help.salesforce.com/articleView?id=FAQ-for-the-New-URL-Format-for-Lightning-Experience-and-the-Salesforce-Mobile-App&type=1
+    await page.close();
+    return (
+      page.url().includes('/one/one.app') || page.url().includes('/lightning/')
+    );
+  }
+
+  public async waitForIframe(page: Page): Promise<Frame> {
+    await page.locator("iframe[name^='vfFrameId']").wait();
+    const frame = await page.waitForFrame(async (f) => {
+      const frameElement = await f.frameElement();
+      if (!frameElement) {
+        return false;
+      }
+      const name = await frameElement.evaluate((el) => el.getAttribute('name'));
+      return (
+        name.startsWith('vfFrameId') && !['', 'about:blank'].includes(f.url())
+      );
+    });
+    return frame;
   }
 
   // If LEX is enabled, the classic url will be opened in an iframe.

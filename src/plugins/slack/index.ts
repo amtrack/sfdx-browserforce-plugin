@@ -2,10 +2,11 @@ import { BrowserforcePlugin } from '../../plugin.js';
 
 const BASE_PATH = 'lightning/setup/SlackSetupAssistant/home';
 
-const TOS_CHECKBOX =
-  'setup_service-slack-agree-to-terms input[type="checkbox"]';
+const TOS_LWC = 'setup_service-slack-agree-to-terms lightning-input';
+const TOS_CHECKBOX = `${TOS_LWC} input[type="checkbox"]`;
 const SALES_CLOUD_FOR_SLACK_CHECKBOX =
   'input[type="checkbox"][name="SlkSetupStepSalesCloudForSlack"]';
+const SALES_CLOUD_FOR_SLACK__LWC = `lightning-input:has(${SALES_CLOUD_FOR_SLACK_CHECKBOX})`;
 const TOAST_MESSAGE = 'div[id^="toastDescription"]';
 
 export type Config = {
@@ -41,22 +42,16 @@ export class Slack extends BrowserforcePlugin {
     if (state.agreeToTermsAndConditions !== config.agreeToTermsAndConditions) {
       await Promise.all([
         page.locator(TOAST_MESSAGE).wait(),
-        // NOTE: Unfortunately a simple click() on the locator does not work here
-        (
-          await page.locator(TOS_CHECKBOX).waitHandle()
-        ).evaluate((checkbox) => checkbox.click()),
+        page.locator(TOS_LWC).click(),
       ]);
-      await page.waitForSelector(TOAST_MESSAGE, { hidden: true });
+      await page.locator(TOAST_MESSAGE).setVisibility('hidden').wait();
     }
     if (state.enableSalesCloudForSlack !== config.enableSalesCloudForSlack) {
       await Promise.all([
         page.locator(TOAST_MESSAGE).wait(),
-        // NOTE: Unfortunately a simple click() on the locator does not work here
-        (
-          await page.locator(SALES_CLOUD_FOR_SLACK_CHECKBOX).waitHandle()
-        ).evaluate((checkbox) => checkbox.click()),
+        page.locator(SALES_CLOUD_FOR_SLACK__LWC).click(),
       ]);
-      await page.waitForSelector(TOAST_MESSAGE, { hidden: true });
+      await page.locator(TOAST_MESSAGE).setVisibility('hidden').wait();
     }
     await page.close();
   }

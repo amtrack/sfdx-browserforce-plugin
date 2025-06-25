@@ -1,4 +1,4 @@
-import { Page } from 'puppeteer';
+import { type Page } from 'puppeteer';
 
 // table columns
 //    <td> (actions) | <th> (label) | <td> (API name)

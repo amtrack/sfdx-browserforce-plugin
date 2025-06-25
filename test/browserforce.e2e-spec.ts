@@ -31,6 +31,16 @@ describe('Browserforce', function () {
       assert.notDeepStrictEqual(myDomain, null);
     });
   });
+  describe('waitForIframe()', () => {
+    it('should get an iframe in LEX', async () => {
+      const page = await global.bf.openPage(
+        'lightning/setup/ExternalStrings/home'
+      );
+      const frame = await global.bf.waitForIframe(page);
+      assert.deepEqual(new URL(frame.url()).pathname, '/101');
+      await page.close();
+    });
+  });
   describe('waitForSelectorInFrameOrPage()', () => {
     it('should query a selector in LEX and Classic UI', async () => {
       const page = await global.bf.openPage(
@@ -46,6 +56,11 @@ describe('Browserforce', function () {
       await Promise.all([page.waitForNavigation(), button.click()]);
       assert.ok(page.url().includes('/page'));
       await page.close();
+    });
+  });
+  describe('isLEX()', () => {
+    it('should be LEX in Scratch Orgs', async () => {
+      assert.equal(await global.bf.isLEX(), true);
     });
   });
   describe('throwPageErrors()', () => {

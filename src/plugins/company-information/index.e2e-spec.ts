@@ -7,15 +7,13 @@ describe(CompanyInformation.name, function () {
     plugin = new CompanyInformation(global.bf);
   });
 
-  const configZAR: Config = {
-    defaultCurrencyIsoCode: 'English (South Africa) - ZAR',
-  };
+  let originalConfig: Config;
   const configIRE: Config = {
     defaultCurrencyIsoCode: 'English (Ireland) - EUR',
   };
 
-  it('should set the currency to "English (South Africa) - ZAR" for next steps', async () => {
-    await plugin.run(configZAR);
+  it('should retrieve the current currency', async () => {
+    originalConfig = await plugin.retrieve();
   });
   it('should change currency to "English (Ireland) - EUR"', async () => {
     await plugin.run(configIRE);
@@ -34,5 +32,8 @@ describe(CompanyInformation.name, function () {
     assert.throws(() => {
       throw err;
     }, /Invalid currency provided/);
+  });
+  it('should change it back to original currency', async () => {
+    await plugin.run(originalConfig);
   });
 });

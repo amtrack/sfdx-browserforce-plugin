@@ -1,10 +1,11 @@
 import { BrowserforcePlugin } from '../../../plugin.js';
+import { setCheckboxMapFn } from '../../../puppeteer.js';
 
 const BASE_PATH = 'partnerbt/loginAccessPolicies.apexp';
 
-const ENABLED_SELECTOR = 'input[id$="adminsCanLogInAsAny"]';
-const CONFIRM_MESSAGE_SELECTOR = '.message.confirmM3';
-const SAVE_BUTTON_SELECTOR = 'input[id$=":save"]';
+const ENABLED_CHECKBOX = 'input[type="checkbox"][id$="adminsCanLogInAsAny"]';
+const CONFIRM_MESSAGE = '.message.confirmM3';
+const SAVE_BUTTON = 'input[id$=":save"]';
 
 export type Config = {
   administratorsCanLogInAsAnyUser: boolean;
@@ -13,12 +14,11 @@ export type Config = {
 export class LoginAccessPolicies extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
     const page = await this.browserforce.openPage(BASE_PATH);
-    await page.waitForSelector(ENABLED_SELECTOR);
     const response = {
-      administratorsCanLogInAsAnyUser: await page.$eval(
-        ENABLED_SELECTOR,
-        (el: HTMLInputElement) => el.checked
-      ),
+      administratorsCanLogInAsAnyUser: await page
+        .locator(ENABLED_CHECKBOX)
+        .map((input) => input.checked)
+        .wait(),
     };
     await page.close();
     return response;
@@ -26,17 +26,13 @@ export class LoginAccessPolicies extends BrowserforcePlugin {
 
   public async apply(config: Config): Promise<void> {
     const page = await this.browserforce.openPage(BASE_PATH);
-    await page.waitForSelector(ENABLED_SELECTOR);
-    await page.$eval(
-      ENABLED_SELECTOR,
-      (e: HTMLInputElement, v: boolean) => {
-        e.checked = v;
-      },
-      config.administratorsCanLogInAsAnyUser
-    );
+    await page
+      .locator(ENABLED_CHECKBOX)
+      .map(setCheckboxMapFn(config.administratorsCanLogInAsAnyUser))
+      .wait();
     await Promise.all([
-      page.waitForSelector(CONFIRM_MESSAGE_SELECTOR),
-      page.click(SAVE_BUTTON_SELECTOR),
+      page.locator(CONFIRM_MESSAGE).wait(),
+      page.locator(SAVE_BUTTON).click(),
     ]);
     await page.close();
   }

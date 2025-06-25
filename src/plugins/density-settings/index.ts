@@ -1,10 +1,10 @@
-import { ElementHandle, Page } from 'puppeteer';
+import { type Page } from 'puppeteer';
 import { BrowserforcePlugin } from '../../plugin.js';
 
 const BASE_PATH = 'lightning/setup/DensitySetup/home';
 
-const PICKER_ITEMS_SELECTOR =
-  'one-density-visual-picker one-density-visual-picker-item input';
+const PICKER = 'one-density-visual-picker';
+const PICKER_ITEM_INPUT = 'one-density-visual-picker-item input';
 
 type Config = {
   density: string;
@@ -13,17 +13,16 @@ type Config = {
 type Density = {
   value: string;
   checked: boolean;
-  elementHandle: ElementHandle;
 };
 
 export class DensitySettings extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
     const page = await this.browserforce.openPage(BASE_PATH);
     const densities = await this.getDensities(page);
-    const selected = densities.find((input) => input.checked);
+    const selected = densities.find((input) => input.checked)!;
     await page.close();
     return {
-      density: selected!.value,
+      density: selected.value,
     };
   }
 
@@ -34,21 +33,19 @@ export class DensitySettings extends BrowserforcePlugin {
   }
 
   async getDensities(page: Page): Promise<Density[]> {
-    await page.waitForSelector(PICKER_ITEMS_SELECTOR);
-    const elementHandles = await page.$$(PICKER_ITEMS_SELECTOR);
-    const result = await page.$$eval(
-      PICKER_ITEMS_SELECTOR,
-      (radioInputs: HTMLInputElement[]) =>
-        radioInputs.map((input) => {
-          return {
-            value: input.value,
-            checked: input.checked,
-          };
-        })
+    // wait for the items to be ready
+    await page.locator(PICKER_ITEM_INPUT).wait();
+    const picker = await page.locator(PICKER).waitHandle();
+    const result = await picker.$$eval(PICKER_ITEM_INPUT, (inputs) =>
+      inputs.map((input) => {
+        return {
+          value: input.value,
+          checked: input.checked,
+        };
+      })
     );
-    return result.map((input, i) => {
-      return { ...input, elementHandle: elementHandles[i] };
-    });
+    await picker.dispose();
+    return result;
   }
 
   async setDensity(page: Page, name: string): Promise<void> {
@@ -61,6 +58,7 @@ export class DensitySettings extends BrowserforcePlugin {
         )}`
       );
     }
+    const pickerItemSelector = `one-density-visual-picker-item:has(input[value='${name}'])`;
     await Promise.all([
       page.waitForResponse(
         (response) =>
@@ -68,11 +66,9 @@ export class DensitySettings extends BrowserforcePlugin {
             .url()
             .includes(
               'UserSettings.DensityUserSettings.setDefaultDensitySetting=1'
-            ) && response.status() === 200
+            ) && response.ok()
       ),
-      densityToSelect.elementHandle.evaluate((input: HTMLInputElement) =>
-        input.click()
-      ),
+      page.locator(pickerItemSelector).click(),
     ]);
   }
 }

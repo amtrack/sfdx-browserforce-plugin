@@ -11,7 +11,7 @@ describe.skip(Sharing.name, function () {
     enableExternalSharingModel: true,
   };
   const configDisabled = {
-    enableExternalSharingModel: true,
+    enableExternalSharingModel: false,
   };
 
   it('should enable', async () => {

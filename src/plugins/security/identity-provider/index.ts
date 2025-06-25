@@ -4,7 +4,7 @@ import { BrowserforcePlugin } from '../../../plugin.js';
 
 const EDIT_VIEW_PATH = 'setup/secur/idp/IdpPage.apexp';
 
-const CHOOSE_CERT_SELECTOR = 'select[id$=":chooseCert"]';
+const CERTS_SELECT = 'select[id$=":chooseCert"]';
 const CERT_NAME_SPAN_SELECTOR = 'span[id$="developer__name"';
 const DISABLE_BUTTON_SELECTOR = 'input[name$=":disable"]';
 const EDIT_BUTTON_SELECTOR = 'input[name$=":edit"]';
@@ -23,18 +23,17 @@ export type Config = {
 export class IdentityProvider extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
     const page = await this.browserforce.openPage(EDIT_VIEW_PATH);
-    await page.waitForSelector(EDIT_BUTTON_SELECTOR);
+    await page.locator(EDIT_BUTTON_SELECTOR).wait();
     const disableButton = await page.$(DISABLE_BUTTON_SELECTOR);
     const enabled = disableButton !== null;
     const response: Config = {
       enabled,
     };
     if (enabled) {
-      const certNameHandle = await page.$(CERT_NAME_SPAN_SELECTOR);
-      response.certificate = await page.evaluate(
-        (span: HTMLSpanElement) => span.innerText,
-        certNameHandle
-      );
+      response.certificate = await page
+        .locator(CERT_NAME_SPAN_SELECTOR)
+        .map((span) => span.innerText)
+        .wait();
     }
     await page.close();
     return response;
@@ -57,23 +56,22 @@ export class IdentityProvider extends BrowserforcePlugin {
             );
           }
           const page = await this.browserforce.openPage(EDIT_VIEW_PATH);
-          await page.waitForSelector(EDIT_BUTTON_SELECTOR);
           await Promise.all([
             page.waitForNavigation(),
-            page.click(EDIT_BUTTON_SELECTOR),
+            page.locator(EDIT_BUTTON_SELECTOR).click(),
           ]);
-          await page.waitForSelector(CHOOSE_CERT_SELECTOR);
-          const chooseCertOptions = await page.$$eval(
-            `${CHOOSE_CERT_SELECTOR} option`,
-            (options: HTMLOptionElement[]) => {
-              return options.map((option) => {
-                return {
-                  text: option.text,
-                  value: option.value,
-                };
-              });
-            }
+          const certsHandle = await page
+            .locator(`${CERTS_SELECT}`)
+            .waitHandle();
+          const chooseCertOptions = await certsHandle.$$eval(
+            'option',
+            (options) =>
+              options.map((option) => ({
+                text: option.text,
+                value: option.value,
+              }))
           );
+          await certsHandle.dispose();
           const chooseCertOption = chooseCertOptions.find(
             (x) => x.text === plan.certificate
           );
@@ -82,14 +80,13 @@ export class IdentityProvider extends BrowserforcePlugin {
               `Waiting for Certificate '${plan.certificate}' to be available in Identity Provider picklist timed out`
             );
           }
-          await page.select(CHOOSE_CERT_SELECTOR, chooseCertOption.value);
+          await page.locator(CERTS_SELECT).fill(chooseCertOption.value);
           page.on('dialog', async (dialog) => {
             await dialog.accept();
           });
-          await page.waitForSelector(SAVE_BUTTON_SELECTOR);
           await Promise.all([
             page.waitForNavigation(),
-            page.click(SAVE_BUTTON_SELECTOR),
+            page.locator(SAVE_BUTTON_SELECTOR).click(),
           ]);
           await page.close();
         },
@@ -101,14 +98,12 @@ export class IdentityProvider extends BrowserforcePlugin {
     } else {
       // disable
       const page = await this.browserforce.openPage(EDIT_VIEW_PATH);
-      await page.waitForSelector(EDIT_BUTTON_SELECTOR);
-      await page.$(DISABLE_BUTTON_SELECTOR);
       page.on('dialog', async (dialog) => {
         await dialog.accept();
       });
       await Promise.all([
         page.waitForNavigation(),
-        page.click(DISABLE_BUTTON_SELECTOR),
+        page.locator(DISABLE_BUTTON_SELECTOR).click(),
       ]);
       await page.close();
     }
