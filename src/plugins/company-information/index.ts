@@ -1,12 +1,12 @@
 import { BrowserforcePlugin } from '../../plugin.js';
 
 const PATHS = (orgId: string) => ({
-  BASE: `/${orgId}/e`
+  BASE: `/${orgId}/e`,
 });
 const SELECTORS = {
   BASE: 'div.pbBody',
   CURRENCY_DROPDOWN: '#DefaultCurrencyIsoCode',
-  SAVE_BUTTON: 'input[class="btn"][type="submit"][name="save"]'
+  SAVE_BUTTON: 'input[class="btn"][type="submit"][name="save"]',
 };
 
 export type Config = {
@@ -20,10 +20,11 @@ export class CompanyInformation extends BrowserforcePlugin {
     await page.waitForSelector(SELECTORS.CURRENCY_DROPDOWN);
 
     const response: Config = {
-      defaultCurrencyIsoCode: ''
+      defaultCurrencyIsoCode: '',
     };
-    const selectedOptions = await page.$$eval(`${SELECTORS.CURRENCY_DROPDOWN} > option[selected]`, (options) =>
-      options.map((option) => option.textContent)
+    const selectedOptions = await page.$$eval(
+      `${SELECTORS.CURRENCY_DROPDOWN} > option[selected]`,
+      (options) => options.map((option) => option.textContent)
     );
     if (selectedOptions?.length) {
       response.defaultCurrencyIsoCode = selectedOptions[0] ?? '';
@@ -44,13 +45,17 @@ export class CompanyInformation extends BrowserforcePlugin {
 
       // apply changes
       // await page.click(SELECTORS.CURRENCY_DROPDOWN);
-      const optionList = await page.$$eval(`${SELECTORS.CURRENCY_DROPDOWN} > option`, (options) =>
-        options.map((option) => ({
-          value: (option as HTMLOptionElement).value,
-          textContent: option.textContent
-        }))
+      const optionList = await page.$$eval(
+        `${SELECTORS.CURRENCY_DROPDOWN} > option`,
+        (options) =>
+          options.map((option) => ({
+            value: (option as HTMLOptionElement).value,
+            textContent: option.textContent,
+          }))
       );
-      const toBeSelectedOption = optionList.find((option) => option.textContent == config.defaultCurrencyIsoCode);
+      const toBeSelectedOption = optionList.find(
+        (option) => option.textContent == config.defaultCurrencyIsoCode
+      );
       if (!toBeSelectedOption) {
         throw new Error(
           `Invalid currency provided. '${config.defaultCurrencyIsoCode}' is not a valid option available for currencies. Please use the exact name as it appears in the list.`
@@ -64,7 +69,10 @@ export class CompanyInformation extends BrowserforcePlugin {
       });
 
       // save
-      await Promise.all([page.waitForNavigation(), page.click(SELECTORS.SAVE_BUTTON)]);
+      await Promise.all([
+        page.waitForNavigation(),
+        page.click(SELECTORS.SAVE_BUTTON),
+      ]);
       await page.close();
     }
   }

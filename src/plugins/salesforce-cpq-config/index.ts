@@ -2,15 +2,17 @@ import { BrowserforcePlugin } from '../../plugin.js';
 import { formConfig } from './formConfig.js';
 
 const PATHS = {
-  BASE: '0A3?setupid=ImportedPackage&retURL=%2Fui%2Fsetup%2FSetup%3Fsetupid%3DStudio'
+  BASE: '0A3?setupid=ImportedPackage&retURL=%2Fui%2Fsetup%2FSetup%3Fsetupid%3DStudio',
 };
 
 const SELECTORS = {
   CONFIGURE: '.actionLink[title*="Configure"][title*="Salesforce CPQ"]',
-  GENERATE_INTEGRATION_USER_PERMISSIONS: 'input[name="page:form:pb:j_id185:j_id197:setupIntegrationUserPermissions"]',
+  GENERATE_INTEGRATION_USER_PERMISSIONS:
+    'input[name="page:form:pb:j_id185:j_id197:setupIntegrationUserPermissions"]',
   SAVE: 'input[name="page:form:j_id2:j_id3:j_id11"]',
-  AUTHORIZE_NEW_CALCULATION_SERVICE: 'span#page\\:form\\:pb\\:calculatorOptions\\:j_id201\\:j_id203 a',
-  ALLOW: 'input[name="save"]'
+  AUTHORIZE_NEW_CALCULATION_SERVICE:
+    'span#page\\:form\\:pb\\:calculatorOptions\\:j_id201\\:j_id203 a',
+  ALLOW: 'input[name="save"]',
 };
 
 const authorizationURL = 'setup/secur/RemoteAccessAuthorizationPage.apexp';
@@ -22,7 +24,10 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {
     const page = await this.browserforce.openPage(PATHS.BASE);
     await page.waitForSelector(SELECTORS.CONFIGURE);
-    await Promise.all([page.waitForNavigation(), page.click(SELECTORS.CONFIGURE)]);
+    await Promise.all([
+      page.waitForNavigation(),
+      page.click(SELECTORS.CONFIGURE),
+    ]);
 
     const response = {} as Config;
     if (definition) {
@@ -30,7 +35,9 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
         if (definition[keyTab]) {
           await page.waitForSelector(`td[id="${valueTab.id}"]`);
           await page.click(`td[id="${valueTab.id}"]`);
-          for (const [keyItem, valueItem] of Object.entries(valueTab.properties)) {
+          for (const [keyItem, valueItem] of Object.entries(
+            valueTab.properties
+          )) {
             if (!(definition[keyTab][keyItem] === undefined)) {
               const item = valueItem;
               response[keyTab] = response[keyTab] || {};
@@ -40,7 +47,10 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
                     `${item.component}[name="${item.name}"]`,
                     (el: HTMLInputElement) => el.checked
                   );
-                } else if (item.component === 'input' && item.type === 'string') {
+                } else if (
+                  item.component === 'input' &&
+                  item.type === 'string'
+                ) {
                   response[keyTab][keyItem] = await page.$eval(
                     `${item.component}[name="${item.name}"]`,
                     (el: HTMLInputElement) => el.value
@@ -74,24 +84,36 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
 
   public async apply(config: Config): Promise<void> {
     const page = await this.browserforce.openPage(PATHS.BASE);
-    await Promise.all([page.waitForNavigation(), page.click(SELECTORS.CONFIGURE)]);
+    await Promise.all([
+      page.waitForNavigation(),
+      page.click(SELECTORS.CONFIGURE),
+    ]);
 
     /*
     This to click on the 'Generate Integration User Permissions button' for first time setup.
     Once the button is clicked, it will not be available for the next time.
     */
     try {
-      this.logger?.log(`Clicking on 'Generate Integration User Permissions' button`);
-      await page.waitForSelector(`td[id="${formConfig.pricingAndCalculation.id}"]`);
+      this.logger?.log(
+        `Clicking on 'Generate Integration User Permissions' button`
+      );
+      await page.waitForSelector(
+        `td[id="${formConfig.pricingAndCalculation.id}"]`
+      );
       await page.click(`td[id="${formConfig.pricingAndCalculation.id}"]`);
       await page.click(SELECTORS.GENERATE_INTEGRATION_USER_PERMISSIONS);
     } catch (e) {
-      if (e.message === `No element found for selector: ${SELECTORS.GENERATE_INTEGRATION_USER_PERMISSIONS}`) {
+      if (
+        e.message ===
+        `No element found for selector: ${SELECTORS.GENERATE_INTEGRATION_USER_PERMISSIONS}`
+      ) {
         this.logger?.log(
           `The button 'Generate Integration User Permissions' is not found. It might be already clicked before.`
         );
       } else {
-        this.logger?.warn(`Error clicking 'Generate Integration User Permissions' button with message: ${e.message}`);
+        this.logger?.warn(
+          `Error clicking 'Generate Integration User Permissions' button with message: ${e.message}`
+        );
         throw e;
       }
     }
@@ -103,7 +125,9 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
       if (config[keyTab]) {
         await page.waitForSelector(`td[id="${valueTab.id}"]`);
         await page.click(`td[id="${valueTab.id}"]`);
-        for (const [keyItem, valueItem] of Object.entries(valueTab.properties)) {
+        for (const [keyItem, valueItem] of Object.entries(
+          valueTab.properties
+        )) {
           if (!(config[keyTab][keyItem] === undefined)) {
             const item = valueItem;
             try {
@@ -133,14 +157,18 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
                     return options.map((option) => {
                       return {
                         text: option.text,
-                        value: option.value
+                        value: option.value,
                       };
                     });
                   }
                 );
-                const chooseFieldOption = selectFieldOptions.find((x) => x.text === config[keyTab][keyItem]);
+                const chooseFieldOption = selectFieldOptions.find(
+                  (x) => x.text === config[keyTab][keyItem]
+                );
                 if (!chooseFieldOption) {
-                  const availableOption = selectFieldOptions.map((option) => option.text);
+                  const availableOption = selectFieldOptions.map(
+                    (option) => option.text
+                  );
                   throw new Error(
                     `Fail to set '${item.label}' with value '${
                       config[keyTab][keyItem]
@@ -149,14 +177,21 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
                     )}\n`
                   );
                 }
-                await page.select(`select[name="${item.name}"]`, chooseFieldOption.value);
+                await page.select(
+                  `select[name="${item.name}"]`,
+                  chooseFieldOption.value
+                );
               }
               if (item.immediatelySave) {
-                await Promise.all([page.waitForNavigation(), page.click(SELECTORS.SAVE)]);
+                await Promise.all([
+                  page.waitForNavigation(),
+                  page.click(SELECTORS.SAVE),
+                ]);
               }
             } catch (e) {
               if (
-                e.message === `Error: failed to find element matching selector "${item.component}[name="${item.name}"]"`
+                e.message ===
+                `Error: failed to find element matching selector "${item.component}[name="${item.name}"]"`
               ) {
                 this.logger?.warn(
                   `Label '${item.label}' '${keyTab}.${keyItem}' with component '${item.component}[name="${item.name}"]' is not found`
@@ -180,10 +215,14 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
     */
     try {
       this.logger?.log(`'Authorize New Calculation Service' link`);
-      await page.waitForSelector(`td[id="${formConfig.pricingAndCalculation.id}"]`);
+      await page.waitForSelector(
+        `td[id="${formConfig.pricingAndCalculation.id}"]`
+      );
       await page.click(`td[id="${formConfig.pricingAndCalculation.id}"]`);
 
-      const authorizeLink = await page.$(SELECTORS.AUTHORIZE_NEW_CALCULATION_SERVICE);
+      const authorizeLink = await page.$(
+        SELECTORS.AUTHORIZE_NEW_CALCULATION_SERVICE
+      );
 
       if (authorizeLink) {
         // Click on 'Authorize New Calculation Service' link
@@ -191,7 +230,9 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
         await page.click(SELECTORS.AUTHORIZE_NEW_CALCULATION_SERVICE);
 
         // Wait for popup window with the expected URL
-        const newWindowTarget = await page.browser().waitForTarget((target) => target.url().includes(authorizationURL));
+        const newWindowTarget = await page
+          .browser()
+          .waitForTarget((target) => target.url().includes(authorizationURL));
         const newPage = await newWindowTarget.page();
 
         if (newPage) {
@@ -211,16 +252,24 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
         );
       }
     } catch (e) {
-      if (e.message === `No element found for selector: ${SELECTORS.AUTHORIZE_NEW_CALCULATION_SERVICE}`) {
+      if (
+        e.message ===
+        `No element found for selector: ${SELECTORS.AUTHORIZE_NEW_CALCULATION_SERVICE}`
+      ) {
         this.logger?.log(
           `The link Authorize New Calculation Service' is not found. It might be already clicked before.`
         );
       } else if (
-        e.message === `Waiting for selector \`input[name="save"]\` failed: waitForFunction failed: frame got detached.`
+        e.message ===
+        `Waiting for selector \`input[name="save"]\` failed: waitForFunction failed: frame got detached.`
       ) {
-        this.logger?.log(`ALLOW button is not found. It might be already clicked before.`);
+        this.logger?.log(
+          `ALLOW button is not found. It might be already clicked before.`
+        );
       } else {
-        this.logger?.warn(`Error clicking Authorize New Calculation Service' button with message: ${e.message}`);
+        this.logger?.warn(
+          `Error clicking Authorize New Calculation Service' button with message: ${e.message}`
+        );
         throw e;
       }
     }

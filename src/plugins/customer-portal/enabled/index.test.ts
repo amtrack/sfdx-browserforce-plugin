@@ -13,20 +13,20 @@ const tests: T[] = [
     description: 'should ignore a non-existent target flag',
     source: true,
     target: undefined,
-    expected: undefined
+    expected: undefined,
   },
   {
     description: 'should ignore a matching target flag',
     source: true,
     target: true,
-    expected: undefined
+    expected: undefined,
   },
   {
     description: 'should detect a changed flag',
     source: false,
     target: true,
-    expected: true
-  }
+    expected: true,
+  },
 ];
 
 describe('CustomerPortalEnabled', () => {

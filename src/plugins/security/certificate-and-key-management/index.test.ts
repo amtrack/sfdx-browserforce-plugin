@@ -14,46 +14,46 @@ const tests: T[] = [
     source: {
       importFromKeystore: [
         {
-          name: 'Dummy'
-        }
-      ]
+          name: 'Dummy',
+        },
+      ],
     },
     target: {
       importFromKeystore: [
         {
           name: 'Dummy',
-          filePath: 'foo.jks'
-        }
-      ]
+          filePath: 'foo.jks',
+        },
+      ],
     },
-    expected: undefined
+    expected: undefined,
   },
   {
     description: 'should try to import keystore',
     source: {
       importFromKeystore: [
         {
-          name: 'Foo'
-        }
-      ]
+          name: 'Foo',
+        },
+      ],
     },
     target: {
       importFromKeystore: [
         {
           name: 'Dummy',
-          filePath: 'foo.jks'
-        }
-      ]
+          filePath: 'foo.jks',
+        },
+      ],
     },
     expected: {
       importFromKeystore: [
         {
           name: 'Dummy',
-          filePath: 'foo.jks'
-        }
-      ]
-    }
-  }
+          filePath: 'foo.jks',
+        },
+      ],
+    },
+  },
 ];
 
 describe('CertificateAndKeyManagement', () => {

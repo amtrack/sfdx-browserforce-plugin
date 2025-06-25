@@ -7,7 +7,9 @@ type ServiceChannel = {
 };
 
 export class ServiceChannels extends BrowserforcePlugin {
-  public async retrieve(definition?: ServiceChannel[]): Promise<ServiceChannel[]> {
+  public async retrieve(
+    definition?: ServiceChannel[]
+  ): Promise<ServiceChannel[]> {
     const pluginCapacity = new Capacity(this.browserforce);
 
     const serviceChannels: ServiceChannel[] = [];
@@ -15,29 +17,38 @@ export class ServiceChannels extends BrowserforcePlugin {
     for await (const serviceChannel of definition) {
       serviceChannels.push({
         serviceChannelDeveloperName: serviceChannel.serviceChannelDeveloperName,
-        capacity: await pluginCapacity.retrieve(serviceChannel)
+        capacity: await pluginCapacity.retrieve(serviceChannel),
       });
     }
 
     return serviceChannels;
   }
 
-  public diff(state: ServiceChannel[], definition: ServiceChannel[]): ServiceChannel[] | undefined {
+  public diff(
+    state: ServiceChannel[],
+    definition: ServiceChannel[]
+  ): ServiceChannel[] | undefined {
     const pluginCapacity = new Capacity(this.browserforce);
 
     const serviceChannels: ServiceChannel[] = [];
 
     for (const serviceChannelDefinition of definition) {
       const serviceChannelState = state.find(
-        (serviceChannelState) => serviceChannelState.serviceChannelDeveloperName === serviceChannelDefinition.serviceChannelDeveloperName
+        (serviceChannelState) =>
+          serviceChannelState.serviceChannelDeveloperName ===
+          serviceChannelDefinition.serviceChannelDeveloperName
       );
-      
-      const capacity = pluginCapacity.diff(serviceChannelState.capacity, serviceChannelDefinition.capacity);
+
+      const capacity = pluginCapacity.diff(
+        serviceChannelState.capacity,
+        serviceChannelDefinition.capacity
+      );
 
       if (capacity !== undefined) {
         serviceChannels.push({
-          serviceChannelDeveloperName: serviceChannelDefinition.serviceChannelDeveloperName, 
-          capacity
+          serviceChannelDeveloperName:
+            serviceChannelDefinition.serviceChannelDeveloperName,
+          capacity,
         });
       }
     }

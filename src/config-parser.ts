@@ -23,14 +23,20 @@ export class ConfigParser {
           settings.push({
             Driver: drivers[driverName],
             key: driverName,
-            value: data.settings[driverName]
+            value: data.settings[driverName],
           });
         } else {
-          throw new Error(`Could not find plugin named '${driverName}' in definition: ${JSON.stringify(data)}`);
+          throw new Error(
+            `Could not find plugin named '${driverName}' in definition: ${JSON.stringify(
+              data
+            )}`
+          );
         }
       }
     } else {
-      throw new Error(`Missing 'settings' attribute in definition: ${JSON.stringify(data)}`);
+      throw new Error(
+        `Missing 'settings' attribute in definition: ${JSON.stringify(data)}`
+      );
     }
     return settings;
   }

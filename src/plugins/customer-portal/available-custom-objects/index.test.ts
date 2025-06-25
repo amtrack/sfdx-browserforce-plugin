@@ -14,23 +14,23 @@ const tests: T[] = [
       {
         _id: 'p1',
         name: 'Dummy',
-        available: false
-      }
+        available: false,
+      },
     ],
     target: [
       {
         name: 'Dummy',
-        available: true
-      }
+        available: true,
+      },
     ],
     expected: [
       {
         _id: 'p1',
         name: 'Dummy',
-        available: true
-      }
-    ] as Config
-  }
+        available: true,
+      },
+    ] as Config,
+  },
 ];
 
 describe('CustomerPortalAvailableCustomObjects', () => {

@@ -2,12 +2,12 @@ import { Page } from 'puppeteer';
 import { BrowserforcePlugin } from '../../../plugin.js';
 
 const PATHS = {
-  BASE: 'ui/rpt/AnalyticsSharingSettingsPage/e'
+  BASE: 'ui/rpt/AnalyticsSharingSettingsPage/e',
 };
 const SELECTORS = {
   BASE: 'div.pbBody',
   ENABLE_CHECKBOX: 'input[id="0"]',
-  SAVE_BUTTON: 'input[id="saveButton"]'
+  SAVE_BUTTON: 'input[id="saveButton"]',
 };
 
 export type Config = {
@@ -17,12 +17,15 @@ export type Config = {
 export class FolderSharing extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {
     const response = {
-      enableEnhancedFolderSharing: true
+      enableEnhancedFolderSharing: true,
     };
     let page: Page;
     try {
       page = await this.browserforce.openPage(PATHS.BASE);
-      const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(page, SELECTORS.BASE);
+      const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(
+        page,
+        SELECTORS.BASE
+      );
       const inputEnable = await frameOrPage.$(SELECTORS.ENABLE_CHECKBOX);
       if (inputEnable) {
         response.enableEnhancedFolderSharing = await frameOrPage.$eval(
@@ -45,7 +48,9 @@ export class FolderSharing extends BrowserforcePlugin {
 
   public async apply(config: Config): Promise<void> {
     if (config.enableEnhancedFolderSharing === false) {
-      throw new Error('`enableEnhancedFolderSharing` cannot be disabled once enabled');
+      throw new Error(
+        '`enableEnhancedFolderSharing` cannot be disabled once enabled'
+      );
     }
     const page = await this.browserforce.openPage(PATHS.BASE);
     await page.waitForSelector(SELECTORS.ENABLE_CHECKBOX);
@@ -57,7 +62,10 @@ export class FolderSharing extends BrowserforcePlugin {
       config.enableEnhancedFolderSharing
     );
     await page.waitForSelector(SELECTORS.SAVE_BUTTON);
-    await Promise.all([page.waitForNavigation(), page.click(SELECTORS.SAVE_BUTTON)]);
+    await Promise.all([
+      page.waitForNavigation(),
+      page.click(SELECTORS.SAVE_BUTTON),
+    ]);
     await page.close();
   }
 }

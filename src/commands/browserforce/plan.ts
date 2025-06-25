@@ -4,7 +4,7 @@ import { BrowserforceCommand } from '../../browserforce-command.js';
 
 type BrowserforceApplyResponse = {
   success: boolean;
-}
+};
 
 export class BrowserforcePlanCommand extends BrowserforceCommand<BrowserforceApplyResponse> {
   public static description = 'retrieve state and generate plan file';
@@ -15,19 +15,21 @@ export class BrowserforcePlanCommand extends BrowserforceCommand<BrowserforceApp
   [Security] retrieving state... done
   [Security] generating plan... done
   logging out... done
-  `
+  `,
   ];
 
   public async run(): Promise<BrowserforceApplyResponse> {
     const { flags } = await this.parse(BrowserforcePlanCommand);
     this.log(
-      `Generating plan with definition file ${flags.definitionfile} from org ${flags['target-org'].getUsername()}`
+      `Generating plan with definition file ${
+        flags.definitionfile
+      } from org ${flags['target-org'].getUsername()}`
     );
     const state = {
-      settings: {}
+      settings: {},
     };
     const plan = {
-      settings: {}
+      settings: {},
     };
     for (const setting of this.settings) {
       const driver = setting.Driver;
@@ -49,12 +51,18 @@ export class BrowserforcePlanCommand extends BrowserforceCommand<BrowserforceApp
     }
     if (flags.statefile) {
       this.spinner.start('writing state file');
-      await writeFile(path.resolve(flags.statefile), JSON.stringify(state, null, 2));
+      await writeFile(
+        path.resolve(flags.statefile),
+        JSON.stringify(state, null, 2)
+      );
       this.spinner.stop();
     }
     if (flags.planfile) {
       this.spinner.start('writing plan file');
-      await writeFile(path.resolve(flags.planfile), JSON.stringify(plan, null, 2));
+      await writeFile(
+        path.resolve(flags.planfile),
+        JSON.stringify(plan, null, 2)
+      );
       this.spinner.stop();
     }
     return { success: true };

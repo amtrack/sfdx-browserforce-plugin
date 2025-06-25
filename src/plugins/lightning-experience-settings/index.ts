@@ -1,15 +1,15 @@
-import { ElementHandle, Page } from 'puppeteer';
 import { BrowserforcePlugin } from '../../plugin.js';
+import { ElementHandle, Page } from 'puppeteer';
 
 const PATHS = {
-  BASE: 'lightning/setup/ThemingAndBranding/home'
+  BASE: 'lightning/setup/ThemingAndBranding/home',
 };
 
 // Spring 25 changed "lightning-datatable" to "one-theme-datatable"
 const THEME_ROW_SELECTOR = '#setupComponent table > tbody > tr';
 const SELECTORS = {
   DEVELOPER_NAMES: `${THEME_ROW_SELECTOR} > td:nth-child(2) > lightning-primitive-cell-factory lightning-base-formatted-text`,
-  STATES: `${THEME_ROW_SELECTOR} > td:nth-child(6) > lightning-primitive-cell-factory`
+  STATES: `${THEME_ROW_SELECTOR} > td:nth-child(6) > lightning-primitive-cell-factory`,
 };
 
 type Config = {
@@ -28,7 +28,7 @@ export class LightningExperienceSettings extends BrowserforcePlugin {
     const themes = await this.getThemeData(page);
     const activeTheme = themes.find((theme) => theme.isActive);
     const response = {
-      activeThemeName: activeTheme!.developerName
+      activeThemeName: activeTheme!.developerName,
     };
     await page.close();
     return response;
@@ -44,43 +44,57 @@ export class LightningExperienceSettings extends BrowserforcePlugin {
     await page.waitForSelector(THEME_ROW_SELECTOR);
     const rowElementHandles = await page.$$(THEME_ROW_SELECTOR);
     await page.waitForSelector(SELECTORS.DEVELOPER_NAMES);
-    const developerNames = await page.$$eval(SELECTORS.DEVELOPER_NAMES, (cells) =>
-      cells.map((cell: HTMLTableCellElement) => cell.innerText)
+    const developerNames = await page.$$eval(
+      SELECTORS.DEVELOPER_NAMES,
+      (cells) => cells.map((cell: HTMLTableCellElement) => cell.innerText)
     );
     const states = await page.$$eval(SELECTORS.STATES, (cells) =>
-      cells.map((cell) => cell.shadowRoot?.querySelector('lightning-primitive-icon') !== null)
+      cells.map(
+        (cell) =>
+          cell.shadowRoot?.querySelector('lightning-primitive-icon') !== null
+      )
     );
     return developerNames.map((developerName, i) => {
       return {
         developerName,
         isActive: states[i],
-        rowElementHandle: rowElementHandles[i]
+        rowElementHandle: rowElementHandles[i],
       };
     });
   }
 
   async setActiveTheme(page: Page, themeDeveloperName: string): Promise<void> {
     const data = await this.getThemeData(page);
-    const theme = data.find((theme) => theme.developerName === themeDeveloperName);
+    const theme = data.find(
+      (theme) => theme.developerName === themeDeveloperName
+    );
     if (!theme) {
       throw new Error(
-        `Could not find theme "${themeDeveloperName}" in list of themes: ${data.map((d) => d.developerName)}`
+        `Could not find theme "${themeDeveloperName}" in list of themes: ${data.map(
+          (d) => d.developerName
+        )}`
       );
     }
     const newActiveThemeRowElementHandle = theme.rowElementHandle;
     await page.waitForSelector(`${THEME_ROW_SELECTOR} lightning-button-menu`, {
-      visible: true
+      visible: true,
     });
     const menuButton = await newActiveThemeRowElementHandle.$(
       'td lightning-primitive-cell-factory lightning-primitive-cell-actions lightning-button-menu'
     );
     await page.evaluate((e: HTMLElement) => e.click(), menuButton);
-    await page.waitForSelector(`${THEME_ROW_SELECTOR} lightning-button-menu slot lightning-menu-item`, {
-      visible: true
-    });
+    await page.waitForSelector(
+      `${THEME_ROW_SELECTOR} lightning-button-menu slot lightning-menu-item`,
+      {
+        visible: true,
+      }
+    );
     const menuItems = await menuButton!.$$('slot lightning-menu-item');
     // second last item: [show, activate, preview]
     const activateMenuItem = menuItems[menuItems.length - 2];
-    await Promise.all([page.waitForNavigation(), page.evaluate((e: HTMLElement) => e.click(), activateMenuItem)]);
+    await Promise.all([
+      page.waitForNavigation(),
+      page.evaluate((e: HTMLElement) => e.click(), activateMenuItem),
+    ]);
   }
 }

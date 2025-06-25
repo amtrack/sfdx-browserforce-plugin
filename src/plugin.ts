@@ -29,7 +29,7 @@ export abstract class BrowserforcePlugin {
       return result;
     }
     return {
-      message: 'no action necessary'
+      message: 'no action necessary',
     };
   }
 }

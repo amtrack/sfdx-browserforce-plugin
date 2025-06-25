@@ -16,25 +16,25 @@ describe(ServiceChannels.name, function () {
 
   const configureServiceChannels = [
     {
-      serviceChannelDeveloperName: "CaseTest",
+      serviceChannelDeveloperName: 'CaseTest',
       capacity: {
-        capacityModel: "StatusBased",
-        statusField: "Case.Type",
-        valuesForInProgress: ["Electrical", "Mechanical"],
+        capacityModel: 'StatusBased',
+        statusField: 'Case.Type',
+        valuesForInProgress: ['Electrical', 'Mechanical'],
         checkAgentCapacityOnReopenedWorkItems: true,
-        checkAgentCapacityOnReassignedWorkItems: true
-      }
+        checkAgentCapacityOnReassignedWorkItems: true,
+      },
     },
     {
-      serviceChannelDeveloperName: "LeadTest",
+      serviceChannelDeveloperName: 'LeadTest',
       capacity: {
-        capacityModel: "StatusBased",
-        statusField: "Lead.Industry",
-        valuesForInProgress: ["Agriculture", "Chemicals"],
+        capacityModel: 'StatusBased',
+        statusField: 'Lead.Industry',
+        valuesForInProgress: ['Agriculture', 'Chemicals'],
         checkAgentCapacityOnReopenedWorkItems: true,
-        checkAgentCapacityOnReassignedWorkItems: true
-      }
-    }
+        checkAgentCapacityOnReassignedWorkItems: true,
+      },
+    },
   ];
 
   it('should create service channel as a prerequisite', () => {
@@ -44,9 +44,13 @@ describe(ServiceChannels.name, function () {
       'start',
       '-d',
       path.join(__dirname, 'sfdx-source'),
-      '--json'
+      '--json',
     ]);
-    assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
+    assert.deepStrictEqual(
+      sourceDeployCmd.status,
+      0,
+      sourceDeployCmd.output.toString()
+    );
   });
 
   it('should enable status based capacity model as a prerequisite', async () => {

@@ -14,76 +14,76 @@ describe(HistoryTracking.name, function () {
 
   const enableHistoryTracking = [
     {
-      objectApiName: "Account",
+      objectApiName: 'Account',
       enableHistoryTracking: true,
       fieldHistoryTracking: [
         {
-          fieldApiName: "PersonBirthdate",
-          enableHistoryTracking: true
+          fieldApiName: 'PersonBirthdate',
+          enableHistoryTracking: true,
         },
         {
-          fieldApiName: "Test__pc",
-          enableHistoryTracking: true
-        }
-      ]
+          fieldApiName: 'Test__pc',
+          enableHistoryTracking: true,
+        },
+      ],
     },
     {
-      objectApiName: "Opportunity",
+      objectApiName: 'Opportunity',
       enableHistoryTracking: true,
       fieldHistoryTracking: [
         {
-          fieldApiName: "Type",
-          enableHistoryTracking: true
-        }
-      ]
+          fieldApiName: 'Type',
+          enableHistoryTracking: true,
+        },
+      ],
     },
     {
-      objectApiName: "Test__c",
+      objectApiName: 'Test__c',
       fieldHistoryTracking: [
         {
-          fieldApiName: "Owner",
-          enableHistoryTracking: true
+          fieldApiName: 'Owner',
+          enableHistoryTracking: true,
         },
         {
-          fieldApiName: "Test__c",
-          enableHistoryTracking: true
-        }
-      ]
-    }
+          fieldApiName: 'Test__c',
+          enableHistoryTracking: true,
+        },
+      ],
+    },
   ];
 
   const disableHistoryTracking = [
     {
-      objectApiName: "Account",
+      objectApiName: 'Account',
       enableHistoryTracking: true,
       fieldHistoryTracking: [
         {
-          fieldApiName: "PersonBirthdate",
-          enableHistoryTracking: false
+          fieldApiName: 'PersonBirthdate',
+          enableHistoryTracking: false,
         },
         {
-          fieldApiName: "Test__pc",
-          enableHistoryTracking: true
-        }
-      ]
+          fieldApiName: 'Test__pc',
+          enableHistoryTracking: true,
+        },
+      ],
     },
     {
-      objectApiName: "Opportunity",
-      enableHistoryTracking: false
+      objectApiName: 'Opportunity',
+      enableHistoryTracking: false,
     },
     {
-      objectApiName: "Test__c",
+      objectApiName: 'Test__c',
       fieldHistoryTracking: [
         {
-          fieldApiName: "Owner",
-          enableHistoryTracking: true
+          fieldApiName: 'Owner',
+          enableHistoryTracking: true,
         },
         {
-          fieldApiName: "Test__c",
-          enableHistoryTracking: false
-        }
-      ]
-    }
+          fieldApiName: 'Test__c',
+          enableHistoryTracking: false,
+        },
+      ],
+    },
   ];
 
   it('should create custom object and fields as a prerequisite', () => {
@@ -93,9 +93,13 @@ describe(HistoryTracking.name, function () {
       'start',
       '-d',
       path.join(__dirname, 'sfdx-source'),
-      '--json'
+      '--json',
     ]);
-    assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
+    assert.deepStrictEqual(
+      sourceDeployCmd.status,
+      0,
+      sourceDeployCmd.output.toString()
+    );
   });
 
   it('should enable history tracking for objects and fields', async () => {

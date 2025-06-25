@@ -9,15 +9,15 @@ describe(Slack.name, function () {
 
   const configEnable: Config = {
     agreeToTermsAndConditions: true,
-    enableSalesCloudForSlack: true
+    enableSalesCloudForSlack: true,
   };
   const configDisabledSalesCloud: Config = {
     agreeToTermsAndConditions: true,
-    enableSalesCloudForSlack: false
+    enableSalesCloudForSlack: false,
   };
   const configDisabled: Config = {
     agreeToTermsAndConditions: false,
-    enableSalesCloudForSlack: false
+    enableSalesCloudForSlack: false,
   };
   it('should accept terms and conditions and enable Sales Cloud for Slack', async () => {
     await plugin.run(configEnable);

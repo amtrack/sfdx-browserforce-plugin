@@ -6,7 +6,6 @@ import { type Config, AuthenticationConfiguration } from './index.js';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
-
 describe(AuthenticationConfiguration.name, function () {
   let plugin: AuthenticationConfiguration;
 
@@ -16,31 +15,25 @@ describe(AuthenticationConfiguration.name, function () {
 
   describe('authentication configuration', () => {
     const configRetrieveSingle: Config = {
-      services: [
-        { label: 'Login Form', enabled: true }
-      ]
+      services: [{ label: 'Login Form', enabled: true }],
     };
     const configRmoveSingle: Config = {
-      services: [
-        { label: 'Login Form', enabled: false }
-      ]
+      services: [{ label: 'Login Form', enabled: false }],
     };
     const configApplyMultiple: Config = {
       services: [
         { label: 'Login Form', enabled: false },
-        { label: 'TestAuthMethod', enabled: true }
-      ]
+        { label: 'TestAuthMethod', enabled: true },
+      ],
     };
     const configApplyMissing: Config = {
-      services: [
-        { label: 'FakeAuthMethod', enabled: true }
-      ]
+      services: [{ label: 'FakeAuthMethod', enabled: true }],
     };
     const resetTestState: Config = {
       services: [
         { label: 'Login Form', enabled: true },
-        { label: 'TestAuthMethod', enabled: false }
-      ]
+        { label: 'TestAuthMethod', enabled: false },
+      ],
     };
 
     it('should retrieve the single enabled Login Form auth', async () => {
@@ -72,9 +65,13 @@ describe(AuthenticationConfiguration.name, function () {
         'start',
         '-d',
         path.join(__dirname, 'sfdx-source'),
-        '--json'
+        '--json',
       ]);
-      assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
+      assert.deepStrictEqual(
+        sourceDeployCmd.status,
+        0,
+        sourceDeployCmd.output.toString()
+      );
     });
 
     it('should update multiple auth services', async () => {
@@ -109,10 +106,13 @@ describe(AuthenticationConfiguration.name, function () {
         '--metadata',
         'AuthProvider:TestAuthMethod',
         '--no-prompt',
-        '--json'
+        '--json',
       ]);
-      assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
+      assert.deepStrictEqual(
+        sourceDeployCmd.status,
+        0,
+        sourceDeployCmd.output.toString()
+      );
     });
-    
   });
 });

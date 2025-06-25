@@ -8,10 +8,10 @@ describe(LinkedInSalesNavigatorSettings.name, function () {
   });
 
   const configEnabled: Config = {
-    enabled: true
+    enabled: true,
   };
   const configDisabled: Config = {
-    enabled: false
+    enabled: false,
   };
 
   it('should enable', async () => {

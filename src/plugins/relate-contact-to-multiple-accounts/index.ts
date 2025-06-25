@@ -3,7 +3,7 @@ import { retry, throwPageErrors } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
 
 const PATHS = {
-  BASE: 'accounts/accountSetup.apexp'
+  BASE: 'accounts/accountSetup.apexp',
 };
 const SELECTORS = {
   ENABLED: 'input[id$=":sharedContactsCheckBox"]',
@@ -14,7 +14,7 @@ const SELECTORS = {
   DISABLE_CONFIRM_BUTTON: 'input#sharedContactsDisableConfirmButton',
   ENABLING_IN_PROGRESS: '#enablingInProgress',
   DISABLING_IN_PROGRESS: '#disablingInProgress',
-  APPLYING_SETTING_SUCEEDED: '#prefSettingSucceeded'
+  APPLYING_SETTING_SUCEEDED: '#prefSettingSucceeded',
 };
 
 type Config = {
@@ -26,7 +26,10 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
     const page = await this.browserforce.openPage(PATHS.BASE);
     await page.waitForSelector(SELECTORS.ENABLED, { visible: true });
     const response = {
-      enabled: await page.$eval(SELECTORS.ENABLED, (el: HTMLInputElement) => el.checked)
+      enabled: await page.$eval(
+        SELECTORS.ENABLED,
+        (el: HTMLInputElement) => el.checked
+      ),
     };
     await page.close();
     return response;
@@ -37,21 +40,32 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
     await this.waitForProcessFinished(page);
     // First we have to click the 'Edit' button, to make the checkbox editable
     await page.waitForSelector(SELECTORS.EDIT_BUTTON);
-    await Promise.all([page.waitForNavigation(), page.click(SELECTORS.EDIT_BUTTON)]);
+    await Promise.all([
+      page.waitForNavigation(),
+      page.click(SELECTORS.EDIT_BUTTON),
+    ]);
     // Change the value of the checkbox
     await page.waitForSelector(SELECTORS.ENABLED, { visible: true });
     await page.click(SELECTORS.ENABLED);
     // Save
     if (config.enabled) {
       await page.waitForSelector(SELECTORS.SAVE_BUTTON);
-      await Promise.all([page.waitForNavigation(), page.click(SELECTORS.SAVE_BUTTON)]);
+      await Promise.all([
+        page.waitForNavigation(),
+        page.click(SELECTORS.SAVE_BUTTON),
+      ]);
     } else {
       await page.waitForSelector(SELECTORS.SAVE_BUTTON);
       await page.click(SELECTORS.SAVE_BUTTON);
-      await page.waitForSelector(SELECTORS.DISABLE_CONFIRM_CHECKBOX, { visible: true });
+      await page.waitForSelector(SELECTORS.DISABLE_CONFIRM_CHECKBOX, {
+        visible: true,
+      });
       await page.click(SELECTORS.DISABLE_CONFIRM_CHECKBOX);
       await page.waitForSelector(SELECTORS.DISABLE_CONFIRM_BUTTON);
-      await Promise.all([page.waitForNavigation(), page.click(SELECTORS.DISABLE_CONFIRM_BUTTON)]);
+      await Promise.all([
+        page.waitForNavigation(),
+        page.click(SELECTORS.DISABLE_CONFIRM_BUTTON),
+      ]);
     }
     await throwPageErrors(page);
     await page.close();
@@ -61,12 +75,16 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
     await retry(async () => {
       const enabling = await page.$(SELECTORS.ENABLING_IN_PROGRESS);
       if (enabling) {
-        const message = await enabling.evaluate((div: HTMLDivElement) => div.innerText);
+        const message = await enabling.evaluate(
+          (div: HTMLDivElement) => div.innerText
+        );
         throw new Error(message);
       }
       const disabling = await page.$(SELECTORS.DISABLING_IN_PROGRESS);
       if (disabling) {
-        const message = await disabling.evaluate((div: HTMLDivElement) => div.innerText);
+        const message = await disabling.evaluate(
+          (div: HTMLDivElement) => div.innerText
+        );
         throw new Error(message);
       }
     });

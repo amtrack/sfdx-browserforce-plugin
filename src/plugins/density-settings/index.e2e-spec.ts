@@ -8,7 +8,7 @@ describe(DensitySettings.name, function () {
   });
 
   const configComfy = {
-    density: 'Comfy'
+    density: 'Comfy',
   };
   const configCompact = { density: 'Compact' };
 

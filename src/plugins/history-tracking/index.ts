@@ -38,7 +38,10 @@ export class HistoryTracking extends BrowserforcePlugin {
 
       // Open the object history tracking setup page
       const page = await this.browserforce.openPage(
-        PATHS.BASE.replace('{APINAME}', tableEnumOrIdByObjectApiName.get(historyTrackingConfig.objectApiName))
+        PATHS.BASE.replace(
+          '{APINAME}',
+          tableEnumOrIdByObjectApiName.get(historyTrackingConfig.objectApiName)
+        )
       );
 
       // Retrieve the object history tracking
@@ -62,7 +65,10 @@ export class HistoryTracking extends BrowserforcePlugin {
 
       // If the object history tracking is false, then we already know all field history tracking is false
       // Only so long as this is a standard object
-      if (!historyTrackingResult.enableHistoryTracking && !historyTrackingConfig.objectApiName.includes('__c')) {
+      if (
+        !historyTrackingResult.enableHistoryTracking &&
+        !historyTrackingConfig.objectApiName.includes('__c')
+      ) {
         for (const fieldHistoryTracking of historyTrackingConfig.fieldHistoryTracking) {
           fieldHistoryTrackingConfigs.push({
             ...fieldHistoryTracking,
@@ -70,7 +76,8 @@ export class HistoryTracking extends BrowserforcePlugin {
           });
         }
 
-        historyTrackingResult.fieldHistoryTracking = fieldHistoryTrackingConfigs;
+        historyTrackingResult.fieldHistoryTracking =
+          fieldHistoryTrackingConfigs;
         historyTrackingConfigs.push(historyTrackingResult);
         continue;
       }
@@ -116,7 +123,10 @@ export class HistoryTracking extends BrowserforcePlugin {
     for await (const historyTrackingConfig of plan) {
       // Open the object history tracking setup page
       const page = await this.browserforce.openPage(
-        PATHS.BASE.replace('{APINAME}', tableEnumOrIdByObjectApiName.get(historyTrackingConfig.objectApiName))
+        PATHS.BASE.replace(
+          '{APINAME}',
+          tableEnumOrIdByObjectApiName.get(historyTrackingConfig.objectApiName)
+        )
       );
 
       // Retrieve the object history tracking
@@ -129,10 +139,16 @@ export class HistoryTracking extends BrowserforcePlugin {
           (el) => (el.getAttribute('checked') === 'checked' ? true : false)
         );
 
-        if (historyTrackingConfig.enableHistoryTracking !== historyTrackingEnabled) {
+        if (
+          historyTrackingConfig.enableHistoryTracking !== historyTrackingEnabled
+        ) {
           // Click the checkbox
-          const enableHistoryTracking = await page.waitForSelector(SELECTORS.ENABLE_HISTORY);
-          await enableHistoryTracking.evaluate((node) => (node as HTMLElement).click());
+          const enableHistoryTracking = await page.waitForSelector(
+            SELECTORS.ENABLE_HISTORY
+          );
+          await enableHistoryTracking.evaluate((node) =>
+            (node as HTMLElement).click()
+          );
         }
       }
 
@@ -141,38 +157,49 @@ export class HistoryTracking extends BrowserforcePlugin {
         // This is because custom fields are identified using their CustomField.Id value
         const fieldSelectorByFieldApiName =
           await this.getFieldSelectorByFieldApiName(
-            tableEnumOrIdByObjectApiName.get(historyTrackingConfig.objectApiName),
+            tableEnumOrIdByObjectApiName.get(
+              historyTrackingConfig.objectApiName
+            ),
             historyTrackingConfig.fieldHistoryTracking
           );
 
         // We can now retrieve the field history settings for the fields specified for the object
         for await (const fieldHistoryTracking of historyTrackingConfig.fieldHistoryTracking) {
-
           const fieldApiName = fieldSelectorByFieldApiName.get(
             fieldHistoryTracking.fieldApiName
           );
 
-          const fieldSelector = SELECTORS.ENABLE_FIELD_HISTORY.replace('{APINAME}', fieldApiName);
+          const fieldSelector = SELECTORS.ENABLE_FIELD_HISTORY.replace(
+            '{APINAME}',
+            fieldApiName
+          );
 
           const fieldHistoryTrackingEnabled = await page.$eval(
             fieldSelector,
             (el) => (el.getAttribute('checked') === 'checked' ? true : false)
           );
 
-          if (fieldHistoryTracking.enableHistoryTracking !== fieldHistoryTrackingEnabled) {
+          if (
+            fieldHistoryTracking.enableHistoryTracking !==
+            fieldHistoryTrackingEnabled
+          ) {
             // Click the checkbox
-            const enableFieldHistoryTracking = await page.waitForSelector(fieldSelector);
-            await enableFieldHistoryTracking.evaluate((node) => (node as HTMLElement).click());
+            const enableFieldHistoryTracking = await page.waitForSelector(
+              fieldSelector
+            );
+            await enableFieldHistoryTracking.evaluate((node) =>
+              (node as HTMLElement).click()
+            );
           }
         }
       }
-      
+
       // Save the settings
       const saveButton = await page.waitForSelector(SELECTORS.SAVE_BUTTON);
       await saveButton.evaluate((node) => (node as HTMLElement).click());
 
       // Wait for the page to refresh
-      await page.waitForNavigation()
+      await page.waitForNavigation();
 
       // Close the page
       await page.close();

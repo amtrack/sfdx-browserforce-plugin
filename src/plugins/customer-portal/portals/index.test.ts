@@ -13,25 +13,26 @@ const tests = [
         isSelfRegistrationActivated: true,
         selfRegUserDefaultLicense: 'Customer Portal Manager Custom',
         selfRegUserDefaultRole: 'User',
-        selfRegUserDefaultProfile: 'Customer Portal Manager Custom'
-      }
+        selfRegUserDefaultProfile: 'Customer Portal Manager Custom',
+      },
     ],
     target: [
       {
         name: 'Customer Portal',
-        description: 'new description'
-      }
+        description: 'new description',
+      },
     ],
     expected: [
       {
         _id: 'p1',
         name: 'Customer Portal',
-        description: 'new description'
-      }
-    ]
+        description: 'new description',
+      },
+    ],
   },
   {
-    description: 'should only return portal and portalProfileMemberships fields',
+    description:
+      'should only return portal and portalProfileMemberships fields',
     source: [
       {
         name: 'Customer Portal',
@@ -41,11 +42,11 @@ const tests = [
           {
             name: 'Customer Portal Manager Standard',
             active: true,
-            _id: 'a1'
-          }
+            _id: 'a1',
+          },
         ],
-        _id: 'p1'
-      }
+        _id: 'p1',
+      },
     ],
     target: [
       {
@@ -53,10 +54,10 @@ const tests = [
         portalProfileMemberships: [
           {
             name: 'Customer Portal Manager Standard',
-            active: false
-          }
-        ]
-      }
+            active: false,
+          },
+        ],
+      },
     ],
     expected: [
       {
@@ -66,11 +67,11 @@ const tests = [
           {
             _id: 'a1',
             name: 'Customer Portal Manager Standard',
-            active: false
-          }
-        ]
-      }
-    ]
+            active: false,
+          },
+        ],
+      },
+    ],
   },
   {
     description: 'should detect a renamed portal',
@@ -80,21 +81,21 @@ const tests = [
         description: 'Customer Portal',
         adminUser: 'User User',
         portalProfileMemberships: [],
-        _id: 'p1'
-      }
+        _id: 'p1',
+      },
     ],
     target: [
       {
         name: 'Foo Portal',
-        oldName: 'Customer Portal'
-      }
+        oldName: 'Customer Portal',
+      },
     ],
     expected: [
       {
         _id: 'p1',
-        name: 'Foo Portal'
-      }
-    ]
+        name: 'Foo Portal',
+      },
+    ],
   },
   {
     description: 'should return no change',
@@ -107,11 +108,11 @@ const tests = [
           {
             name: 'Customer Portal Manager Standard',
             active: true,
-            _id: 'a1'
-          }
+            _id: 'a1',
+          },
         ],
-        _id: 'p1'
-      }
+        _id: 'p1',
+      },
     ],
     target: [
       {
@@ -119,13 +120,13 @@ const tests = [
         portalProfileMemberships: [
           {
             name: 'Customer Portal Manager Standard',
-            active: true
-          }
-        ]
-      }
+            active: true,
+          },
+        ],
+      },
     ],
-    expected: undefined
-  }
+    expected: undefined,
+  },
 ];
 
 describe('CustomerPortalSetup', () => {

@@ -47,5 +47,5 @@ export {
   salesforceToSalesforce,
   security,
   serviceChannels,
-  slack
+  slack,
 };

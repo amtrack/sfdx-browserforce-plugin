@@ -20,10 +20,12 @@ export class LoginPage {
     }
     const conn = org.getConnection();
     const response = await this.page.goto(
-      `${conn.instanceUrl.replace(/\/$/, '')}/${PATH}?sid=${conn.accessToken}&retURL=${encodeURIComponent(POST_LOGIN_PATH)}`,
+      `${conn.instanceUrl.replace(/\/$/, '')}/${PATH}?sid=${
+        conn.accessToken
+      }&retURL=${encodeURIComponent(POST_LOGIN_PATH)}`,
       {
         // should have waited at least 500ms for network connections, redirects should probably have happened already
-        waitUntil: ['load', 'networkidle2']
+        waitUntil: ['load', 'networkidle2'],
       }
     );
     const url = new URL(response.url());
@@ -38,7 +40,12 @@ export class LoginPage {
   async throwPageErrors(): Promise<void> {
     const errorHandle = await this.page.$(ERROR_DIV_SELECTOR);
     if (errorHandle) {
-      const errorMessage = (await this.page.evaluate((div: HTMLDivElement) => div.innerText, errorHandle))?.trim();
+      const errorMessage = (
+        await this.page.evaluate(
+          (div: HTMLDivElement) => div.innerText,
+          errorHandle
+        )
+      )?.trim();
       if (errorMessage) {
         throw new Error(errorMessage);
       }

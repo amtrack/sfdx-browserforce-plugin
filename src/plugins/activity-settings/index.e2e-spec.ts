@@ -9,10 +9,10 @@ describe(ActivitySettings.name, function () {
 
   describe('allowUsersToRelateMultipleContactsToTasksAndEvents', () => {
     const configEnabled = {
-      allowUsersToRelateMultipleContactsToTasksAndEvents: true
+      allowUsersToRelateMultipleContactsToTasksAndEvents: true,
     };
     const configDisabled = {
-      allowUsersToRelateMultipleContactsToTasksAndEvents: false
+      allowUsersToRelateMultipleContactsToTasksAndEvents: false,
     };
 
     it('should enable', async () => {

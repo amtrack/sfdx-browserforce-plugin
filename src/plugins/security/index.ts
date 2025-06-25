@@ -1,20 +1,28 @@
 import { BrowserforcePlugin } from '../../plugin.js';
 import {
+  AuthenticationConfiguration,
+  Config as AuthenticationConfigurationConfig,
+} from './authentication-configuration/index.js';
+import {
   CertificateAndKeyManagement,
-  Config as CertificateAndKeyManagementConfig
+  Config as CertificateAndKeyManagementConfig,
 } from './certificate-and-key-management/index.js';
-import { IdentityProvider, Config as IdentityProviderConfig } from './identity-provider/index.js';
-import { LoginAccessPolicies, Config as LoginAccessPoliciesConfig } from './login-access-policies/index.js';
+import {
+  IdentityProvider,
+  Config as IdentityProviderConfig,
+} from './identity-provider/index.js';
+import {
+  LoginAccessPolicies,
+  Config as LoginAccessPoliciesConfig,
+} from './login-access-policies/index.js';
 import { Sharing, Config as SharingConfig } from './sharing/index.js';
-import { AuthenticationConfiguration, Config as AuthenticationConfigurationConfig} from './authentication-configuration/index.js';
-
 
 type Config = {
   certificateAndKeyManagement?: CertificateAndKeyManagementConfig;
   identityProvider?: IdentityProviderConfig;
   loginAccessPolicies?: LoginAccessPoliciesConfig;
   sharing?: SharingConfig;
-  authenticationConfiguration?: AuthenticationConfigurationConfig
+  authenticationConfiguration?: AuthenticationConfigurationConfig;
 };
 
 export class Security extends BrowserforcePlugin {
@@ -23,15 +31,20 @@ export class Security extends BrowserforcePlugin {
     if (definition) {
       if (definition.certificateAndKeyManagement) {
         const pluginCKM = new CertificateAndKeyManagement(this.browserforce);
-        response.certificateAndKeyManagement = await pluginCKM.retrieve(definition.certificateAndKeyManagement);
+        response.certificateAndKeyManagement = await pluginCKM.retrieve(
+          definition.certificateAndKeyManagement
+        );
       }
       if (definition.identityProvider) {
         const pluginIdentityProvider = new IdentityProvider(this.browserforce);
         response.identityProvider = await pluginIdentityProvider.retrieve();
       }
       if (definition.loginAccessPolicies) {
-        const pluginLoginAccessPolicies = new LoginAccessPolicies(this.browserforce);
-        response.loginAccessPolicies = await pluginLoginAccessPolicies.retrieve();
+        const pluginLoginAccessPolicies = new LoginAccessPolicies(
+          this.browserforce
+        );
+        response.loginAccessPolicies =
+          await pluginLoginAccessPolicies.retrieve();
       }
       if (definition.sharing) {
         const pluginSharing = new Sharing(this.browserforce);
@@ -39,14 +52,18 @@ export class Security extends BrowserforcePlugin {
       }
       if (definition.authenticationConfiguration) {
         response.authenticationConfiguration =
-            await new AuthenticationConfiguration(this.browserforce).retrieve(definition.authenticationConfiguration);
+          await new AuthenticationConfiguration(this.browserforce).retrieve(
+            definition.authenticationConfiguration
+          );
       }
     }
     return response;
   }
 
   public diff(state: Config, definition: Config): Config | undefined {
-    const certificateAndKeyManagement = new CertificateAndKeyManagement(this.browserforce).diff(
+    const certificateAndKeyManagement = new CertificateAndKeyManagement(
+      this.browserforce
+    ).diff(
       state.certificateAndKeyManagement,
       definition.certificateAndKeyManagement
     );
@@ -58,11 +75,16 @@ export class Security extends BrowserforcePlugin {
       state.loginAccessPolicies,
       definition.loginAccessPolicies
     ) as LoginAccessPoliciesConfig | undefined;
-    const sharing = new Sharing(this.browserforce).diff(state.sharing, definition.sharing) as SharingConfig | undefined;
-    const authenticationConfiguration = new AuthenticationConfiguration(this.browserforce).diff(
-        state.authenticationConfiguration,
-        definition.authenticationConfiguration
-      ) as AuthenticationConfigurationConfig | undefined;
+    const sharing = new Sharing(this.browserforce).diff(
+      state.sharing,
+      definition.sharing
+    ) as SharingConfig | undefined;
+    const authenticationConfiguration = new AuthenticationConfiguration(
+      this.browserforce
+    ).diff(
+      state.authenticationConfiguration,
+      definition.authenticationConfiguration
+    ) as AuthenticationConfigurationConfig | undefined;
     const response: Config = {};
     if (certificateAndKeyManagement !== undefined) {
       response.certificateAndKeyManagement = certificateAndKeyManagement;
@@ -95,7 +117,9 @@ export class Security extends BrowserforcePlugin {
       await pluginIdentityProvider.apply(plan.identityProvider);
     }
     if (plan.loginAccessPolicies) {
-      const pluginLoginAccessPolicies = new LoginAccessPolicies(this.browserforce);
+      const pluginLoginAccessPolicies = new LoginAccessPolicies(
+        this.browserforce
+      );
       await pluginLoginAccessPolicies.apply(plan.loginAccessPolicies);
     }
     if (plan.sharing) {
@@ -103,7 +127,9 @@ export class Security extends BrowserforcePlugin {
       await pluginSharing.apply(plan.sharing);
     }
     if (plan.authenticationConfiguration) {
-      const pluginAuthConfig = new AuthenticationConfiguration(this.browserforce)
+      const pluginAuthConfig = new AuthenticationConfiguration(
+        this.browserforce
+      );
       await pluginAuthConfig.apply(plan.authenticationConfiguration);
     }
   }

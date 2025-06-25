@@ -8,10 +8,10 @@ describe.skip(Sharing.name, function () {
   });
 
   const configEnabled = {
-    enableExternalSharingModel: true
+    enableExternalSharingModel: true,
   };
   const configDisabled = {
-    enableExternalSharingModel: true
+    enableExternalSharingModel: true,
   };
 
   it('should enable', async () => {

@@ -13,26 +13,27 @@ describe(`${CertificateAndKeyManagement.name} and ${IdentityProvider.name}`, fun
 
   const configEnabled = {
     enabled: true,
-    certificate: 'identity_provider'
+    certificate: 'identity_provider',
   };
   const configDisabled = {
-    enabled: false
+    enabled: false,
   };
   const configGeneratedCert = {
     certificates: [
       {
         name: 'identity_provider',
-        label: 'identity_provider'
-      }
-    ]
+        label: 'identity_provider',
+      },
+    ],
   };
   const configImportFromKeystore = {
     importFromKeystore: [
       {
-        filePath: './src/plugins/security/certificate-and-key-management/Dummy.jks',
-        name: 'Dummy'
-      }
-    ]
+        filePath:
+          './src/plugins/security/certificate-and-key-management/Dummy.jks',
+        name: 'Dummy',
+      },
+    ],
   };
 
   it('should fail to enable identity provider with non-existing Certificate', async () => {

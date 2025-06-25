@@ -1,13 +1,14 @@
 import { BrowserforcePlugin } from '../../../plugin.js';
 
 const PATHS = {
-  BASE: 'p/own/OrgSharingDetail'
+  BASE: 'p/own/OrgSharingDetail',
 };
 const SELECTORS = {
   EXTERNAL_SHARING_MODEL_BUTTON: '#externalSharingModelButton',
-  ENABLE_BUTTON: 'input#externalSharingModelButton:not([onclick*="Modal.confirm"])',
+  ENABLE_BUTTON:
+    'input#externalSharingModelButton:not([onclick*="Modal.confirm"])',
   DISABLE_BUTTON: 'input#externalSharingModelButton[onclick*="Modal.confirm"]',
-  MODAL_DIALOG: 'Modal.confirm'
+  MODAL_DIALOG: 'Modal.confirm',
 };
 
 export type Config = {
@@ -24,7 +25,9 @@ export class Sharing extends BrowserforcePlugin {
     );
     await page.close();
     return {
-      enableExternalSharingModel: buttonOnclick.includes(SELECTORS.MODAL_DIALOG)
+      enableExternalSharingModel: buttonOnclick.includes(
+        SELECTORS.MODAL_DIALOG
+      ),
     };
   }
 
@@ -35,9 +38,15 @@ export class Sharing extends BrowserforcePlugin {
       await dialog.accept();
     });
     if (config.enableExternalSharingModel) {
-      await Promise.all([page.waitForSelector(SELECTORS.DISABLE_BUTTON), page.click(SELECTORS.ENABLE_BUTTON)]);
+      await Promise.all([
+        page.waitForSelector(SELECTORS.DISABLE_BUTTON),
+        page.click(SELECTORS.ENABLE_BUTTON),
+      ]);
     } else {
-      await Promise.all([page.waitForSelector(SELECTORS.ENABLE_BUTTON), page.click(SELECTORS.DISABLE_BUTTON)]);
+      await Promise.all([
+        page.waitForSelector(SELECTORS.ENABLE_BUTTON),
+        page.click(SELECTORS.DISABLE_BUTTON),
+      ]);
     }
     await page.close();
   }

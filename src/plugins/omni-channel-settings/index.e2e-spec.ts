@@ -9,10 +9,10 @@ describe(OmniChannelSettings.name, function () {
   });
 
   const configEnableStatusBasedCapacityModel = {
-    enableStatusBasedCapacityModel: true
+    enableStatusBasedCapacityModel: true,
   };
   const configDisableStatusBasedCapacityModel = {
-    enableStatusBasedCapacityModel: false
+    enableStatusBasedCapacityModel: false,
   };
 
   it('should enable status based capacity model', async () => {

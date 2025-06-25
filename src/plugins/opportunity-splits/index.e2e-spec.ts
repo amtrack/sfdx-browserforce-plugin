@@ -15,10 +15,10 @@ describe(OpportunitySplits.name, function () {
   });
 
   const configEnabled = {
-    enabled: true
+    enabled: true,
   };
   const configDisabled = {
-    enabled: false
+    enabled: false,
   };
   it('should enable Opportunity Teams as prerequisite', () => {
     const sourceDeployCmd = child.spawnSync('sf', [
@@ -27,9 +27,13 @@ describe(OpportunitySplits.name, function () {
       'start',
       '-d',
       path.join(__dirname, 'sfdx-source'),
-      '--json'
+      '--json',
     ]);
-    assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
+    assert.deepStrictEqual(
+      sourceDeployCmd.status,
+      0,
+      sourceDeployCmd.output.toString()
+    );
   });
   it('should enable', async () => {
     await plugin.run(configEnabled);

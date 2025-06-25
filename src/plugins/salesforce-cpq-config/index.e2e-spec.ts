@@ -3,10 +3,7 @@ import { readFileSync } from 'node:fs';
 import { SalesforceCpqConfig } from './index.js';
 
 const defaultConfig = JSON.parse(
-  readFileSync(
-    new URL('./default.json', import.meta.url),
-    "utf8"
-  )
+  readFileSync(new URL('./default.json', import.meta.url), 'utf8')
 );
 
 const describeOrSkip = process.env['CPQ'] === 'true' ? describe : describe.skip;
@@ -20,11 +17,11 @@ describeOrSkip(SalesforceCpqConfig.name, function () {
   const configCustom = {
     documents: {
       documentFolder: 'Quotes',
-      hideDocumentName: true
+      hideDocumentName: true,
     },
     quote: {
-      disableInitialQuoteSync: true
-    }
+      disableInitialQuoteSync: true,
+    },
   };
 
   it('should apply default config', async () => {
