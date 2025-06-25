@@ -2,11 +2,10 @@ import { BrowserforcePlugin } from '../../plugin.js';
 
 const BASE_PATH = 'ui/setup/layout/FieldHistoryTracking?pEntity={APINAME}';
 
-const ENABLE_HISTORY_SELECTOR =
-  'input[id="enable"][type="checkbox"][name="enable"]';
+const ENABLE_HISTORY_SELECTOR = 'input[id="enable"][type="checkbox"]';
 const ENABLE_FIELD_HISTORY_SELECTOR = 'input[id="{APINAME}_fht"]';
-const SAVE_BUTTON_SELECTOR =
-  'input[class="btn"][type="submit"][name="save"][title="Save"]';
+const SAVE_BUTTON_SELECTOR = 'input[name="save"]:not(#hideableButtons *)';
+const FALLBACK_SAVE_BUTTON_SELECTOR = 'input[name="save"]';
 
 type HistoryTrackingConfig = {
   objectApiName: string;
@@ -45,12 +44,10 @@ export class HistoryTracking extends BrowserforcePlugin {
       // Retrieve the object history tracking
       // If this is a custom object, this checkbox does not exist, so skip
       if (!historyTrackingConfig.objectApiName.includes('__c')) {
-        await page.waitForSelector(ENABLE_HISTORY_SELECTOR);
-
-        historyTrackingResult.enableHistoryTracking = await page.$eval(
-          ENABLE_HISTORY_SELECTOR,
-          (el) => (el.getAttribute('checked') === 'checked' ? true : false)
-        );
+        historyTrackingResult.enableHistoryTracking = await page
+          .locator(ENABLE_HISTORY_SELECTOR)
+          .map((checkbox) => checkbox.checked)
+          .wait();
       }
 
       // If we have no field history tracking, there is nothing more to do
@@ -96,10 +93,12 @@ export class HistoryTracking extends BrowserforcePlugin {
           fieldHistoryTracking.fieldApiName
         );
 
-        fieldHistoryTrackingResult.enableHistoryTracking = await page.$eval(
-          ENABLE_FIELD_HISTORY_SELECTOR.replace('{APINAME}', fieldApiName),
-          (el) => (el.getAttribute('checked') === 'checked' ? true : false)
-        );
+        fieldHistoryTrackingResult.enableHistoryTracking = await page
+          .locator(
+            ENABLE_FIELD_HISTORY_SELECTOR.replace('{APINAME}', fieldApiName)
+          )
+          .map((checkbox: HTMLInputElement) => checkbox.checked)
+          .wait();
 
         fieldHistoryTrackingConfigs.push(fieldHistoryTrackingResult);
       }
@@ -130,23 +129,16 @@ export class HistoryTracking extends BrowserforcePlugin {
       // Retrieve the object history tracking
       // If this is a custom object, this checkbox does not exist, so skip
       if (!historyTrackingConfig.objectApiName.includes('__c')) {
-        await page.waitForSelector(ENABLE_HISTORY_SELECTOR);
-
-        const historyTrackingEnabled = await page.$eval(
-          ENABLE_HISTORY_SELECTOR,
-          (el) => (el.getAttribute('checked') === 'checked' ? true : false)
-        );
+        const historyTrackingEnabled = await page
+          .locator(ENABLE_HISTORY_SELECTOR)
+          .map((checkbox) => checkbox.checked)
+          .wait();
 
         if (
           historyTrackingConfig.enableHistoryTracking !== historyTrackingEnabled
         ) {
           // Click the checkbox
-          const enableHistoryTracking = await page.waitForSelector(
-            ENABLE_HISTORY_SELECTOR
-          );
-          await enableHistoryTracking.evaluate((node) =>
-            (node as HTMLElement).click()
-          );
+          await page.locator(ENABLE_HISTORY_SELECTOR).click();
         }
       }
 
@@ -172,32 +164,32 @@ export class HistoryTracking extends BrowserforcePlugin {
             fieldApiName
           );
 
-          const fieldHistoryTrackingEnabled = await page.$eval(
-            fieldSelector,
-            (el) => (el.getAttribute('checked') === 'checked' ? true : false)
-          );
+          const fieldHistoryTrackingEnabled = await page
+            .locator(fieldSelector)
+            .map((checkbox: HTMLInputElement) => checkbox.checked)
+            .wait();
 
           if (
             fieldHistoryTracking.enableHistoryTracking !==
             fieldHistoryTrackingEnabled
           ) {
             // Click the checkbox
-            const enableFieldHistoryTracking = await page.waitForSelector(
-              fieldSelector
-            );
-            await enableFieldHistoryTracking.evaluate((node) =>
-              (node as HTMLElement).click()
-            );
+            await page.locator(fieldSelector).click();
           }
         }
       }
 
       // Save the settings
-      const saveButton = await page.waitForSelector(SAVE_BUTTON_SELECTOR);
-      await saveButton.evaluate((node) => (node as HTMLElement).click());
-
-      // Wait for the page to refresh
-      await page.waitForNavigation();
+      await Promise.all([
+        page.waitForNavigation(),
+        page
+          .locator(
+            historyTrackingConfig.enableHistoryTracking
+              ? SAVE_BUTTON_SELECTOR
+              : FALLBACK_SAVE_BUTTON_SELECTOR
+          )
+          .click(),
+      ]);
 
       // Close the page
       await page.close();

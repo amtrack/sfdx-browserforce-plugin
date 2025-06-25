@@ -1,4 +1,4 @@
-import { Page } from 'puppeteer';
+import { type Page } from 'puppeteer';
 import { LayoutSelectionPage } from './layout-selection.js';
 
 const SAVE_BUTTON = 'input[id$=":form:SaveButton"]';

@@ -1,4 +1,4 @@
-import { Page } from 'puppeteer';
+import { type Page } from 'puppeteer';
 import { BrowserforcePlugin } from '../../../plugin.js';
 
 const BASE_PATH = 'ui/rpt/AnalyticsSharingSettingsPage/e';

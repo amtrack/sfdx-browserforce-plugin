@@ -83,14 +83,12 @@ export class AuthenticationConfiguration extends BrowserforcePlugin {
         throw new Error(`Authentication service "${svc.label}" not found`);
       }
 
-      const selector = `[id="${checkboxId}"]`;
-      const isChecked = await frameOrPage.$eval(
-        selector,
-        (el) => (el as HTMLInputElement).checked
-      );
-
+      const checkboxLocator = frameOrPage.locator(`input[id="${checkboxId}"]`);
+      const isChecked = await checkboxLocator
+        .map((input) => input.checked)
+        .wait();
       if (svc.enabled !== isChecked) {
-        await frameOrPage.click(selector);
+        await checkboxLocator.click();
       }
     }
 
@@ -103,10 +101,9 @@ export class AuthenticationConfiguration extends BrowserforcePlugin {
         'Change failed: “You must select at least one authentication service.”'
       );
     }
-    await frameOrPage.waitForSelector(SAVE_BUTTON_SELECTOR);
     await Promise.all([
-      frameOrPage.waitForNavigation({ waitUntil: 'networkidle0' }),
-      frameOrPage.click(SAVE_BUTTON_SELECTOR),
+      frameOrPage.waitForNavigation(),
+      frameOrPage.locator(SAVE_BUTTON_SELECTOR).click(),
     ]);
     await page.close();
   }

@@ -1,5 +1,5 @@
-import { Org } from '@salesforce/core';
-import { Browserforce } from './browserforce.js';
+import { type Org } from '@salesforce/core';
+import { type Browserforce } from './browserforce.js';
 import { deepDiff } from './plugins/utils.js';
 
 export abstract class BrowserforcePlugin {

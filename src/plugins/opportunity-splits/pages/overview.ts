@@ -1,4 +1,4 @@
-import { Page } from 'puppeteer';
+import { type Page } from 'puppeteer';
 
 const IN_PROGRESS = '#enablingInProgress, #disablingInProgress';
 const COMPLETED = '#prefSettingSucceeded';
