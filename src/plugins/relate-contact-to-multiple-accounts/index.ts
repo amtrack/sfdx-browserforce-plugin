@@ -20,12 +20,11 @@ type Config = {
 export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {
     const page = await this.browserforce.openPage(BASE_PATH);
-    await page.waitForSelector(ENABLED_SELECTOR, { visible: true });
     const response = {
-      enabled: await page.$eval(
-        ENABLED_SELECTOR,
-        (el: HTMLInputElement) => el.checked
-      ),
+      enabled: await page
+        .locator(ENABLED_SELECTOR)
+        .map((checkbox) => checkbox.checked)
+        .wait(),
     };
     await page.close();
     return response;
@@ -35,32 +34,24 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
     const page = await this.browserforce.openPage(BASE_PATH);
     await this.waitForProcessFinished(page);
     // First we have to click the 'Edit' button, to make the checkbox editable
-    await page.waitForSelector(EDIT_BUTTON_SELECTOR);
     await Promise.all([
       page.waitForNavigation(),
-      page.click(EDIT_BUTTON_SELECTOR),
+      page.locator(EDIT_BUTTON_SELECTOR).click(),
     ]);
     // Change the value of the checkbox
-    await page.waitForSelector(ENABLED_SELECTOR, { visible: true });
-    await page.click(ENABLED_SELECTOR);
+    await page.locator(ENABLED_SELECTOR).click();
     // Save
     if (config.enabled) {
-      await page.waitForSelector(SAVE_BUTTON_SELECTOR);
       await Promise.all([
         page.waitForNavigation(),
-        page.click(SAVE_BUTTON_SELECTOR),
+        page.locator(SAVE_BUTTON_SELECTOR).click(),
       ]);
     } else {
-      await page.waitForSelector(SAVE_BUTTON_SELECTOR);
-      await page.click(SAVE_BUTTON_SELECTOR);
-      await page.waitForSelector(DISABLE_CONFIRM_CHECKBOX_SELECTOR, {
-        visible: true,
-      });
-      await page.click(DISABLE_CONFIRM_CHECKBOX_SELECTOR);
-      await page.waitForSelector(DISABLE_CONFIRM_BUTTON_SELECTOR);
+      await page.locator(SAVE_BUTTON_SELECTOR).click();
+      await page.locator(DISABLE_CONFIRM_CHECKBOX_SELECTOR).click();
       await Promise.all([
         page.waitForNavigation(),
-        page.click(DISABLE_CONFIRM_BUTTON_SELECTOR),
+        page.locator(DISABLE_CONFIRM_BUTTON_SELECTOR).click(),
       ]);
     }
     await throwPageErrors(page);

@@ -3,7 +3,7 @@ import { BrowserforcePlugin } from '../../../plugin.js';
 import { semanticallyCleanObject } from '../../utils.js';
 
 const SAVE_BUTTON_SELECTOR = 'input[name="save"]';
-const CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL_SELECTOR = '#options_9';
+const CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL_SELECTOR = 'input#options_9';
 
 interface CustomObjectRecord extends Record {
   DeveloperName: string;
@@ -21,6 +21,7 @@ type AvailableCustomObjectConfig = {
 
 export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
   public async retrieve(definition: Config): Promise<Config> {
+    const isLEX = await this.browserforce.isLEX();
     const response: Config = [];
     if (definition) {
       const availableCustomObjectList = definition
@@ -41,19 +42,12 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
           record.NamespacePrefix = undefined;
         }
       }
-      const page = await this.browserforce.openPage('');
-      // new URLs for LEX: https://help.salesforce.com/articleView?id=FAQ-for-the-New-URL-Format-for-Lightning-Experience-and-the-Salesforce-Mobile-App&type=1
-      const isLEX =
-        page.url().includes('/one/one.app') ||
-        page.url().includes('/lightning/');
       const getObjectPageUrl = function (customObject, isLexUi = true) {
         const classicUiPath = `${customObject._id}/e`;
         if (isLexUi) {
           return `lightning/setup/ObjectManager/${
             customObject._id
-          }/edit?nodeId=ObjectManager&address=${encodeURIComponent(
-            `/${classicUiPath}`
-          )}`;
+          }/edit?address=${encodeURIComponent(`/${classicUiPath}`)}`;
         } else {
           return classicUiPath;
         }
@@ -78,21 +72,19 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
         };
         const pageUrl = getObjectPageUrl(result, isLEX);
         const editPage = await this.browserforce.openPage(pageUrl);
-        const frameOrPage =
-          await this.browserforce.waitForSelectorInFrameOrPage(
-            editPage,
-            CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL_SELECTOR
-          );
+        const frameOrPage = isLEX
+          ? await this.browserforce.waitForIframe(editPage)
+          : editPage;
+        const available = await frameOrPage
+          .locator(CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL_SELECTOR)
+          .map((checkbox) => checkbox.checked)
+          .wait();
+        await editPage.close();
         response.push({
           ...result,
-          available: await frameOrPage.$eval(
-            CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL_SELECTOR,
-            (el: HTMLInputElement) => el.checked
-          ),
+          available,
         });
-        await editPage.close();
       }
-      await page.close();
     }
     return response;
   }
@@ -129,11 +121,7 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
 
   public async apply(plan: Config): Promise<void> {
     if (plan && plan.length) {
-      const page = await this.browserforce.openPage('');
-      // new URLs for LEX: https://help.salesforce.com/articleView?id=FAQ-for-the-New-URL-Format-for-Lightning-Experience-and-the-Salesforce-Mobile-App&type=1
-      const isLEX =
-        page.url().includes('/one/one.app') ||
-        page.url().includes('/lightning/');
+      const isLEX = await this.browserforce.isLEX();
       const getObjectPageUrl = function (customObject, isLexUi = true) {
         const classicUiPath = `${customObject._id}/e?options_9=${
           customObject.available ? 1 : 0
@@ -141,9 +129,7 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
         if (isLexUi) {
           return `lightning/setup/ObjectManager/${
             customObject._id
-          }/edit?nodeId=ObjectManager&address=${encodeURIComponent(
-            `/${classicUiPath}`
-          )}`;
+          }/edit?address=${encodeURIComponent(`/${classicUiPath}`)}`;
         } else {
           return classicUiPath;
         }
@@ -152,18 +138,15 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
       for (const customObject of plan) {
         const pageUrl = getObjectPageUrl(customObject, isLEX);
         const editPage = await this.browserforce.openPage(pageUrl);
-        const frameOrPage =
-          await this.browserforce.waitForSelectorInFrameOrPage(
-            editPage,
-            SAVE_BUTTON_SELECTOR
-          );
+        const frameOrPage = isLEX
+          ? await this.browserforce.waitForIframe(editPage)
+          : editPage;
         await Promise.all([
           editPage.waitForNavigation(),
-          frameOrPage.click(SAVE_BUTTON_SELECTOR),
+          frameOrPage.locator(SAVE_BUTTON_SELECTOR).click(),
         ]);
         await editPage.close();
       }
-      await page.close();
     }
   }
 }

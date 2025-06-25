@@ -16,14 +16,16 @@ export class DeferSharingCalculation extends BrowserforcePlugin {
     await page.waitForSelector(SUSPEND_BUTTON_SELECTOR);
     await page.waitForSelector(RESUME_BUTTON_SELECTOR);
 
-    const isSuspendDisabled = await page.$eval(
-      SUSPEND_BUTTON_SELECTOR,
-      (el: HTMLInputElement) => el.disabled
-    );
-    const isResumeDisabled = await page.$eval(
-      RESUME_BUTTON_SELECTOR,
-      (el: HTMLInputElement) => el.disabled
-    );
+    const isSuspendDisabled = await page
+      .locator(SUSPEND_BUTTON_SELECTOR)
+      .setWaitForEnabled(false)
+      .map((input) => input.disabled)
+      .wait();
+    const isResumeDisabled = await page
+      .locator(RESUME_BUTTON_SELECTOR)
+      .setWaitForEnabled(false)
+      .map((input) => input.disabled)
+      .wait();
     if (isSuspendDisabled && isResumeDisabled) {
       throw new Error(
         'Sharing recalculation is currently in progress, please wait until this has completed to plan'
@@ -40,15 +42,13 @@ export class DeferSharingCalculation extends BrowserforcePlugin {
     const button = config.suspend
       ? SUSPEND_BUTTON_SELECTOR
       : RESUME_BUTTON_SELECTOR;
-    await page.waitForSelector(button);
-    await Promise.all([page.waitForNavigation(), page.click(button)]);
+    await Promise.all([page.waitForNavigation(), page.locator(button).click()]);
     await page.close();
     if (!config.suspend) {
       const refreshedPage = await this.browserforce.openPage(BASE_PATH);
-      await refreshedPage.waitForSelector(RECALCULATE_BUTTON_SELECTOR);
       await Promise.all([
         refreshedPage.waitForNavigation(),
-        refreshedPage.click(RECALCULATE_BUTTON_SELECTOR),
+        refreshedPage.locator(RECALCULATE_BUTTON_SELECTOR).click(),
       ]);
       await refreshedPage.close();
     }
