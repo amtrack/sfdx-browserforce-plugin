@@ -5,7 +5,7 @@
       "authenticationConfiguration": {
         "services": [
           {
-            "label" : "Login Form",
+            "label": "Login Form",
             "enabled": false
           }
         ]

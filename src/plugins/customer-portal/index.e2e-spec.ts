@@ -45,8 +45,8 @@ describe('CustomerPortal', () => {
       {
         name: 'Customer Portal',
         adminUser: 'User User',
-        isSelfRegistrationActivated: true
-      }
+        isSelfRegistrationActivated: true,
+      },
     ];
     const configSetupPortal = [
       {
@@ -61,22 +61,22 @@ describe('CustomerPortal', () => {
         portalProfileMemberships: [
           {
             name: 'Customer Portal Manager Standard',
-            active: false
+            active: false,
           },
           {
             name: 'Dummy',
-            active: true
-          }
-        ]
-      }
+            active: true,
+          },
+        ],
+      },
     ];
     const configRevertPortal = [
       {
         name: 'Customer Portal',
         oldName: 'Foo Portal',
         description: 'Customer Portal',
-        isSelfRegistrationActivated: false
-      }
+        isSelfRegistrationActivated: false,
+      },
     ];
     const dir = path.resolve(path.join(__dirname, 'portals'));
     it('should fail to set portal admin user without permset', async () => {
@@ -97,11 +97,25 @@ describe('CustomerPortal', () => {
         'start',
         '-d',
         path.join(dir, 'sfdx-source'),
-        '--json'
+        '--json',
       ]);
-      assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
-      const permSetAssignCmd = child.spawnSync('sf', ['org', 'assign', 'permset', '-n', 'Customer_Portal_Admin']);
-      assert.deepStrictEqual(permSetAssignCmd.status, 0, permSetAssignCmd.output.toString());
+      assert.deepStrictEqual(
+        sourceDeployCmd.status,
+        0,
+        sourceDeployCmd.output.toString()
+      );
+      const permSetAssignCmd = child.spawnSync('sf', [
+        'org',
+        'assign',
+        'permset',
+        '-n',
+        'Customer_Portal_Admin',
+      ]);
+      assert.deepStrictEqual(
+        permSetAssignCmd.status,
+        0,
+        permSetAssignCmd.output.toString()
+      );
     });
     it('should set up portal', async () => {
       await plugin.run(configSetupPortal);
@@ -127,9 +141,13 @@ describe('CustomerPortal', () => {
         '-s',
         'PermissionSetAssignment',
         '-w',
-        'PermissionSet.Name=Customer_Portal_Admin'
+        'PermissionSet.Name=Customer_Portal_Admin',
       ]);
-      assert.deepStrictEqual(permSetUnassignCmd.status, 0, permSetUnassignCmd.output.toString());
+      assert.deepStrictEqual(
+        permSetUnassignCmd.status,
+        0,
+        permSetUnassignCmd.output.toString()
+      );
       await conn.metadata.delete('PermissionSet', ['Customer_Portal_Admin']);
     });
   });
@@ -143,20 +161,20 @@ describe('CustomerPortal', () => {
     const configAvailableCustomObjects = [
       {
         name: 'Dummy',
-        available: true
-      }
+        available: true,
+      },
     ];
     const configNonAvailableCustomObjects = [
       {
         name: 'DummyXYZ',
-        available: true
-      }
+        available: true,
+      },
     ];
     const configUnavailableCustomObjects = [
       {
         name: 'Dummy',
-        available: false
-      }
+        available: false,
+      },
     ];
 
     const dir = path.resolve(path.join(__dirname, 'available-custom-objects'));
@@ -178,9 +196,13 @@ describe('CustomerPortal', () => {
         'start',
         '-d',
         path.join(dir, 'sfdx-source'),
-        '--json'
+        '--json',
       ]);
-      assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
+      assert.deepStrictEqual(
+        sourceDeployCmd.status,
+        0,
+        sourceDeployCmd.output.toString()
+      );
     });
     it('should make custom objects available for customer portal', async () => {
       await plugin.run(configAvailableCustomObjects);

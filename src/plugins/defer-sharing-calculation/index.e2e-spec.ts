@@ -12,10 +12,10 @@ describe(DeferSharingCalculation.name, function () {
     plugin = new DeferSharingCalculation(global.bf);
   });
   const configSuspend = {
-    suspend: true
+    suspend: true,
   };
   const configResume = {
-    suspend: false
+    suspend: false,
   };
   it('should assign the user defer sharing permissions', () => {
     const sourceDeployCmd = child.spawnSync('sf', [
@@ -24,11 +24,25 @@ describe(DeferSharingCalculation.name, function () {
       'start',
       '-d',
       path.join(__dirname, 'sfdx-source'),
-      '--json'
+      '--json',
     ]);
-    assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
-    const permSetAssignCmd = child.spawnSync('sf', ['org', 'assign', 'permset', '-n', 'Defer_Sharing']);
-    assert.deepStrictEqual(permSetAssignCmd.status, 0, permSetAssignCmd.output.toString());
+    assert.deepStrictEqual(
+      sourceDeployCmd.status,
+      0,
+      sourceDeployCmd.output.toString()
+    );
+    const permSetAssignCmd = child.spawnSync('sf', [
+      'org',
+      'assign',
+      'permset',
+      '-n',
+      'Defer_Sharing',
+    ]);
+    assert.deepStrictEqual(
+      permSetAssignCmd.status,
+      0,
+      permSetAssignCmd.output.toString()
+    );
   });
   it('should suspend', async () => {
     await plugin.run(configSuspend);
@@ -63,8 +77,12 @@ describe(DeferSharingCalculation.name, function () {
       '-s',
       'PermissionSetAssignment',
       '-w',
-      'PermissionSet.Name=Defer_Sharing'
+      'PermissionSet.Name=Defer_Sharing',
     ]);
-    assert.deepStrictEqual(permSetUnassignCmd.status, 0, permSetUnassignCmd.output.toString());
+    assert.deepStrictEqual(
+      permSetUnassignCmd.status,
+      0,
+      permSetUnassignCmd.output.toString()
+    );
   });
 });

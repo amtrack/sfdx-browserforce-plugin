@@ -16,24 +16,24 @@ describe(RecordTypes.name, function () {
   const configDelete = {
     deletions: [
       {
-        fullName: 'Vehicle__c.SUV'
-      }
-    ]
+        fullName: 'Vehicle__c.SUV',
+      },
+    ],
   };
   const configDeleteActive = {
     deletions: [
       {
-        fullName: 'Vehicle__c.CUV'
-      }
-    ]
+        fullName: 'Vehicle__c.CUV',
+      },
+    ],
   };
   const configDeleteAndReplace = {
     deletions: [
       {
         fullName: 'Vehicle__c.SportsCar',
-        replacement: 'Vehicle__c.Bicycle'
-      }
-    ]
+        replacement: 'Vehicle__c.Bicycle',
+      },
+    ],
   };
 
   it('should deploy a CustomObject for testing', () => {
@@ -43,9 +43,13 @@ describe(RecordTypes.name, function () {
       'start',
       '-d',
       path.join(__dirname, 'sfdx-source'),
-      '--json'
+      '--json',
     ]);
-    assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
+    assert.deepStrictEqual(
+      sourceDeployCmd.status,
+      0,
+      sourceDeployCmd.output.toString()
+    );
   });
   it('should delete a record type', async () => {
     await plugin.run(configDelete);

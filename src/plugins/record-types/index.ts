@@ -15,24 +15,36 @@ export class RecordTypes extends BrowserforcePlugin {
   public async retrieve(definition: Config): Promise<Config> {
     const conn = this.org.getConnection();
     const response: Config = {
-      deletions: []
+      deletions: [],
     };
     const recordTypeFileProperties = await listRecordTypes(conn);
     const recordTypes = await queryRecordTypes(conn);
     for (const deletion of definition.deletions) {
-      const recordType = getRecordType(deletion.fullName, recordTypeFileProperties, recordTypes);
+      const recordType = getRecordType(
+        deletion.fullName,
+        recordTypeFileProperties,
+        recordTypes
+      );
       if (recordType) {
         if (recordType.IsActive) {
-          throw new Error(`Cannot delete active RecordType: ${deletion.fullName}`);
+          throw new Error(
+            `Cannot delete active RecordType: ${deletion.fullName}`
+          );
         }
         if (deletion.replacement) {
-          const replacementRecordType = getRecordType(deletion.replacement, recordTypeFileProperties, recordTypes);
+          const replacementRecordType = getRecordType(
+            deletion.replacement,
+            recordTypeFileProperties,
+            recordTypes
+          );
           if (!replacementRecordType) {
-            throw new Error(`Could not find replacement RecordType: ${deletion.replacement}`);
+            throw new Error(
+              `Could not find replacement RecordType: ${deletion.replacement}`
+            );
           }
         }
         response.deletions.push({
-          ...deletion
+          ...deletion,
         });
       } else {
         response.deletions.push(deletion);
@@ -47,7 +59,11 @@ export class RecordTypes extends BrowserforcePlugin {
     const recordTypes = await queryRecordTypes(conn);
 
     for (const deletion of config.deletions) {
-      const recordType = getRecordType(deletion.fullName, recordTypeFileProperties, recordTypes);
+      const recordType = getRecordType(
+        deletion.fullName,
+        recordTypeFileProperties,
+        recordTypes
+      );
       const page = await this.browserforce.openPage(
         `ui/setup/rectype/RecordTypes?type=${recordType.EntityDefinitionId}`
       );
@@ -55,7 +71,11 @@ export class RecordTypes extends BrowserforcePlugin {
       const deletePage = await recordTypePage.clickDeleteAction(recordType.Id);
       let newRecordTypeId;
       if (deletion.replacement) {
-        const replacementRecordType = getRecordType(deletion.replacement, recordTypeFileProperties, recordTypes);
+        const replacementRecordType = getRecordType(
+          deletion.replacement,
+          recordTypeFileProperties,
+          recordTypes
+        );
         newRecordTypeId = replacementRecordType.Id;
       }
       await deletePage.replace(newRecordTypeId);
@@ -66,7 +86,7 @@ export class RecordTypes extends BrowserforcePlugin {
 
 async function listRecordTypes(conn) {
   const recordTypes = await conn.metadata.list({
-    type: 'RecordType'
+    type: 'RecordType',
   });
   return recordTypes;
 }
@@ -86,7 +106,9 @@ async function queryRecordTypes(conn: Connection): Promise<RecordType[]> {
 }
 
 function getRecordType(fullName: string, fileProperties, recordTypes) {
-  const recordTypeFileProperty = fileProperties.find((fp) => fp.fullName === fullName);
+  const recordTypeFileProperty = fileProperties.find(
+    (fp) => fp.fullName === fullName
+  );
   if (recordTypeFileProperty) {
     return recordTypes.find((x) => x.Id === recordTypeFileProperty.id);
   }

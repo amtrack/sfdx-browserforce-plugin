@@ -8,10 +8,10 @@ describe(HighVelocitySalesSettings.name, function () {
   });
 
   const configEnabled: Config = {
-    setUpAndEnable: true
+    setUpAndEnable: true,
   };
   const configDisabled = {
-    setUpAndEnable: false
+    setUpAndEnable: false,
   };
 
   it('should enable', async () => {

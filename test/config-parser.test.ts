@@ -9,10 +9,10 @@ describe('ConfigParser', () => {
         settings: {
           security: {
             loginAccessPolicies: {
-              adminsCanLogInAsAnyUser: true
-            }
-          }
-        }
+              adminsCanLogInAsAnyUser: true,
+            },
+          },
+        },
       };
       const result = ConfigParser.parse(DRIVERS, definition);
       assert.deepStrictEqual(result[0].Driver.name, 'Security');
@@ -21,9 +21,9 @@ describe('ConfigParser', () => {
       const definition = {
         foo: {
           bar: {
-            baz: true
-          }
-        }
+            baz: true,
+          },
+        },
       };
       // workaround to disable static type checking
       const anonymousDefinition = JSON.parse(JSON.stringify(definition));
@@ -36,10 +36,10 @@ describe('ConfigParser', () => {
         settings: {
           foo: {
             bar: {
-              baz: true
-            }
-          }
-        }
+              baz: true,
+            },
+          },
+        },
       };
       assert.throws(() => {
         ConfigParser.parse(DRIVERS, definition);

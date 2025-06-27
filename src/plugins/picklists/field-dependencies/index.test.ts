@@ -15,17 +15,17 @@ const tests: T[] = [
       {
         object: 'Vehicle__c',
         dependentField: 'Gears__c',
-        controllingField: null
-      }
+        controllingField: null,
+      },
     ],
     target: [
       {
         object: 'Vehicle__c',
         dependentField: 'Gears__c',
-        controllingField: null
-      }
+        controllingField: null,
+      },
     ],
-    expected: undefined
+    expected: undefined,
   },
   {
     description: 'should unset controlling field',
@@ -33,24 +33,24 @@ const tests: T[] = [
       {
         object: 'Vehicle__c',
         dependentField: 'Gears__c',
-        controllingField: 'Foo__c'
-      }
+        controllingField: 'Foo__c',
+      },
     ],
     target: [
       {
         object: 'Vehicle__c',
         dependentField: 'Gears__c',
-        controllingField: null
-      }
+        controllingField: null,
+      },
     ],
     expected: [
       {
         object: 'Vehicle__c',
         dependentField: 'Gears__c',
-        controllingField: null
-      }
-    ]
-  }
+        controllingField: null,
+      },
+    ],
+  },
 ];
 
 describe('FieldDependencies', () => {

@@ -8,10 +8,10 @@ describe(SalesforceToSalesforce.name, function () {
   });
 
   const configEnabled = {
-    enabled: true
+    enabled: true,
   };
   const configDisabled = {
-    enabled: false
+    enabled: false,
   };
 
   it('should enable', async () => {

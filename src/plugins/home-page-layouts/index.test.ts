@@ -8,27 +8,27 @@ const tests = [
       homePageLayoutAssignments: [
         {
           profile: 'Standard User',
-          layout: ''
+          layout: '',
         },
         {
           profile: 'System Administrator',
-          layout: ''
-        }
-      ]
+          layout: '',
+        },
+      ],
     },
     target: {
       homePageLayoutAssignments: [
         {
           profile: 'Standard User',
-          layout: ''
+          layout: '',
         },
         {
           profile: 'System Administrator',
-          layout: ''
-        }
-      ]
+          layout: '',
+        },
+      ],
     },
-    expected: undefined
+    expected: undefined,
   },
   {
     description: 'should filter irrelevant assignments',
@@ -36,31 +36,31 @@ const tests = [
       homePageLayoutAssignments: [
         {
           profile: 'Foo User',
-          layout: ''
+          layout: '',
         },
         {
           profile: 'Standard User',
-          layout: ''
+          layout: '',
         },
         {
           profile: 'System Administrator',
-          layout: ''
-        }
-      ]
+          layout: '',
+        },
+      ],
     },
     target: {
       homePageLayoutAssignments: [
         {
           profile: 'Standard User',
-          layout: ''
+          layout: '',
         },
         {
           profile: 'System Administrator',
-          layout: ''
-        }
-      ]
+          layout: '',
+        },
+      ],
     },
-    expected: undefined
+    expected: undefined,
   },
   {
     description: 'should match when unsorted',
@@ -68,28 +68,28 @@ const tests = [
       homePageLayoutAssignments: [
         {
           profile: 'System Administrator',
-          layout: ''
+          layout: '',
         },
         {
           profile: 'Standard User',
-          layout: ''
-        }
-      ]
+          layout: '',
+        },
+      ],
     },
     target: {
       homePageLayoutAssignments: [
         {
           profile: 'Standard User',
-          layout: ''
+          layout: '',
         },
         {
           profile: 'System Administrator',
-          layout: ''
-        }
-      ]
+          layout: '',
+        },
+      ],
     },
-    expected: undefined
-  }
+    expected: undefined,
+  },
 ];
 
 describe('HomePageLayouts', () => {

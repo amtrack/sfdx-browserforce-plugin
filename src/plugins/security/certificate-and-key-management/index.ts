@@ -7,12 +7,12 @@ import { BrowserforcePlugin } from '../../../plugin.js';
 
 const PATHS = {
   CERT_PREFIX: '0P1',
-  KEYSTORE_IMPORT: '_ui/security/certificate/KeyStoreImportUi/e'
+  KEYSTORE_IMPORT: '_ui/security/certificate/KeyStoreImportUi/e',
 };
 const SELECTORS = {
   FILE_UPLOAD: 'input[type="file"]',
   KEYSTORE_PASSWORD: 'input#Password',
-  SAVE_BUTTON: 'input[name="save"]'
+  SAVE_BUTTON: 'input[name="save"]',
 };
 
 interface CertificateRecord extends Record {
@@ -45,10 +45,13 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
   public async retrieve(definition: Config): Promise<Config> {
     const response: Config = {
       certificates: [],
-      importFromKeystore: []
+      importFromKeystore: [],
     };
     let existingCertificates: CertificateRecord[] = [];
-    if (definition?.certificates?.length || definition?.importFromKeystore?.length) {
+    if (
+      definition?.certificates?.length ||
+      definition?.importFromKeystore?.length
+    ) {
       existingCertificates = (
         await this.org.getConnection().tooling.query<CertificateRecord>(
           `SELECT Id, DeveloperName, MasterLabel, OptionsIsPrivateKeyExportable, KeySize FROM Certificate`,
@@ -60,24 +63,28 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
     }
     if (definition?.certificates?.length) {
       for (const cert of definition.certificates) {
-        const existingCert = existingCertificates.find((co) => co.DeveloperName === cert.name);
+        const existingCert = existingCertificates.find(
+          (co) => co.DeveloperName === cert.name
+        );
         if (existingCert) {
           response.certificates!.push({
             _id: existingCert.Id,
             name: existingCert.DeveloperName,
             label: existingCert.MasterLabel,
             exportable: existingCert.OptionsIsPrivateKeyExportable,
-            keySize: existingCert.KeySize
+            keySize: existingCert.KeySize,
           });
         }
       }
     }
     if (definition?.importFromKeystore?.length) {
       for (const cert of definition.importFromKeystore) {
-        const existingCert = existingCertificates.find((co) => co.DeveloperName === cert.name);
+        const existingCert = existingCertificates.find(
+          (co) => co.DeveloperName === cert.name
+        );
         if (existingCert) {
           response.importFromKeystore!.push({
-            name: existingCert.DeveloperName
+            name: existingCert.DeveloperName,
           });
         }
       }
@@ -89,12 +96,16 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
     const response: Config = {};
     if (state && definition && state.certificates && definition.certificates) {
       for (const cert of definition.certificates) {
-        const existingCert = state.certificates.find((c) => c.name === cert.name);
+        const existingCert = state.certificates.find(
+          (c) => c.name === cert.name
+        );
         if (existingCert) {
           // copy id from state to definition to be retained and used
           cert._id = existingCert._id;
         }
-        const certDiff = super.diff(existingCert, cert) as Certificate | undefined;
+        const certDiff = super.diff(existingCert, cert) as
+          | Certificate
+          | undefined;
         if (certDiff !== undefined) {
           if (!response.certificates) {
             response.certificates = [];
@@ -123,7 +134,7 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
           // create new
           const urlAttributes = {
             DeveloperName: certificate.name,
-            MasterLabel: certificate.label
+            MasterLabel: certificate.label,
           };
           if (certificate.keySize) {
             urlAttributes['keySize'] = certificate.keySize;
@@ -135,19 +146,28 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
             `${PATHS.CERT_PREFIX}/e?${queryString.stringify(urlAttributes)}`
           );
           await page.waitForSelector(SELECTORS.SAVE_BUTTON);
-          await Promise.all([page.waitForNavigation(), page.click(SELECTORS.SAVE_BUTTON)]);
+          await Promise.all([
+            page.waitForNavigation(),
+            page.click(SELECTORS.SAVE_BUTTON),
+          ]);
           await page.close();
         }
       }
     }
     if (plan.importFromKeystore) {
       for (const certificate of plan.importFromKeystore) {
-        const page = await this.browserforce.openPage(`${PATHS.KEYSTORE_IMPORT}`);
+        const page = await this.browserforce.openPage(
+          `${PATHS.KEYSTORE_IMPORT}`
+        );
         await page.waitForSelector(SELECTORS.FILE_UPLOAD);
-        const elementHandle = (await page.$(SELECTORS.FILE_UPLOAD)) as ElementHandle<HTMLInputElement>;
+        const elementHandle = (await page.$(
+          SELECTORS.FILE_UPLOAD
+        )) as ElementHandle<HTMLInputElement>;
         // TODO: make relative to this.command.flags.definitionfile
         if (!certificate.filePath) {
-          throw new Error(`To import a certificate, the filePath is mandatory.`);
+          throw new Error(
+            `To import a certificate, the filePath is mandatory.`
+          );
         }
         const filePath = path.resolve(certificate.filePath);
         if (!existsSync(filePath)) {
@@ -159,7 +179,10 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
           await page.type(SELECTORS.KEYSTORE_PASSWORD, certificate.password);
         }
         await page.waitForSelector(SELECTORS.SAVE_BUTTON);
-        await Promise.all([page.waitForNavigation(), page.click(SELECTORS.SAVE_BUTTON)]);
+        await Promise.all([
+          page.waitForNavigation(),
+          page.click(SELECTORS.SAVE_BUTTON),
+        ]);
         if (certificate.name) {
           // rename cert as it has the wrong name
           //  JKS aliases are case-insensitive (and so lowercase)
@@ -173,7 +196,10 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
             `${importedCert.Id}/e?MasterLabel=${certificate.name}&DeveloperName=${certificate.name}`
           );
           await certPage.waitForSelector(SELECTORS.SAVE_BUTTON);
-          await Promise.all([certPage.waitForNavigation(), certPage.click(SELECTORS.SAVE_BUTTON)]);
+          await Promise.all([
+            certPage.waitForNavigation(),
+            certPage.click(SELECTORS.SAVE_BUTTON),
+          ]);
           await certPage.close();
         }
         await page.close();

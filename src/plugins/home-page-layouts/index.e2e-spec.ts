@@ -11,25 +11,25 @@ describe(HomePageLayouts.name, function () {
     homePageLayoutAssignments: [
       {
         profile: 'Standard User',
-        layout: ''
+        layout: '',
       },
       {
         profile: 'System Administrator',
-        layout: ''
-      }
-    ]
+        layout: '',
+      },
+    ],
   };
   const configOrgDefault = {
     homePageLayoutAssignments: [
       {
         profile: 'Standard User',
-        layout: 'DE Default'
+        layout: 'DE Default',
       },
       {
         profile: 'System Administrator',
-        layout: 'DE Default'
-      }
-    ]
+        layout: 'DE Default',
+      },
+    ],
   };
   it('should assign some layouts', async () => {
     await plugin.run(configPageDefault);

@@ -1,12 +1,12 @@
 import { BrowserforcePlugin } from '../../plugin.js';
 
 const PATHS = {
-  BASE: 'setup/activitiesSetupPage.apexp'
+  BASE: 'setup/activitiesSetupPage.apexp',
 };
 
 const SELECTORS = {
   MANY_WHO_PREF_INPUT: 'input[id="thePage:theForm:theBlock:manyWhoPref"]',
-  SUBMIT_BUTTON: 'input[id="thePage:theForm:theBlock:buttons:submit"]'
+  SUBMIT_BUTTON: 'input[id="thePage:theForm:theBlock:buttons:submit"]',
 };
 
 type Config = {
@@ -21,7 +21,7 @@ export class ActivitySettings extends BrowserforcePlugin {
       allowUsersToRelateMultipleContactsToTasksAndEvents: await page.$eval(
         SELECTORS.MANY_WHO_PREF_INPUT,
         (el: HTMLInputElement) => el.checked
-      )
+      ),
     };
     await page.close();
     return response;
@@ -42,7 +42,10 @@ export class ActivitySettings extends BrowserforcePlugin {
       },
       config.allowUsersToRelateMultipleContactsToTasksAndEvents
     );
-    await Promise.all([page.waitForNavigation(), page.click(SELECTORS.SUBMIT_BUTTON)]);
+    await Promise.all([
+      page.waitForNavigation(),
+      page.click(SELECTORS.SUBMIT_BUTTON),
+    ]);
     await page.close();
   }
 }

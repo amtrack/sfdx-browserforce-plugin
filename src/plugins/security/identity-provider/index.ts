@@ -3,14 +3,14 @@ import pRetry, { AbortError } from 'p-retry';
 import { BrowserforcePlugin } from '../../../plugin.js';
 
 const PATHS = {
-  EDIT_VIEW: 'setup/secur/idp/IdpPage.apexp'
+  EDIT_VIEW: 'setup/secur/idp/IdpPage.apexp',
 };
 const SELECTORS = {
   CHOOSE_CERT: 'select[id$=":chooseCert"]',
   CERT_NAME_SPAN: 'span[id$="developer__name"',
   DISABLE_BUTTON: 'input[name$=":disable"]',
   EDIT_BUTTON: 'input[name$=":edit"]',
-  SAVE_BUTTON: 'input[name$=":save"]'
+  SAVE_BUTTON: 'input[name$=":save"]',
 };
 
 interface CertificateRecord extends Record {
@@ -30,11 +30,14 @@ export class IdentityProvider extends BrowserforcePlugin {
     const disableButton = await page.$(SELECTORS.DISABLE_BUTTON);
     const enabled = disableButton !== null;
     const response: Config = {
-      enabled
+      enabled,
     };
     if (enabled) {
       const certNameHandle = await page.$(SELECTORS.CERT_NAME_SPAN);
-      response.certificate = await page.evaluate((span: HTMLSpanElement) => span.innerText, certNameHandle);
+      response.certificate = await page.evaluate(
+        (span: HTMLSpanElement) => span.innerText,
+        certNameHandle
+      );
     }
     await page.close();
     return response;
@@ -52,11 +55,16 @@ export class IdentityProvider extends BrowserforcePlugin {
               `SELECT Id, DeveloperName FROM Certificate WHERE DeveloperName = '${plan.certificate}'`
             );
           if (!certsResponse.totalSize) {
-            throw new AbortError(`Could not find Certificate '${plan.certificate}'`);
+            throw new AbortError(
+              `Could not find Certificate '${plan.certificate}'`
+            );
           }
           const page = await this.browserforce.openPage(PATHS.EDIT_VIEW);
           await page.waitForSelector(SELECTORS.EDIT_BUTTON);
-          await Promise.all([page.waitForNavigation(), page.click(SELECTORS.EDIT_BUTTON)]);
+          await Promise.all([
+            page.waitForNavigation(),
+            page.click(SELECTORS.EDIT_BUTTON),
+          ]);
           await page.waitForSelector(SELECTORS.CHOOSE_CERT);
           const chooseCertOptions = await page.$$eval(
             `${SELECTORS.CHOOSE_CERT} option`,
@@ -64,12 +72,14 @@ export class IdentityProvider extends BrowserforcePlugin {
               return options.map((option) => {
                 return {
                   text: option.text,
-                  value: option.value
+                  value: option.value,
                 };
               });
             }
           );
-          const chooseCertOption = chooseCertOptions.find((x) => x.text === plan.certificate);
+          const chooseCertOption = chooseCertOptions.find(
+            (x) => x.text === plan.certificate
+          );
           if (!chooseCertOption) {
             throw new Error(
               `Waiting for Certificate '${plan.certificate}' to be available in Identity Provider picklist timed out`
@@ -80,12 +90,15 @@ export class IdentityProvider extends BrowserforcePlugin {
             await dialog.accept();
           });
           await page.waitForSelector(SELECTORS.SAVE_BUTTON);
-          await Promise.all([page.waitForNavigation(), page.click(SELECTORS.SAVE_BUTTON)]);
+          await Promise.all([
+            page.waitForNavigation(),
+            page.click(SELECTORS.SAVE_BUTTON),
+          ]);
           await page.close();
         },
         {
           retries: 5,
-          minTimeout: 2 * 1000
+          minTimeout: 2 * 1000,
         }
       );
     } else {
@@ -96,7 +109,10 @@ export class IdentityProvider extends BrowserforcePlugin {
       page.on('dialog', async (dialog) => {
         await dialog.accept();
       });
-      await Promise.all([page.waitForNavigation(), page.click(SELECTORS.DISABLE_BUTTON)]);
+      await Promise.all([
+        page.waitForNavigation(),
+        page.click(SELECTORS.DISABLE_BUTTON),
+      ]);
       await page.close();
     }
   }

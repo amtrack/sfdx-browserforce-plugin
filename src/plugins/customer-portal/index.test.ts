@@ -5,32 +5,32 @@ const tests = [
   {
     description: 'should ignore a non-existent target flag',
     source: {
-      enabled: true
+      enabled: true,
     },
     target: {},
-    expected: undefined
+    expected: undefined,
   },
   {
     description: 'should ignore a matching target flag',
     source: {
-      enabled: true
+      enabled: true,
     },
     target: {
-      enabled: true
+      enabled: true,
     },
-    expected: undefined
+    expected: undefined,
   },
   {
     description: 'should detect a changed flag',
     source: {
-      enabled: false
+      enabled: false,
     },
     target: {
-      enabled: true
+      enabled: true,
     },
     expected: {
-      enabled: true
-    }
+      enabled: true,
+    },
   },
   {
     description: 'should only return necessary fields',
@@ -45,31 +45,31 @@ const tests = [
             {
               name: 'Customer Portal Manager Standard',
               active: true,
-              _id: 'a1'
-            }
+              _id: 'a1',
+            },
           ],
-          _id: 'p1'
-        }
-      ]
+          _id: 'p1',
+        },
+      ],
     },
     target: {
       portals: [
         {
           name: 'Customer Portal',
-          description: 'new description'
-        }
-      ]
+          description: 'new description',
+        },
+      ],
     },
     expected: {
       portals: [
         {
           name: 'Customer Portal',
           description: 'new description',
-          _id: 'p1'
-        }
-      ]
-    }
-  }
+          _id: 'p1',
+        },
+      ],
+    },
+  },
 ];
 
 describe('CustomerPortal', () => {

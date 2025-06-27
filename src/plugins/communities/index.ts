@@ -1,13 +1,13 @@
 import { BrowserforcePlugin } from '../../plugin.js';
 
 const PATHS = {
-  BASE: '_ui/networks/setup/NetworkSettingsPage'
+  BASE: '_ui/networks/setup/NetworkSettingsPage',
 };
 const SELECTORS = {
   BASE: 'div.pbBody',
   ENABLE_CHECKBOX: 'input[id$=":enableNetworkPrefId"]',
   DOMAIN_NAME_INPUT_TEXT: 'input[id$=":inputSubdomain"]',
-  SAVE_BUTTON: 'input[id$=":saveId"]'
+  SAVE_BUTTON: 'input[id$=":saveId"]',
 };
 
 type Config = {
@@ -18,13 +18,19 @@ type Config = {
 export class Communities extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
     const page = await this.browserforce.openPage(PATHS.BASE);
-    const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(page, SELECTORS.BASE);
+    const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(
+      page,
+      SELECTORS.BASE
+    );
     const response = {
-      enabled: true
+      enabled: true,
     };
     const inputEnable = await frameOrPage.$(SELECTORS.ENABLE_CHECKBOX);
     if (inputEnable) {
-      response.enabled = await frameOrPage.$eval(SELECTORS.ENABLE_CHECKBOX, (el: HTMLInputElement) => el.checked);
+      response.enabled = await frameOrPage.$eval(
+        SELECTORS.ENABLE_CHECKBOX,
+        (el: HTMLInputElement) => el.checked
+      );
     }
     await page.close();
     return response;
@@ -36,7 +42,10 @@ export class Communities extends BrowserforcePlugin {
     }
 
     const page = await this.browserforce.openPage(PATHS.BASE);
-    const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(page, SELECTORS.ENABLE_CHECKBOX);
+    const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(
+      page,
+      SELECTORS.ENABLE_CHECKBOX
+    );
     await frameOrPage.click(SELECTORS.ENABLE_CHECKBOX);
     const domainName = (
       config.domainName ||
@@ -49,7 +58,10 @@ export class Communities extends BrowserforcePlugin {
       await dialog.accept();
     });
     await frameOrPage.waitForSelector(SELECTORS.SAVE_BUTTON);
-    await Promise.all([page.waitForNavigation(), frameOrPage.click(SELECTORS.SAVE_BUTTON)]);
+    await Promise.all([
+      page.waitForNavigation(),
+      frameOrPage.click(SELECTORS.SAVE_BUTTON),
+    ]);
     await page.close();
   }
 }

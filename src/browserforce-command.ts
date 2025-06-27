@@ -1,4 +1,9 @@
-import { Flags, SfCommand, Ux, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import {
+  Flags,
+  SfCommand,
+  Ux,
+  requiredOrgFlagWithDeprecations,
+} from '@salesforce/sf-plugins-core';
 import { promises } from 'fs';
 import * as path from 'path';
 import { Browserforce } from './browserforce.js';
@@ -11,18 +16,19 @@ export abstract class BrowserforceCommand<T> extends SfCommand<T> {
     'target-org': requiredOrgFlagWithDeprecations,
     definitionfile: Flags.string({
       char: 'f',
-      description: 'path to a browserforce state file'
+      description: 'path to a browserforce state file',
     }),
     planfile: Flags.string({
       char: 'p',
       name: 'plan',
-      description: 'path to a browserforce plan file'
+      description: 'path to a browserforce plan file',
     }),
     statefile: Flags.string({
       char: 's',
       name: 'state',
-      description: 'path to a browserforce definition file\nThe schema is similar to the scratch org definition file.\nSee https://github.com/amtrack/sfdx-browserforce-plugin#supported-org-preferences for supported values.'
-    })
+      description:
+        'path to a browserforce definition file\nThe schema is similar to the scratch org definition file.\nSee https://github.com/amtrack/sfdx-browserforce-plugin#supported-org-preferences for supported values.',
+    }),
   };
   protected bf: Browserforce;
   protected settings: any[];
@@ -30,11 +36,14 @@ export abstract class BrowserforceCommand<T> extends SfCommand<T> {
   public async init(): Promise<void> {
     await super.init();
     const { flags } = await this.parse({
-      baseFlags: BrowserforceCommand.baseFlags
+      baseFlags: BrowserforceCommand.baseFlags,
     });
     let definition;
     if (flags.definitionfile) {
-      const definitionFileData = await promises.readFile(path.resolve(flags.definitionfile), 'utf8');
+      const definitionFileData = await promises.readFile(
+        path.resolve(flags.definitionfile),
+        'utf8'
+      );
       try {
         definition = JSON.parse(definitionFileData);
       } catch (err) {
@@ -43,7 +52,10 @@ export abstract class BrowserforceCommand<T> extends SfCommand<T> {
     }
     // TODO: use require.resolve to dynamically load plugins from npm packages
     this.settings = ConfigParser.parse(DRIVERS, definition);
-    this.bf = new Browserforce(flags['target-org'], new Ux({ jsonEnabled: this.jsonEnabled() }));
+    this.bf = new Browserforce(
+      flags['target-org'],
+      new Ux({ jsonEnabled: this.jsonEnabled() })
+    );
     this.spinner.start('logging in');
     await this.bf.login();
     this.spinner.stop();

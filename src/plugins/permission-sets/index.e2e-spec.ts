@@ -15,9 +15,9 @@ describe(PermissionSets.name, function () {
 
   const configurePermissionSet = [
     {
-      permissionSetName: "ServicePresenceTest",
-      servicePresenceStatuses: ["TestStatus", "TestStatus3"]
-    }
+      permissionSetName: 'ServicePresenceTest',
+      servicePresenceStatuses: ['TestStatus', 'TestStatus3'],
+    },
   ];
 
   it('should create permission set and service presence status as a prerequisite', () => {
@@ -27,9 +27,13 @@ describe(PermissionSets.name, function () {
       'start',
       '-d',
       path.join(__dirname, 'sfdx-source'),
-      '--json'
+      '--json',
     ]);
-    assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
+    assert.deepStrictEqual(
+      sourceDeployCmd.status,
+      0,
+      sourceDeployCmd.output.toString()
+    );
   });
 
   it('should configure permission set presence status', async () => {

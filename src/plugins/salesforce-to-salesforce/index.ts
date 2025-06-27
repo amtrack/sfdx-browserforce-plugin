@@ -2,12 +2,12 @@ import pRetry from 'p-retry';
 import { BrowserforcePlugin } from '../../plugin.js';
 
 const PATHS = {
-  BASE: '_ui/s2s/ui/PartnerNetworkEnable/e'
+  BASE: '_ui/s2s/ui/PartnerNetworkEnable/e',
 };
 const SELECTORS = {
   ENABLED: '#penabled',
   BASE: 'table.detailList',
-  SAVE_BUTTON: 'input[name="save"]'
+  SAVE_BUTTON: 'input[name="save"]',
 };
 
 type Config = {
@@ -19,11 +19,14 @@ export class SalesforceToSalesforce extends BrowserforcePlugin {
     const page = await this.browserforce.openPage(PATHS.BASE);
     await page.waitForSelector(SELECTORS.BASE);
     const response = {
-      enabled: true
+      enabled: true,
     };
     const inputEnable = await page.$(SELECTORS.ENABLED);
     if (inputEnable) {
-      response.enabled = await page.$eval(SELECTORS.ENABLED, (el: HTMLInputElement) => el.checked);
+      response.enabled = await page.$eval(
+        SELECTORS.ENABLED,
+        (el: HTMLInputElement) => el.checked
+      );
     }
     await page.close();
     return response;
@@ -44,7 +47,10 @@ export class SalesforceToSalesforce extends BrowserforcePlugin {
         },
         config.enabled
       );
-      await Promise.all([page.waitForNavigation(), page.click(SELECTORS.SAVE_BUTTON)]);
+      await Promise.all([
+        page.waitForNavigation(),
+        page.click(SELECTORS.SAVE_BUTTON),
+      ]);
       const result = await this.retrieve();
       await page.close();
       if (result.enabled !== config.enabled) {

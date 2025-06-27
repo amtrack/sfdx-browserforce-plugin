@@ -2,7 +2,7 @@ import { BrowserforceCommand } from '../../browserforce-command.js';
 
 type BrowserforceApplyResponse = {
   success: boolean;
-}
+};
 
 export class BrowserforceApply extends BrowserforceCommand<BrowserforceApplyResponse> {
   public static description = 'apply a plan from a definition file';
@@ -13,12 +13,16 @@ export class BrowserforceApply extends BrowserforceCommand<BrowserforceApplyResp
   [Security] retrieving state... done
   [Security] changing 'loginAccessPolicies' to '{"administratorsCanLogInAsAnyUser":true}'... done
   logging out... done
-  `
+  `,
   ];
 
   public async run(): Promise<BrowserforceApplyResponse> {
     const { flags } = await this.parse(BrowserforceApply);
-    this.log(`Applying definition file ${flags.definitionfile} to org ${flags['target-org'].getUsername()}`);
+    this.log(
+      `Applying definition file ${flags.definitionfile} to org ${flags[
+        'target-org'
+      ].getUsername()}`
+    );
     for (const setting of this.settings) {
       const driver = setting.Driver;
       const instance = new driver(this.bf);
@@ -52,7 +56,7 @@ export class BrowserforceApply extends BrowserforceCommand<BrowserforceApplyResp
       }
     }
     return {
-      success: true
+      success: true,
     };
   }
 }

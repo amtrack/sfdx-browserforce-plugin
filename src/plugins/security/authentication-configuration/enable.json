@@ -5,11 +5,11 @@
       "authenticationConfiguration": {
         "services": [
           {
-            "label" : "TestAuthMethod",
+            "label": "TestAuthMethod",
             "enabled": true
           },
           {
-            "label" : "Login Form",
+            "label": "Login Form",
             "enabled": true
           }
         ]

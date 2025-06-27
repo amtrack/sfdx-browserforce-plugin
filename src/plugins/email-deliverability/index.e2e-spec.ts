@@ -7,16 +7,16 @@ describe(EmailDeliverability.name, function () {
     plugin = new EmailDeliverability(global.bf);
   });
   const configNone = {
-    accessLevel: 'No access'
+    accessLevel: 'No access',
   };
   const configAll = {
-    accessLevel: 'All email'
+    accessLevel: 'All email',
   };
   const configSystem = {
-    accessLevel: 'System email only'
+    accessLevel: 'System email only',
   };
   const configInvalid = {
-    accessLevel: 'Invalid'
+    accessLevel: 'Invalid',
   };
 
   // Note order is important here, the scratch org will be created with all access set, I have placed last so if a scratch is reused at least it is in the same state

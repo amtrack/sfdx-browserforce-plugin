@@ -4,7 +4,7 @@ import { semanticallyCleanObject } from '../../utils.js';
 
 const PATHS = {
   LIST_VIEW: '_ui/core/portal/CustomerSuccessPortalSetup/d',
-  PORTAL_PROFILE_MEMBERSHIP: '_ui/core/portal/PortalProfileMembershipPage/e'
+  PORTAL_PROFILE_MEMBERSHIP: '_ui/core/portal/PortalProfileMembershipPage/e',
 };
 const SELECTORS = {
   SAVE_BUTTON: 'input[name="save"]',
@@ -18,7 +18,7 @@ const SELECTORS = {
   PORTAL_SELF_REG_USER_DEFAULT_ROLE_ID: 'SelfRegUserDefaultRole',
   PORTAL_SELF_REG_USER_DEFAULT_PROFILE_ID: 'SelfRegUserDefaultProfile',
   PORTAL_PROFILE_MEMBERSHIP_PROFILES: 'th.dataCell',
-  PORTAL_PROFILE_MEMBERSHIP_CHECKBOXES: 'td.dataCell input'
+  PORTAL_PROFILE_MEMBERSHIP_CHECKBOXES: 'td.dataCell input',
 };
 
 export type Config = PortalConfig[];
@@ -45,25 +45,32 @@ type PortalProfileMembership = {
 export class CustomerPortalSetup extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
     const page = await this.browserforce.openPage(PATHS.LIST_VIEW);
-    await page.waitForSelector(`::-p-xpath(${SELECTORS.LIST_VIEW_PORTAL_LINKS_XPATH})`);
-    const customerPortalLinks = await page.$$(`xpath/.${SELECTORS.LIST_VIEW_PORTAL_LINKS_XPATH}`);
-    const response: Config = await page.evaluate(
-      (...links) => {
-        return links.map((a: HTMLAnchorElement) => {
-          return {
-            _id: a.pathname.split('/')[1],
-            name: a.text,
-            portalProfileMemberships: []
-          };
-        });
-      },
-      ...customerPortalLinks
+    await page.waitForSelector(
+      `::-p-xpath(${SELECTORS.LIST_VIEW_PORTAL_LINKS_XPATH})`
     );
+    const customerPortalLinks = await page.$$(
+      `xpath/.${SELECTORS.LIST_VIEW_PORTAL_LINKS_XPATH}`
+    );
+    const response: Config = await page.evaluate((...links) => {
+      return links.map((a: HTMLAnchorElement) => {
+        return {
+          _id: a.pathname.split('/')[1],
+          name: a.text,
+          portalProfileMemberships: [],
+        };
+      });
+    }, ...customerPortalLinks);
     for (const portal of response) {
       const portalPage = await this.browserforce.openPage(`${portal._id}/e`);
       await portalPage.waitForSelector(SELECTORS.PORTAL_DESCRIPTION);
-      portal.description = await portalPage.$eval(SELECTORS.PORTAL_DESCRIPTION, (el: HTMLInputElement) => el.value);
-      portal.adminUser = await portalPage.$eval(`#${SELECTORS.PORTAL_ADMIN_ID}`, (el: HTMLInputElement) => el.value);
+      portal.description = await portalPage.$eval(
+        SELECTORS.PORTAL_DESCRIPTION,
+        (el: HTMLInputElement) => el.value
+      );
+      portal.adminUser = await portalPage.$eval(
+        `#${SELECTORS.PORTAL_ADMIN_ID}`,
+        (el: HTMLInputElement) => el.value
+      );
       portal.isSelfRegistrationActivated = await portalPage.$eval(
         `#${SELECTORS.PORTAL_IS_SELF_REGISTRATION_ACTIVATED_ID}`,
         (el: HTMLInputElement) => el.checked
@@ -98,7 +105,7 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
           return inputs.map((input) => {
             return {
               active: input.checked,
-              _id: input.id
+              _id: input.id,
             };
           });
         }
@@ -108,7 +115,7 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
         portalProfileMemberships.push({
           name: profiles[i],
           active: checkboxes[i].active,
-          _id: checkboxes[i]._id
+          _id: checkboxes[i]._id,
         });
       }
       portal.portalProfileMemberships = portalProfileMemberships;
@@ -138,19 +145,27 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
           // copy id of existing portal to new portal to be retained and used
           portal._id = sourcePortal._id;
         }
-        if (sourcePortal.portalProfileMemberships && portal.portalProfileMemberships) {
+        if (
+          sourcePortal.portalProfileMemberships &&
+          portal.portalProfileMemberships
+        ) {
           const membershipResponse: PortalProfileMembership[] = [];
           for (const member of portal.portalProfileMemberships) {
             // copy id of existing member to new member to be retained and used
-            const sourceMember = sourcePortal.portalProfileMemberships.find((m) => m.name === member.name);
+            const sourceMember = sourcePortal.portalProfileMemberships.find(
+              (m) => m.name === member.name
+            );
             if (sourceMember) {
               member._id = sourceMember._id;
             } else {
-              throw new Error(`Could not find portal profile membership for '${member.name}'`);
+              throw new Error(
+                `Could not find portal profile membership for '${member.name}'`
+              );
             }
-            const membershipDiff = semanticallyCleanObject(super.diff(sourceMember, member), '_id') as
-              | PortalProfileMembership
-              | undefined;
+            const membershipDiff = semanticallyCleanObject(
+              super.diff(sourceMember, member),
+              '_id'
+            ) as PortalProfileMembership | undefined;
             if (membershipDiff) {
               membershipResponse.push(membershipDiff);
             }
@@ -161,7 +176,10 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
             portal.portalProfileMemberships = membershipResponse;
           }
         }
-        const diff = semanticallyCleanObject(super.diff(sourcePortal, portal), '_id') as PortalConfig | undefined;
+        const diff = semanticallyCleanObject(
+          super.diff(sourcePortal, portal),
+          '_id'
+        ) as PortalConfig | undefined;
         if (diff !== undefined) {
           response.push(diff);
         }
@@ -185,11 +203,12 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
           urlAttributes[SELECTORS.PORTAL_ADMIN_ID] = portal.adminUser;
         }
         if (portal.isSelfRegistrationActivated !== undefined) {
-          urlAttributes[SELECTORS.PORTAL_IS_SELF_REGISTRATION_ACTIVATED_ID] = portal.isSelfRegistrationActivated
-            ? 1
-            : 0;
+          urlAttributes[SELECTORS.PORTAL_IS_SELF_REGISTRATION_ACTIVATED_ID] =
+            portal.isSelfRegistrationActivated ? 1 : 0;
         }
-        const page = await this.browserforce.openPage(`${portal._id}/e?${queryString.stringify(urlAttributes)}`);
+        const page = await this.browserforce.openPage(
+          `${portal._id}/e?${queryString.stringify(urlAttributes)}`
+        );
         await page.waitForSelector(SELECTORS.PORTAL_DESCRIPTION);
         if (portal.selfRegUserDefaultLicense) {
           const licenseValue = await page.evaluate(
@@ -200,7 +219,10 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
               )
             )[0]
           );
-          await page.select(`#${SELECTORS.PORTAL_SELF_REG_USER_DEFAULT_LICENSE_ID}`, licenseValue);
+          await page.select(
+            `#${SELECTORS.PORTAL_SELF_REG_USER_DEFAULT_LICENSE_ID}`,
+            licenseValue
+          );
         }
         if (portal.selfRegUserDefaultRole) {
           const roleValue = await page.evaluate(
@@ -211,7 +233,10 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
               )
             )[0]
           );
-          await page.select(`#${SELECTORS.PORTAL_SELF_REG_USER_DEFAULT_ROLE_ID}`, roleValue);
+          await page.select(
+            `#${SELECTORS.PORTAL_SELF_REG_USER_DEFAULT_ROLE_ID}`,
+            roleValue
+          );
         }
         if (portal.selfRegUserDefaultProfile) {
           const profileValue = await page.evaluate(
@@ -222,10 +247,16 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
               )
             )[0]
           );
-          await page.select(`#${SELECTORS.PORTAL_SELF_REG_USER_DEFAULT_PROFILE_ID}`, profileValue);
+          await page.select(
+            `#${SELECTORS.PORTAL_SELF_REG_USER_DEFAULT_PROFILE_ID}`,
+            profileValue
+          );
         }
         await page.waitForSelector(SELECTORS.SAVE_BUTTON);
-        await Promise.all([page.waitForNavigation(), page.click(SELECTORS.SAVE_BUTTON)]);
+        await Promise.all([
+          page.waitForNavigation(),
+          page.click(SELECTORS.SAVE_BUTTON),
+        ]);
         if ((await page.url()).includes(portal._id)) {
           // error handling
           await page.waitForSelector(SELECTORS.PORTAL_DESCRIPTION);
@@ -241,10 +272,15 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
           const portalProfilePage = await this.browserforce.openPage(
             `${PATHS.PORTAL_PROFILE_MEMBERSHIP}?portalId=${
               portal._id
-            }&setupid=CustomerSuccessPortalSettings&${queryString.stringify(membershipUrlAttributes)}`
+            }&setupid=CustomerSuccessPortalSettings&${queryString.stringify(
+              membershipUrlAttributes
+            )}`
           );
           await portalProfilePage.waitForSelector(SELECTORS.SAVE_BUTTON);
-          await Promise.all([portalProfilePage.waitForNavigation(), portalProfilePage.click(SELECTORS.SAVE_BUTTON)]);
+          await Promise.all([
+            portalProfilePage.waitForNavigation(),
+            portalProfilePage.click(SELECTORS.SAVE_BUTTON),
+          ]);
           await portalProfilePage.close();
         }
         await page.close();
