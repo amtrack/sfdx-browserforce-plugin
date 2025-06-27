@@ -7,6 +7,9 @@
   "properties": {
     "settings": {
       "properties": {
+        "omnistudioSettings": {
+          "$ref": "./omnistudio-settings/schema.json"
+        },
         "salesforceCpqConfig": {
           "$ref": "./salesforce-cpq-config/schema.json"
         },
