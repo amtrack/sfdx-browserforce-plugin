@@ -1,15 +1,13 @@
 import { BrowserforcePlugin } from '../../../plugin.js';
 
-const PATHS = {
-  BASE: 'p/own/OrgSharingDetail',
-};
-const SELECTORS = {
-  EXTERNAL_SHARING_MODEL_BUTTON: '#externalSharingModelButton',
-  ENABLE_BUTTON:
-    'input#externalSharingModelButton:not([onclick*="Modal.confirm"])',
-  DISABLE_BUTTON: 'input#externalSharingModelButton[onclick*="Modal.confirm"]',
-  MODAL_DIALOG: 'Modal.confirm',
-};
+const BASE_PATH = 'p/own/OrgSharingDetail';
+
+const EXTERNAL_SHARING_MODEL_BUTTON_SELECTOR = '#externalSharingModelButton';
+const ENABLE_BUTTON_SELECTOR =
+  'input#externalSharingModelButton:not([onclick*="Modal.confirm"])';
+const DISABLE_BUTTON_SELECTOR =
+  'input#externalSharingModelButton[onclick*="Modal.confirm"]';
+const MODAL_DIALOG_SELECTOR = 'Modal.confirm';
 
 export type Config = {
   enableExternalSharingModel: boolean;
@@ -17,35 +15,33 @@ export type Config = {
 
 export class Sharing extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
-    const page = await this.browserforce.openPage(PATHS.BASE);
-    await page.waitForSelector(SELECTORS.EXTERNAL_SHARING_MODEL_BUTTON);
+    const page = await this.browserforce.openPage(BASE_PATH);
+    await page.waitForSelector(EXTERNAL_SHARING_MODEL_BUTTON_SELECTOR);
     const buttonOnclick = await page.$eval(
-      SELECTORS.EXTERNAL_SHARING_MODEL_BUTTON,
+      EXTERNAL_SHARING_MODEL_BUTTON_SELECTOR,
       (el: HTMLInputElement) => el.onclick?.toString() || ''
     );
     await page.close();
     return {
-      enableExternalSharingModel: buttonOnclick.includes(
-        SELECTORS.MODAL_DIALOG
-      ),
+      enableExternalSharingModel: buttonOnclick.includes(MODAL_DIALOG_SELECTOR),
     };
   }
 
   public async apply(config: Config): Promise<void> {
-    const page = await this.browserforce.openPage(PATHS.BASE);
-    await page.waitForSelector(SELECTORS.EXTERNAL_SHARING_MODEL_BUTTON);
+    const page = await this.browserforce.openPage(BASE_PATH);
+    await page.waitForSelector(EXTERNAL_SHARING_MODEL_BUTTON_SELECTOR);
     page.on('dialog', async (dialog) => {
       await dialog.accept();
     });
     if (config.enableExternalSharingModel) {
       await Promise.all([
-        page.waitForSelector(SELECTORS.DISABLE_BUTTON),
-        page.click(SELECTORS.ENABLE_BUTTON),
+        page.waitForSelector(DISABLE_BUTTON_SELECTOR),
+        page.click(ENABLE_BUTTON_SELECTOR),
       ]);
     } else {
       await Promise.all([
-        page.waitForSelector(SELECTORS.ENABLE_BUTTON),
-        page.click(SELECTORS.DISABLE_BUTTON),
+        page.waitForSelector(ENABLE_BUTTON_SELECTOR),
+        page.click(DISABLE_BUTTON_SELECTOR),
       ]);
     }
     await page.close();

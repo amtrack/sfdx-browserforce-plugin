@@ -1,8 +1,7 @@
 import { BrowserforcePlugin } from '../../plugin.js';
 
-const PATHS = {
-  BASE: 'lightning/setup/SlackSetupAssistant/home',
-};
+const BASE_PATH = 'lightning/setup/SlackSetupAssistant/home';
+
 const TOS_CHECKBOX =
   'setup_service-slack-agree-to-terms input[type="checkbox"]';
 const SALES_CLOUD_FOR_SLACK_CHECKBOX =
@@ -16,7 +15,7 @@ export type Config = {
 
 export class Slack extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {
-    const page = await this.browserforce.openPage(PATHS.BASE);
+    const page = await this.browserforce.openPage(BASE_PATH);
     const response = {
       agreeToTermsAndConditions: await page
         .locator(TOS_CHECKBOX)
@@ -38,7 +37,7 @@ export class Slack extends BrowserforcePlugin {
       );
     }
     const state = await this.retrieve();
-    const page = await this.browserforce.openPage(PATHS.BASE);
+    const page = await this.browserforce.openPage(BASE_PATH);
     if (state.agreeToTermsAndConditions !== config.agreeToTermsAndConditions) {
       await Promise.all([
         page.locator(TOAST_MESSAGE).wait(),

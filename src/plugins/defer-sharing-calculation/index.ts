@@ -1,13 +1,10 @@
 import { BrowserforcePlugin } from '../../plugin.js';
 
-const PATHS = {
-  BASE: 'p/own/DeferSharingSetupPage',
-};
-const SELECTORS = {
-  SUSPEND_BUTTON: 'input[name="rule_suspend"]',
-  RESUME_BUTTON: 'input[name="rule_resume"]',
-  RECALCULATE_BUTTON: 'input[name="rule_recalc"]',
-};
+const BASE_PATH = 'p/own/DeferSharingSetupPage';
+
+const SUSPEND_BUTTON_SELECTOR = 'input[name="rule_suspend"]';
+const RESUME_BUTTON_SELECTOR = 'input[name="rule_resume"]';
+const RECALCULATE_BUTTON_SELECTOR = 'input[name="rule_recalc"]';
 
 type Config = {
   suspend: boolean;
@@ -15,16 +12,16 @@ type Config = {
 
 export class DeferSharingCalculation extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {
-    const page = await this.browserforce.openPage(PATHS.BASE);
-    await page.waitForSelector(SELECTORS.SUSPEND_BUTTON);
-    await page.waitForSelector(SELECTORS.RESUME_BUTTON);
+    const page = await this.browserforce.openPage(BASE_PATH);
+    await page.waitForSelector(SUSPEND_BUTTON_SELECTOR);
+    await page.waitForSelector(RESUME_BUTTON_SELECTOR);
 
     const isSuspendDisabled = await page.$eval(
-      SELECTORS.SUSPEND_BUTTON,
+      SUSPEND_BUTTON_SELECTOR,
       (el: HTMLInputElement) => el.disabled
     );
     const isResumeDisabled = await page.$eval(
-      SELECTORS.RESUME_BUTTON,
+      RESUME_BUTTON_SELECTOR,
       (el: HTMLInputElement) => el.disabled
     );
     if (isSuspendDisabled && isResumeDisabled) {
@@ -39,19 +36,19 @@ export class DeferSharingCalculation extends BrowserforcePlugin {
   }
 
   public async apply(config: Config): Promise<void> {
-    const page = await this.browserforce.openPage(PATHS.BASE);
+    const page = await this.browserforce.openPage(BASE_PATH);
     const button = config.suspend
-      ? SELECTORS.SUSPEND_BUTTON
-      : SELECTORS.RESUME_BUTTON;
+      ? SUSPEND_BUTTON_SELECTOR
+      : RESUME_BUTTON_SELECTOR;
     await page.waitForSelector(button);
     await Promise.all([page.waitForNavigation(), page.click(button)]);
     await page.close();
     if (!config.suspend) {
-      const refreshedPage = await this.browserforce.openPage(PATHS.BASE);
-      await refreshedPage.waitForSelector(SELECTORS.RECALCULATE_BUTTON);
+      const refreshedPage = await this.browserforce.openPage(BASE_PATH);
+      await refreshedPage.waitForSelector(RECALCULATE_BUTTON_SELECTOR);
       await Promise.all([
         refreshedPage.waitForNavigation(),
-        refreshedPage.click(SELECTORS.RECALCULATE_BUTTON),
+        refreshedPage.click(RECALCULATE_BUTTON_SELECTOR),
       ]);
       await refreshedPage.close();
     }

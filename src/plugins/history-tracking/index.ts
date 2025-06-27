@@ -1,14 +1,12 @@
 import { BrowserforcePlugin } from '../../plugin.js';
 
-const PATHS = {
-  BASE: 'ui/setup/layout/FieldHistoryTracking?pEntity={APINAME}',
-};
+const BASE_PATH = 'ui/setup/layout/FieldHistoryTracking?pEntity={APINAME}';
 
-const SELECTORS = {
-  ENABLE_HISTORY: 'input[id="enable"][type="checkbox"][name="enable"]',
-  ENABLE_FIELD_HISTORY: 'input[id="{APINAME}_fht"]',
-  SAVE_BUTTON: 'input[class="btn"][type="submit"][name="save"][title="Save"]',
-};
+const ENABLE_HISTORY_SELECTOR =
+  'input[id="enable"][type="checkbox"][name="enable"]';
+const ENABLE_FIELD_HISTORY_SELECTOR = 'input[id="{APINAME}_fht"]';
+const SAVE_BUTTON_SELECTOR =
+  'input[class="btn"][type="submit"][name="save"][title="Save"]';
 
 type HistoryTrackingConfig = {
   objectApiName: string;
@@ -38,7 +36,7 @@ export class HistoryTracking extends BrowserforcePlugin {
 
       // Open the object history tracking setup page
       const page = await this.browserforce.openPage(
-        PATHS.BASE.replace(
+        BASE_PATH.replace(
           '{APINAME}',
           tableEnumOrIdByObjectApiName.get(historyTrackingConfig.objectApiName)
         )
@@ -47,10 +45,10 @@ export class HistoryTracking extends BrowserforcePlugin {
       // Retrieve the object history tracking
       // If this is a custom object, this checkbox does not exist, so skip
       if (!historyTrackingConfig.objectApiName.includes('__c')) {
-        await page.waitForSelector(SELECTORS.ENABLE_HISTORY);
+        await page.waitForSelector(ENABLE_HISTORY_SELECTOR);
 
         historyTrackingResult.enableHistoryTracking = await page.$eval(
-          SELECTORS.ENABLE_HISTORY,
+          ENABLE_HISTORY_SELECTOR,
           (el) => (el.getAttribute('checked') === 'checked' ? true : false)
         );
       }
@@ -99,7 +97,7 @@ export class HistoryTracking extends BrowserforcePlugin {
         );
 
         fieldHistoryTrackingResult.enableHistoryTracking = await page.$eval(
-          SELECTORS.ENABLE_FIELD_HISTORY.replace('{APINAME}', fieldApiName),
+          ENABLE_FIELD_HISTORY_SELECTOR.replace('{APINAME}', fieldApiName),
           (el) => (el.getAttribute('checked') === 'checked' ? true : false)
         );
 
@@ -123,7 +121,7 @@ export class HistoryTracking extends BrowserforcePlugin {
     for await (const historyTrackingConfig of plan) {
       // Open the object history tracking setup page
       const page = await this.browserforce.openPage(
-        PATHS.BASE.replace(
+        BASE_PATH.replace(
           '{APINAME}',
           tableEnumOrIdByObjectApiName.get(historyTrackingConfig.objectApiName)
         )
@@ -132,10 +130,10 @@ export class HistoryTracking extends BrowserforcePlugin {
       // Retrieve the object history tracking
       // If this is a custom object, this checkbox does not exist, so skip
       if (!historyTrackingConfig.objectApiName.includes('__c')) {
-        await page.waitForSelector(SELECTORS.ENABLE_HISTORY);
+        await page.waitForSelector(ENABLE_HISTORY_SELECTOR);
 
         const historyTrackingEnabled = await page.$eval(
-          SELECTORS.ENABLE_HISTORY,
+          ENABLE_HISTORY_SELECTOR,
           (el) => (el.getAttribute('checked') === 'checked' ? true : false)
         );
 
@@ -144,7 +142,7 @@ export class HistoryTracking extends BrowserforcePlugin {
         ) {
           // Click the checkbox
           const enableHistoryTracking = await page.waitForSelector(
-            SELECTORS.ENABLE_HISTORY
+            ENABLE_HISTORY_SELECTOR
           );
           await enableHistoryTracking.evaluate((node) =>
             (node as HTMLElement).click()
@@ -169,7 +167,7 @@ export class HistoryTracking extends BrowserforcePlugin {
             fieldHistoryTracking.fieldApiName
           );
 
-          const fieldSelector = SELECTORS.ENABLE_FIELD_HISTORY.replace(
+          const fieldSelector = ENABLE_FIELD_HISTORY_SELECTOR.replace(
             '{APINAME}',
             fieldApiName
           );
@@ -195,7 +193,7 @@ export class HistoryTracking extends BrowserforcePlugin {
       }
 
       // Save the settings
-      const saveButton = await page.waitForSelector(SELECTORS.SAVE_BUTTON);
+      const saveButton = await page.waitForSelector(SAVE_BUTTON_SELECTOR);
       await saveButton.evaluate((node) => (node as HTMLElement).click());
 
       // Wait for the page to refresh

@@ -1,9 +1,10 @@
 import { type Org } from '@salesforce/core';
 import { type Page } from 'puppeteer';
 
-const ERROR_DIV_SELECTOR = '#error';
-const PATH = 'secur/frontdoor.jsp';
+const FRONT_DOOR_PATH = 'secur/frontdoor.jsp';
 const POST_LOGIN_PATH = 'setup/forcecomHomepage.apexp';
+
+const ERROR_DIV_SELECTOR = '#error';
 
 export class LoginPage {
   private page: Page;
@@ -20,7 +21,7 @@ export class LoginPage {
     }
     const conn = org.getConnection();
     const response = await this.page.goto(
-      `${conn.instanceUrl.replace(/\/$/, '')}/${PATH}?sid=${
+      `${conn.instanceUrl.replace(/\/$/, '')}/${FRONT_DOOR_PATH}?sid=${
         conn.accessToken
       }&retURL=${encodeURIComponent(POST_LOGIN_PATH)}`,
       {

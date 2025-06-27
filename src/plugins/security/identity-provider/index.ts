@@ -2,16 +2,13 @@ import type { Record } from '@jsforce/jsforce-node';
 import pRetry, { AbortError } from 'p-retry';
 import { BrowserforcePlugin } from '../../../plugin.js';
 
-const PATHS = {
-  EDIT_VIEW: 'setup/secur/idp/IdpPage.apexp',
-};
-const SELECTORS = {
-  CHOOSE_CERT: 'select[id$=":chooseCert"]',
-  CERT_NAME_SPAN: 'span[id$="developer__name"',
-  DISABLE_BUTTON: 'input[name$=":disable"]',
-  EDIT_BUTTON: 'input[name$=":edit"]',
-  SAVE_BUTTON: 'input[name$=":save"]',
-};
+const EDIT_VIEW_PATH = 'setup/secur/idp/IdpPage.apexp';
+
+const CHOOSE_CERT_SELECTOR = 'select[id$=":chooseCert"]';
+const CERT_NAME_SPAN_SELECTOR = 'span[id$="developer__name"';
+const DISABLE_BUTTON_SELECTOR = 'input[name$=":disable"]';
+const EDIT_BUTTON_SELECTOR = 'input[name$=":edit"]';
+const SAVE_BUTTON_SELECTOR = 'input[name$=":save"]';
 
 interface CertificateRecord extends Record {
   DeveloperName: string;
@@ -25,15 +22,15 @@ export type Config = {
 
 export class IdentityProvider extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
-    const page = await this.browserforce.openPage(PATHS.EDIT_VIEW);
-    await page.waitForSelector(SELECTORS.EDIT_BUTTON);
-    const disableButton = await page.$(SELECTORS.DISABLE_BUTTON);
+    const page = await this.browserforce.openPage(EDIT_VIEW_PATH);
+    await page.waitForSelector(EDIT_BUTTON_SELECTOR);
+    const disableButton = await page.$(DISABLE_BUTTON_SELECTOR);
     const enabled = disableButton !== null;
     const response: Config = {
       enabled,
     };
     if (enabled) {
-      const certNameHandle = await page.$(SELECTORS.CERT_NAME_SPAN);
+      const certNameHandle = await page.$(CERT_NAME_SPAN_SELECTOR);
       response.certificate = await page.evaluate(
         (span: HTMLSpanElement) => span.innerText,
         certNameHandle
@@ -59,15 +56,15 @@ export class IdentityProvider extends BrowserforcePlugin {
               `Could not find Certificate '${plan.certificate}'`
             );
           }
-          const page = await this.browserforce.openPage(PATHS.EDIT_VIEW);
-          await page.waitForSelector(SELECTORS.EDIT_BUTTON);
+          const page = await this.browserforce.openPage(EDIT_VIEW_PATH);
+          await page.waitForSelector(EDIT_BUTTON_SELECTOR);
           await Promise.all([
             page.waitForNavigation(),
-            page.click(SELECTORS.EDIT_BUTTON),
+            page.click(EDIT_BUTTON_SELECTOR),
           ]);
-          await page.waitForSelector(SELECTORS.CHOOSE_CERT);
+          await page.waitForSelector(CHOOSE_CERT_SELECTOR);
           const chooseCertOptions = await page.$$eval(
-            `${SELECTORS.CHOOSE_CERT} option`,
+            `${CHOOSE_CERT_SELECTOR} option`,
             (options: HTMLOptionElement[]) => {
               return options.map((option) => {
                 return {
@@ -85,14 +82,14 @@ export class IdentityProvider extends BrowserforcePlugin {
               `Waiting for Certificate '${plan.certificate}' to be available in Identity Provider picklist timed out`
             );
           }
-          await page.select(SELECTORS.CHOOSE_CERT, chooseCertOption.value);
+          await page.select(CHOOSE_CERT_SELECTOR, chooseCertOption.value);
           page.on('dialog', async (dialog) => {
             await dialog.accept();
           });
-          await page.waitForSelector(SELECTORS.SAVE_BUTTON);
+          await page.waitForSelector(SAVE_BUTTON_SELECTOR);
           await Promise.all([
             page.waitForNavigation(),
-            page.click(SELECTORS.SAVE_BUTTON),
+            page.click(SAVE_BUTTON_SELECTOR),
           ]);
           await page.close();
         },
@@ -103,15 +100,15 @@ export class IdentityProvider extends BrowserforcePlugin {
       );
     } else {
       // disable
-      const page = await this.browserforce.openPage(PATHS.EDIT_VIEW);
-      await page.waitForSelector(SELECTORS.EDIT_BUTTON);
-      await page.$(SELECTORS.DISABLE_BUTTON);
+      const page = await this.browserforce.openPage(EDIT_VIEW_PATH);
+      await page.waitForSelector(EDIT_BUTTON_SELECTOR);
+      await page.$(DISABLE_BUTTON_SELECTOR);
       page.on('dialog', async (dialog) => {
         await dialog.accept();
       });
       await Promise.all([
         page.waitForNavigation(),
-        page.click(SELECTORS.DISABLE_BUTTON),
+        page.click(DISABLE_BUTTON_SELECTOR),
       ]);
       await page.close();
     }

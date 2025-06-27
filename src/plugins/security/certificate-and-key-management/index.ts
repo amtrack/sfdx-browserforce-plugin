@@ -1,19 +1,16 @@
-import { existsSync } from 'fs';
 import type { Record } from '@jsforce/jsforce-node';
+import { existsSync } from 'fs';
 import * as path from 'path';
 import type { ElementHandle } from 'puppeteer';
 import * as queryString from 'querystring';
 import { BrowserforcePlugin } from '../../../plugin.js';
 
-const PATHS = {
-  CERT_PREFIX: '0P1',
-  KEYSTORE_IMPORT: '_ui/security/certificate/KeyStoreImportUi/e',
-};
-const SELECTORS = {
-  FILE_UPLOAD: 'input[type="file"]',
-  KEYSTORE_PASSWORD: 'input#Password',
-  SAVE_BUTTON: 'input[name="save"]',
-};
+const CERT_PREFIX_PATH = '0P1';
+const KEYSTORE_IMPORT_PATH = '_ui/security/certificate/KeyStoreImportUi/e';
+
+const FILE_UPLOAD_SELECTOR = 'input[type="file"]';
+const KEYSTORE_PASSWORD_SELECTOR = 'input#Password';
+const SAVE_BUTTON_SELECTOR = 'input[name="save"]';
 
 interface CertificateRecord extends Record {
   DeveloperName: string;
@@ -143,12 +140,12 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
             urlAttributes['exp'] = certificate.exportable ? 1 : 0;
           }
           const page = await this.browserforce.openPage(
-            `${PATHS.CERT_PREFIX}/e?${queryString.stringify(urlAttributes)}`
+            `${CERT_PREFIX_PATH}/e?${queryString.stringify(urlAttributes)}`
           );
-          await page.waitForSelector(SELECTORS.SAVE_BUTTON);
+          await page.waitForSelector(SAVE_BUTTON_SELECTOR);
           await Promise.all([
             page.waitForNavigation(),
-            page.click(SELECTORS.SAVE_BUTTON),
+            page.click(SAVE_BUTTON_SELECTOR),
           ]);
           await page.close();
         }
@@ -157,11 +154,11 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
     if (plan.importFromKeystore) {
       for (const certificate of plan.importFromKeystore) {
         const page = await this.browserforce.openPage(
-          `${PATHS.KEYSTORE_IMPORT}`
+          `${KEYSTORE_IMPORT_PATH}`
         );
-        await page.waitForSelector(SELECTORS.FILE_UPLOAD);
+        await page.waitForSelector(FILE_UPLOAD_SELECTOR);
         const elementHandle = (await page.$(
-          SELECTORS.FILE_UPLOAD
+          FILE_UPLOAD_SELECTOR
         )) as ElementHandle<HTMLInputElement>;
         // TODO: make relative to this.command.flags.definitionfile
         if (!certificate.filePath) {
@@ -175,13 +172,13 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
         }
         await elementHandle.uploadFile(filePath);
         if (certificate.password) {
-          await page.waitForSelector(SELECTORS.KEYSTORE_PASSWORD);
-          await page.type(SELECTORS.KEYSTORE_PASSWORD, certificate.password);
+          await page.waitForSelector(KEYSTORE_PASSWORD_SELECTOR);
+          await page.type(KEYSTORE_PASSWORD_SELECTOR, certificate.password);
         }
-        await page.waitForSelector(SELECTORS.SAVE_BUTTON);
+        await page.waitForSelector(SAVE_BUTTON_SELECTOR);
         await Promise.all([
           page.waitForNavigation(),
-          page.click(SELECTORS.SAVE_BUTTON),
+          page.click(SAVE_BUTTON_SELECTOR),
         ]);
         if (certificate.name) {
           // rename cert as it has the wrong name
@@ -195,10 +192,10 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
           const certPage = await this.browserforce.openPage(
             `${importedCert.Id}/e?MasterLabel=${certificate.name}&DeveloperName=${certificate.name}`
           );
-          await certPage.waitForSelector(SELECTORS.SAVE_BUTTON);
+          await certPage.waitForSelector(SAVE_BUTTON_SELECTOR);
           await Promise.all([
             certPage.waitForNavigation(),
-            certPage.click(SELECTORS.SAVE_BUTTON),
+            certPage.click(SAVE_BUTTON_SELECTOR),
           ]);
           await certPage.close();
         }

@@ -1,14 +1,12 @@
 import { BrowserforcePlugin } from '../../../plugin.js';
 
-const SELECTORS = {
-  ADD_BUTTON: 'a[id$=":duelingListBox:backingList_add"]',
-  REMOVE_BUTTON: 'a[id$=":duelingListBox:backingList_remove"]',
-  SAVE_BUTTON: 'input[id$=":button_pc_save"]',
-  VALUES_AVAILABLE:
-    'select[id$=":duelingListBox:backingList_a"]:not([disabled="disabled"])',
-  VALUES_ENABLED:
-    'select[id$=":duelingListBox:backingList_s"]:not([disabled="disabled"])',
-};
+const ADD_BUTTON_SELECTOR = 'a[id$=":duelingListBox:backingList_add"]';
+const REMOVE_BUTTON_SELECTOR = 'a[id$=":duelingListBox:backingList_remove"]';
+const SAVE_BUTTON_SELECTOR = 'input[id$=":button_pc_save"]';
+const VALUES_AVAILABLE_SELECTOR =
+  'select[id$=":duelingListBox:backingList_a"]:not([disabled="disabled"])';
+const VALUES_ENABLED_SELECTOR =
+  'select[id$=":duelingListBox:backingList_s"]:not([disabled="disabled"])';
 
 type PermissionSet = {
   permissionSetName: string;
@@ -31,7 +29,7 @@ export class ServicePresenceStatus extends BrowserforcePlugin {
     );
 
     const enabledServicePresenceStatuses = await page.$$eval(
-      `${SELECTORS.VALUES_ENABLED} > option`,
+      `${VALUES_ENABLED_SELECTOR} > option`,
       (options) => {
         return options.map((option) => option.title ?? '');
       }
@@ -55,10 +53,10 @@ export class ServicePresenceStatus extends BrowserforcePlugin {
     );
 
     if (config?.servicePresenceStatuses) {
-      await page.waitForSelector(`${SELECTORS.VALUES_AVAILABLE} > option`);
+      await page.waitForSelector(`${VALUES_AVAILABLE_SELECTOR} > option`);
 
       const availableElements = await page.$$(
-        `${SELECTORS.VALUES_AVAILABLE} > option`
+        `${VALUES_AVAILABLE_SELECTOR} > option`
       );
 
       for (const availableElement of availableElements) {
@@ -71,13 +69,13 @@ export class ServicePresenceStatus extends BrowserforcePlugin {
           config.servicePresenceStatuses.includes(optionTitle)
         ) {
           await availableElement.click();
-          await page.click(SELECTORS.ADD_BUTTON);
+          await page.click(ADD_BUTTON_SELECTOR);
         }
       }
 
-      await page.waitForSelector(`${SELECTORS.VALUES_ENABLED} > option`);
+      await page.waitForSelector(`${VALUES_ENABLED_SELECTOR} > option`);
       const enabledElements = await page.$$(
-        `${SELECTORS.VALUES_ENABLED} > option`
+        `${VALUES_ENABLED_SELECTOR} > option`
       );
 
       for (const enabledElement of enabledElements) {
@@ -90,7 +88,7 @@ export class ServicePresenceStatus extends BrowserforcePlugin {
           !config.servicePresenceStatuses.includes(optionTitle)
         ) {
           await enabledElement.click();
-          await page.click(SELECTORS.REMOVE_BUTTON);
+          await page.click(REMOVE_BUTTON_SELECTOR);
         }
       }
     }
@@ -98,7 +96,7 @@ export class ServicePresenceStatus extends BrowserforcePlugin {
     // Save the settings and wait for page refresh
     await Promise.all([
       page.waitForNavigation(),
-      page.click(SELECTORS.SAVE_BUTTON),
+      page.click(SAVE_BUTTON_SELECTOR),
     ]);
 
     // Close the page

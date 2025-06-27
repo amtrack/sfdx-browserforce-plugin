@@ -1,14 +1,10 @@
 import { ElementHandle, Page } from 'puppeteer';
 import { BrowserforcePlugin } from '../../plugin.js';
 
-const PATHS = {
-  BASE: 'lightning/setup/DensitySetup/home',
-};
+const BASE_PATH = 'lightning/setup/DensitySetup/home';
 
-const SELECTORS = {
-  PICKER_ITEMS:
-    'one-density-visual-picker one-density-visual-picker-item input',
-};
+const PICKER_ITEMS_SELECTOR =
+  'one-density-visual-picker one-density-visual-picker-item input';
 
 type Config = {
   density: string;
@@ -22,7 +18,7 @@ type Density = {
 
 export class DensitySettings extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
-    const page = await this.browserforce.openPage(PATHS.BASE);
+    const page = await this.browserforce.openPage(BASE_PATH);
     const densities = await this.getDensities(page);
     const selected = densities.find((input) => input.checked);
     await page.close();
@@ -32,16 +28,16 @@ export class DensitySettings extends BrowserforcePlugin {
   }
 
   public async apply(config: Config): Promise<void> {
-    const page = await this.browserforce.openPage(PATHS.BASE);
+    const page = await this.browserforce.openPage(BASE_PATH);
     await this.setDensity(page, config.density);
     await page.close();
   }
 
   async getDensities(page: Page): Promise<Density[]> {
-    await page.waitForSelector(SELECTORS.PICKER_ITEMS);
-    const elementHandles = await page.$$(SELECTORS.PICKER_ITEMS);
+    await page.waitForSelector(PICKER_ITEMS_SELECTOR);
+    const elementHandles = await page.$$(PICKER_ITEMS_SELECTOR);
     const result = await page.$$eval(
-      SELECTORS.PICKER_ITEMS,
+      PICKER_ITEMS_SELECTOR,
       (radioInputs: HTMLInputElement[]) =>
         radioInputs.map((input) => {
           return {

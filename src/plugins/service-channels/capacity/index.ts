@@ -1,18 +1,20 @@
 import { BrowserforcePlugin } from '../../../plugin.js';
 
-const SELECTORS = {
-  ADD_BUTTON: 'a[id$=":duelingListBox:backingList_add"]',
-  CAPACITY_MODEL: 'select[id$=":capacityModelSection:editCapacityModel"]',
-  OWNER_CHANGE_CAPACITY: 'input[name*=":ownerChangeCapacityCheck"]',
-  REMOVE_BUTTON: 'a[id$=":duelingListBox:backingList_remove"]',
-  SAVE_BUTTON: 'input[id$=":save"]',
-  STATUS_FIELD: 'select[id$=":statusFieldSection:editCapacityModel"]',
-  STATUS_CHANGE_CAPACITY: 'input[name*=":statusChangeCapacityCheck"]',
-  VALUES_COMPLETED:
-    'select[id$=":statusFieldValues:duelingListBox:backingList_a"]:not([disabled="disabled"])',
-  VALUES_IN_PROGRESS:
-    'select[id$=":statusFieldValues:duelingListBox:backingList_s"]:not([disabled="disabled"])',
-};
+const ADD_BUTTON_SELECTOR = 'a[id$=":duelingListBox:backingList_add"]';
+const CAPACITY_MODEL_SELECTOR =
+  'select[id$=":capacityModelSection:editCapacityModel"]';
+const OWNER_CHANGE_CAPACITY_SELECTOR =
+  'input[name*=":ownerChangeCapacityCheck"]';
+const REMOVE_BUTTON_SELECTOR = 'a[id$=":duelingListBox:backingList_remove"]';
+const SAVE_BUTTON_SELECTOR = 'input[id$=":save"]';
+const STATUS_FIELD_SELECTOR =
+  'select[id$=":statusFieldSection:editCapacityModel"]';
+const STATUS_CHANGE_CAPACITY_SELECTOR =
+  'input[name*=":statusChangeCapacityCheck"]';
+const VALUES_COMPLETED_SELECTOR =
+  'select[id$=":statusFieldValues:duelingListBox:backingList_a"]:not([disabled="disabled"])';
+const VALUES_IN_PROGRESS_SELECTOR =
+  'select[id$=":statusFieldValues:duelingListBox:backingList_s"]:not([disabled="disabled"])';
 
 type ServiceChannel = {
   serviceChannelDeveloperName: string;
@@ -41,34 +43,34 @@ export class Capacity extends BrowserforcePlugin {
     const page = await this.browserforce.openPage(`${serviceChannel.Id}/e`);
 
     // Retrieve the service channel config
-    if (!(await page.$(SELECTORS.CAPACITY_MODEL))) {
+    if (!(await page.$(CAPACITY_MODEL_SELECTOR))) {
       return {};
     }
 
     const capacityModel =
       (await page.$eval(
-        `${SELECTORS.CAPACITY_MODEL} > option[selected]`,
+        `${CAPACITY_MODEL_SELECTOR} > option[selected]`,
         (el) => el.value
       )) ?? '';
 
     if (capacityModel === 'StatusBased') {
       const statusField =
         (await page.$eval(
-          `${SELECTORS.STATUS_FIELD} > option[selected]`,
+          `${STATUS_FIELD_SELECTOR} > option[selected]`,
           (el) => el.value
         )) ?? '';
       const valuesForInProgress = await page.$$eval(
-        `${SELECTORS.VALUES_IN_PROGRESS} > option`,
+        `${VALUES_IN_PROGRESS_SELECTOR} > option`,
         (options) => {
           return options.map((option) => option.title ?? '');
         }
       );
       const checkAgentCapacityOnReopenedWorkItems = await page.$eval(
-        SELECTORS.STATUS_CHANGE_CAPACITY,
+        STATUS_CHANGE_CAPACITY_SELECTOR,
         (el) => (el.getAttribute('checked') === 'checked' ? true : false)
       );
       const checkAgentCapacityOnReassignedWorkItems = await page.$eval(
-        SELECTORS.OWNER_CHANGE_CAPACITY,
+        OWNER_CHANGE_CAPACITY_SELECTOR,
         (el) => (el.getAttribute('checked') === 'checked' ? true : false)
       );
 
@@ -150,23 +152,20 @@ export class Capacity extends BrowserforcePlugin {
     const configCapacity = config.capacity;
 
     if (configCapacity?.capacityModel) {
-      await page.waitForSelector(SELECTORS.CAPACITY_MODEL);
-      await page.select(
-        SELECTORS.CAPACITY_MODEL,
-        configCapacity!.capacityModel
-      );
+      await page.waitForSelector(CAPACITY_MODEL_SELECTOR);
+      await page.select(CAPACITY_MODEL_SELECTOR, configCapacity!.capacityModel);
     }
 
     if (configCapacity?.statusField) {
-      await page.waitForSelector(SELECTORS.STATUS_FIELD);
-      await page.select(SELECTORS.STATUS_FIELD, configCapacity!.statusField);
+      await page.waitForSelector(STATUS_FIELD_SELECTOR);
+      await page.select(STATUS_FIELD_SELECTOR, configCapacity!.statusField);
     }
 
     if (configCapacity?.valuesForInProgress) {
-      await page.waitForSelector(`${SELECTORS.VALUES_COMPLETED} > option`);
+      await page.waitForSelector(`${VALUES_COMPLETED_SELECTOR} > option`);
 
       const completedElements = await page.$$(
-        `${SELECTORS.VALUES_COMPLETED} > option`
+        `${VALUES_COMPLETED_SELECTOR} > option`
       );
 
       for (const completedElement of completedElements) {
@@ -179,13 +178,13 @@ export class Capacity extends BrowserforcePlugin {
           configCapacity.valuesForInProgress.includes(optionTitle)
         ) {
           await completedElement.click();
-          await page.click(SELECTORS.ADD_BUTTON);
+          await page.click(ADD_BUTTON_SELECTOR);
         }
       }
 
-      await page.waitForSelector(`${SELECTORS.VALUES_IN_PROGRESS} > option`);
+      await page.waitForSelector(`${VALUES_IN_PROGRESS_SELECTOR} > option`);
       const inprogressElements = await page.$$(
-        `${SELECTORS.VALUES_IN_PROGRESS} > option`
+        `${VALUES_IN_PROGRESS_SELECTOR} > option`
       );
 
       for (const inprogressElement of inprogressElements) {
@@ -198,14 +197,14 @@ export class Capacity extends BrowserforcePlugin {
           !configCapacity.valuesForInProgress.includes(optionTitle)
         ) {
           await inprogressElement.click();
-          await page.click(SELECTORS.REMOVE_BUTTON);
+          await page.click(REMOVE_BUTTON_SELECTOR);
         }
       }
     }
 
     if (configCapacity?.checkAgentCapacityOnReassignedWorkItems !== undefined) {
       await page.$eval(
-        SELECTORS.STATUS_CHANGE_CAPACITY,
+        STATUS_CHANGE_CAPACITY_SELECTOR,
         (e: HTMLInputElement, v: boolean) => {
           e.checked = v;
         },
@@ -215,7 +214,7 @@ export class Capacity extends BrowserforcePlugin {
 
     if (configCapacity?.checkAgentCapacityOnReopenedWorkItems !== undefined) {
       await page.$eval(
-        SELECTORS.OWNER_CHANGE_CAPACITY,
+        OWNER_CHANGE_CAPACITY_SELECTOR,
         (e: HTMLInputElement, v: boolean) => {
           e.checked = v;
         },
@@ -226,7 +225,7 @@ export class Capacity extends BrowserforcePlugin {
     // Save the settings and wait for page refresh
     await Promise.all([
       page.waitForNavigation(),
-      page.click(SELECTORS.SAVE_BUTTON),
+      page.click(SAVE_BUTTON_SELECTOR),
     ]);
 
     // Close the page

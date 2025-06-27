@@ -1,13 +1,11 @@
 import { BrowserforcePlugin } from '../../plugin.js';
 
-const PATHS = {
-  BASE: 'setup/activitiesSetupPage.apexp',
-};
+const BASE_PATH = 'setup/activitiesSetupPage.apexp';
 
-const SELECTORS = {
-  MANY_WHO_PREF_INPUT: 'input[id="thePage:theForm:theBlock:manyWhoPref"]',
-  SUBMIT_BUTTON: 'input[id="thePage:theForm:theBlock:buttons:submit"]',
-};
+const MANY_WHO_PREF_INPUT_SELECTOR =
+  'input[id="thePage:theForm:theBlock:manyWhoPref"]';
+const SUBMIT_BUTTON_SELECTOR =
+  'input[id="thePage:theForm:theBlock:buttons:submit"]';
 
 type Config = {
   allowUsersToRelateMultipleContactsToTasksAndEvents: boolean;
@@ -15,11 +13,11 @@ type Config = {
 
 export class ActivitySettings extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
-    const page = await this.browserforce.openPage(PATHS.BASE);
-    await page.waitForSelector(SELECTORS.MANY_WHO_PREF_INPUT);
+    const page = await this.browserforce.openPage(BASE_PATH);
+    await page.waitForSelector(MANY_WHO_PREF_INPUT_SELECTOR);
     const response = {
       allowUsersToRelateMultipleContactsToTasksAndEvents: await page.$eval(
-        SELECTORS.MANY_WHO_PREF_INPUT,
+        MANY_WHO_PREF_INPUT_SELECTOR,
         (el: HTMLInputElement) => el.checked
       ),
     };
@@ -33,10 +31,10 @@ export class ActivitySettings extends BrowserforcePlugin {
         '`allowUsersToRelateMultipleContactsToTasksAndEvents` can only be disabled with help of the salesforce.com Support team'
       );
     }
-    const page = await this.browserforce.openPage(PATHS.BASE);
-    await page.waitForSelector(SELECTORS.MANY_WHO_PREF_INPUT);
+    const page = await this.browserforce.openPage(BASE_PATH);
+    await page.waitForSelector(MANY_WHO_PREF_INPUT_SELECTOR);
     await page.$eval(
-      SELECTORS.MANY_WHO_PREF_INPUT,
+      MANY_WHO_PREF_INPUT_SELECTOR,
       (e: HTMLInputElement, v: boolean) => {
         e.checked = v;
       },
@@ -44,7 +42,7 @@ export class ActivitySettings extends BrowserforcePlugin {
     );
     await Promise.all([
       page.waitForNavigation(),
-      page.click(SELECTORS.SUBMIT_BUTTON),
+      page.click(SUBMIT_BUTTON_SELECTOR),
     ]);
     await page.close();
   }

@@ -1,13 +1,10 @@
 import type { Record } from '@jsforce/jsforce-node';
 import { BrowserforcePlugin } from '../../plugin.js';
 
-const PATHS = {
-  BASE: 'setup/ui/assignhomelayoutedit.jsp',
-};
-const SELECTORS = {
-  BASE: 'table.detailList',
-  SAVE_BUTTON: 'input[name="save"]',
-};
+const BASE_PATH = 'setup/ui/assignhomelayoutedit.jsp';
+
+const BASE_SELECTOR = 'table.detailList';
+const SAVE_BUTTON_SELECTOR = 'input[name="save"]';
 
 interface ProfileRecord extends Record {
   Name: string;
@@ -28,8 +25,8 @@ type HomePageLayoutAssignment = {
 
 export class HomePageLayouts extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
-    const page = await this.browserforce.openPage(PATHS.BASE);
-    await page.waitForSelector(SELECTORS.BASE);
+    const page = await this.browserforce.openPage(BASE_PATH);
+    await page.waitForSelector(BASE_SELECTOR);
     const profiles = await page.$$eval(
       'table.detailList tbody tr td label',
       (labels: HTMLLabelElement[]) => {
@@ -97,8 +94,8 @@ export class HomePageLayouts extends BrowserforcePlugin {
         `SELECT Id, Name FROM HomePageLayout WHERE Name IN (${layoutsList})`
       );
 
-    const page = await this.browserforce.openPage(PATHS.BASE);
-    await page.waitForSelector(SELECTORS.BASE);
+    const page = await this.browserforce.openPage(BASE_PATH);
+    await page.waitForSelector(BASE_SELECTOR);
     for (const assignment of config.homePageLayoutAssignments) {
       const homePageLayoutName = assignment.layout;
       const profile = profiles.records.find(
@@ -126,7 +123,7 @@ export class HomePageLayouts extends BrowserforcePlugin {
     }
     await Promise.all([
       page.waitForNavigation(),
-      page.click(SELECTORS.SAVE_BUTTON),
+      page.click(SAVE_BUTTON_SELECTOR),
     ]);
     await page.close();
   }

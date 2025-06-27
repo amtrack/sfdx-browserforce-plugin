@@ -1,13 +1,11 @@
 import { BrowserforcePlugin } from '../../plugin.js';
 
-const PATHS = {
-  BASE: 'email-admin/editOrgEmailSettings.apexp',
-};
-const SELECTORS = {
-  ACCESS_LEVEL: 'select[id$=":sendEmailAccessControlSelect"]',
-  CONFIRM_MESSAGE: 'span[id$=":successText"]',
-  SAVE_BUTTON: 'input[id$=":saveBtn"]',
-};
+const BASE_PATH = 'email-admin/editOrgEmailSettings.apexp';
+
+const ACCESS_LEVEL_SELECTOR = 'select[id$=":sendEmailAccessControlSelect"]';
+const CONFIRM_MESSAGE_SELECTOR = 'span[id$=":successText"]';
+const SAVE_BUTTON_SELECTOR = 'input[id$=":saveBtn"]';
+
 const ACCESS_LEVEL_VALUES = new Map([
   ['No access', '0'],
   ['System email only', '1'],
@@ -20,10 +18,10 @@ type Config = {
 
 export class EmailDeliverability extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {
-    const page = await this.browserforce.openPage(PATHS.BASE);
-    await page.waitForSelector(SELECTORS.ACCESS_LEVEL);
+    const page = await this.browserforce.openPage(BASE_PATH);
+    await page.waitForSelector(ACCESS_LEVEL_SELECTOR);
     const selectedOptions = await page.$$eval(
-      `${SELECTORS.ACCESS_LEVEL} > option[selected]`,
+      `${ACCESS_LEVEL_SELECTOR} > option[selected]`,
       (options) => options.map((option) => option.textContent ?? '')
     );
     await page.close();
@@ -40,12 +38,12 @@ export class EmailDeliverability extends BrowserforcePlugin {
     if (accessLevelNumber === undefined) {
       throw new Error(`Invalid email access level ${config.accessLevel}`);
     }
-    const page = await this.browserforce.openPage(PATHS.BASE);
-    await page.waitForSelector(SELECTORS.ACCESS_LEVEL);
-    await page.select(SELECTORS.ACCESS_LEVEL, accessLevelNumber);
+    const page = await this.browserforce.openPage(BASE_PATH);
+    await page.waitForSelector(ACCESS_LEVEL_SELECTOR);
+    await page.select(ACCESS_LEVEL_SELECTOR, accessLevelNumber);
     await Promise.all([
-      page.waitForSelector(SELECTORS.CONFIRM_MESSAGE),
-      page.click(SELECTORS.SAVE_BUTTON),
+      page.waitForSelector(CONFIRM_MESSAGE_SELECTOR),
+      page.click(SAVE_BUTTON_SELECTOR),
     ]);
     await page.close();
   }

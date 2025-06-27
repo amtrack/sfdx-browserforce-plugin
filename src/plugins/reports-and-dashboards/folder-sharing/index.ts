@@ -1,14 +1,11 @@
 import { Page } from 'puppeteer';
 import { BrowserforcePlugin } from '../../../plugin.js';
 
-const PATHS = {
-  BASE: 'ui/rpt/AnalyticsSharingSettingsPage/e',
-};
-const SELECTORS = {
-  BASE: 'div.pbBody',
-  ENABLE_CHECKBOX: 'input[id="0"]',
-  SAVE_BUTTON: 'input[id="saveButton"]',
-};
+const BASE_PATH = 'ui/rpt/AnalyticsSharingSettingsPage/e';
+
+const BASE_SELECTOR = 'div.pbBody';
+const ENABLE_CHECKBOX_SELECTOR = 'input[id="0"]';
+const SAVE_BUTTON_SELECTOR = 'input[id="saveButton"]';
 
 export type Config = {
   enableEnhancedFolderSharing: boolean;
@@ -21,15 +18,15 @@ export class FolderSharing extends BrowserforcePlugin {
     };
     let page: Page;
     try {
-      page = await this.browserforce.openPage(PATHS.BASE);
+      page = await this.browserforce.openPage(BASE_PATH);
       const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(
         page,
-        SELECTORS.BASE
+        BASE_SELECTOR
       );
-      const inputEnable = await frameOrPage.$(SELECTORS.ENABLE_CHECKBOX);
+      const inputEnable = await frameOrPage.$(ENABLE_CHECKBOX_SELECTOR);
       if (inputEnable) {
         response.enableEnhancedFolderSharing = await frameOrPage.$eval(
-          SELECTORS.ENABLE_CHECKBOX,
+          ENABLE_CHECKBOX_SELECTOR,
           (el: HTMLInputElement) => el.checked
         );
       } else {
@@ -52,19 +49,19 @@ export class FolderSharing extends BrowserforcePlugin {
         '`enableEnhancedFolderSharing` cannot be disabled once enabled'
       );
     }
-    const page = await this.browserforce.openPage(PATHS.BASE);
-    await page.waitForSelector(SELECTORS.ENABLE_CHECKBOX);
+    const page = await this.browserforce.openPage(BASE_PATH);
+    await page.waitForSelector(ENABLE_CHECKBOX_SELECTOR);
     await page.$eval(
-      SELECTORS.ENABLE_CHECKBOX,
+      ENABLE_CHECKBOX_SELECTOR,
       (e: HTMLInputElement, v: boolean) => {
         e.checked = v;
       },
       config.enableEnhancedFolderSharing
     );
-    await page.waitForSelector(SELECTORS.SAVE_BUTTON);
+    await page.waitForSelector(SAVE_BUTTON_SELECTOR);
     await Promise.all([
       page.waitForNavigation(),
-      page.click(SELECTORS.SAVE_BUTTON),
+      page.click(SAVE_BUTTON_SELECTOR),
     ]);
     await page.close();
   }
