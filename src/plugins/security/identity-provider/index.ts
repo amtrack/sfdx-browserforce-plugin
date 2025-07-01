@@ -76,6 +76,7 @@ export class IdentityProvider extends BrowserforcePlugin {
             (x) => x.text === plan.certificate
           );
           if (!chooseCertOption) {
+            await page.close();
             throw new Error(
               `Waiting for Certificate '${plan.certificate}' to be available in Identity Provider picklist timed out`
             );

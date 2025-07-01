@@ -84,6 +84,7 @@ export class Browserforce {
         if (response) {
           if (!response.ok()) {
             await this.throwPageErrors(page);
+            await page.close();
             throw new Error(`${response.status()}: ${response.statusText()}`);
           }
         }
@@ -209,6 +210,7 @@ export async function throwPageErrors(page: Page): Promise<void> {
     );
     await errorHandle.dispose();
     if (errorMsg && errorMsg.trim()) {
+      await page.close();
       throw new Error(errorMsg.trim());
     }
   }
@@ -222,6 +224,7 @@ export async function throwPageErrors(page: Page): Promise<void> {
       .join(' ')
       .trim();
     if (errorMsg) {
+      await page.close();
       throw new Error(errorMsg);
     }
   }

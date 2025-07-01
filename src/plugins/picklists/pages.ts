@@ -242,6 +242,7 @@ async function throwPageErrors(page: Page): Promise<void> {
     );
     await errorHandle.dispose();
     if (errorMsg && errorMsg.trim()) {
+      await page.close();
       throw new Error(errorMsg.trim());
     }
   }

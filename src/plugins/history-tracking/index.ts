@@ -53,6 +53,7 @@ export class HistoryTracking extends BrowserforcePlugin {
       // If we have no field history tracking, there is nothing more to do
       if (!historyTrackingConfig.fieldHistoryTracking) {
         historyTrackingConfigs.push(historyTrackingResult);
+        await page.close();
         continue;
       }
 
@@ -74,6 +75,7 @@ export class HistoryTracking extends BrowserforcePlugin {
         historyTrackingResult.fieldHistoryTracking =
           fieldHistoryTrackingConfigs;
         historyTrackingConfigs.push(historyTrackingResult);
+        await page.close();
         continue;
       }
 
@@ -105,6 +107,7 @@ export class HistoryTracking extends BrowserforcePlugin {
 
       historyTrackingResult.fieldHistoryTracking = fieldHistoryTrackingConfigs;
       historyTrackingConfigs.push(historyTrackingResult);
+      await page.close();
     }
     return historyTrackingConfigs;
   }

@@ -48,6 +48,7 @@ export class LoginPage {
         )
       )?.trim();
       if (errorMessage) {
+        await this.page.close();
         throw new Error(errorMessage);
       }
     }

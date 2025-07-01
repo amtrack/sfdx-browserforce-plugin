@@ -258,6 +258,7 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
           // error handling
           await page.locator(PORTAL_DESCRIPTION_SELECTOR).wait();
           await this.browserforce.throwPageErrors(page);
+          await page.close();
           throw new Error(`saving customer portal '${portal._id}' failed`);
         }
         // portalProfileMemberships

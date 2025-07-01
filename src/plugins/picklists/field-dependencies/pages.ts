@@ -40,7 +40,8 @@ export class FieldDependencyPage {
       ]);
       await throwPageErrors(this.page);
     }
-    return new FieldDependencyPage(this.page);
+    await this.page.close();
+    return this;
   }
 }
 

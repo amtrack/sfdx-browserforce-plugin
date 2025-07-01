@@ -24,6 +24,7 @@ export class DeferSharingCalculation extends BrowserforcePlugin {
       .map((input) => input.disabled)
       .wait();
     if (isSuspendDisabled && isResumeDisabled) {
+      await page.close();
       throw new Error(
         'Sharing recalculation is currently in progress, please wait until this has completed to plan'
       );

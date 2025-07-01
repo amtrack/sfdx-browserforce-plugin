@@ -62,6 +62,7 @@ export class RecordTypeDeletePage {
         );
         await bodyHandle.dispose();
         if (errorMsg?.trim()) {
+          await this.page.close();
           throw new Error(errorMsg.trim());
         }
       }
@@ -79,6 +80,7 @@ export class RecordTypeDeletePage {
       );
       await errorHandle.dispose();
       if (errorMsg?.trim()) {
+        await this.page.close();
         throw new Error(errorMsg.trim());
       }
     }
