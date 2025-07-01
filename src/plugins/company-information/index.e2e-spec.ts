@@ -3,8 +3,16 @@ import { CompanyInformation, Config } from './index.js';
 
 describe(CompanyInformation.name, function () {
   let plugin: CompanyInformation;
-  before(() => {
+  before(async () => {
     plugin = new CompanyInformation(global.bf);
+    it('should retrieve the current currency', async () => {
+      originalConfig = await plugin.retrieve();
+      if (
+        originalConfig.defaultCurrencyIsoCode === 'German (Germany, EURO) - EUR'
+      ) {
+        originalConfig.defaultCurrencyIsoCode = 'German (Germany) - EUR';
+      }
+    });
   });
 
   let originalConfig: Config;
@@ -12,9 +20,6 @@ describe(CompanyInformation.name, function () {
     defaultCurrencyIsoCode: 'English (Ireland) - EUR',
   };
 
-  it('should retrieve the current currency', async () => {
-    originalConfig = await plugin.retrieve();
-  });
   it('should change currency to "English (Ireland) - EUR"', async () => {
     await plugin.run(configIRE);
   });

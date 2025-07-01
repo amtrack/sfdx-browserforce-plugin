@@ -106,7 +106,6 @@ export class HistoryTracking extends BrowserforcePlugin {
       historyTrackingResult.fieldHistoryTracking = fieldHistoryTrackingConfigs;
       historyTrackingConfigs.push(historyTrackingResult);
     }
-
     return historyTrackingConfigs;
   }
 

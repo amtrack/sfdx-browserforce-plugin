@@ -154,22 +154,22 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
     }
     if (plan.importFromKeystore) {
       for (const certificate of plan.importFromKeystore) {
+        if (!certificate.filePath) {
+          throw new Error(
+            `To import a certificate, the filePath is mandatory.`
+          );
+        }
+        // TODO: make relative to this.command.flags.definitionfile
+        const filePath = path.resolve(certificate.filePath);
+        if (!existsSync(filePath)) {
+          throw new Error(`file does not exist: ${filePath}`);
+        }
         const page = await this.browserforce.openPage(
           `${KEYSTORE_IMPORT_PATH}`
         );
         const fileUpload = await page
           .locator(FILE_UPLOAD_SELECTOR)
           .waitHandle();
-        // TODO: make relative to this.command.flags.definitionfile
-        if (!certificate.filePath) {
-          throw new Error(
-            `To import a certificate, the filePath is mandatory.`
-          );
-        }
-        const filePath = path.resolve(certificate.filePath);
-        if (!existsSync(filePath)) {
-          throw new Error(`file does not exist: ${filePath}`);
-        }
         await fileUpload.uploadFile(filePath);
         await fileUpload.dispose();
         if (certificate.password) {

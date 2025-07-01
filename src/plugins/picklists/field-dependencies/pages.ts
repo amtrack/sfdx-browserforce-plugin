@@ -2,7 +2,7 @@ import { type Page } from 'puppeteer';
 import { throwPageErrors } from '../../../browserforce.js';
 
 export class FieldDependencyPage {
-  private page: Page;
+  readonly page: Page;
 
   constructor(page: Page) {
     this.page = page;
