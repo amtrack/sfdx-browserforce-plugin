@@ -36,6 +36,7 @@ export class HomePageLayouts extends BrowserforcePlugin {
               return label.childNodes[i].nodeValue ?? '';
             }
           }
+          // TODO: what's this?
           throw new Error('retrieving HomePageLayouts failed');
         });
       }
