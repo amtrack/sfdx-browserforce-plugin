@@ -45,7 +45,8 @@
   },
   "mocha": {
     "loader": "ts-node/esm",
-    "no-warnings": "ExperimentalWarning"
+    "no-warnings": "ExperimentalWarning",
+    "enable-source-maps": true
   },
   "repository": "amtrack/sfdx-browserforce-plugin",
   "scripts": {
