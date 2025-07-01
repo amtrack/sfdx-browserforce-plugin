@@ -40,6 +40,7 @@ export class CompanyInformation extends BrowserforcePlugin {
         (option) => option.textContent == config.defaultCurrencyIsoCode
       );
       if (!toBeSelectedOption) {
+        await page.close();
         throw new Error(
           `Invalid currency provided. '${config.defaultCurrencyIsoCode}' is not a valid option available for currencies. Please use the exact name as it appears in the list.`
         );

@@ -35,6 +35,8 @@ export class ServicePresenceStatus extends BrowserforcePlugin {
       }
     );
 
+    await page.close();
+
     return enabledServicePresenceStatuses;
   }
 

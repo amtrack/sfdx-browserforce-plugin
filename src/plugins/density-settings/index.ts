@@ -52,6 +52,7 @@ export class DensitySettings extends BrowserforcePlugin {
     const densities = await this.getDensities(page);
     const densityToSelect = densities.find((input) => input.value === name);
     if (!densityToSelect) {
+      await page.close();
       throw new Error(
         `Could not find density "${name}" in list of densities: ${densities.map(
           (d) => d.value

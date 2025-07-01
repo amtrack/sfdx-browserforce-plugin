@@ -44,6 +44,7 @@ export class Capacity extends BrowserforcePlugin {
 
     // Retrieve the service channel config
     if (!(await page.$(CAPACITY_MODEL_SELECTOR))) {
+      await page.close();
       return {};
     }
 
@@ -74,6 +75,8 @@ export class Capacity extends BrowserforcePlugin {
         (el) => (el.getAttribute('checked') === 'checked' ? true : false)
       );
 
+      await page.close();
+
       return {
         capacityModel,
         statusField,
@@ -83,6 +86,7 @@ export class Capacity extends BrowserforcePlugin {
       };
     }
 
+    await page.close();
     return { capacityModel };
   }
 

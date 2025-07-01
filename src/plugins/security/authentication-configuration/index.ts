@@ -80,6 +80,7 @@ export class AuthenticationConfiguration extends BrowserforcePlugin {
       )) as string | null;
 
       if (!checkboxId) {
+        await page.close();
         throw new Error(`Authentication service "${svc.label}" not found`);
       }
 
@@ -97,6 +98,7 @@ export class AuthenticationConfiguration extends BrowserforcePlugin {
       (inputs) => (inputs as HTMLInputElement[]).some((cb) => cb.checked)
     );
     if (!anyChecked) {
+      await page.close();
       throw new Error(
         'Change failed: “You must select at least one authentication service.”'
       );
