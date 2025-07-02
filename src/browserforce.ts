@@ -18,7 +18,6 @@ export class Browserforce {
   public org: Org;
   public logger?: Ux;
   public browser: Browser;
-  public page: Page;
   public lightningSetupUrl: string;
 
   constructor(org: Org, logger?: Ux) {
