@@ -40,9 +40,6 @@
         "activitySettings": {
           "$ref": "./activity-settings/schema.json"
         },
-        "communities": {
-          "$ref": "./communities/schema.json"
-        },
         "customerPortal": {
           "$ref": "./customer-portal/schema.json"
         },

@@ -1,4 +1,4 @@
-export const DEPRECATED_DRIVERS = [];
+export const DEPRECATED_DRIVERS = ['communities'];
 
 export const handleDeprecations = (definition: { settings: unknown }) => {
   for (const driverName of Object.keys(definition.settings)) {

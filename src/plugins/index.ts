@@ -1,5 +1,4 @@
 import { ActivitySettings as activitySettings } from './activity-settings/index.js';
-import { Communities as communities } from './communities/index.js';
 import { CompanyInformation as companyInformation } from './company-information/index.js';
 import { CustomerPortal as customerPortal } from './customer-portal/index.js';
 import { DeferSharingCalculation as deferSharingCalculation } from './defer-sharing-calculation/index.js';
@@ -25,7 +24,6 @@ import { Slack as slack } from './slack/index.js';
 
 export {
   activitySettings,
-  communities,
   companyInformation,
   customerPortal,
   deferSharingCalculation,

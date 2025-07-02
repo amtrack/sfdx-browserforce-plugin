@@ -98,7 +98,6 @@ Here is a full blown example showing most of the supported settings in action:
 {
   "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
   "settings": {
-    "communities": { "enabled": true },
     "customerPortal": { "enabled": true },
     "deferSharingCalculation": {
       "suspend": true
