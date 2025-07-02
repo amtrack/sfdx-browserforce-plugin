@@ -64,7 +64,10 @@ export abstract class BrowserforceCommand<T> extends SfCommand<T> {
   }
 
   public async finally(err?: Error): Promise<void> {
-    this.spinner.stop(err?.message);
+    this.spinner.stop(err?.toString());
+    if (err?.cause instanceof Error) {
+      this.logToStderr(`Cause: ${err.cause.toString()}`);
+    }
     if (this.bf) {
       this.spinner.start('logging out');
       await this.bf.logout();
