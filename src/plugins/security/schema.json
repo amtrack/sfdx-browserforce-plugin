@@ -10,9 +10,6 @@
     "identityProvider": {
       "$ref": "./identity-provider/schema.json"
     },
-    "loginAccessPolicies": {
-      "$ref": "./login-access-policies/schema.json"
-    },
     "sharing": {
       "$ref": "./sharing/schema.json"
     },

@@ -18,3 +18,17 @@ it('should throw when a plugin is deprecated', () => {
     });
   }, /The sfdx-browserforce-plugin setting 'communities' is deprecated/);
 });
+
+it('should throw when a setting of a plugin', () => {
+  assert.throws(() => {
+    handleDeprecations({
+      settings: {
+        security: {
+          loginAccessPolicies: {
+            administratorsCanLogInAsAnyUser: true,
+          },
+        },
+      },
+    });
+  }, /The sfdx-browserforce-plugin setting 'security.loginAccessPolicies' is deprecated/);
+});

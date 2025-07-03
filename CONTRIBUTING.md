@@ -25,6 +25,7 @@ npm ci
 ## Scaffolding a new plugin
 
 Let's say you want to develop a new plugin to enable/disable `Administrators Can Log in as Any User`.
+Please note that this is only an example. In fact this is supported in the Metadata API.
 
 You can scaffold a new plugin by running:
 

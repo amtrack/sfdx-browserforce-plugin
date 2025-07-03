@@ -5,7 +5,7 @@
 [![Actions Status](https://github.com/amtrack/sfdx-browserforce-plugin/actions/workflows/default.yml/badge.svg?branch=main)](https://github.com/amtrack/sfdx-browserforce-plugin/actions?query=branch:main)
 
 Unlike the [Scratch Org Definition Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_scratch_orgs_def_file.htm) which can only be used **on the creation of a scratch org** (`sf org create scratch -f config/scratch-def.json`),
-the _Browserforce Configuration_ allows to "shape" **any org**, (e.g. scratch org, sandbox or production org) with **similar preferences and unofficial preferences** that are not (yet) available in the _Scratch Org Definition Configuration_ or as _Metadata_ (`sf browserforce apply -f config/setup-admin-login-as-any.json -u myOrg@example.com`).
+the _Browserforce Configuration_ allows to "shape" **any org**, (e.g. scratch org, sandbox or production org) with **similar preferences and unofficial preferences** that are not (yet) available in the _Scratch Org Definition Configuration_ or as _Metadata_ (`sf browserforce apply -f config/currency.json -u myOrg@example.com`).
 
 Further benefits:
 
@@ -60,16 +60,14 @@ Both the `browserforce apply` and `browserforce plan` commands expect a config f
 
 # Example
 
-To enable `Setup -> Security Controls -> Login Access Policies -> Administrators Can Log in as Any User`, the config file (here: `./config/setup-admin-login-as-any.json`) should look like this:
+To change the Currency Locale in `Setup -> Company Settings -> Company Information`, the config file (here: `./config/currency.json`) should look like this:
 
 ```json
 {
   "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
   "settings": {
-    "security": {
-      "loginAccessPolicies": {
-        "administratorsCanLogInAsAnyUser": true
-      }
+    "companyInformation": {
+      "defaultCurrencyIsoCode": "English (South Africa) - ZAR"
     }
   }
 }
@@ -80,11 +78,11 @@ Tip: If you use _Visual Studio Code_, you can leverage tab completion to build t
 Next apply the config:
 
 ```console
-$ sf browserforce apply -f ./config/setup-admin-login-as-any.json --target-org myOrg@example.com
+$ sf browserforce apply -f ./config/currency.json --target-org myOrg@example.com
   logging in... done
-  Applying definition file ./config/setup-admin-login-as-any.json to org myOrg@example.com
-  [Security] retrieving state... done
-  [Security] changing 'loginAccessPolicies' to '{"administratorsCanLogInAsAnyUser":true}'... done
+  Applying definition file ./config/currency.json to org myOrg@example.com
+  [CompanyInformation] retrieving state... done
+  [CompanyInformation] changing 'defaultCurrencyIsoCode' to '"English (South Africa) - ZAR"'... done
   logging out... done
 ```
 
@@ -144,7 +142,6 @@ Here is a full blown example showing most of the supported settings in action:
     "recordTypes": { "deletions": [{ "fullName": "Vehicle__c.SUV" }] },
     "salesforceToSalesforce": { "enabled": true },
     "security": {
-      "loginAccessPolicies": { "administratorsCanLogInAsAnyUser": true },
       "sharing": { "enableExternalSharingModel": true }
     },
     "companyInformation": {

@@ -9,5 +9,14 @@ export const handleDeprecations = (definition: { settings: unknown }) => {
 👉 Please see the instructions at https://github.com/amtrack/sfdx-browserforce-plugin/wiki/Hall-of-Fame#${driverName}.`
       );
     }
+    if (driverName === 'security') {
+      if (definition.settings[driverName]?.loginAccessPolicies !== undefined) {
+        throw new Error(
+          `The sfdx-browserforce-plugin setting 'security.loginAccessPolicies' is deprecated and has been removed.
+✅ Salesforce now supports this setting in the Metadata API.
+👉 Please see the instructions at https://github.com/amtrack/sfdx-browserforce-plugin/wiki/Hall-of-Fame#security-loginaccesspolicies-administratorscanloginasanyuser.`
+        );
+      }
+    }
   }
 };
