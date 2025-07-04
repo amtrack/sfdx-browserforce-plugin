@@ -28,9 +28,6 @@
         "picklists": {
           "$ref": "./picklists/schema.json"
         },
-        "deferSharingCalculation": {
-          "$ref": "./defer-sharing-calculation/schema.json"
-        },
         "emailDeliverability": {
           "$ref": "./email-deliverability/schema.json"
         },

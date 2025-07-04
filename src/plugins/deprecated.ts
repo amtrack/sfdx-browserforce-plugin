@@ -1,4 +1,4 @@
-export const DEPRECATED_DRIVERS = ['communities'];
+export const DEPRECATED_DRIVERS = ['communities', 'defer-sharing-calculation'];
 
 export const handleDeprecations = (definition: { settings: unknown }) => {
   for (const driverName of Object.keys(definition.settings)) {
