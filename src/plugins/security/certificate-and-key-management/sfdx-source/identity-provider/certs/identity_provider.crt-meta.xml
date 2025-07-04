@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Certificate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caSigned>false</caSigned>
+    <encryptedWithPlatformEncryption>false</encryptedWithPlatformEncryption>
+    <keySize>2048</keySize>
+    <masterLabel>identity_provider</masterLabel>
+    <privateKeyExportable>true</privateKeyExportable>
+</Certificate>

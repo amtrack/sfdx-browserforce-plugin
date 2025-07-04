@@ -49,14 +49,17 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
       definition?.certificates?.length ||
       definition?.importFromKeystore?.length
     ) {
-      existingCertificates = (
-        await this.org.getConnection().tooling.query<CertificateRecord>(
-          `SELECT Id, DeveloperName, MasterLabel, OptionsIsPrivateKeyExportable, KeySize FROM Certificate`,
-          { scanAll: false }
-          // BUG in jsforce: query acts with scanAll:true and returns deleted CustomObjects.
-          // It cannot be disabled.
-        )
-      )?.records;
+      existingCertificates =
+        // Note: Unfortunately scanAll=false has no impact and returns deleted records.
+        // Workaround: Order by CreatedDate DESC to get the latest record first.
+        (
+          await this.org
+            .getConnection()
+            .tooling.query<CertificateRecord>(
+              `SELECT Id, DeveloperName, MasterLabel, OptionsIsPrivateKeyExportable, KeySize FROM Certificate ORDER BY CreatedDate DESC`,
+              { scanAll: false }
+            )
+        )?.records;
     }
     if (definition?.certificates?.length) {
       for (const cert of definition.certificates) {
@@ -180,6 +183,16 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
           page.waitForNavigation(),
           page.click(SAVE_BUTTON_SELECTOR),
         ]);
+        try {
+          await this.browserforce.throwPageErrors(page);
+        } catch (e) {
+          if (e.message === 'Data Not Available') {
+            throw new Error(
+              'Failed to import certificate from Keystore. Please enable Identity Provider first. https://salesforce.stackexchange.com/questions/61618/import-keystore-in-certificate-and-key-management'
+            );
+          }
+          throw e;
+        }
         if (certificate.name) {
           // rename cert as it has the wrong name
           //  JKS aliases are case-insensitive (and so lowercase)
@@ -197,6 +210,7 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
             certPage.waitForNavigation(),
             certPage.click(SAVE_BUTTON_SELECTOR),
           ]);
+          await this.browserforce.throwPageErrors(certPage);
           await certPage.close();
         }
         await page.close();

@@ -7,15 +7,10 @@ import {
   CertificateAndKeyManagement,
   Config as CertificateAndKeyManagementConfig,
 } from './certificate-and-key-management/index.js';
-import {
-  IdentityProvider,
-  Config as IdentityProviderConfig,
-} from './identity-provider/index.js';
 import { Sharing, Config as SharingConfig } from './sharing/index.js';
 
 type Config = {
   certificateAndKeyManagement?: CertificateAndKeyManagementConfig;
-  identityProvider?: IdentityProviderConfig;
   sharing?: SharingConfig;
   authenticationConfiguration?: AuthenticationConfigurationConfig;
 };
@@ -29,10 +24,6 @@ export class Security extends BrowserforcePlugin {
         response.certificateAndKeyManagement = await pluginCKM.retrieve(
           definition.certificateAndKeyManagement
         );
-      }
-      if (definition.identityProvider) {
-        const pluginIdentityProvider = new IdentityProvider(this.browserforce);
-        response.identityProvider = await pluginIdentityProvider.retrieve();
       }
       if (definition.sharing) {
         const pluginSharing = new Sharing(this.browserforce);
@@ -55,10 +46,6 @@ export class Security extends BrowserforcePlugin {
       state.certificateAndKeyManagement,
       definition.certificateAndKeyManagement
     );
-    const identityProvider = new IdentityProvider(this.browserforce).diff(
-      state.identityProvider,
-      definition.identityProvider
-    ) as IdentityProviderConfig | undefined;
     const sharing = new Sharing(this.browserforce).diff(
       state.sharing,
       definition.sharing
@@ -73,9 +60,6 @@ export class Security extends BrowserforcePlugin {
     if (certificateAndKeyManagement !== undefined) {
       response.certificateAndKeyManagement = certificateAndKeyManagement;
     }
-    if (identityProvider !== undefined) {
-      response.identityProvider = identityProvider;
-    }
     if (sharing !== undefined) {
       response.sharing = sharing;
     }
@@ -89,10 +73,6 @@ export class Security extends BrowserforcePlugin {
     if (plan.certificateAndKeyManagement) {
       const pluginCKM = new CertificateAndKeyManagement(this.browserforce);
       await pluginCKM.apply(plan.certificateAndKeyManagement);
-    }
-    if (plan.identityProvider) {
-      const pluginIdentityProvider = new IdentityProvider(this.browserforce);
-      await pluginIdentityProvider.apply(plan.identityProvider);
     }
     if (plan.sharing) {
       const pluginSharing = new Sharing(this.browserforce);
