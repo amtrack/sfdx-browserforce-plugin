@@ -9,11 +9,11 @@ type BrowserforceApplyResponse = {
 export class BrowserforcePlanCommand extends BrowserforceCommand<BrowserforceApplyResponse> {
   public static description = 'retrieve state and generate plan file';
   public static examples = [
-    `$ <%= config.bin %> <%= command.id %> -f ./config/setup-admin-login-as-any.json --target-org myOrg@example.com
+    `$ <%= config.bin %> <%= command.id %> -f ./config/currency.json --target-org myOrg@example.com
   logging in... done
-  Generating plan with definition file ./config/setup-admin-login-as-any.json from org myOrg@example.com
-  [Security] retrieving state... done
-  [Security] generating plan... done
+  Generating plan with definition file ./config/currency.json from org myOrg@example.com
+  [CompanyInformation] retrieving state... done
+  [CompanyInformation] generating plan... done
   logging out... done
   `,
   ];

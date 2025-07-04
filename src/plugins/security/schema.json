@@ -7,15 +7,6 @@
     "certificateAndKeyManagement": {
       "$ref": "./certificate-and-key-management/schema.json"
     },
-    "identityProvider": {
-      "$ref": "./identity-provider/schema.json"
-    },
-    "loginAccessPolicies": {
-      "$ref": "./login-access-policies/schema.json"
-    },
-    "sharing": {
-      "$ref": "./sharing/schema.json"
-    },
     "authenticationConfiguration": {
       "$ref": "./authentication-configuration/schema.json"
     }

@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema",
   "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/home-page-layouts/schema.json",
   "title": "Home Page Layouts",
-  "description": "Only available in Salesforce Classic UI",
+  "description": "Assign Home Page Layouts for Profiles. Only available in Salesforce Classic UI",
   "type": "object",
   "properties": {
     "homePageLayoutAssignments": {

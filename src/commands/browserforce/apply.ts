@@ -7,11 +7,11 @@ type BrowserforceApplyResponse = {
 export class BrowserforceApply extends BrowserforceCommand<BrowserforceApplyResponse> {
   public static description = 'apply a plan from a definition file';
   public static examples = [
-    `$ <%= config.bin %> <%= command.id %> -f ./config/setup-admin-login-as-any.json --target-org myOrg@example.com
+    `$ <%= config.bin %> <%= command.id %> -f ./config/currency.json --target-org myOrg@example.com
   logging in... done
-  Applying definition file ./config/setup-admin-login-as-any.json to org myOrg@example.com
-  [Security] retrieving state... done
-  [Security] changing 'loginAccessPolicies' to '{"administratorsCanLogInAsAnyUser":true}'... done
+  Applying definition file ./config/currency.json to org myOrg@example.com
+  [CompanyInformation] retrieving state... done
+  [CompanyInformation] changing 'defaultCurrencyIsoCode' to '"English (South Africa) - ZAR"'... done
   logging out... done
   `,
   ];

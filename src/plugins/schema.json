@@ -28,9 +28,6 @@
         "picklists": {
           "$ref": "./picklists/schema.json"
         },
-        "deferSharingCalculation": {
-          "$ref": "./defer-sharing-calculation/schema.json"
-        },
         "emailDeliverability": {
           "$ref": "./email-deliverability/schema.json"
         },
@@ -39,9 +36,6 @@
         },
         "activitySettings": {
           "$ref": "./activity-settings/schema.json"
-        },
-        "communities": {
-          "$ref": "./communities/schema.json"
         },
         "customerPortal": {
           "$ref": "./customer-portal/schema.json"

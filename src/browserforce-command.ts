@@ -8,6 +8,7 @@ import { promises } from 'fs';
 import * as path from 'path';
 import { Browserforce } from './browserforce.js';
 import { ConfigParser } from './config-parser.js';
+import { handleDeprecations } from './plugins/deprecated.js';
 import * as DRIVERS from './plugins/index.js';
 
 export abstract class BrowserforceCommand<T> extends SfCommand<T> {
@@ -50,6 +51,7 @@ export abstract class BrowserforceCommand<T> extends SfCommand<T> {
         throw new Error('Failed parsing definitionfile');
       }
     }
+    handleDeprecations(definition);
     // TODO: use require.resolve to dynamically load plugins from npm packages
     this.settings = ConfigParser.parse(DRIVERS, definition);
     this.bf = new Browserforce(

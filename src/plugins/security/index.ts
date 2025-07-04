@@ -7,21 +7,9 @@ import {
   CertificateAndKeyManagement,
   Config as CertificateAndKeyManagementConfig,
 } from './certificate-and-key-management/index.js';
-import {
-  IdentityProvider,
-  Config as IdentityProviderConfig,
-} from './identity-provider/index.js';
-import {
-  LoginAccessPolicies,
-  Config as LoginAccessPoliciesConfig,
-} from './login-access-policies/index.js';
-import { Sharing, Config as SharingConfig } from './sharing/index.js';
 
 type Config = {
   certificateAndKeyManagement?: CertificateAndKeyManagementConfig;
-  identityProvider?: IdentityProviderConfig;
-  loginAccessPolicies?: LoginAccessPoliciesConfig;
-  sharing?: SharingConfig;
   authenticationConfiguration?: AuthenticationConfigurationConfig;
 };
 
@@ -34,21 +22,6 @@ export class Security extends BrowserforcePlugin {
         response.certificateAndKeyManagement = await pluginCKM.retrieve(
           definition.certificateAndKeyManagement
         );
-      }
-      if (definition.identityProvider) {
-        const pluginIdentityProvider = new IdentityProvider(this.browserforce);
-        response.identityProvider = await pluginIdentityProvider.retrieve();
-      }
-      if (definition.loginAccessPolicies) {
-        const pluginLoginAccessPolicies = new LoginAccessPolicies(
-          this.browserforce
-        );
-        response.loginAccessPolicies =
-          await pluginLoginAccessPolicies.retrieve();
-      }
-      if (definition.sharing) {
-        const pluginSharing = new Sharing(this.browserforce);
-        response.sharing = await pluginSharing.retrieve();
       }
       if (definition.authenticationConfiguration) {
         response.authenticationConfiguration =
@@ -67,18 +40,6 @@ export class Security extends BrowserforcePlugin {
       state.certificateAndKeyManagement,
       definition.certificateAndKeyManagement
     );
-    const identityProvider = new IdentityProvider(this.browserforce).diff(
-      state.identityProvider,
-      definition.identityProvider
-    ) as IdentityProviderConfig | undefined;
-    const loginAccessPolicies = new LoginAccessPolicies(this.browserforce).diff(
-      state.loginAccessPolicies,
-      definition.loginAccessPolicies
-    ) as LoginAccessPoliciesConfig | undefined;
-    const sharing = new Sharing(this.browserforce).diff(
-      state.sharing,
-      definition.sharing
-    ) as SharingConfig | undefined;
     const authenticationConfiguration = new AuthenticationConfiguration(
       this.browserforce
     ).diff(
@@ -88,18 +49,6 @@ export class Security extends BrowserforcePlugin {
     const response: Config = {};
     if (certificateAndKeyManagement !== undefined) {
       response.certificateAndKeyManagement = certificateAndKeyManagement;
-    }
-    if (identityProvider !== undefined) {
-      response.identityProvider = identityProvider;
-    }
-    if (loginAccessPolicies !== undefined) {
-      response.loginAccessPolicies = loginAccessPolicies;
-    }
-    if (loginAccessPolicies !== undefined) {
-      response.loginAccessPolicies = loginAccessPolicies;
-    }
-    if (sharing !== undefined) {
-      response.sharing = sharing;
     }
     if (authenticationConfiguration !== undefined) {
       response.authenticationConfiguration = authenticationConfiguration;
@@ -111,20 +60,6 @@ export class Security extends BrowserforcePlugin {
     if (plan.certificateAndKeyManagement) {
       const pluginCKM = new CertificateAndKeyManagement(this.browserforce);
       await pluginCKM.apply(plan.certificateAndKeyManagement);
-    }
-    if (plan.identityProvider) {
-      const pluginIdentityProvider = new IdentityProvider(this.browserforce);
-      await pluginIdentityProvider.apply(plan.identityProvider);
-    }
-    if (plan.loginAccessPolicies) {
-      const pluginLoginAccessPolicies = new LoginAccessPolicies(
-        this.browserforce
-      );
-      await pluginLoginAccessPolicies.apply(plan.loginAccessPolicies);
-    }
-    if (plan.sharing) {
-      const pluginSharing = new Sharing(this.browserforce);
-      await pluginSharing.apply(plan.sharing);
     }
     if (plan.authenticationConfiguration) {
       const pluginAuthConfig = new AuthenticationConfiguration(

@@ -7,11 +7,7 @@ describe('ConfigParser', () => {
     it('should parse a valid definition file', () => {
       const definition = {
         settings: {
-          security: {
-            loginAccessPolicies: {
-              adminsCanLogInAsAnyUser: true,
-            },
-          },
+          security: {},
         },
       };
       const result = ConfigParser.parse(DRIVERS, definition);

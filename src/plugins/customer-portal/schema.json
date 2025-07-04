@@ -7,7 +7,7 @@
   "properties": {
     "enabled": {
       "title": "Enable Customer Portal",
-      "description": "Warning: cannot be disabled once enabled",
+      "description": "Although the Metadata API has a OrgSettings.enableCustomerSuccessPortal field, enabling this via the browser can be handy because it automatically creates a Portal named 'Customer Portal', where the admin and emailSenderAddress are set to the current user. Warning: cannot be disabled once enabled",
       "type": "boolean"
     },
     "portals": {

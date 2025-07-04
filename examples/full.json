@@ -1,0 +1,50 @@
+{
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+  "settings": {
+    "salesforceToSalesforce": { "enabled": true },
+    "customerPortal": { "enabled": true },
+    "highVelocitySalesSettings": {
+      "setUpAndEnable": true
+    },
+    "companyInformation": {
+      "defaultCurrencyIsoCode": "English (Ireland) - EUR"
+    },
+    "recordTypes": { "deletions": [{ "fullName": "Vehicle__c.SUV" }] },
+    "picklists": {
+      "picklistValues": [
+        {
+          "metadataType": "StandardValueSet",
+          "metadataFullName": "LeadSource",
+          "value": "Partner",
+          "newValue": "Partner Referral"
+        },
+        {
+          "metadataType": "CustomField",
+          "metadataFullName": "Vehicle__c.Features__c",
+          "value": "CD",
+          "newValue": "Media",
+          "absent": true
+        },
+        {
+          "metadataType": "CustomField",
+          "metadataFullName": "Vehicle__c.Features__c",
+          "value": "CD",
+          "newValue": "AC",
+          "active": false
+        }
+      ]
+    },
+    "homePageLayouts": {
+      "homePageLayoutAssignments": [
+        {
+          "profile": "Standard User",
+          "layout": "Home Page Default"
+        },
+        {
+          "profile": "System Administrator",
+          "layout": "DE Default"
+        }
+      ]
+    }
+  }
+}

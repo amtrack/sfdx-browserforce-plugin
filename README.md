@@ -1,18 +1,79 @@
 # sfdx-browserforce-plugin
 
-> sfdx plugin for browser automation
+> sfdx plugin to apply settings in the Salesforce Setup Menu using browser automation
 
 [![Actions Status](https://github.com/amtrack/sfdx-browserforce-plugin/actions/workflows/default.yml/badge.svg?branch=main)](https://github.com/amtrack/sfdx-browserforce-plugin/actions?query=branch:main)
 
-Unlike the [Scratch Org Definition Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_scratch_orgs_def_file.htm) which can only be used **on the creation of a scratch org** (`sf org create scratch -f config/scratch-def.json`),
-the _Browserforce Configuration_ allows to "shape" **any org**, (e.g. scratch org, sandbox or production org) with **similar preferences and unofficial preferences** that are not (yet) available in the _Scratch Org Definition Configuration_ or as _Metadata_ (`sf browserforce apply -f config/setup-admin-login-as-any.json -u myOrg@example.com`).
+✅ Most settings in the Salesforce Setup Menu are represented as [Settings](https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_settings.htm) in the Metadata API.
 
-Further benefits:
+For example, the highlighted checkbox "Show View Hierarchy link on account pages" in Account Settings is indeed represented in the Metadata `AccountSettings` as `showViewHierarchyLink`.
 
-- comfortable configuration using JSON Schema (similar to the [Scratch Org Definition Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_scratch_orgs_def_file.htm))
-- idempotency of the `apply` command only applies what's necessary and allows re-execution (concept similar to [terraform](https://www.terraform.io/docs/commands/apply.html))
-- browser automation powered by Puppeteer and "Chrome for Testing", [learn more about Puppeteer and Browserforce](#puppeteer)
-- implement your own custom preferences (a.k.a. plugins; to be improved)
+|                                                                                   |                                                                   |
+| --------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| ![Account Settings in the Salesforce Setup Menu](./examples/account-settings.png) | ![AccountSettings Metadata](./examples/account-settings-meta.png) |
+
+⚡ **BUT**
+
+> Not all feature settings are available in the Metadata API. See [Unsupported Metadata Types](https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_unsupported_types.htm) for information on which feature settings are not available.
+>
+> Source: [Metadata API Developer Guide | Settings](https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_settings.htm)
+
+For example, the Currency Locale in `Setup -> Company Settings -> Company Information` is not represented in any Metadata.
+
+![unsupported setting for currency locale](examples/unsupported-currency-locale.png)
+
+👉 This is where Browserforce (sfdx-browserforce-plugin) comes to the rescue. It fills this gap by applying these unsupported settings through browser automation!
+
+# Example
+
+To change the Currency Locale, the Browserforce config file (here: `./config/currency.json`) looks like this:
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+  "settings": {
+    "companyInformation": {
+      "defaultCurrencyIsoCode": "English (South Africa) - ZAR"
+    }
+  }
+}
+```
+
+Apply the config:
+
+```console
+$ sf browserforce apply -f ./config/currency.json --target-org myOrg@example.com
+  logging in... done
+  Applying definition file ./config/currency.json to org myOrg@example.com
+  [CompanyInformation] retrieving state... done
+  [CompanyInformation] changing 'defaultCurrencyIsoCode' to '"English (South Africa) - ZAR"'... done
+  logging out... done
+```
+
+# Key Concepts
+
+- 🔧 configuration using JSON Schema (similar to the [Scratch Org Definition Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_scratch_orgs_def_file.htm))
+- 🧠 idempotency of the `apply` command only applies what's necessary and allows re-execution (concept similar to [terraform](https://www.terraform.io/docs/commands/apply.html))
+- 🏎️ browser automation powered by Puppeteer and "Chrome for Testing", [learn more about Puppeteer and Browserforce](#puppeteer)
+
+# Supported Browserforce Settings
+
+Top settings:
+
+- Change Currency Locale
+- Delete inactive record types
+- Replace (and delete) picklist values
+- Manage (create/modify/delete) Field Dependencies on CustomFields
+- Set Email Deliverability Access Level to "No access", "System email only" and "All email"
+- Enable the 'Sales Cloud for Slack' Slack App
+- Change active Lightning Theme
+- Enable Salesforce To Salesforce
+- Import certificates from a keystore in Java Keystore (JKS) format
+
+But there's more:
+
+- Please see the [Browserforce Settings](https://github.com/amtrack/sfdx-browserforce-plugin/wiki/Browserforce-Settings) wiki page with screenshots.
+- Explore the JSON schema powered configuration using a [full-blown example](https://github.dev/amtrack/sfdx-browserforce-plugin/blob/main/examples/full.json) or start with an [empty configuration](https://github.dev/amtrack/sfdx-browserforce-plugin/blob/main/examples/empty.json).
 
 # Installation
 
@@ -57,103 +118,6 @@ COMMANDS
 ```
 
 Both the `browserforce apply` and `browserforce plan` commands expect a config file and a target username or alias for the org.
-
-# Example
-
-To enable `Setup -> Security Controls -> Login Access Policies -> Administrators Can Log in as Any User`, the config file (here: `./config/setup-admin-login-as-any.json`) should look like this:
-
-```json
-{
-  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-  "settings": {
-    "security": {
-      "loginAccessPolicies": {
-        "administratorsCanLogInAsAnyUser": true
-      }
-    }
-  }
-}
-```
-
-Tip: If you use _Visual Studio Code_, you can leverage tab completion to build the config (powered by the JSON Schema).
-
-Next apply the config:
-
-```console
-$ sf browserforce apply -f ./config/setup-admin-login-as-any.json --target-org myOrg@example.com
-  logging in... done
-  Applying definition file ./config/setup-admin-login-as-any.json to org myOrg@example.com
-  [Security] retrieving state... done
-  [Security] changing 'loginAccessPolicies' to '{"administratorsCanLogInAsAnyUser":true}'... done
-  logging out... done
-```
-
-# Supported Settings
-
-See the [JSON Schema](src/plugins/schema.json) for all supported settings.
-
-Here is a full blown example showing most of the supported settings in action:
-
-```json
-{
-  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-  "settings": {
-    "communities": { "enabled": true },
-    "customerPortal": { "enabled": true },
-    "deferSharingCalculation": {
-      "suspend": true
-    },
-    "highVelocitySalesSettings": {
-      "setUpAndEnable": true
-    },
-    "homePageLayouts": {
-      "homePageLayoutAssignments": [
-        {
-          "profile": "Standard User",
-          "layout": "Home Page Default"
-        },
-        {
-          "profile": "System Administrator",
-          "layout": "DE Default"
-        }
-      ]
-    },
-    "picklists": {
-      "picklistValues": [
-        {
-          "metadataType": "StandardValueSet",
-          "metadataFullName": "LeadSource",
-          "value": "Partner",
-          "newValue": "Partner Referral"
-        },
-        {
-          "metadataType": "CustomField",
-          "metadataFullName": "Vehicle__c.Features__c",
-          "value": "CD",
-          "newValue": "Media",
-          "absent": true
-        },
-        {
-          "metadataType": "CustomField",
-          "metadataFullName": "Vehicle__c.Features__c",
-          "value": "CD",
-          "newValue": "AC",
-          "active": false
-        }
-      ]
-    },
-    "recordTypes": { "deletions": [{ "fullName": "Vehicle__c.SUV" }] },
-    "salesforceToSalesforce": { "enabled": true },
-    "security": {
-      "loginAccessPolicies": { "administratorsCanLogInAsAnyUser": true },
-      "sharing": { "enableExternalSharingModel": true }
-    },
-    "companyInformation": {
-      "defaultCurrencyIsoCode": "English (Ireland) - EUR"
-    }
-  }
-}
-```
 
 # Environment Variables
 

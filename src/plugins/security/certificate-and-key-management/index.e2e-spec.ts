@@ -1,23 +1,16 @@
 import { Org } from '@salesforce/core';
 import assert from 'assert';
-import { CertificateAndKeyManagement } from './certificate-and-key-management/index.js';
-import { IdentityProvider } from './identity-provider/index.js';
+import { spawnSync } from 'node:child_process';
+import { join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { CertificateAndKeyManagement } from './index.js';
 
-describe(`${CertificateAndKeyManagement.name} and ${IdentityProvider.name}`, function () {
-  let pluginIdentityProvider: IdentityProvider;
+describe(CertificateAndKeyManagement.name, function () {
   let pluginCertificateManagement: CertificateAndKeyManagement;
   before(() => {
-    pluginIdentityProvider = new IdentityProvider(global.bf);
     pluginCertificateManagement = new CertificateAndKeyManagement(global.bf);
   });
 
-  const configEnabled = {
-    enabled: true,
-    certificate: 'identity_provider',
-  };
-  const configDisabled = {
-    enabled: false,
-  };
   const configGeneratedCert = {
     certificates: [
       {
@@ -35,17 +28,23 @@ describe(`${CertificateAndKeyManagement.name} and ${IdentityProvider.name}`, fun
       },
     ],
   };
-
-  it('should fail to enable identity provider with non-existing Certificate', async () => {
-    let err;
-    try {
-      await pluginIdentityProvider.run(configEnabled);
-    } catch (e) {
-      err = e;
-    }
-    assert.throws(() => {
-      throw err;
-    }, /Could not find Certificate 'identity_provider'/);
+  it('should enable Identity Provider as a prerequisite', async () => {
+    // https://salesforce.stackexchange.com/questions/61618/import-keystore-in-certificate-and-key-management
+    const __dirname = fileURLToPath(new URL('.', import.meta.url));
+    const dir = resolve(join(__dirname, 'sfdx-source', 'identity-provider'));
+    const sourceDeployCmd = spawnSync('sf', [
+      'project',
+      'deploy',
+      'start',
+      '-d',
+      dir,
+      '--json',
+    ]);
+    assert.deepStrictEqual(
+      sourceDeployCmd.status,
+      0,
+      sourceDeployCmd.output.toString()
+    );
   });
   it('should create a self-signed certificate', async () => {
     await pluginCertificateManagement.apply(configGeneratedCert);
@@ -54,20 +53,6 @@ describe(`${CertificateAndKeyManagement.name} and ${IdentityProvider.name}`, fun
     // explictly pass definition to retrieve
     const res = await pluginCertificateManagement.run(configGeneratedCert);
     assert.deepStrictEqual(res, { message: 'no action necessary' });
-  });
-  it('should enable Identity Provider with generated cert', async () => {
-    await pluginIdentityProvider.apply(configEnabled);
-  });
-  it('Identity Provider should be enabled', async () => {
-    const state = await pluginIdentityProvider.retrieve();
-    assert.deepStrictEqual(state.enabled, true);
-  });
-  it('should disable Identity Provider', async () => {
-    await pluginIdentityProvider.apply(configDisabled);
-  });
-  it('Identity Provider should be disabled', async () => {
-    const state = await pluginIdentityProvider.retrieve();
-    assert.deepStrictEqual(state.enabled, false);
   });
   it('should import a cert from a keystore', async () => {
     await pluginCertificateManagement.run(configImportFromKeystore);
