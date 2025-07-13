@@ -21,7 +21,10 @@ import { Security as security } from './security/index.js';
 import { ServiceChannels as serviceChannels } from './service-channels/index.js';
 import { Slack as slack } from './slack/index.js';
 
+import { OmnistudioSettings as omnistudioSettings } from './omnistudio-settings/index.js';
+
 export {
+  omnistudioSettings,
   activitySettings,
   companyInformation,
   customerPortal,
