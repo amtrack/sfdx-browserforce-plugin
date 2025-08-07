@@ -20,8 +20,6 @@ export class VlocityFeatures extends BrowserforcePlugin {
       try {
         if (frame.url().includes('/apex/')) {
           targetFrame = frame;
-          // TODO: weghalen
-          console.log('search and click enableFeaturesButton');
           await targetFrame.waitForSelector(this.enableFeaturesButton);
           await targetFrame.click(this.enableFeaturesButton);
         }
@@ -30,19 +28,20 @@ export class VlocityFeatures extends BrowserforcePlugin {
       }
     }
 
-    await new Promise(resolve => setTimeout(resolve, 10000));
+    await new Promise(resolve => setTimeout(resolve, 15000));
+    try {
+      await targetFrame.waitForSelector(this.configureButton);
+      await targetFrame.click(this.configureButton);
+      await new Promise(resolve => setTimeout(resolve, 10000));
+    } catch(e) {
+      console.warn(`Failed to click 'Configure' button`);
+    }
 
-    // Try 3 times
-    let attempt = 0;
-    while (attempt != 3) {
-      try {
-        await targetFrame.waitForSelector(this.configureButton);
-        await targetFrame.click(this.configureButton);
-        break;
-      } catch(e) {
-        console.warn(`Attempt ${attempt} to click 'Configure' button failed`);
-        attempt++;
-      }
+    const checkboxes = await targetFrame.$$('::-p-xpath(//input[contains(@type, "checkbox") and contains(@ng-change, "changeInFeature(feature)") and contains(@class, "ng-empty")])');
+    console.log('checkboxes.length: ' + checkboxes.length);
+
+    for(const checkbox of checkboxes) {
+      await checkbox.click();
     }
 
     await new Promise(resolve => setTimeout(resolve, 30000));
