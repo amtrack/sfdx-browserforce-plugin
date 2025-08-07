@@ -66,6 +66,9 @@
         },
         "slack": {
           "$ref": "./slack/schema.json"
+        },
+        "vlocityFeatures": {
+          "$ref": "./vlocity-features/schema.json"
         }
       }
     }

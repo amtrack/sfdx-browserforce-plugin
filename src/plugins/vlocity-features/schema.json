@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/vlocity-features/schema.json",
+  "title": "Vlocity Features",
+  "type": "object",
+  "properties": {
+    "enableStandardCartAPI": {
+      "title": "Enable Standard Cart API",
+      "type": "boolean"
+    }
+  }
+}
