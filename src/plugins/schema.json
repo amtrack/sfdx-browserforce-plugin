@@ -67,8 +67,8 @@
         "slack": {
           "$ref": "./slack/schema.json"
         },
-        "vlocityFeatures": {
-          "$ref": "./vlocity-features/schema.json"
+        "standardCartApi": {
+          "$ref": "standard-cart-api/schema.json"
         }
       }
     }

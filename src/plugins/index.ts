@@ -20,7 +20,7 @@ import { SalesforceToSalesforce as salesforceToSalesforce } from './salesforce-t
 import { Security as security } from './security/index.js';
 import { ServiceChannels as serviceChannels } from './service-channels/index.js';
 import { Slack as slack } from './slack/index.js';
-import { VlocityFeatures as vlocityFeatures } from './vlocity-features/index.js';
+import { StandardCartApi as standardCartApi } from './standard-cart-api/index.js';
 
 export {
   activitySettings,
@@ -45,5 +45,5 @@ export {
   security,
   serviceChannels,
   slack,
-  vlocityFeatures
+  standardCartApi
 };

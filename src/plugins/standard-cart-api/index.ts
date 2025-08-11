@@ -6,7 +6,7 @@ type Config = {
   enableStandardCartAPI: boolean;
 };
 
-export class VlocityFeatures extends BrowserforcePlugin {
+export class StandardCartApi extends BrowserforcePlugin {
   private enableFeaturesButton = `::-p-xpath(//a[contains(@title, "Enable Features")])`;
   private configureButton = '::-p-xpath(//button[contains(text(), "Configure")])';
 
