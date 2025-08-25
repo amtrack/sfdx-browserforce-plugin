@@ -1,6 +1,6 @@
 import {BrowserforcePlugin} from '../../plugin.js';
 
-const BASE_PATH = '/apex/CMTAdmin';
+const BASE_PATH = '/apex/vlocity_cmt__CMTAdmin';
 
 type Config = {
   enableStandardCartAPI: boolean;
@@ -23,6 +23,18 @@ type GetCustomSettingsResults = {
   }[];
   hasError: boolean;
 };
+
+// Visualforce global type declarations for remoting
+interface VisualforceRemotingManager {
+  invokeAction(action: string, ...args: any[]): void;
+}
+interface VisualforceRemoting {
+  Manager: VisualforceRemotingManager;
+}
+interface VisualforceType {
+  remoting: VisualforceRemoting;
+}
+declare const Visualforce: VisualforceType;
 
 export class StandardCartApi extends BrowserforcePlugin {
   private customSettings: GetCustomSettingsResults;
@@ -71,21 +83,16 @@ export class StandardCartApi extends BrowserforcePlugin {
 
     const customSettingsJson = JSON.stringify(customSettings);
 
-    const result = await page.evaluate((customSettingsJson: string) => {
+    await page.evaluate((customSettingsJson: string) => {
       return new Promise<any>((resolve, reject) => {
         Visualforce.remoting.Manager.invokeAction(
           'vlocity_cmt.CMTAdminController.saveCustomSettings', 'vlocity_cmt__VlocityFeature__c',
           customSettingsJson,
-          function (result, event) {
+          function (result: any, _event: any) {
             resolve(result);
-            // console.log(result, event);
           },
           {escape: false});
       });
     }, customSettingsJson);
-
-
-    console.log(result);
-
   }
 }
