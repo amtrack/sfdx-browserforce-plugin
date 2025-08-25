@@ -1,69 +1,91 @@
-import { BrowserforcePlugin } from '../../plugin.js';
+import {BrowserforcePlugin} from '../../plugin.js';
 
-const BASE_PATH = '/lightning/n/vlocity_cmt__CMTAdmin';
+const BASE_PATH = '/apex/CMTAdmin';
 
 type Config = {
   enableStandardCartAPI: boolean;
 };
 
-export class StandardCartApi extends BrowserforcePlugin {
-  private enableFeaturesButton = `::-p-xpath(//a[contains(@title, "Enable Features")])`;
-  private configureButton = '::-p-xpath(//button[contains(text(), "Configure")])';
+type GetCustomSettingsResults = {
+  result: {
+    Id: string,
+    Name: string,
+    isEnabled: boolean,
+    vlocity_cmt__SetupValue__c: 'false' | 'true',
+    children: {
+      isEnabled: boolean,
+      features: {
+        Id: string,
+        Name: string,
+        vlocity_cmt__SetupValue__c: 'false' | 'true',
+      }[]
+    }[]
+  }[];
+  hasError: boolean;
+};
 
-  public async retrieve(definition): Promise<Config> {
-    const enableStandardCartAPI = definition.enableStandardCartAPI;
+export class StandardCartApi extends BrowserforcePlugin {
+  private customSettings: GetCustomSettingsResults;
+
+  public async retrieve(definition: Config): Promise<Config> {
     const page = await this.browserforce.openPage(BASE_PATH);
 
-    await new Promise(resolve => setTimeout(resolve, 10000));
+    this.customSettings = await page.evaluate(() => {
+      return new Promise<GetCustomSettingsResults>((resolve, reject) => {
+        Visualforce.remoting.Manager.invokeAction('vlocity_cmt.CMTAdminController.getCustomSettingsRecord', 'vlocity_cmt__VlocityFeature__c', '',
+          (result: GetCustomSettingsResults, _event: any) => {
+            // console.log(result, event);
+            if (result.hasError) {
+              reject(result);
+            } else {
+              resolve(result);
+            }
+          },
+          {escape: false});
+      });
+    });
 
-    try {
-      let targetFrame;
-      let frames = page.frames();
-      for (const frame of frames) {
-        if (frame.url().includes('/apex/')) {
-          targetFrame = frame;
-          await targetFrame.waitForSelector(this.enableFeaturesButton);
-          await targetFrame.click(this.enableFeaturesButton);
-        }
-      }
-
-      if (targetFrame) {
-        await new Promise(resolve => setTimeout(resolve, 15000));
-
-        await targetFrame.waitForSelector(this.configureButton);
-        await targetFrame.click(this.configureButton);
-
-        await new Promise(resolve => setTimeout(resolve, 10000));
-
-        let checkboxes = [];
-        if (enableStandardCartAPI) {
-          checkboxes = await targetFrame.$$('::-p-xpath(//input[contains(@type, "checkbox") and contains(@ng-change, "changeInFeature(feature)") and contains(@class, "ng-empty")])');
-        } else {
-          checkboxes = await targetFrame.$$('::-p-xpath(//input[contains(@type, "checkbox") and contains(@ng-change, "changeInFeature(feature)") and contains(@class, "ng-not-empty")])');
-          checkboxes = checkboxes.reverse();
-        }
-
-        for (const checkbox of checkboxes) {
-          await checkbox.click();
-        }
-
-        await new Promise(resolve => setTimeout(resolve, 10000));
-
-        const saveButton = await targetFrame.$('::-p-xpath(//button[contains(text(), "Save")])');
-        if (saveButton) {
-          await saveButton.click();
-          console.log(`Standard Cart API is ${enableStandardCartAPI ? 'enabled' : 'disabled'}`);
-        }
-      }
-    } catch (e) {
-      console.warn(`Something went wrong: ${e}`);
+    return {
+      enableStandardCartAPI: this.customSettings.result.find(r => r.Name === 'EnableCPQNext1B').isEnabled
     }
-
-
-    return definition;
   }
 
   public async apply(config: Config): Promise<void> {
+    const page = await this.browserforce.openPage(BASE_PATH);
+
+    const enableCPQNext1B = this.customSettings.result.find(r => r.Name === 'EnableCPQNext1B');
+    const customSettings = [
+      {
+        Id: enableCPQNext1B.Id,
+        Name: enableCPQNext1B.Name,
+        vlocity_cmt__SetupValue__c: config.enableStandardCartAPI + ''
+      },
+      ...enableCPQNext1B.children
+        .flatMap((x) => x.features)
+        .map(feature => ({
+          Id: feature.Id,
+          Name: feature.Name,
+          vlocity_cmt__SetupValue__c: config.enableStandardCartAPI + ''
+        }))
+    ];
+
+    const customSettingsJson = JSON.stringify(customSettings);
+
+    const result = await page.evaluate((customSettingsJson: string) => {
+      return new Promise<any>((resolve, reject) => {
+        Visualforce.remoting.Manager.invokeAction(
+          'vlocity_cmt.CMTAdminController.saveCustomSettings', 'vlocity_cmt__VlocityFeature__c',
+          customSettingsJson,
+          function (result, event) {
+            resolve(result);
+            // console.log(result, event);
+          },
+          {escape: false});
+      });
+    }, customSettingsJson);
+
+
+    console.log(result);
 
   }
 }
