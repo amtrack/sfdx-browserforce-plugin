@@ -84,10 +84,10 @@ export class Browserforce {
         return page;
       },
       {
-        onFailedAttempt: async (error) => {
+        onFailedAttempt: async (context) => {
           if (this.logger) {
             this.logger.warn(
-              `retrying ${error.retriesLeft} more time(s) because of "${error}"`
+              `retrying ${context.retriesLeft} more time(s) because of "${context.error}"`
             );
           }
           if (page) {
@@ -201,9 +201,9 @@ export async function retry<T>(
   input: (attemptCount: number) => PromiseLike<T> | T
 ): Promise<T> {
   const res = await pRetry(input, {
-    onFailedAttempt: (error) => {
+    onFailedAttempt: (context) => {
       console.warn(
-        `retrying ${error.retriesLeft} more time(s) because of "${error}"`
+        `retrying ${context.retriesLeft} more time(s) because of "${context.error}"`
       );
     },
     retries: parseInt(process.env.BROWSERFORCE_RETRY_MAX_RETRIES ?? '6', 10),
