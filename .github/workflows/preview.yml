@@ -15,8 +15,8 @@ jobs:
           node-version-file: .node-version
       - name: Install dependencies
         run: |
-          npm ci
-          npm install --global @salesforce/cli@${SF_CLI_VERSION:-"latest"}
+          npm ci --ignore-scripts
+          npm install --ignore-scripts --global @salesforce/cli@${SF_CLI_VERSION:-"latest"}
       - name: Run unit tests
         run: npm run test
       - name: Authenticate DevHub and create scratch org
