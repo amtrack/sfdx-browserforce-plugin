@@ -66,6 +66,9 @@
         },
         "slack": {
           "$ref": "./slack/schema.json"
+        },
+        "standardCartApi": {
+          "$ref": "standard-cart-api/schema.json"
         }
       }
     }
