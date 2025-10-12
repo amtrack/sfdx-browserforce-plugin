@@ -4,12 +4,13 @@ import { LightningExperienceSettings } from './index.js';
 describe(LightningExperienceSettings.name, function () {
   describe('activeThemeName', () => {
     let plugin: LightningExperienceSettings;
-    before(() => {
+    let configOriginal;
+    before(async () => {
       plugin = new LightningExperienceSettings(global.bf);
+      configOriginal = await plugin.retrieve();
     });
 
     const configLightningLite = { activeThemeName: 'LightningLite' };
-    const configLightning = { activeThemeName: 'Lightning' };
     it('should activate LightningLite theme', async () => {
       await plugin.run(configLightningLite);
     });
@@ -17,12 +18,12 @@ describe(LightningExperienceSettings.name, function () {
       const state = await plugin.retrieve();
       assert.deepStrictEqual(state, configLightningLite);
     });
-    it('should activate Lightning theme', async () => {
-      await plugin.apply(configLightning);
+    it('should activate original theme', async () => {
+      await plugin.apply(configOriginal);
     });
-    it('Lightning theme should already be activated', async () => {
+    it('original theme should already be activated', async () => {
       const state = await plugin.retrieve();
-      assert.deepStrictEqual(state, configLightning);
+      assert.deepStrictEqual(state, configOriginal);
     });
     it('should throw for invalid theme', async () => {
       let err;

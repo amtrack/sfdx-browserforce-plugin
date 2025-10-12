@@ -19,6 +19,43 @@ type Theme = {
 };
 
 export class LightningExperienceSettings extends BrowserforcePlugin {
+  async setupDOMObserver(
+    page: Page,
+    elementName: string,
+    callbackName: string
+  ): Promise<void> {
+    await page.evaluate(
+      (elementName: string, callbackName: string) => {
+        const observer = new MutationObserver((mutations) => {
+          for (const mutation of mutations) {
+            for (const node of Array.from(mutation.addedNodes)) {
+              if (
+                node instanceof Element &&
+                node.tagName.toLowerCase() === elementName
+              ) {
+                observer.disconnect();
+                // Call the exposed function to handle the element
+                (window as any)[callbackName]();
+                return;
+              }
+            }
+          }
+        });
+        observer.observe(document.body, { childList: true, subtree: false });
+        // Clean up observer after navigation starts (element won't appear)
+        window.addEventListener(
+          'beforeunload',
+          () => {
+            observer.disconnect();
+          },
+          { once: true }
+        );
+      },
+      elementName,
+      callbackName
+    );
+  }
+
   public async retrieve(): Promise<Config> {
     const page = await this.browserforce.openPage(BASE_PATH);
     const themes = await this.getThemeData(page);
@@ -71,6 +108,26 @@ export class LightningExperienceSettings extends BrowserforcePlugin {
         )}`
       );
     }
+    // When switching from a SDLS2 to a SLDS1 theme, the following modal appears:
+    // Activate this theme?
+    // This theme uses SLDS 1. When you activate this theme, you also disable SLDS 2.
+    // - Never Mind
+    // - Activate
+    await page.exposeFunction('onModalAppeared', async () => {
+      const confirmButtonSelector =
+        'lightning-modal lightning-button[variant="brand"]';
+      await page.waitForSelector(confirmButtonSelector, { visible: true });
+      const confirmButton = await page.$(confirmButtonSelector);
+      if (confirmButton) {
+        await page.evaluate((e: HTMLElement) => e.click(), confirmButton);
+      }
+    });
+    await this.setupDOMObserver(
+      page,
+      'lightning-overlay-container',
+      'onModalAppeared'
+    );
+
     const newActiveThemeRowElementHandle = theme.rowElementHandle;
     await page.waitForSelector(`${THEME_ROW_SELECTOR} lightning-button-menu`, {
       visible: true,
