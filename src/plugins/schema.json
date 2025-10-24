@@ -7,6 +7,9 @@
   "properties": {
     "settings": {
       "properties": {
+        "userAccessPolicies": {
+          "$ref": "./user-access-policies/schema.json"
+        },
         "salesforceCpqConfig": {
           "$ref": "./salesforce-cpq-config/schema.json"
         },

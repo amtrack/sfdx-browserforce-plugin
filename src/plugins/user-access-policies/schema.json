@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/user-access-policies/schema.json",
+  "title": "User Access Policies",
+  "type": "object",
+  "properties": {
+    "accessPolicies": {
+      "title": "Access Policies",
+      "description": "List of user access policies to activate or deactivate",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/accessPolicy"
+      },
+      "default": []
+    }
+  },
+  "definitions": {
+    "accessPolicy": {
+      "type": "object",
+      "properties": {
+        "apiName": {
+          "type": "string",
+          "description": "The API name of the user access policy (e.g., 'Grant_Permissions')"
+        },
+        "active": {
+          "type": "boolean",
+          "description": "Whether the policy should be active (true) or inactive (false)"
+        },
+        "on": {
+          "type": "string",
+          "description": "Optional: specify when to apply the policy - 'Create', 'Update', or 'CreateAndUpdate'",
+          "enum": ["Create", "Update", "CreateAndUpdate"]
+        }
+      },
+      "required": ["apiName", "active"]
+    }
+  }
+}

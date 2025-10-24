@@ -1,0 +1,19 @@
+{
+  "$schema": "../schema.json",
+  "settings": {
+    "userAccessPolicies": {
+      "accessPolicies": [
+        {
+          "apiName": "Grant_Permissions",
+          "active": true,
+          "on": "Update"
+        },
+        {
+          "apiName": "Additional_Grant_Permissions",
+          "active": true,
+          "on": "Create"
+        }
+      ]
+    }
+  }
+}

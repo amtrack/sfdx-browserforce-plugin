@@ -21,7 +21,10 @@ import { Security as security } from './security/index.js';
 import { ServiceChannels as serviceChannels } from './service-channels/index.js';
 import { Slack as slack } from './slack/index.js';
 
+import { UserAccessPolicies as userAccessPolicies } from './user-access-policies/index.js';
+
 export {
+  userAccessPolicies,
   activitySettings,
   companyInformation,
   customerPortal,
