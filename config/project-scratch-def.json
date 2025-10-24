@@ -8,6 +8,9 @@
       "enableOmniChannel": true,
       "enableOmniSkillsRouting": true,
       "enableOmniSecondaryRoutingPriority": true
+    },
+    "userManagementSettings": {
+      "userAccessPoliciesEnabled": true
     }
   }
 }
