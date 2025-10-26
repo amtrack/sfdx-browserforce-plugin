@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<UserAccessPolicy xmlns="http://soap.sforce.com/2006/04/metadata">
+    <booleanFilter>1</booleanFilter>
+    <masterLabel>Grant Permissions</masterLabel>
+    <order>0</order>
+    <status>Active</status>
+    <userAccessPolicyActions>
+        <action>Revoke</action>
+        <target>force__SalesConsoleUser</target>
+        <type>PermissionSet</type>
+    </userAccessPolicyActions>
+    <userAccessPolicyFilters>
+        <operation>equals</operation>
+        <sortOrder>1</sortOrder>
+        <target>admin</target>
+        <type>Profile</type>
+    </userAccessPolicyFilters>
+</UserAccessPolicy>
