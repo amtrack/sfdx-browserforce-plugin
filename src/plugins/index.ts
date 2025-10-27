@@ -20,6 +20,7 @@ import { SalesforceToSalesforce as salesforceToSalesforce } from './salesforce-t
 import { Security as security } from './security/index.js';
 import { ServiceChannels as serviceChannels } from './service-channels/index.js';
 import { Slack as slack } from './slack/index.js';
+import { StandardCartApi as standardCartApi } from './standard-cart-api/index.js';
 
 import { UserAccessPolicies as userAccessPolicies } from './user-access-policies/index.js';
 
@@ -47,4 +48,5 @@ export {
   security,
   serviceChannels,
   slack,
+  standardCartApi
 };
