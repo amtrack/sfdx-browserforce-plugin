@@ -14,12 +14,11 @@ type Config = {
 export class ActivitySettings extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
     const page = await this.browserforce.openPage(BASE_PATH);
-    await page.waitForSelector(MANY_WHO_PREF_INPUT_SELECTOR);
+    await page.locator(MANY_WHO_PREF_INPUT_SELECTOR).waitFor();
     const response = {
-      allowUsersToRelateMultipleContactsToTasksAndEvents: await page.$eval(
-        MANY_WHO_PREF_INPUT_SELECTOR,
-        (el: HTMLInputElement) => el.checked
-      ),
+      allowUsersToRelateMultipleContactsToTasksAndEvents: await page
+        .locator(MANY_WHO_PREF_INPUT_SELECTOR)
+        .isChecked(),
     };
     await page.close();
     return response;
@@ -32,17 +31,18 @@ export class ActivitySettings extends BrowserforcePlugin {
       );
     }
     const page = await this.browserforce.openPage(BASE_PATH);
-    await page.waitForSelector(MANY_WHO_PREF_INPUT_SELECTOR);
-    await page.$eval(
-      MANY_WHO_PREF_INPUT_SELECTOR,
+    await page.locator(MANY_WHO_PREF_INPUT_SELECTOR).waitFor();
+    
+    await page.locator(MANY_WHO_PREF_INPUT_SELECTOR).evaluate(
       (e: HTMLInputElement, v: boolean) => {
         e.checked = v;
       },
       config.allowUsersToRelateMultipleContactsToTasksAndEvents
     );
+    
     await Promise.all([
-      page.waitForNavigation(),
-      page.click(SUBMIT_BUTTON_SELECTOR),
+      page.waitForLoadState('load'),
+      page.locator(SUBMIT_BUTTON_SELECTOR).click(),
     ]);
     await page.close();
   }
