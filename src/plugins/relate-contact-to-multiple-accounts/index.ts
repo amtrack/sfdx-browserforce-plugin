@@ -1,4 +1,4 @@
-import { Page } from 'puppeteer';
+import { Page } from 'playwright';
 import { retry, throwPageErrors } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
 
@@ -20,12 +20,9 @@ type Config = {
 export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {
     const page = await this.browserforce.openPage(BASE_PATH);
-    await page.waitForSelector(ENABLED_SELECTOR, { visible: true });
+    await page.locator(ENABLED_SELECTOR).waitFor({ state: 'visible' });
     const response = {
-      enabled: await page.$eval(
-        ENABLED_SELECTOR,
-        (el: HTMLInputElement) => el.checked
-      ),
+      enabled: await page.locator(ENABLED_SELECTOR).isChecked(),
     };
     await page.close();
     return response;
@@ -35,32 +32,30 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
     const page = await this.browserforce.openPage(BASE_PATH);
     await this.waitForProcessFinished(page);
     // First we have to click the 'Edit' button, to make the checkbox editable
-    await page.waitForSelector(EDIT_BUTTON_SELECTOR);
+    await page.locator(EDIT_BUTTON_SELECTOR).waitFor();
     await Promise.all([
-      page.waitForNavigation(),
-      page.click(EDIT_BUTTON_SELECTOR),
+      page.waitForLoadState('load'),
+      page.locator(EDIT_BUTTON_SELECTOR).click(),
     ]);
     // Change the value of the checkbox
-    await page.waitForSelector(ENABLED_SELECTOR, { visible: true });
-    await page.click(ENABLED_SELECTOR);
+    await page.locator(ENABLED_SELECTOR).waitFor({ state: 'visible' });
+    await page.locator(ENABLED_SELECTOR).click();
     // Save
     if (config.enabled) {
-      await page.waitForSelector(SAVE_BUTTON_SELECTOR);
+      await page.locator(SAVE_BUTTON_SELECTOR).waitFor();
       await Promise.all([
-        page.waitForNavigation(),
-        page.click(SAVE_BUTTON_SELECTOR),
+        page.waitForLoadState('load'),
+        page.locator(SAVE_BUTTON_SELECTOR).click(),
       ]);
     } else {
-      await page.waitForSelector(SAVE_BUTTON_SELECTOR);
-      await page.click(SAVE_BUTTON_SELECTOR);
-      await page.waitForSelector(DISABLE_CONFIRM_CHECKBOX_SELECTOR, {
-        visible: true,
-      });
-      await page.click(DISABLE_CONFIRM_CHECKBOX_SELECTOR);
-      await page.waitForSelector(DISABLE_CONFIRM_BUTTON_SELECTOR);
+      await page.locator(SAVE_BUTTON_SELECTOR).waitFor();
+      await page.locator(SAVE_BUTTON_SELECTOR).click();
+      await page.locator(DISABLE_CONFIRM_CHECKBOX_SELECTOR).waitFor({ state: 'visible' });
+      await page.locator(DISABLE_CONFIRM_CHECKBOX_SELECTOR).click();
+      await page.locator(DISABLE_CONFIRM_BUTTON_SELECTOR).waitFor();
       await Promise.all([
-        page.waitForNavigation(),
-        page.click(DISABLE_CONFIRM_BUTTON_SELECTOR),
+        page.waitForLoadState('load'),
+        page.locator(DISABLE_CONFIRM_BUTTON_SELECTOR).click(),
       ]);
     }
     await throwPageErrors(page);
@@ -69,18 +64,14 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
 
   async waitForProcessFinished(page: Page): Promise<void> {
     await retry(async () => {
-      const enabling = await page.$(ENABLING_IN_PROGRESS_SELECTOR);
-      if (enabling) {
-        const message = await enabling.evaluate(
-          (div: HTMLDivElement) => div.innerText
-        );
+      const enablingCount = await page.locator(ENABLING_IN_PROGRESS_SELECTOR).count();
+      if (enablingCount > 0) {
+        const message = await page.locator(ENABLING_IN_PROGRESS_SELECTOR).innerText();
         throw new Error(message);
       }
-      const disabling = await page.$(DISABLING_IN_PROGRESS_SELECTOR);
-      if (disabling) {
-        const message = await disabling.evaluate(
-          (div: HTMLDivElement) => div.innerText
-        );
+      const disablingCount = await page.locator(DISABLING_IN_PROGRESS_SELECTOR).count();
+      if (disablingCount > 0) {
+        const message = await page.locator(DISABLING_IN_PROGRESS_SELECTOR).innerText();
         throw new Error(message);
       }
     });

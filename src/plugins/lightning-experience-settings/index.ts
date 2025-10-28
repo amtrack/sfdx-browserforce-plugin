@@ -1,4 +1,4 @@
-import { ElementHandle, Page } from 'puppeteer';
+import { Locator, Page } from 'playwright';
 import { BrowserforcePlugin } from '../../plugin.js';
 
 const BASE_PATH = 'lightning/setup/ThemingAndBranding/home';
@@ -15,7 +15,7 @@ type Config = {
 type Theme = {
   developerName: string;
   isActive: boolean;
-  rowElementHandle: ElementHandle;
+  rowLocator: Locator;
 };
 
 export class LightningExperienceSettings extends BrowserforcePlugin {
@@ -74,26 +74,28 @@ export class LightningExperienceSettings extends BrowserforcePlugin {
   }
 
   async getThemeData(page: Page): Promise<Theme[]> {
-    await page.waitForSelector(THEME_ROW_SELECTOR);
-    const rowElementHandles = await page.$$(THEME_ROW_SELECTOR);
-    await page.waitForSelector(DEVELOPER_NAMES_SELECTOR);
-    const developerNames = await page.$$eval(
-      DEVELOPER_NAMES_SELECTOR,
-      (cells) => cells.map((cell: HTMLTableCellElement) => cell.innerText)
-    );
-    const states = await page.$$eval(STATES_SELECTOR, (cells) =>
-      cells.map(
-        (cell) =>
-          cell.shadowRoot?.querySelector('lightning-primitive-icon') !== null
-      )
-    );
-    return developerNames.map((developerName, i) => {
-      return {
+    await page.locator(THEME_ROW_SELECTOR).first().waitFor();
+    const rowLocator = page.locator(THEME_ROW_SELECTOR);
+    const rowCount = await rowLocator.count();
+    
+    await page.locator(DEVELOPER_NAMES_SELECTOR).first().waitFor();
+    const developerNameLocator = page.locator(DEVELOPER_NAMES_SELECTOR);
+    const stateLocator = page.locator(STATES_SELECTOR);
+    
+    const themes: Theme[] = [];
+    for (let i = 0; i < rowCount; i++) {
+      const developerName = await developerNameLocator.nth(i).innerText();
+      const hasIcon = await stateLocator.nth(i).evaluate(
+        (cell) => cell.shadowRoot?.querySelector('lightning-primitive-icon') !== null
+      );
+      themes.push({
         developerName,
-        isActive: states[i],
-        rowElementHandle: rowElementHandles[i],
-      };
-    });
+        isActive: hasIcon,
+        rowLocator: rowLocator.nth(i),
+      });
+    }
+    
+    return themes;
   }
 
   async setActiveTheme(page: Page, themeDeveloperName: string): Promise<void> {
@@ -116,10 +118,10 @@ export class LightningExperienceSettings extends BrowserforcePlugin {
     await page.exposeFunction('onModalAppeared', async () => {
       const confirmButtonSelector =
         'lightning-modal lightning-button[variant="brand"]';
-      await page.waitForSelector(confirmButtonSelector, { visible: true });
-      const confirmButton = await page.$(confirmButtonSelector);
-      if (confirmButton) {
-        await page.evaluate((e: HTMLElement) => e.click(), confirmButton);
+      await page.locator(confirmButtonSelector).waitFor({ state: 'visible' });
+      const confirmButtonCount = await page.locator(confirmButtonSelector).count();
+      if (confirmButtonCount > 0) {
+        await page.locator(confirmButtonSelector).click();
       }
     });
     await this.setupDOMObserver(
@@ -128,26 +130,27 @@ export class LightningExperienceSettings extends BrowserforcePlugin {
       'onModalAppeared'
     );
 
-    const newActiveThemeRowElementHandle = theme.rowElementHandle;
-    await page.waitForSelector(`${THEME_ROW_SELECTOR} lightning-button-menu`, {
-      visible: true,
-    });
-    const menuButton = await newActiveThemeRowElementHandle.$(
+    const newActiveThemeRowLocator = theme.rowLocator;
+    await page.locator(`${THEME_ROW_SELECTOR} lightning-button-menu`).first().waitFor({ state: 'visible' });
+    
+    const menuButton = newActiveThemeRowLocator.locator(
       'td lightning-primitive-cell-factory lightning-primitive-cell-actions lightning-button-menu'
     );
-    await page.evaluate((e: HTMLElement) => e.click(), menuButton);
-    await page.waitForSelector(
-      `${THEME_ROW_SELECTOR} lightning-button-menu slot lightning-menu-item`,
-      {
-        visible: true,
-      }
-    );
-    const menuItems = await menuButton!.$$('slot lightning-menu-item');
+    await menuButton.click();
+    
+    await page
+      .locator(`${THEME_ROW_SELECTOR} lightning-button-menu slot lightning-menu-item`)
+      .first()
+      .waitFor({ state: 'visible' });
+    
+    const menuItems = menuButton.locator('slot lightning-menu-item');
+    const menuItemCount = await menuItems.count();
     // second last item: [show, activate, preview]
-    const activateMenuItem = menuItems[menuItems.length - 2];
+    const activateMenuItem = menuItems.nth(menuItemCount - 2);
+    
     await Promise.all([
-      page.waitForNavigation(),
-      page.evaluate((e: HTMLElement) => e.click(), activateMenuItem),
+      page.waitForLoadState('load'),
+      activateMenuItem.click(),
     ]);
   }
 }

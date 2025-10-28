@@ -1,4 +1,4 @@
-import { ElementHandle, Page } from 'puppeteer';
+import { Locator, Page } from 'playwright';
 import { BrowserforcePlugin } from '../../plugin.js';
 
 const BASE_PATH = 'lightning/setup/DensitySetup/home';
@@ -13,7 +13,7 @@ type Config = {
 type Density = {
   value: string;
   checked: boolean;
-  elementHandle: ElementHandle;
+  locator: Locator;
 };
 
 export class DensitySettings extends BrowserforcePlugin {
@@ -34,21 +34,24 @@ export class DensitySettings extends BrowserforcePlugin {
   }
 
   async getDensities(page: Page): Promise<Density[]> {
-    await page.waitForSelector(PICKER_ITEMS_SELECTOR);
-    const elementHandles = await page.$$(PICKER_ITEMS_SELECTOR);
-    const result = await page.$$eval(
-      PICKER_ITEMS_SELECTOR,
-      (radioInputs: HTMLInputElement[]) =>
-        radioInputs.map((input) => {
-          return {
-            value: input.value,
-            checked: input.checked,
-          };
-        })
-    );
-    return result.map((input, i) => {
-      return { ...input, elementHandle: elementHandles[i] };
-    });
+    const locator = page.locator(PICKER_ITEMS_SELECTOR);
+    await locator.first().waitFor();
+    
+    const count = await locator.count();
+    const result: Density[] = [];
+    
+    for (let i = 0; i < count; i++) {
+      const element = locator.nth(i);
+      const value = await element.inputValue();
+      const checked = await element.isChecked();
+      result.push({
+        value,
+        checked,
+        locator: element,
+      });
+    }
+    
+    return result;
   }
 
   async setDensity(page: Page, name: string): Promise<void> {
@@ -70,9 +73,7 @@ export class DensitySettings extends BrowserforcePlugin {
               'UserSettings.DensityUserSettings.setDefaultDensitySetting=1'
             ) && response.status() === 200
       ),
-      densityToSelect.elementHandle.evaluate((input: HTMLInputElement) =>
-        input.click()
-      ),
+      densityToSelect.locator.click(),
     ]);
   }
 }

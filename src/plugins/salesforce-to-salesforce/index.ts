@@ -14,16 +14,13 @@ type Config = {
 export class SalesforceToSalesforce extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
     const page = await this.browserforce.openPage(BASE_PATH);
-    await page.waitForSelector(BASE_SELECTOR);
+    await page.locator(BASE_SELECTOR).waitFor();
     const response = {
       enabled: true,
     };
-    const inputEnable = await page.$(ENABLED_SELECTOR);
-    if (inputEnable) {
-      response.enabled = await page.$eval(
-        ENABLED_SELECTOR,
-        (el: HTMLInputElement) => el.checked
-      );
+    const inputEnableCount = await page.locator(ENABLED_SELECTOR).count();
+    if (inputEnableCount > 0) {
+      response.enabled = await page.locator(ENABLED_SELECTOR).isChecked();
     }
     await page.close();
     return response;
@@ -36,17 +33,16 @@ export class SalesforceToSalesforce extends BrowserforcePlugin {
     // sometimes the setting is not being applied although no error is being displayed
     await pRetry(async () => {
       const page = await this.browserforce.openPage(BASE_PATH);
-      await page.waitForSelector(ENABLED_SELECTOR);
-      await page.$eval(
-        ENABLED_SELECTOR,
+      await page.locator(ENABLED_SELECTOR).waitFor();
+      await page.locator(ENABLED_SELECTOR).evaluate(
         (e: HTMLInputElement, v: boolean) => {
           e.checked = v;
         },
         config.enabled
       );
       await Promise.all([
-        page.waitForNavigation(),
-        page.click(SAVE_BUTTON_SELECTOR),
+        page.waitForLoadState('load'),
+        page.locator(SAVE_BUTTON_SELECTOR).click(),
       ]);
       const result = await this.retrieve();
       await page.close();

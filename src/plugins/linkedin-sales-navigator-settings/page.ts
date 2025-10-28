@@ -1,4 +1,4 @@
-import { Page } from 'puppeteer';
+import { Page } from 'playwright';
 import { throwPageErrors } from '../../browserforce.js';
 
 const ENABLE_TOGGLE =
@@ -20,27 +20,22 @@ export class LinkedInSalesNavigatorPage {
   }
 
   public async getStatus(): Promise<boolean> {
-    const isEnabled = await this.page
-      .locator(ENABLE_TOGGLE)
-      .map((checkbox) => checkbox.checked)
-      .wait();
+    await this.page.locator(ENABLE_TOGGLE).waitFor();
+    const isEnabled = await this.page.locator(ENABLE_TOGGLE).isChecked();
     await this.page.close();
     return isEnabled;
   }
 
   public async setStatus(enable: boolean): Promise<void> {
     // NOTE: Unfortunately a simple click() on the locator does not work here
-    await (
-      await this.page.locator(ENABLE_TOGGLE).waitHandle()
-    ).evaluate((checkbox) => checkbox.click());
+    await this.page.locator(ENABLE_TOGGLE).waitFor();
+    await this.page.locator(ENABLE_TOGGLE).evaluate((checkbox: HTMLInputElement) => checkbox.click());
 
     if (enable) {
-      await (
-        await this.page.locator(CONFIRM_CHECKBOX).waitHandle()
-      ).evaluate((checkbox) => checkbox.click());
-      await (
-        await this.page.locator(ACCEPT_BUTTON).waitHandle()
-      ).evaluate((button) => button.click());
+      await this.page.locator(CONFIRM_CHECKBOX).waitFor();
+      await this.page.locator(CONFIRM_CHECKBOX).evaluate((checkbox: HTMLInputElement) => checkbox.click());
+      await this.page.locator(ACCEPT_BUTTON).waitFor();
+      await this.page.locator(ACCEPT_BUTTON).evaluate((button: HTMLButtonElement) => button.click());
     }
 
     await throwPageErrors(this.page);

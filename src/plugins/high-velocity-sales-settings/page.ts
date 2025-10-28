@@ -1,4 +1,4 @@
-import { Page } from 'puppeteer';
+import { Page } from 'playwright';
 import { throwPageErrors } from '../../browserforce.js';
 
 const SET_UP_AND_ENABLE_HVS_BUTTON = 'button.setupAndEnableButton';
@@ -18,16 +18,15 @@ export class HighVelocitySalesSetupPage {
   }
 
   public async setUpAndEnable(): Promise<void> {
-    await this.page.waitForSelector(AUTOMATION_TAB_ITEM);
-    const tab = await this.page.$(AUTOMATION_TAB_ITEM);
-    if (tab) {
-      await this.page.evaluate((e: HTMLElement) => e.click(), tab);
+    await this.page.locator(AUTOMATION_TAB_ITEM).waitFor();
+    const tabCount = await this.page.locator(AUTOMATION_TAB_ITEM).count();
+    if (tabCount > 0) {
+      await this.page.locator(AUTOMATION_TAB_ITEM).click();
     }
-    await this.page.waitForSelector(SET_UP_AND_ENABLE_HVS_BUTTON);
-    const enableButton = await this.page.$(SET_UP_AND_ENABLE_HVS_BUTTON);
+    await this.page.locator(SET_UP_AND_ENABLE_HVS_BUTTON).waitFor();
     await Promise.all([
-      this.page.waitForSelector(ENABLE_TOGGLE, { timeout: 60_000 }),
-      this.page.evaluate((e: HTMLElement) => e.click(), enableButton!),
+      this.page.locator(ENABLE_TOGGLE).waitFor({ timeout: 60_000 }),
+      this.page.locator(SET_UP_AND_ENABLE_HVS_BUTTON).click(),
     ]);
     await throwPageErrors(this.page);
     await this.page.close();
