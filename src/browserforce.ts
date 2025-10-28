@@ -1,7 +1,7 @@
 import { Org } from '@salesforce/core';
 import { type Ux } from '@salesforce/sf-plugins-core';
 import pRetry from 'p-retry';
-import { Browser, Frame, launch, Page, WaitForOptions } from 'puppeteer';
+import { chromium, Browser, BrowserContext, Page, FrameLocator } from 'playwright';
 import { LoginPage } from './pages/login.js';
 
 const ERROR_DIV_SELECTOR = '#errorTitle';
@@ -12,6 +12,7 @@ export class Browserforce {
   public org: Org;
   public logger?: Ux;
   public browser: Browser;
+  public context: BrowserContext;
   public page: Page;
   public lightningSetupUrl: string;
 
@@ -21,15 +22,16 @@ export class Browserforce {
   }
 
   public async login(): Promise<Browserforce> {
-    this.browser = await launch({
+    this.browser = await chromium.launch({
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
-        // workaround for navigating frames https://github.com/puppeteer/puppeteer/issues/5123
-        '--disable-features=site-per-process',
       ],
       headless: !(process.env.BROWSER_DEBUG === 'true'),
       slowMo: parseInt(process.env.BROWSER_SLOWMO, 10) ?? 0,
+    });
+    this.context = await this.browser.newContext({
+      viewport: { width: 1024, height: 768 },
     });
     const page = await this.getNewPage();
     try {
@@ -53,18 +55,17 @@ export class Browserforce {
   }
 
   public async getNewPage(): Promise<Page> {
-    const page = await this.browser.newPage();
+    const page = await this.context.newPage();
     page.setDefaultNavigationTimeout(
       parseInt(process.env.BROWSERFORCE_NAVIGATION_TIMEOUT_MS ?? '90000', 10)
     );
-    await page.setViewport({ width: 1024, height: 768 });
     return page;
   }
 
   // path instead of url
   public async openPage(
     urlPath: string,
-    options?: WaitForOptions
+    options?: { waitUntil?: 'load' | 'domcontentloaded' | 'networkidle' | 'commit' }
   ): Promise<Page> {
     let page: Page;
     const result = await pRetry(
@@ -74,7 +75,7 @@ export class Browserforce {
           ? await this.getLightningSetupUrl()
           : this.getInstanceUrl();
         const url = `${setupUrl}/${urlPath}`;
-        const response = await page.goto(url, options);
+        const response = await page.goto(url, options ?? { waitUntil: 'load' });
         if (response) {
           if (!response.ok()) {
             await this.throwPageErrors(page);
@@ -113,25 +114,23 @@ export class Browserforce {
 
   // If LEX is enabled, the classic url will be opened in an iframe.
   // Wait for either the selector in the page or in the iframe.
-  // returns the page or the frame
+  // returns the page or the frame locator
   public async waitForSelectorInFrameOrPage(
     page: Page,
     selector: string
-  ): Promise<Page | Frame> {
-    await page.locator(`${selector}, ${VF_IFRAME_SELECTOR}`).wait();
-    const frameElementHandle = await page.$(VF_IFRAME_SELECTOR);
-    let frameOrPage: Page | Frame = page;
-    if (frameElementHandle) {
-      const frame = await page.waitForFrame(
-        async (f) =>
-          f.name().startsWith('vfFrameId') &&
-          f.url()?.length > 0 &&
-          f.url() !== 'about:blank'
-      );
-      frameOrPage = frame;
+  ): Promise<Page | FrameLocator> {
+    await page.locator(`${selector}, ${VF_IFRAME_SELECTOR}`).first().waitFor();
+    
+    const iframeCount = await page.locator(VF_IFRAME_SELECTOR).count();
+    
+    if (iframeCount > 0) {
+      const frameLocator = page.frameLocator(VF_IFRAME_SELECTOR);
+      await frameLocator.locator(selector).waitFor();
+      return frameLocator;
     }
-    await frameOrPage.locator(selector).wait();
-    return frameOrPage;
+    
+    await page.locator(selector).waitFor();
+    return page;
   }
 
   public getMyDomain(): string | null {
@@ -159,7 +158,7 @@ export class Browserforce {
       try {
         const lightningResponse = await page.goto(
           `${this.getInstanceUrl()}/lightning/setup/SetupOneHome/home`,
-          { waitUntil: ['load', 'networkidle2'] }
+          { waitUntil: 'load' }
         );
         this.lightningSetupUrl = new URL(lightningResponse.url()).origin;
       } finally {
@@ -171,22 +170,25 @@ export class Browserforce {
 }
 
 export async function throwPageErrors(page: Page): Promise<void> {
-  const errorHandle = await page.$(ERROR_DIV_SELECTOR);
-  if (errorHandle) {
-    const errorMsg = await page.evaluate(
-      (div: HTMLDivElement) => div.innerText,
-      errorHandle
-    );
-    await errorHandle.dispose();
+  const errorLocator = page.locator(ERROR_DIV_SELECTOR);
+  const errorCount = await errorLocator.count();
+  
+  if (errorCount > 0) {
+    const errorMsg = await errorLocator.first().innerText();
     if (errorMsg && errorMsg.trim()) {
       throw new Error(errorMsg.trim());
     }
   }
-  const errorElements = await page.$$(ERROR_DIVS_SELECTOR);
-  if (errorElements.length) {
-    const errorMessages = await page.evaluate((...errorDivs) => {
-      return errorDivs.map((div: HTMLDivElement) => div.innerText);
-    }, ...errorElements);
+  
+  const errorDivsLocator = page.locator(ERROR_DIVS_SELECTOR);
+  const errorDivsCount = await errorDivsLocator.count();
+  
+  if (errorDivsCount > 0) {
+    const errorMessages: string[] = [];
+    for (let i = 0; i < errorDivsCount; i++) {
+      const text = await errorDivsLocator.nth(i).innerText();
+      errorMessages.push(text);
+    }
     const errorMsg = errorMessages
       .map((m) => m.trim())
       .join(' ')
