@@ -25,7 +25,7 @@ export class LightningExperienceSettings extends BrowserforcePlugin {
     callbackName: string
   ): Promise<void> {
     await page.evaluate(
-      (elementName: string, callbackName: string) => {
+      ({ elementName, callbackName }: { elementName: string; callbackName: string }) => {
         const observer = new MutationObserver((mutations) => {
           for (const mutation of mutations) {
             for (const node of Array.from(mutation.addedNodes)) {
@@ -51,8 +51,7 @@ export class LightningExperienceSettings extends BrowserforcePlugin {
           { once: true }
         );
       },
-      elementName,
-      callbackName
+      { elementName, callbackName }
     );
   }
 

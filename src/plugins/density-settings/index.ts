@@ -1,79 +1,68 @@
-import { Locator, Page } from 'playwright';
+import { Page } from 'playwright';
 import { BrowserforcePlugin } from '../../plugin.js';
 
 const BASE_PATH = 'lightning/setup/DensitySetup/home';
-
-const PICKER_ITEMS_SELECTOR =
-  'one-density-visual-picker one-density-visual-picker-item input';
 
 type Config = {
   density: string;
 };
 
-type Density = {
-  value: string;
-  checked: boolean;
-  locator: Locator;
-};
-
 export class DensitySettings extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
     const page = await this.browserforce.openPage(BASE_PATH);
-    const densities = await this.getDensities(page);
-    const selected = densities.find((input) => input.checked);
+    const density = await this.getSelectedDensity(page);
     await page.close();
     return {
-      density: selected!.value,
+      density,
     };
   }
 
   public async apply(config: Config): Promise<void> {
     const page = await this.browserforce.openPage(BASE_PATH);
-    await this.setDensity(page, config.density);
+
+    // Find the radio button by its value attribute
+    const radioButton = page.getByRole('img', {name: config.density});
+
+    // Wait for the radio button to be attached to the DOM
+    try {
+      await radioButton.waitFor({ state: 'attached', timeout: 10000 });
+    } catch (error) {
+      const allRadios = await page.getByRole('radio').all();
+      const radioValues = await Promise.all(
+        allRadios.map(async (radio) => {
+          try {
+            return await radio.getAttribute('value');
+          } catch {
+            return 'unknown';
+          }
+        })
+      );
+      throw new Error(
+        `Could not find density "${config.density}". Available options: ${radioValues.filter(Boolean).join(', ')}`
+      );
+    }
+
+    // Click the radio button with force to bypass label interception
+    await radioButton.click();
+
     await page.close();
   }
 
-  async getDensities(page: Page): Promise<Density[]> {
-    const locator = page.locator(PICKER_ITEMS_SELECTOR);
-    await locator.first().waitFor();
+  private async getSelectedDensity(page: Page): Promise<string> {
+    // Density options are represented as radio buttons with accessible names
+    const densityOptions = ['Comfy', 'Compact'];
     
-    const count = await locator.count();
-    const result: Density[] = [];
-    
-    for (let i = 0; i < count; i++) {
-      const element = locator.nth(i);
-      const value = await element.inputValue();
-      const checked = await element.isChecked();
-      result.push({
-        value,
-        checked,
-        locator: element,
-      });
+    for (const densityName of densityOptions) {
+      // Find the radio button by its accessible name (starts with the density name)
+      // Example: "Comfy Comfy For users who want a spacious view..."
+      const radioButton = page.getByRole('radio', { name: new RegExp(`^${densityName}`, 'i') });
+      
+      // Check if this radio button is checked
+      if (await radioButton.isChecked()) {
+        return densityName;
+      }
     }
     
-    return result;
-  }
-
-  async setDensity(page: Page, name: string): Promise<void> {
-    const densities = await this.getDensities(page);
-    const densityToSelect = densities.find((input) => input.value === name);
-    if (!densityToSelect) {
-      throw new Error(
-        `Could not find density "${name}" in list of densities: ${densities.map(
-          (d) => d.value
-        )}`
-      );
-    }
-    await Promise.all([
-      page.waitForResponse(
-        (response) =>
-          response
-            .url()
-            .includes(
-              'UserSettings.DensityUserSettings.setDefaultDensitySetting=1'
-            ) && response.status() === 200
-      ),
-      densityToSelect.locator.click(),
-    ]);
+    throw new Error('No density option is selected');
   }
 }

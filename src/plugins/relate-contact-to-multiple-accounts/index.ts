@@ -4,15 +4,6 @@ import { BrowserforcePlugin } from '../../plugin.js';
 
 const BASE_PATH = 'accounts/accountSetup.apexp';
 
-const ENABLED_SELECTOR = 'input[id$=":sharedContactsCheckBox"]';
-const EDIT_BUTTON_SELECTOR = 'input[id$=":edit"]';
-const SAVE_BUTTON_SELECTOR = 'input[id$=":save"]';
-const DISABLE_CONFIRM_CHECKBOX_SELECTOR = 'input#disable_confirm';
-const DISABLE_CONFIRM_BUTTON_SELECTOR =
-  'input#sharedContactsDisableConfirmButton';
-const ENABLING_IN_PROGRESS_SELECTOR = '#enablingInProgress';
-const DISABLING_IN_PROGRESS_SELECTOR = '#disablingInProgress';
-
 type Config = {
   enabled: boolean;
 };
@@ -20,9 +11,8 @@ type Config = {
 export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {
     const page = await this.browserforce.openPage(BASE_PATH);
-    await page.locator(ENABLED_SELECTOR).waitFor({ state: 'visible' });
     const response = {
-      enabled: await page.locator(ENABLED_SELECTOR).isChecked(),
+      enabled: await page.getByRole('checkbox', { name: 'Allow users to relate a' }).isChecked(),
     };
     await page.close();
     return response;
@@ -32,46 +22,30 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
     const page = await this.browserforce.openPage(BASE_PATH);
     await this.waitForProcessFinished(page);
     // First we have to click the 'Edit' button, to make the checkbox editable
-    await page.locator(EDIT_BUTTON_SELECTOR).waitFor();
-    await Promise.all([
-      page.waitForLoadState('load'),
-      page.locator(EDIT_BUTTON_SELECTOR).click(),
-    ]);
+    await page.getByRole('button', {name: 'edit'}).first().click();
     // Change the value of the checkbox
-    await page.locator(ENABLED_SELECTOR).waitFor({ state: 'visible' });
-    await page.locator(ENABLED_SELECTOR).click();
-    // Save
-    if (config.enabled) {
-      await page.locator(SAVE_BUTTON_SELECTOR).waitFor();
-      await Promise.all([
-        page.waitForLoadState('load'),
-        page.locator(SAVE_BUTTON_SELECTOR).click(),
-      ]);
-    } else {
-      await page.locator(SAVE_BUTTON_SELECTOR).waitFor();
-      await page.locator(SAVE_BUTTON_SELECTOR).click();
-      await page.locator(DISABLE_CONFIRM_CHECKBOX_SELECTOR).waitFor({ state: 'visible' });
-      await page.locator(DISABLE_CONFIRM_CHECKBOX_SELECTOR).click();
-      await page.locator(DISABLE_CONFIRM_BUTTON_SELECTOR).waitFor();
-      await Promise.all([
-        page.waitForLoadState('load'),
-        page.locator(DISABLE_CONFIRM_BUTTON_SELECTOR).click(),
-      ]);
+    await page.getByRole('checkbox', { name: 'Allow users to relate a' }).click();
+    await page.getByRole('button', {name: 'save'}).first().click();
+
+    if (await page.getByRole('heading', { name: 'Disable Contacts to Multiple' }).isVisible()) {
+      await page.getByRole('checkbox', { name: 'Yes, I understand that this' }).click();
+      await page.getByRole('button', { name: 'Disable' }).click();
     }
+
     await throwPageErrors(page);
     await page.close();
   }
 
   async waitForProcessFinished(page: Page): Promise<void> {
     await retry(async () => {
-      const enablingCount = await page.locator(ENABLING_IN_PROGRESS_SELECTOR).count();
+      const enablingCount = await page.getByText('In progress: We\'re enabling').count();
       if (enablingCount > 0) {
-        const message = await page.locator(ENABLING_IN_PROGRESS_SELECTOR).innerText();
+        const message = await page.getByText('In progress: We\'re enabling').innerText();
         throw new Error(message);
       }
-      const disablingCount = await page.locator(DISABLING_IN_PROGRESS_SELECTOR).count();
+      const disablingCount = await page.getByText('In progress: We\'re disabling').count();
       if (disablingCount > 0) {
-        const message = await page.locator(DISABLING_IN_PROGRESS_SELECTOR).innerText();
+        const message = await page.getByText('In progress: We\'re disabling').innerText();
         throw new Error(message);
       }
     });

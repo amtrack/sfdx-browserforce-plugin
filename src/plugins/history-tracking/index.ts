@@ -5,8 +5,6 @@ const BASE_PATH = 'ui/setup/layout/FieldHistoryTracking?pEntity={APINAME}';
 const ENABLE_HISTORY_SELECTOR =
   'input[id="enable"][type="checkbox"][name="enable"]';
 const ENABLE_FIELD_HISTORY_SELECTOR = 'input[id="{APINAME}_fht"]';
-const SAVE_BUTTON_SELECTOR =
-  'input[class="btn"][type="submit"][name="save"][title="Save"]';
 
 type HistoryTrackingConfig = {
   objectApiName: string;
@@ -179,12 +177,8 @@ export class HistoryTracking extends BrowserforcePlugin {
       }
 
       // Save the settings
-      await page.locator(SAVE_BUTTON_SELECTOR).waitFor();
-      await Promise.all([
-        page.waitForLoadState('load'),
-        page.locator(SAVE_BUTTON_SELECTOR).click(),
-      ]);
-
+      await page.getByRole("button", {name: 'save'}).first().click();
+  
       // Close the page
       await page.close();
     }
