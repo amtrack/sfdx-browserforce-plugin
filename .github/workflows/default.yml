@@ -60,8 +60,6 @@ jobs:
       - name: Install dependencies
         run: npm ci --ignore-scripts
       - name: Release package
-        run: npx semantic-release
+        run: npx -y semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          npm_config_ignore_scripts: true
