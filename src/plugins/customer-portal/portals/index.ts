@@ -46,71 +46,64 @@ type PortalProfileMembership = {
 export class CustomerPortalSetup extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
     const page = await this.browserforce.openPage(LIST_VIEW_PATH);
-    await page.waitForSelector(
-      `::-p-xpath(${LIST_VIEW_PORTAL_LINKS_XPATH_SELECTOR})`
-    );
-    const customerPortalLinks = await page.$$(
-      `xpath/.${LIST_VIEW_PORTAL_LINKS_XPATH_SELECTOR}`
-    );
-    const response: Config = await page.evaluate((...links) => {
-      return links.map((a: HTMLAnchorElement) => {
-        return {
-          _id: a.pathname.split('/')[1],
-          name: a.text,
-          portalProfileMemberships: [],
-        };
+    await page
+      .locator(`xpath=${LIST_VIEW_PORTAL_LINKS_XPATH_SELECTOR}`)
+      .first()
+      .waitFor();
+    
+    const response: Config = await page
+      .locator(`xpath=${LIST_VIEW_PORTAL_LINKS_XPATH_SELECTOR}`)
+      .evaluateAll((links: HTMLAnchorElement[]) => {
+        return links.map((a) => {
+          return {
+            _id: a.pathname.split('/')[1],
+            name: a.text,
+            portalProfileMemberships: [],
+          };
+        });
       });
-    }, ...customerPortalLinks);
     for (const portal of response) {
       const portalPage = await this.browserforce.openPage(`${portal._id}/e`);
-      await portalPage.waitForSelector(PORTAL_DESCRIPTION_SELECTOR);
-      portal.description = await portalPage.$eval(
-        PORTAL_DESCRIPTION_SELECTOR,
-        (el: HTMLInputElement) => el.value
-      );
-      portal.adminUser = await portalPage.$eval(
-        `#${PORTAL_ADMIN_ID_SELECTOR}`,
-        (el: HTMLInputElement) => el.value
-      );
-      portal.isSelfRegistrationActivated = await portalPage.$eval(
-        `#${PORTAL_IS_SELF_REGISTRATION_ACTIVATED_ID_SELECTOR}`,
-        (el: HTMLInputElement) => el.checked
-      );
-      portal.selfRegUserDefaultLicense = await portalPage.$eval(
-        `#${PORTAL_SELF_REG_USER_DEFAULT_LICENSE_ID_SELECTOR}`,
-        (el: HTMLSelectElement) => el.selectedOptions[0].text
-      );
-      portal.selfRegUserDefaultRole = await portalPage.$eval(
-        `#${PORTAL_SELF_REG_USER_DEFAULT_ROLE_ID_SELECTOR}`,
-        (el: HTMLSelectElement) => el.selectedOptions[0].text
-      );
-      portal.selfRegUserDefaultProfile = await portalPage.$eval(
-        `#${PORTAL_SELF_REG_USER_DEFAULT_PROFILE_ID_SELECTOR}`,
-        (el: HTMLSelectElement) => el.selectedOptions[0].text
-      );
+      await portalPage.locator(PORTAL_DESCRIPTION_SELECTOR).waitFor();
+      portal.description = await portalPage
+        .locator(PORTAL_DESCRIPTION_SELECTOR)
+        .evaluate((el: HTMLInputElement) => el.value);
+      portal.adminUser = await portalPage
+        .locator(`#${PORTAL_ADMIN_ID_SELECTOR}`)
+        .evaluate((el: HTMLInputElement) => el.value);
+      portal.isSelfRegistrationActivated = await portalPage
+        .locator(`#${PORTAL_IS_SELF_REGISTRATION_ACTIVATED_ID_SELECTOR}`)
+        .evaluate((el: HTMLInputElement) => el.checked);
+      portal.selfRegUserDefaultLicense = await portalPage
+        .locator(`#${PORTAL_SELF_REG_USER_DEFAULT_LICENSE_ID_SELECTOR}`)
+        .evaluate((el: HTMLSelectElement) => el.selectedOptions[0].text);
+      portal.selfRegUserDefaultRole = await portalPage
+        .locator(`#${PORTAL_SELF_REG_USER_DEFAULT_ROLE_ID_SELECTOR}`)
+        .evaluate((el: HTMLSelectElement) => el.selectedOptions[0].text);
+      portal.selfRegUserDefaultProfile = await portalPage
+        .locator(`#${PORTAL_SELF_REG_USER_DEFAULT_PROFILE_ID_SELECTOR}`)
+        .evaluate((el: HTMLSelectElement) => el.selectedOptions[0].text);
       await portalPage.close();
       // portalProfileMemberships
       const portalProfilePage = await this.browserforce.openPage(
         `${PORTAL_PROFILE_MEMBERSHIP_PATH}?portalId=${portal._id}&setupid=CustomerSuccessPortalSettings`
       );
-      await portalProfilePage.waitForSelector(PORTAL_ID_SELECTOR);
-      const profiles = await portalProfilePage.$$eval(
-        PORTAL_PROFILE_MEMBERSHIP_PROFILES_SELECTOR,
-        (ths: HTMLTableHeaderCellElement[]) => {
+      await portalProfilePage.locator(PORTAL_ID_SELECTOR).waitFor({ state: 'attached' });
+      const profiles = await portalProfilePage
+        .locator(PORTAL_PROFILE_MEMBERSHIP_PROFILES_SELECTOR)
+        .evaluateAll((ths: HTMLTableHeaderCellElement[]) => {
           return ths.map((th) => th.innerText.trim());
-        }
-      );
-      const checkboxes = await portalProfilePage.$$eval(
-        PORTAL_PROFILE_MEMBERSHIP_CHECKBOXES_SELECTOR,
-        (inputs: HTMLInputElement[]) => {
+        });
+      const checkboxes = await portalProfilePage
+        .locator(PORTAL_PROFILE_MEMBERSHIP_CHECKBOXES_SELECTOR)
+        .evaluateAll((inputs: HTMLInputElement[]) => {
           return inputs.map((input) => {
             return {
               active: input.checked,
               _id: input.id,
             };
           });
-        }
-      );
+        });
       const portalProfileMemberships: PortalProfileMembership[] = [];
       for (let i = 0; i < profiles.length; i++) {
         portalProfileMemberships.push({
@@ -193,7 +186,7 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
     for (const portal of config) {
       if (portal._id) {
         // everything that can be changed using the url
-        const urlAttributes = {};
+        const urlAttributes: { [key: string]: string | number } = {};
         if (portal.name) {
           urlAttributes['Name'] = portal.name;
         }
@@ -210,63 +203,52 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
         const page = await this.browserforce.openPage(
           `${portal._id}/e?${queryString.stringify(urlAttributes)}`
         );
-        await page.waitForSelector(PORTAL_DESCRIPTION_SELECTOR);
+        await page.locator(PORTAL_DESCRIPTION_SELECTOR).waitFor();
         if (portal.selfRegUserDefaultLicense) {
-          const licenseValue = await page.evaluate(
-            (option: HTMLOptionElement) => option.value,
-            (
-              await page.$$(
-                `xpath/.//select[@id="${PORTAL_SELF_REG_USER_DEFAULT_LICENSE_ID_SELECTOR}"]//option[text()="${portal.selfRegUserDefaultLicense}"]`
-              )
-            )[0]
-          );
-          await page.select(
-            `#${PORTAL_SELF_REG_USER_DEFAULT_LICENSE_ID_SELECTOR}`,
-            licenseValue
-          );
+          const licenseValue = await page
+            .locator(
+              `xpath=//select[@id="${PORTAL_SELF_REG_USER_DEFAULT_LICENSE_ID_SELECTOR}"]//option[text()="${portal.selfRegUserDefaultLicense}"]`
+            )
+            .first()
+            .evaluate((option: HTMLOptionElement) => option.value);
+          await page
+            .locator(`#${PORTAL_SELF_REG_USER_DEFAULT_LICENSE_ID_SELECTOR}`)
+            .selectOption(licenseValue);
         }
         if (portal.selfRegUserDefaultRole) {
-          const roleValue = await page.evaluate(
-            (option: HTMLOptionElement) => option.value,
-            (
-              await page.$$(
-                `xpath/.//select[@id="${PORTAL_SELF_REG_USER_DEFAULT_ROLE_ID_SELECTOR}"]//option[text()="${portal.selfRegUserDefaultRole}"]`
-              )
-            )[0]
-          );
-          await page.select(
-            `#${PORTAL_SELF_REG_USER_DEFAULT_ROLE_ID_SELECTOR}`,
-            roleValue
-          );
+          const roleValue = await page
+            .locator(
+              `xpath=//select[@id="${PORTAL_SELF_REG_USER_DEFAULT_ROLE_ID_SELECTOR}"]//option[text()="${portal.selfRegUserDefaultRole}"]`
+            )
+            .first()
+            .evaluate((option: HTMLOptionElement) => option.value);
+          await page
+            .locator(`#${PORTAL_SELF_REG_USER_DEFAULT_ROLE_ID_SELECTOR}`)
+            .selectOption(roleValue);
         }
         if (portal.selfRegUserDefaultProfile) {
-          const profileValue = await page.evaluate(
-            (option: HTMLOptionElement) => option.value,
-            (
-              await page.$$(
-                `xpath/.//select[@id="${PORTAL_SELF_REG_USER_DEFAULT_PROFILE_ID_SELECTOR}"]//option[text()="${portal.selfRegUserDefaultProfile}"]`
-              )
-            )[0]
-          );
-          await page.select(
-            `#${PORTAL_SELF_REG_USER_DEFAULT_PROFILE_ID_SELECTOR}`,
-            profileValue
-          );
+          const profileValue = await page
+            .locator(
+              `xpath=//select[@id="${PORTAL_SELF_REG_USER_DEFAULT_PROFILE_ID_SELECTOR}"]//option[text()="${portal.selfRegUserDefaultProfile}"]`
+            )
+            .first()
+            .evaluate((option: HTMLOptionElement) => option.value);
+          await page
+            .locator(`#${PORTAL_SELF_REG_USER_DEFAULT_PROFILE_ID_SELECTOR}`)
+            .selectOption(profileValue);
         }
-        await page.waitForSelector(SAVE_BUTTON_SELECTOR);
-        await Promise.all([
-          page.waitForNavigation(),
-          page.click(SAVE_BUTTON_SELECTOR),
-        ]);
+        await page.locator(SAVE_BUTTON_SELECTOR).first().waitFor();
+        await page.locator(SAVE_BUTTON_SELECTOR).first().click();
+        await page.waitForLoadState('load');
         if ((await page.url()).includes(portal._id)) {
           // error handling
-          await page.waitForSelector(PORTAL_DESCRIPTION_SELECTOR);
+          await page.locator(PORTAL_DESCRIPTION_SELECTOR).waitFor();
           await this.browserforce.throwPageErrors(page);
           throw new Error(`saving customer portal '${portal._id}' failed`);
         }
         // portalProfileMemberships
         if (portal.portalProfileMemberships) {
-          const membershipUrlAttributes = {};
+          const membershipUrlAttributes: { [key: string]: number } = {};
           for (const member of portal.portalProfileMemberships) {
             membershipUrlAttributes[member._id!] = member.active ? 1 : 0;
           }
@@ -277,11 +259,9 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
               membershipUrlAttributes
             )}`
           );
-          await portalProfilePage.waitForSelector(SAVE_BUTTON_SELECTOR);
-          await Promise.all([
-            portalProfilePage.waitForNavigation(),
-            portalProfilePage.click(SAVE_BUTTON_SELECTOR),
-          ]);
+          await portalProfilePage.locator(SAVE_BUTTON_SELECTOR).first().waitFor();
+          await portalProfilePage.locator(SAVE_BUTTON_SELECTOR).first().click();
+          await portalProfilePage.waitForLoadState('load');
           await portalProfilePage.close();
         }
         await page.close();

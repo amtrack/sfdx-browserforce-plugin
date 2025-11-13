@@ -1,4 +1,4 @@
-import { Page } from 'puppeteer';
+import { Page } from 'playwright';
 
 const IN_PROGRESS = '#enablingInProgress, #disablingInProgress';
 const COMPLETED = '#prefSettingSucceeded';
@@ -19,8 +19,8 @@ export class OverviewPage {
   public async isEnabled(): Promise<boolean> {
     await this.waitUntilCompleted();
     return (
-      (await this.page.url()).includes(OverviewPage.PATH) &&
-      (await this.page.$(DISABLE_LINK)) !== null
+      this.page.url().includes(OverviewPage.PATH) &&
+      (await this.page.locator(DISABLE_LINK).count()) > 0
     );
   }
 
@@ -28,22 +28,19 @@ export class OverviewPage {
     if (await this.isInProgress()) {
       await this.page
         .locator(COMPLETED)
-        .setTimeout(10 * 60 * 1000) // 10 minutes
-        .wait();
+        .waitFor({ timeout: 10 * 60 * 1000 }); // 10 minutes
     }
   }
 
   public async isInProgress(): Promise<boolean> {
-    return (await this.page.$(IN_PROGRESS)) !== null;
+    return (await this.page.locator(IN_PROGRESS).count()) > 0;
   }
 
   public async disable(): Promise<OverviewPage> {
     await this.page.locator(DISABLE_LINK).click();
     await this.page.locator(DISABLE_CONFIRM_CHECKBOX).click();
-    await Promise.all([
-      this.page.waitForNavigation(),
-      this.page.locator(DISABLE_CONFIRM_BUTTON).click(),
-    ]);
+    await this.page.locator(DISABLE_CONFIRM_BUTTON).click();
+    await this.page.waitForLoadState('networkidle');
     return this;
   }
 }

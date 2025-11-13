@@ -1,4 +1,4 @@
-import { Page } from 'puppeteer';
+import { Page } from 'playwright';
 
 export class RecordTypePage {
   private page: Page;
@@ -14,12 +14,8 @@ export class RecordTypePage {
       0,
       15
     )}")]`;
-    await this.page.waitForSelector(`::-p-xpath(${xpath})`);
-    const deleteLink = (await this.page.$$(`xpath/.${xpath}`))[0];
-    await Promise.all([
-      this.page.waitForNavigation(),
-      this.page.evaluate((e: HTMLAnchorElement) => e.click(), deleteLink),
-    ]);
+    await this.page.locator(`xpath=${xpath}`).first().click();
+    await this.page.waitForLoadState('networkidle');
     return new RecordTypeDeletePage(this.page);
   }
 }
@@ -36,31 +32,23 @@ export class RecordTypeDeletePage {
     await this.throwOnMissingSaveButton();
     const NEW_VALUE_SELECTOR = 'select#p2';
     if (newRecordTypeId) {
-      await this.page.waitForSelector(NEW_VALUE_SELECTOR);
-      await this.page.select(NEW_VALUE_SELECTOR, newRecordTypeId.slice(0, 15));
+      await this.page.locator(NEW_VALUE_SELECTOR).selectOption(newRecordTypeId.slice(0, 15));
     }
     await this.save();
   }
 
   async save(): Promise<void> {
-    await this.page.waitForSelector(this.saveButton);
-    await Promise.all([
-      this.page.waitForNavigation(),
-      this.page.click(this.saveButton),
-    ]);
+    await this.page.locator(this.saveButton).click();
+    await this.page.waitForLoadState('load');
     await this.throwPageErrors();
   }
 
   async throwOnMissingSaveButton(): Promise<void> {
-    const saveButton = await this.page.$(this.saveButton);
-    if (!saveButton) {
-      const bodyHandle = await this.page.$('div.pbBody');
-      if (bodyHandle) {
-        const errorMsg = await this.page.evaluate(
-          (div: HTMLDivElement) => div.textContent,
-          bodyHandle
-        );
-        await bodyHandle.dispose();
+    const saveButtonCount = await this.page.locator(this.saveButton).count();
+    if (saveButtonCount === 0) {
+      const bodyElement = this.page.locator('div.pbBody');
+      if (await bodyElement.count() > 0) {
+        const errorMsg = await bodyElement.textContent();
         if (errorMsg?.trim()) {
           throw new Error(errorMsg.trim());
         }
@@ -69,15 +57,9 @@ export class RecordTypeDeletePage {
   }
 
   async throwPageErrors(): Promise<void> {
-    const errorHandle = await this.page.$(
-      'div#validationError div.messageText'
-    );
-    if (errorHandle) {
-      const errorMsg = await this.page.evaluate(
-        (div: HTMLDivElement) => div.innerText,
-        errorHandle
-      );
-      await errorHandle.dispose();
+    const errorElement = this.page.locator('div#validationError div.messageText');
+    if (await errorElement.count() > 0) {
+      const errorMsg = await errorElement.innerText();
       if (errorMsg?.trim()) {
         throw new Error(errorMsg.trim());
       }

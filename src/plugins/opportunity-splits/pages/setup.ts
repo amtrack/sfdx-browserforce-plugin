@@ -1,4 +1,4 @@
-import { Page } from 'puppeteer';
+import { Page } from 'playwright';
 import { LayoutSelectionPage } from './layout-selection.js';
 
 const SAVE_BUTTON = 'input[id$=":form:SaveButton"]';
@@ -16,10 +16,8 @@ export class SetupPage {
 
   public async enable(): Promise<LayoutSelectionPage> {
     await this.page.locator(SAVE_BUTTON).click();
-    await Promise.all([
-      this.page.waitForNavigation(),
-      this.page.locator(MODAL_CONFIRM_BUTTON).click(),
-    ]);
+    await this.page.locator(MODAL_CONFIRM_BUTTON).click();
+    await this.page.waitForLoadState('networkidle');
     return new LayoutSelectionPage(this.page);
   }
 }

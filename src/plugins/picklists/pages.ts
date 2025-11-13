@@ -1,4 +1,4 @@
-import { Page } from 'puppeteer';
+import { Page } from 'playwright';
 
 // table columns
 //    <td> (actions) | <th> (label) | <td> (API name)
@@ -19,14 +19,12 @@ export class PicklistPage {
   }
 
   public async getPicklistValues(): Promise<PicklistValue[]> {
-    // wait for New button in any related list
-    await this.page.waitForSelector('body table input[name="new"]');
+    // wait for New button for picklist values specifically
+    await this.page.locator('input[name="new"][onclick*="picklist_masteredit"]').waitFor();
     const resolvePicklistValueNames = async (xpath: string) => {
-      const fullNameHandles = await this.page.$$(`xpath/.${xpath}`);
+      const elements = await this.page.locator(`xpath=${xpath}`).all();
       const fullNames = await Promise.all(
-        fullNameHandles.map((handle) =>
-          handle.evaluate((el: HTMLElement) => el.innerText)
-        )
+        elements.map((el) => el.innerText())
       );
       return fullNames;
     };
@@ -48,23 +46,13 @@ export class PicklistPage {
   public async clickNewActionButton(): Promise<void> {
     const NEW_ACTION_BUTTON_XPATH =
       '//tr[td[2]]//input[contains(@onclick, "/setup/ui/picklist_masteredit")][@value=" New "]';
-    await this.page.waitForSelector(`::-p-xpath(${NEW_ACTION_BUTTON_XPATH})`);
-    const newActionButton = (
-      await this.page.$$(`xpath/.${NEW_ACTION_BUTTON_XPATH}`)
-    )[0];
-    await Promise.all([
-      this.page.waitForNavigation(),
-      this.page.evaluate((e: HTMLInputElement) => e.click(), newActionButton),
-    ]);
+    await this.page.locator(`xpath=${NEW_ACTION_BUTTON_XPATH}`).first().click();
+    await this.page.waitForLoadState('networkidle');
   }
 
   public async clickReplaceActionButton(): Promise<PicklistReplacePage> {
-    const REPLACE_ACTION_BUTTON = 'input[name="replace"]';
-    await this.page.waitForSelector(REPLACE_ACTION_BUTTON);
-    await Promise.all([
-      this.page.waitForNavigation(),
-      this.page.click(REPLACE_ACTION_BUTTON),
-    ]);
+    const REPLACE_ACTION_BUTTON = 'input[name="replace"][type="button"]';
+    await this.page.locator(REPLACE_ACTION_BUTTON).click();
     return new PicklistReplacePage(this.page);
   }
 
@@ -74,15 +62,11 @@ export class PicklistPage {
     // deactivate: deleteType=1
     // delete: deleteType=0 or no deleteType=1
     const xpath = `//tr[td[2][text() = "${picklistValueApiName}"]]//td[1]//a[contains(@href, "/setup/ui/picklist_masterdelete.jsp") and not(contains(@href, "deleteType=1"))]`;
-    await this.page.waitForSelector(`::-p-xpath(${xpath})`);
-    const deleteLink = (await this.page.$$(`xpath/.${xpath}`))[0];
     this.page.on('dialog', async (dialog) => {
       await dialog.accept();
     });
-    await Promise.all([
-      this.page.waitForNavigation(),
-      this.page.evaluate((e: HTMLAnchorElement) => e.click(), deleteLink),
-    ]);
+    
+    await this.page.locator(`xpath=${xpath}`).first().click();
     await throwPageErrors(this.page);
     return new PicklistReplaceAndDeletePage(this.page);
   }
@@ -99,15 +83,11 @@ export class PicklistPage {
       // delete: deleteType=0 or no deleteType=1
       xpath = `//tr[td[2][text() = "${picklistValueApiName}"]]//td[1]//a[contains(@href, "/setup/ui/picklist_masterdelete.jsp") and contains(@href, "deleteType=1")]`;
     }
-    await this.page.waitForSelector(`::-p-xpath(${xpath})`);
-    const actionLink = (await this.page.$$(`xpath/.${xpath}`))[0];
     this.page.on('dialog', async (dialog) => {
       await dialog.accept();
     });
-    await Promise.all([
-      this.page.waitForNavigation(),
-      this.page.evaluate((e: HTMLAnchorElement) => e.click(), actionLink),
-    ]);
+    
+    await this.page.locator(`xpath=${xpath}`).first().click();
     await throwPageErrors(this.page);
     return new PicklistPage(this.page);
   }
@@ -124,18 +104,14 @@ export class DefaultPicklistAddPage {
   async add(newValue: string): Promise<void> {
     const TEXT_AREA = 'textarea';
     if (newValue !== undefined && newValue !== null) {
-      await this.page.waitForSelector(TEXT_AREA);
-      await this.page.type(TEXT_AREA, newValue);
+      await this.page.locator(TEXT_AREA).fill(newValue);
     }
     await this.save();
   }
 
   async save(): Promise<void> {
-    await this.page.waitForSelector(this.saveButton);
-    await Promise.all([
-      this.page.waitForNavigation(),
-      this.page.click(this.saveButton),
-    ]);
+    await this.page.locator(this.saveButton).click();
+    await this.page.waitForLoadState('load');
     await throwPageErrors(this.page);
   }
 }
@@ -153,20 +129,16 @@ export class StatusPicklistAddPage {
     const API_NAME_INPUT = 'input#p3';
     const STATUS_CATEGORY_SELECTOR = 'select#p5';
     if (newValue !== undefined && newValue !== null) {
-      await this.page.waitForSelector(STATUS_CATEGORY_SELECTOR);
-      await this.page.type(LABEL_INPUT, newValue);
-      await this.page.type(API_NAME_INPUT, newValue);
-      await this.page.type(STATUS_CATEGORY_SELECTOR, statusCategory);
+      await this.page.locator(LABEL_INPUT).fill(newValue);
+      await this.page.locator(API_NAME_INPUT).fill(newValue);
+      await this.page.locator(STATUS_CATEGORY_SELECTOR).pressSequentially(statusCategory);
     }
     await this.save();
   }
 
   async save(): Promise<void> {
-    await this.page.waitForSelector(this.saveButton);
-    await Promise.all([
-      this.page.waitForNavigation(),
-      this.page.click(this.saveButton),
-    ]);
+    await this.page.locator(this.saveButton).click();
+    await this.page.waitForLoadState('load');
     await throwPageErrors(this.page);
   }
 }
@@ -188,26 +160,19 @@ export class PicklistReplacePage {
     const NEW_VALUE_SELECTOR = 'select#nv';
     const REPLACE_ALL_BLANK_VALUES_CHECKBOX = 'input#fnv';
     if (value !== undefined && value !== null) {
-      await this.page.waitForSelector(OLD_VALUE_SELECTOR);
-      await this.page.type(OLD_VALUE_SELECTOR, value);
+      await this.page.locator(OLD_VALUE_SELECTOR).fill(value);
     }
     if (replaceAllBlankValues) {
-      await this.page.waitForSelector(REPLACE_ALL_BLANK_VALUES_CHECKBOX);
-      await this.page.click(REPLACE_ALL_BLANK_VALUES_CHECKBOX);
+      await this.page.locator(REPLACE_ALL_BLANK_VALUES_CHECKBOX).check();
     }
     if (newValue !== undefined && newValue !== null) {
-      await this.page.waitForSelector(NEW_VALUE_SELECTOR);
-      await this.page.type(NEW_VALUE_SELECTOR, newValue);
+      await this.page.locator(NEW_VALUE_SELECTOR).pressSequentially(newValue);
     }
     await this.save();
   }
 
   async save(): Promise<void> {
-    await this.page.waitForSelector(this.saveButton);
-    await Promise.all([
-      this.page.waitForNavigation(),
-      this.page.click(this.saveButton),
-    ]);
+    await this.page.locator(this.saveButton).click();
     await throwPageErrors(this.page);
   }
 }
@@ -224,23 +189,22 @@ export class PicklistReplaceAndDeletePage extends PicklistReplacePage {
       'input#ReplaceValueWithNullValue';
     // select option value
     if (newValue !== undefined && newValue !== null) {
-      await this.page.waitForSelector(NEW_VALUE_SELECTOR);
-      await this.page.type(NEW_VALUE_SELECTOR, newValue);
+      await this.page.locator(NEW_VALUE_SELECTOR).pressSequentially(newValue);
     } else {
-      await this.page.waitForSelector(REPLACE_WITH_BLANK_VALUE_RADIO_INPUT);
-      await this.page.click(REPLACE_WITH_BLANK_VALUE_RADIO_INPUT);
+      await this.page.locator(REPLACE_WITH_BLANK_VALUE_RADIO_INPUT).check();
     }
+  }
+
+  async save(): Promise<void> {
+    await this.page.locator(this.saveButton).click({ timeout: 180000 });
+    await throwPageErrors(this.page);
   }
 }
 
 async function throwPageErrors(page: Page): Promise<void> {
-  const errorHandle = await page.$('div#validationError div.messageText');
-  if (errorHandle) {
-    const errorMsg = await page.evaluate(
-      (div: HTMLDivElement) => div.innerText,
-      errorHandle
-    );
-    await errorHandle.dispose();
+  const errorElement = page.locator('div#validationError div.messageText');
+  if (await errorElement.count() > 0) {
+    const errorMsg = await errorElement.innerText();
     if (errorMsg && errorMsg.trim()) {
       throw new Error(errorMsg.trim());
     }

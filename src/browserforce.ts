@@ -1,7 +1,7 @@
 import { Org } from '@salesforce/core';
 import { type Ux } from '@salesforce/sf-plugins-core';
 import pRetry from 'p-retry';
-import { chromium, Browser, BrowserContext, Page, Frame } from 'playwright';
+import { chromium, Browser, BrowserContext, Page, FrameLocator } from 'playwright';
 import { LoginPage } from './pages/login.js';
 
 const ERROR_DIV_SELECTOR = '#errorTitle';
@@ -56,9 +56,9 @@ export class Browserforce {
 
   public async getNewPage(): Promise<Page> {
     const page = await this.context.newPage();
-    const timeout = parseInt(process.env.BROWSERFORCE_NAVIGATION_TIMEOUT_MS ?? '90000', 10);
-    page.setDefaultNavigationTimeout(timeout);
-    page.setDefaultTimeout(timeout);
+    page.setDefaultNavigationTimeout(
+      parseInt(process.env.BROWSERFORCE_NAVIGATION_TIMEOUT_MS ?? '90000', 10)
+    );
     return page;
   }
 
@@ -114,24 +114,23 @@ export class Browserforce {
 
   // If LEX is enabled, the classic url will be opened in an iframe.
   // Wait for either the selector in the page or in the iframe.
-  // returns the page or the frame
+  // returns the page or the frame locator
   public async waitForSelectorInFrameOrPage(
     page: Page,
     selector: string
-  ): Promise<Page | Frame> {
-    try {
-      await page.locator(VF_IFRAME_SELECTOR).waitFor({ timeout: 5000 });
-      const frameElement = await page.locator(VF_IFRAME_SELECTOR).elementHandle();
-      const frame = await frameElement?.contentFrame();
-      if (!frame) {
-        throw new Error('Could not get frame from iframe element');
-      }
-      await frame.waitForSelector(selector);
-      return frame;
-    } catch {
-      await page.waitForSelector(selector);
-      return page;
+  ): Promise<Page | FrameLocator> {
+    await page.locator(`${selector}, ${VF_IFRAME_SELECTOR}`).first().waitFor();
+    
+    const iframeCount = await page.locator(VF_IFRAME_SELECTOR).count();
+    
+    if (iframeCount > 0) {
+      const frameLocator = page.frameLocator(VF_IFRAME_SELECTOR);
+      await frameLocator.locator(selector).first().waitFor();
+      return frameLocator;
     }
+    
+    await page.locator(selector).first().waitFor();
+    return page;
   }
 
   public getMyDomain(): string | null {

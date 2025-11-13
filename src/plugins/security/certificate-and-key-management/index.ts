@@ -1,7 +1,6 @@
 import type { Record } from '@jsforce/jsforce-node';
 import { existsSync } from 'fs';
 import * as path from 'path';
-import type { ElementHandle } from 'puppeteer';
 import * as queryString from 'querystring';
 import { BrowserforcePlugin } from '../../../plugin.js';
 
@@ -132,7 +131,7 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
           // update
         } else {
           // create new
-          const urlAttributes = {
+          const urlAttributes: { [key: string]: string | number } = {
             DeveloperName: certificate.name,
             MasterLabel: certificate.label,
           };
@@ -145,11 +144,9 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
           const page = await this.browserforce.openPage(
             `${CERT_PREFIX_PATH}/e?${queryString.stringify(urlAttributes)}`
           );
-          await page.waitForSelector(SAVE_BUTTON_SELECTOR);
-          await Promise.all([
-            page.waitForNavigation(),
-            page.click(SAVE_BUTTON_SELECTOR),
-          ]);
+          await page.locator(SAVE_BUTTON_SELECTOR).first().waitFor();
+          await page.locator(SAVE_BUTTON_SELECTOR).first().click();
+          await page.waitForLoadState('load');
           await page.close();
         }
       }
@@ -159,10 +156,7 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
         const page = await this.browserforce.openPage(
           `${KEYSTORE_IMPORT_PATH}`
         );
-        await page.waitForSelector(FILE_UPLOAD_SELECTOR);
-        const elementHandle = (await page.$(
-          FILE_UPLOAD_SELECTOR
-        )) as ElementHandle<HTMLInputElement>;
+        await page.locator(FILE_UPLOAD_SELECTOR).waitFor();
         // TODO: make relative to this.command.flags.definitionfile
         if (!certificate.filePath) {
           throw new Error(
@@ -173,20 +167,18 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
         if (!existsSync(filePath)) {
           throw new Error(`file does not exist: ${filePath}`);
         }
-        await elementHandle.uploadFile(filePath);
+        await page.locator(FILE_UPLOAD_SELECTOR).setInputFiles(filePath);
         if (certificate.password) {
-          await page.waitForSelector(KEYSTORE_PASSWORD_SELECTOR);
-          await page.type(KEYSTORE_PASSWORD_SELECTOR, certificate.password);
+          await page.locator(KEYSTORE_PASSWORD_SELECTOR).waitFor();
+          await page.locator(KEYSTORE_PASSWORD_SELECTOR).fill(certificate.password);
         }
-        await page.waitForSelector(SAVE_BUTTON_SELECTOR);
-        await Promise.all([
-          page.waitForNavigation(),
-          page.click(SAVE_BUTTON_SELECTOR),
-        ]);
+        await page.locator(SAVE_BUTTON_SELECTOR).first().waitFor();
+        await page.locator(SAVE_BUTTON_SELECTOR).first().click();
+        await page.waitForLoadState('load');
         try {
           await this.browserforce.throwPageErrors(page);
         } catch (e) {
-          if (e.message === 'Data Not Available') {
+          if (e instanceof Error && e.message === 'Data Not Available') {
             throw new Error(
               'Failed to import certificate from Keystore. Please enable Identity Provider first. https://salesforce.stackexchange.com/questions/61618/import-keystore-in-certificate-and-key-management'
             );
@@ -205,11 +197,9 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
           const certPage = await this.browserforce.openPage(
             `${importedCert.Id}/e?MasterLabel=${certificate.name}&DeveloperName=${certificate.name}`
           );
-          await certPage.waitForSelector(SAVE_BUTTON_SELECTOR);
-          await Promise.all([
-            certPage.waitForNavigation(),
-            certPage.click(SAVE_BUTTON_SELECTOR),
-          ]);
+          await certPage.locator(SAVE_BUTTON_SELECTOR).first().waitFor();
+          await certPage.locator(SAVE_BUTTON_SELECTOR).first().click();
+          await certPage.waitForLoadState('load');
           await this.browserforce.throwPageErrors(certPage);
           await certPage.close();
         }

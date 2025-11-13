@@ -1,4 +1,4 @@
-import { Page } from 'puppeteer';
+import { Page } from 'playwright';
 import { throwPageErrors } from '../../../browserforce.js';
 
 export class FieldDependencyPage {
@@ -19,25 +19,21 @@ export class FieldDependencyPage {
     customFieldId: string
   ): Promise<FieldDependencyPage> {
     // wait for "new" button in field dependencies releated list header
-    await this.page.waitForSelector(
-      'div.listRelatedObject div.pbHeader input[name="new"]'
-    );
+    await this.page
+      .locator('div.listRelatedObject div.pbHeader input[name="new"]')
+      .waitFor();
     const xpath = `//a[contains(@href, "/p/dependency/NewDependencyUI/e") and contains(@href, "delID=${customFieldId.substring(
       0,
       15
     )}")]`;
-    const actionLinkHandles = await this.page.$$(`xpath/.${xpath}`);
-    if (actionLinkHandles.length) {
+    const actionLinks = await this.page.locator(`xpath=${xpath}`).all();
+    if (actionLinks.length > 0) {
       this.page.on('dialog', async (dialog) => {
         await dialog.accept();
       });
-      await Promise.all([
-        this.page.waitForNavigation(),
-        this.page.evaluate(
-          (e: HTMLAnchorElement) => e.click(),
-          actionLinkHandles[0]
-        ),
-      ]);
+
+      await actionLinks[0].click();
+      await this.page.waitForLoadState('networkidle');
       await throwPageErrors(this.page);
     }
     return new FieldDependencyPage(this.page);
@@ -70,21 +66,13 @@ export class NewFieldDependencyPage {
   }
 
   async save(): Promise<void> {
-    await this.page.waitForSelector(this.saveButton);
-    await Promise.all([
-      this.page.waitForNavigation(),
-      this.page.click(this.saveButton),
-    ]);
+    await this.page.locator(this.saveButton).first().click();
     await throwPageErrors(this.page);
     // second step in wizard
     this.page.on('dialog', async (dialog) => {
       await dialog.accept();
     });
-    await this.page.waitForSelector(this.saveButton);
-    await Promise.all([
-      this.page.waitForNavigation(),
-      this.page.click(this.saveButton),
-    ]);
+    await this.page.locator(this.saveButton).first().click();
     await throwPageErrors(this.page);
     await this.page.close();
   }

@@ -43,37 +43,35 @@ export class Capacity extends BrowserforcePlugin {
     const page = await this.browserforce.openPage(`${serviceChannel.Id}/e`);
 
     // Retrieve the service channel config
-    if (!(await page.$(CAPACITY_MODEL_SELECTOR))) {
+    const capacityModelCount = await page.locator(CAPACITY_MODEL_SELECTOR).count();
+    if (capacityModelCount === 0) {
+      await page.close();
       return {};
     }
 
     const capacityModel =
-      (await page.$eval(
-        `${CAPACITY_MODEL_SELECTOR} > option[selected]`,
-        (el) => el.value
-      )) ?? '';
+      (await page
+        .locator(`${CAPACITY_MODEL_SELECTOR} > option[selected]`)
+        .evaluate((el: HTMLOptionElement) => el.value)) ?? '';
 
     if (capacityModel === 'StatusBased') {
       const statusField =
-        (await page.$eval(
-          `${STATUS_FIELD_SELECTOR} > option[selected]`,
-          (el) => el.value
-        )) ?? '';
-      const valuesForInProgress = await page.$$eval(
-        `${VALUES_IN_PROGRESS_SELECTOR} > option`,
-        (options) => {
+        (await page
+          .locator(`${STATUS_FIELD_SELECTOR} > option[selected]`)
+          .evaluate((el: HTMLOptionElement) => el.value)) ?? '';
+      const valuesForInProgress = await page
+        .locator(`${VALUES_IN_PROGRESS_SELECTOR} > option`)
+        .evaluateAll((options: HTMLOptionElement[]) => {
           return options.map((option) => option.title ?? '');
-        }
-      );
-      const checkAgentCapacityOnReopenedWorkItems = await page.$eval(
-        STATUS_CHANGE_CAPACITY_SELECTOR,
-        (el) => (el.getAttribute('checked') === 'checked' ? true : false)
-      );
-      const checkAgentCapacityOnReassignedWorkItems = await page.$eval(
-        OWNER_CHANGE_CAPACITY_SELECTOR,
-        (el) => (el.getAttribute('checked') === 'checked' ? true : false)
-      );
+        });
+      const checkAgentCapacityOnReopenedWorkItems = await page
+        .locator(STATUS_CHANGE_CAPACITY_SELECTOR)
+        .evaluate((el: HTMLInputElement) => (el.getAttribute('checked') === 'checked' ? true : false));
+      const checkAgentCapacityOnReassignedWorkItems = await page
+        .locator(OWNER_CHANGE_CAPACITY_SELECTOR)
+        .evaluate((el: HTMLInputElement) => (el.getAttribute('checked') === 'checked' ? true : false));
 
+      await page.close();
       return {
         capacityModel,
         statusField,
@@ -83,6 +81,7 @@ export class Capacity extends BrowserforcePlugin {
       };
     }
 
+    await page.close();
     return { capacityModel };
   }
 
@@ -152,81 +151,77 @@ export class Capacity extends BrowserforcePlugin {
     const configCapacity = config.capacity;
 
     if (configCapacity?.capacityModel) {
-      await page.waitForSelector(CAPACITY_MODEL_SELECTOR);
-      await page.select(CAPACITY_MODEL_SELECTOR, configCapacity!.capacityModel);
+      await page.locator(CAPACITY_MODEL_SELECTOR).waitFor();
+      await page.locator(CAPACITY_MODEL_SELECTOR).selectOption(configCapacity!.capacityModel);
     }
 
     if (configCapacity?.statusField) {
-      await page.waitForSelector(STATUS_FIELD_SELECTOR);
-      await page.select(STATUS_FIELD_SELECTOR, configCapacity!.statusField);
+      await page.locator(STATUS_FIELD_SELECTOR).waitFor();
+      await page.locator(STATUS_FIELD_SELECTOR).selectOption(configCapacity!.statusField);
     }
 
     if (configCapacity?.valuesForInProgress) {
-      await page.waitForSelector(`${VALUES_COMPLETED_SELECTOR} > option`);
+      await page.locator(`${VALUES_COMPLETED_SELECTOR} > option`).first().waitFor();
 
-      const completedElements = await page.$$(
-        `${VALUES_COMPLETED_SELECTOR} > option`
-      );
+      const completedElements = await page
+        .locator(`${VALUES_COMPLETED_SELECTOR} > option`)
+        .all();
 
       for (const completedElement of completedElements) {
-        const optionTitle = (
-          await completedElement.evaluate((node) => node.getAttribute('title'))
-        )?.toString();
+        const optionTitle = await completedElement.getAttribute('title');
 
         if (
           optionTitle &&
           configCapacity.valuesForInProgress.includes(optionTitle)
         ) {
           await completedElement.click();
-          await page.click(ADD_BUTTON_SELECTOR);
+          await page.locator(ADD_BUTTON_SELECTOR).click();
         }
       }
 
-      await page.waitForSelector(`${VALUES_IN_PROGRESS_SELECTOR} > option`);
-      const inprogressElements = await page.$$(
-        `${VALUES_IN_PROGRESS_SELECTOR} > option`
-      );
+      await page.locator(`${VALUES_IN_PROGRESS_SELECTOR} > option`).first().waitFor();
+      const inprogressElements = await page
+        .locator(`${VALUES_IN_PROGRESS_SELECTOR} > option`)
+        .all();
 
       for (const inprogressElement of inprogressElements) {
-        const optionTitle = (
-          await inprogressElement.evaluate((node) => node.getAttribute('title'))
-        )?.toString();
+        const optionTitle = await inprogressElement.getAttribute('title');
 
         if (
           optionTitle &&
           !configCapacity.valuesForInProgress.includes(optionTitle)
         ) {
           await inprogressElement.click();
-          await page.click(REMOVE_BUTTON_SELECTOR);
+          await page.locator(REMOVE_BUTTON_SELECTOR).click();
         }
       }
     }
 
     if (configCapacity?.checkAgentCapacityOnReassignedWorkItems !== undefined) {
-      await page.$eval(
-        STATUS_CHANGE_CAPACITY_SELECTOR,
-        (e: HTMLInputElement, v: boolean) => {
-          e.checked = v;
-        },
-        configCapacity.checkAgentCapacityOnReassignedWorkItems
-      );
+      await page
+        .locator(STATUS_CHANGE_CAPACITY_SELECTOR)
+        .evaluate(
+          (e: HTMLInputElement, v: boolean) => {
+            e.checked = v;
+          },
+          configCapacity.checkAgentCapacityOnReassignedWorkItems
+        );
     }
 
     if (configCapacity?.checkAgentCapacityOnReopenedWorkItems !== undefined) {
-      await page.$eval(
-        OWNER_CHANGE_CAPACITY_SELECTOR,
-        (e: HTMLInputElement, v: boolean) => {
-          e.checked = v;
-        },
-        configCapacity.checkAgentCapacityOnReopenedWorkItems
-      );
+      await page
+        .locator(OWNER_CHANGE_CAPACITY_SELECTOR)
+        .evaluate(
+          (e: HTMLInputElement, v: boolean) => {
+            e.checked = v;
+          },
+          configCapacity.checkAgentCapacityOnReopenedWorkItems
+        );
     }
 
     // Save the settings and wait for page refresh
-    await Promise.all([
-      page.waitForNavigation(),
-      page.click(SAVE_BUTTON_SELECTOR),
-    ]);
+    await page.locator(SAVE_BUTTON_SELECTOR).click();
+    await page.waitForLoadState('load');
 
     // Close the page
     await page.close();

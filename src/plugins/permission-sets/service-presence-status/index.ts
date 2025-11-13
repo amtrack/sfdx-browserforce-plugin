@@ -28,13 +28,13 @@ export class ServicePresenceStatus extends BrowserforcePlugin {
       `${permissionSet.Id}/e?s=ServicePresenceStatusAccess`
     );
 
-    const enabledServicePresenceStatuses = await page.$$eval(
-      `${VALUES_ENABLED_SELECTOR} > option`,
-      (options) => {
+    const enabledServicePresenceStatuses = await page
+      .locator(`${VALUES_ENABLED_SELECTOR} > option`)
+      .evaluateAll((options: HTMLOptionElement[]) => {
         return options.map((option) => option.title ?? '');
-      }
-    );
+      });
 
+    await page.close();
     return enabledServicePresenceStatuses;
   }
 
@@ -53,51 +53,45 @@ export class ServicePresenceStatus extends BrowserforcePlugin {
     );
 
     if (config?.servicePresenceStatuses) {
-      await page.waitForSelector(`${VALUES_AVAILABLE_SELECTOR} > option`);
+      await page.locator(`${VALUES_AVAILABLE_SELECTOR} > option`).first().waitFor();
 
-      const availableElements = await page.$$(
-        `${VALUES_AVAILABLE_SELECTOR} > option`
-      );
+      const availableElements = await page
+        .locator(`${VALUES_AVAILABLE_SELECTOR} > option`)
+        .all();
 
       for (const availableElement of availableElements) {
-        const optionTitle = (
-          await availableElement.evaluate((node) => node.getAttribute('title'))
-        )?.toString();
+        const optionTitle = await availableElement.getAttribute('title');
 
         if (
           optionTitle &&
           config.servicePresenceStatuses.includes(optionTitle)
         ) {
           await availableElement.click();
-          await page.click(ADD_BUTTON_SELECTOR);
+          await page.locator(ADD_BUTTON_SELECTOR).click();
         }
       }
 
-      await page.waitForSelector(`${VALUES_ENABLED_SELECTOR} > option`);
-      const enabledElements = await page.$$(
-        `${VALUES_ENABLED_SELECTOR} > option`
-      );
+      await page.locator(`${VALUES_ENABLED_SELECTOR} > option`).first().waitFor();
+      const enabledElements = await page
+        .locator(`${VALUES_ENABLED_SELECTOR} > option`)
+        .all();
 
       for (const enabledElement of enabledElements) {
-        const optionTitle = (
-          await enabledElement.evaluate((node) => node.getAttribute('title'))
-        )?.toString();
+        const optionTitle = await enabledElement.getAttribute('title');
 
         if (
           optionTitle &&
           !config.servicePresenceStatuses.includes(optionTitle)
         ) {
           await enabledElement.click();
-          await page.click(REMOVE_BUTTON_SELECTOR);
+          await page.locator(REMOVE_BUTTON_SELECTOR).click();
         }
       }
     }
 
     // Save the settings and wait for page refresh
-    await Promise.all([
-      page.waitForNavigation(),
-      page.click(SAVE_BUTTON_SELECTOR),
-    ]);
+    await page.locator(SAVE_BUTTON_SELECTOR).click();
+    await page.waitForLoadState('load');
 
     // Close the page
     await page.close();
