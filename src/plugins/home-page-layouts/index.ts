@@ -27,7 +27,7 @@ export class HomePageLayouts extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
     const page = await this.browserforce.openPage(BASE_PATH);
     await page.locator(BASE_SELECTOR).waitFor();
-    
+
     const profiles = await page
       .locator('table.detailList tbody tr td label')
       .evaluateAll((labels: HTMLLabelElement[]) => {
@@ -40,7 +40,7 @@ export class HomePageLayouts extends BrowserforcePlugin {
           throw new Error('retrieving HomePageLayouts failed');
         });
       });
-    
+
     const layouts = await page
       .locator('table.detailList tbody tr td select')
       .evaluateAll((selects: HTMLSelectElement[]) => {
@@ -48,7 +48,7 @@ export class HomePageLayouts extends BrowserforcePlugin {
           .map((select) => select.selectedOptions[0].text)
           .map((text) => (text === 'Home Page Default' ? '' : text));
       });
-    
+
     const homePageLayoutAssignments: HomePageLayoutAssignment[] = [];
     for (let i = 0; i < profiles.length; i++) {
       homePageLayoutAssignments.push({
@@ -97,7 +97,7 @@ export class HomePageLayouts extends BrowserforcePlugin {
 
     const page = await this.browserforce.openPage(BASE_PATH);
     await page.locator(BASE_SELECTOR).waitFor();
-    
+
     for (const assignment of config.homePageLayoutAssignments) {
       const homePageLayoutName = assignment.layout;
       const profile = profiles.records.find(
@@ -121,9 +121,11 @@ export class HomePageLayouts extends BrowserforcePlugin {
       }
       const profileSelector = `select[id='${profile.Id!.substring(0, 15)}']`;
       await page.locator(profileSelector).waitFor();
-      await page.locator(profileSelector).selectOption(homePageLayout.Id!.substring(0, 15));
+      await page
+        .locator(profileSelector)
+        .selectOption(homePageLayout.Id!.substring(0, 15));
     }
-    
+
     await page.locator(SAVE_BUTTON_SELECTOR).first().click();
     await page.waitForLoadState('load');
     await page.close();

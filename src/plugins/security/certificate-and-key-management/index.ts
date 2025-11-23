@@ -170,7 +170,9 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
         await page.locator(FILE_UPLOAD_SELECTOR).setInputFiles(filePath);
         if (certificate.password) {
           await page.locator(KEYSTORE_PASSWORD_SELECTOR).waitFor();
-          await page.locator(KEYSTORE_PASSWORD_SELECTOR).fill(certificate.password);
+          await page
+            .locator(KEYSTORE_PASSWORD_SELECTOR)
+            .fill(certificate.password);
         }
         await page.locator(SAVE_BUTTON_SELECTOR).first().waitFor();
         await page.locator(SAVE_BUTTON_SELECTOR).first().click();

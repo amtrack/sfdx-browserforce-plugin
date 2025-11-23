@@ -1,7 +1,13 @@
 import { Org } from '@salesforce/core';
 import { type Ux } from '@salesforce/sf-plugins-core';
 import pRetry from 'p-retry';
-import { chromium, Browser, BrowserContext, Page, FrameLocator } from 'playwright';
+import {
+  chromium,
+  Browser,
+  BrowserContext,
+  Page,
+  FrameLocator,
+} from 'playwright';
 import { LoginPage } from './pages/login.js';
 
 const ERROR_DIV_SELECTOR = '#errorTitle';
@@ -23,16 +29,23 @@ export class Browserforce {
 
   public async login(): Promise<Browserforce> {
     this.browser = await chromium.launch({
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-      ],
+      channel: process.env.CI ? 'chrome' : undefined,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
       headless: !(process.env.BROWSER_DEBUG === 'true'),
       slowMo: parseInt(process.env.BROWSER_SLOWMO, 10) ?? 0,
     });
     this.context = await this.browser.newContext({
       viewport: { width: 1024, height: 768 },
     });
+
+    // Start tracing if PLAYWRIGHT_TRACE is set
+    if (process.env.PLAYWRIGHT_TRACE === 'true') {
+      await this.context.tracing.start({
+        screenshots: true,
+        snapshots: true,
+        sources: true,
+      });
+    }
     const page = await this.getNewPage();
     try {
       const loginPage = new LoginPage(page);
@@ -45,6 +58,15 @@ export class Browserforce {
 
   public async logout(): Promise<Browserforce> {
     if (this.browser) {
+      // Stop tracing and save if it was started
+      if (process.env.PLAYWRIGHT_TRACE === 'true') {
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        const tracePath = `trace-${timestamp}.zip`;
+        await this.context.tracing.stop({ path: tracePath });
+        if (this.logger) {
+          this.logger.log(`Playwright trace saved to: ${tracePath}`);
+        }
+      }
       await this.browser.close();
     }
     return this;
@@ -65,7 +87,9 @@ export class Browserforce {
   // path instead of url
   public async openPage(
     urlPath: string,
-    options?: { waitUntil?: 'load' | 'domcontentloaded' | 'networkidle' | 'commit' }
+    options?: {
+      waitUntil?: 'load' | 'domcontentloaded' | 'networkidle' | 'commit';
+    }
   ): Promise<Page> {
     let page: Page;
     const result = await pRetry(
@@ -120,15 +144,15 @@ export class Browserforce {
     selector: string
   ): Promise<Page | FrameLocator> {
     await page.locator(`${selector}, ${VF_IFRAME_SELECTOR}`).first().waitFor();
-    
+
     const iframeCount = await page.locator(VF_IFRAME_SELECTOR).count();
-    
+
     if (iframeCount > 0) {
       const frameLocator = page.frameLocator(VF_IFRAME_SELECTOR);
       await frameLocator.locator(selector).first().waitFor();
       return frameLocator;
     }
-    
+
     await page.locator(selector).first().waitFor();
     return page;
   }
@@ -167,22 +191,32 @@ export class Browserforce {
     }
     return this.lightningSetupUrl;
   }
+
+  public async waitForIdle(page: Page, maxWaitTime = 2000): Promise<void> {
+    try {
+      await page.waitForLoadState('networkidle', { timeout: maxWaitTime });
+    } catch {
+      console.log(
+        `Waited ${maxWaitTime}ms, continuing regardless of network state`
+      );
+    }
+  }
 }
 
 export async function throwPageErrors(page: Page): Promise<void> {
   const errorLocator = page.locator(ERROR_DIV_SELECTOR);
   const errorCount = await errorLocator.count();
-  
+
   if (errorCount > 0) {
     const errorMsg = await errorLocator.first().innerText();
     if (errorMsg && errorMsg.trim()) {
       throw new Error(errorMsg.trim());
     }
   }
-  
+
   const errorDivsLocator = page.locator(ERROR_DIVS_SELECTOR);
   const errorDivsCount = await errorDivsLocator.count();
-  
+
   if (errorDivsCount > 0) {
     const errorMessages: string[] = [];
     for (let i = 0; i < errorDivsCount; i++) {

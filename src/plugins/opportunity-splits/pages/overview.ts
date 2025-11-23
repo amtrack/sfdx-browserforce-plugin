@@ -26,9 +26,7 @@ export class OverviewPage {
 
   public async waitUntilCompleted(): Promise<void> {
     if (await this.isInProgress()) {
-      await this.page
-        .locator(COMPLETED)
-        .waitFor({ timeout: 10 * 60 * 1000 }); // 10 minutes
+      await this.page.locator(COMPLETED).waitFor({ timeout: 10 * 60 * 1000 }); // 10 minutes
     }
   }
 

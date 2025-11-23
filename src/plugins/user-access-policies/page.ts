@@ -16,10 +16,14 @@ export class UserAccessPoliciesPage {
    * Activate a policy from its detail page
    * @param triggerOn - When to trigger the policy: 'Create', 'Update', or 'CreateAndUpdate' (default)
    */
-  public async activatePolicy(triggerOn: 'Create' | 'Update' | 'CreateAndUpdate' = 'CreateAndUpdate'): Promise<void> {
+  public async activatePolicy(
+    triggerOn: 'Create' | 'Update' | 'CreateAndUpdate' = 'CreateAndUpdate'
+  ): Promise<void> {
     try {
-      const automateButton = this.page.getByRole('button', { name: 'Automate Policy' });
-      
+      const automateButton = this.page.getByRole('button', {
+        name: 'Automate Policy',
+      });
+
       await automateButton.waitFor({ state: 'visible', timeout: 5000 });
       await this.waitForButtonEnabled(automateButton);
       await automateButton.click();
@@ -37,8 +41,10 @@ export class UserAccessPoliciesPage {
    */
   public async deactivatePolicy(): Promise<void> {
     try {
-      const deactivateButton = this.page.getByRole('button', { name: 'Deactivate' });
-      
+      const deactivateButton = this.page.getByRole('button', {
+        name: 'Deactivate',
+      });
+
       await deactivateButton.waitFor({ state: 'visible', timeout: 5000 });
       await deactivateButton.click();
 
@@ -53,15 +59,19 @@ export class UserAccessPoliciesPage {
   /**
    * Handle the activation modal (select trigger option and click Activate)
    */
-  private async handleActivationModal(triggerOn: 'Create' | 'Update' | 'CreateAndUpdate'): Promise<void> {
-    const modalHeader = this.page.locator('lightning-modal-header.automate_policy_modal');
+  private async handleActivationModal(
+    triggerOn: 'Create' | 'Update' | 'CreateAndUpdate'
+  ): Promise<void> {
+    const modalHeader = this.page.locator(
+      'lightning-modal-header.automate_policy_modal'
+    );
     await modalHeader.waitFor({ state: 'visible', timeout: 10000 });
-    
+
     await this.page.waitForTimeout(500);
-    
+
     const radioButtons = this.page.locator('input[type="radio"]');
     const radioCount = await radioButtons.count();
-    
+
     if (radioCount < 3) {
       throw new Error('Modal did not load - radio buttons not found');
     }
@@ -75,19 +85,22 @@ export class UserAccessPoliciesPage {
         break;
       }
     }
-    
+
     if (!radioButton) {
       throw new Error(`Radio button with value "${triggerOn}" not found`);
     }
-    
+
     const radioId = await radioButton.getAttribute('id');
-    
+
     if (radioId) {
       const label = this.page.locator(`label[for="${radioId}"]`);
       await label.click();
     }
 
-    const activateButton = this.page.getByRole('button', { name: 'Activate', exact: true });
+    const activateButton = this.page.getByRole('button', {
+      name: 'Activate',
+      exact: true,
+    });
     await activateButton.waitFor({ state: 'visible', timeout: 5000 });
     await activateButton.click();
 
@@ -100,14 +113,18 @@ export class UserAccessPoliciesPage {
   private async handleConfirmationModal(): Promise<void> {
     try {
       await this.page.waitForTimeout(500);
-      
-      const deactivateButton = this.page.locator('lightning-modal-footer button:has-text("Deactivate")');
+
+      const deactivateButton = this.page.locator(
+        'lightning-modal-footer button:has-text("Deactivate")'
+      );
       await deactivateButton.waitFor({ state: 'visible', timeout: 5000 });
       await deactivateButton.click();
-      
+
       await this.page.waitForTimeout(1000);
     } catch (e) {
-      throw new Error(`Failed to handle deactivation confirmation modal: ${e.message}`);
+      throw new Error(
+        `Failed to handle deactivation confirmation modal: ${e.message}`
+      );
     }
   }
 
@@ -116,19 +133,22 @@ export class UserAccessPoliciesPage {
    * @param button - The button locator to wait for
    * @param timeout - Maximum time to wait in milliseconds (default: 10000)
    */
-  private async waitForButtonEnabled(button: any, timeout: number = 10000): Promise<void> {
+  private async waitForButtonEnabled(
+    button: any,
+    timeout: number = 10000
+  ): Promise<void> {
     const startTime = Date.now();
-    
+
     while (Date.now() - startTime < timeout) {
       const isDisabled = await button.isDisabled();
-      
+
       if (!isDisabled) {
         return;
       }
-      
+
       await this.page.waitForTimeout(500);
     }
-    
+
     throw new Error(`Button did not become enabled within ${timeout}ms`);
   }
 }

@@ -38,7 +38,9 @@ export class Slack extends BrowserforcePlugin {
     if (state.agreeToTermsAndConditions !== config.agreeToTermsAndConditions) {
       await Promise.all([
         page.locator(TOAST_MESSAGE).waitFor({ state: 'visible' }),
-        page.locator(TOS_CHECKBOX).evaluate((checkbox: HTMLInputElement) => checkbox.click()),
+        page
+          .locator(TOS_CHECKBOX)
+          .evaluate((checkbox: HTMLInputElement) => checkbox.click()),
       ]);
       await page.locator(TOAST_MESSAGE).waitFor({ state: 'hidden' });
     }

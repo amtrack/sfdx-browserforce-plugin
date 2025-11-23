@@ -13,10 +13,17 @@ describe(PermissionSets.name, function () {
     plugin = new PermissionSets(global.bf);
   });
 
-  const configurePermissionSet = [
+  const addConfigurePermissionSet = [
     {
       permissionSetName: 'ServicePresenceTest',
       servicePresenceStatuses: ['TestStatus', 'TestStatus3'],
+    },
+  ];
+
+  const removeConfigurePermissionSet = [
+    {
+      permissionSetName: 'ServicePresenceTest',
+      servicePresenceStatuses: [],
     },
   ];
 
@@ -36,9 +43,15 @@ describe(PermissionSets.name, function () {
     );
   });
 
-  it('should configure permission set presence status', async () => {
-    await plugin.run(configurePermissionSet);
-    const res = await plugin.retrieve(configurePermissionSet);
-    assert.deepStrictEqual(res, configurePermissionSet);
+  it('should add permission set presence status', async () => {
+    await plugin.run(addConfigurePermissionSet);
+    const res = await plugin.retrieve(addConfigurePermissionSet);
+    assert.deepStrictEqual(res, addConfigurePermissionSet);
+  });
+
+  it('should remove permission set presence status', async () => {
+    await plugin.run(removeConfigurePermissionSet);
+    const res = await plugin.retrieve(removeConfigurePermissionSet);
+    assert.deepStrictEqual(res, removeConfigurePermissionSet);
   });
 });

@@ -21,7 +21,7 @@ export class DensitySettings extends BrowserforcePlugin {
     const page = await this.browserforce.openPage(BASE_PATH);
 
     // Find the radio button by its value attribute
-    const radioButton = page.getByRole('img', {name: config.density});
+    const radioButton = page.getByRole('img', { name: config.density });
 
     // Wait for the radio button to be attached to the DOM
     try {
@@ -38,31 +38,35 @@ export class DensitySettings extends BrowserforcePlugin {
         })
       );
       throw new Error(
-        `Could not find density "${config.density}". Available options: ${radioValues.filter(Boolean).join(', ')}`
+        `Could not find density "${
+          config.density
+        }". Available options: ${radioValues.filter(Boolean).join(', ')}`
       );
     }
 
     // Click the radio button with force to bypass label interception
     await radioButton.click();
-
+    await this.browserforce.waitForIdle(page);
     await page.close();
   }
 
   private async getSelectedDensity(page: Page): Promise<string> {
     // Density options are represented as radio buttons with accessible names
     const densityOptions = ['Comfy', 'Compact'];
-    
+
     for (const densityName of densityOptions) {
       // Find the radio button by its accessible name (starts with the density name)
       // Example: "Comfy Comfy For users who want a spacious view..."
-      const radioButton = page.getByRole('radio', { name: new RegExp(`^${densityName}`, 'i') });
-      
+      const radioButton = page.getByRole('radio', {
+        name: new RegExp(`^${densityName}`, 'i'),
+      });
+
       // Check if this radio button is checked
       if (await radioButton.isChecked()) {
         return densityName;
       }
     }
-    
+
     throw new Error('No density option is selected');
   }
 }

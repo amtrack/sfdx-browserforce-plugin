@@ -20,12 +20,12 @@ export class PicklistPage {
 
   public async getPicklistValues(): Promise<PicklistValue[]> {
     // wait for New button for picklist values specifically
-    await this.page.locator('input[name="new"][onclick*="picklist_masteredit"]').waitFor();
+    await this.page
+      .locator('input[name="new"][onclick*="picklist_masteredit"]')
+      .waitFor();
     const resolvePicklistValueNames = async (xpath: string) => {
       const elements = await this.page.locator(`xpath=${xpath}`).all();
-      const fullNames = await Promise.all(
-        elements.map((el) => el.innerText())
-      );
+      const fullNames = await Promise.all(elements.map((el) => el.innerText()));
       return fullNames;
     };
     const active = await resolvePicklistValueNames(
@@ -65,7 +65,7 @@ export class PicklistPage {
     this.page.on('dialog', async (dialog) => {
       await dialog.accept();
     });
-    
+
     await this.page.locator(`xpath=${xpath}`).first().click();
     await throwPageErrors(this.page);
     return new PicklistReplaceAndDeletePage(this.page);
@@ -86,7 +86,7 @@ export class PicklistPage {
     this.page.on('dialog', async (dialog) => {
       await dialog.accept();
     });
-    
+
     await this.page.locator(`xpath=${xpath}`).first().click();
     await throwPageErrors(this.page);
     return new PicklistPage(this.page);
@@ -131,7 +131,9 @@ export class StatusPicklistAddPage {
     if (newValue !== undefined && newValue !== null) {
       await this.page.locator(LABEL_INPUT).fill(newValue);
       await this.page.locator(API_NAME_INPUT).fill(newValue);
-      await this.page.locator(STATUS_CATEGORY_SELECTOR).pressSequentially(statusCategory);
+      await this.page
+        .locator(STATUS_CATEGORY_SELECTOR)
+        .pressSequentially(statusCategory);
     }
     await this.save();
   }
@@ -203,7 +205,7 @@ export class PicklistReplaceAndDeletePage extends PicklistReplacePage {
 
 async function throwPageErrors(page: Page): Promise<void> {
   const errorElement = page.locator('div#validationError div.messageText');
-  if (await errorElement.count() > 0) {
+  if ((await errorElement.count()) > 0) {
     const errorMsg = await errorElement.innerText();
     if (errorMsg && errorMsg.trim()) {
       throw new Error(errorMsg.trim());

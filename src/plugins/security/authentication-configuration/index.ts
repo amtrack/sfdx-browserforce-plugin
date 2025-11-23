@@ -16,7 +16,7 @@ const SAVE_BUTTON_SELECTOR = 'input[id$=":Save"]';
 
 export class AuthenticationConfiguration extends BrowserforcePlugin {
   public async retrieve(definition: Config): Promise<Config> {
-    const page = (await this.browserforce.openPage(EDIT_VIEW_PATH));
+    const page = await this.browserforce.openPage(EDIT_VIEW_PATH);
     const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(
       page,
       SETUP_FORM_SELECTOR
@@ -61,23 +61,20 @@ export class AuthenticationConfiguration extends BrowserforcePlugin {
     for (const svc of plan.services) {
       const checkboxId = (await frameOrPage
         .locator(SERVICE_CHECKBOX_SELECTOR)
-        .evaluateAll(
-          (inputs, serviceName) => {
-            for (const inp of inputs as HTMLInputElement[]) {
-              const labelElement = document.querySelector(
-                `label[for="${inp.id}"]`
-              );
-              if (
-                labelElement &&
-                labelElement.textContent!.trim() === serviceName
-              ) {
-                return inp.id;
-              }
+        .evaluateAll((inputs, serviceName) => {
+          for (const inp of inputs as HTMLInputElement[]) {
+            const labelElement = document.querySelector(
+              `label[for="${inp.id}"]`
+            );
+            if (
+              labelElement &&
+              labelElement.textContent!.trim() === serviceName
+            ) {
+              return inp.id;
             }
-            return null;
-          },
-          svc.label
-        )) as string | null;
+          }
+          return null;
+        }, svc.label)) as string | null;
 
       if (!checkboxId) {
         throw new Error(`Authentication service "${svc.label}" not found`);
@@ -95,7 +92,9 @@ export class AuthenticationConfiguration extends BrowserforcePlugin {
 
     const anyChecked = await frameOrPage
       .locator(SERVICE_CHECKBOX_SELECTOR)
-      .evaluateAll((inputs) => (inputs as HTMLInputElement[]).some((cb) => cb.checked));
+      .evaluateAll((inputs) =>
+        (inputs as HTMLInputElement[]).some((cb) => cb.checked)
+      );
     if (!anyChecked) {
       throw new Error(
         'Change failed: "You must select at least one authentication service."'
@@ -104,7 +103,7 @@ export class AuthenticationConfiguration extends BrowserforcePlugin {
     await frameOrPage.locator(SAVE_BUTTON_SELECTOR).first().click();
     await page.waitForLoadState();
     // Wait for Salesforce to update the data in the background
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(2000);
     await page.close();
   }
 }

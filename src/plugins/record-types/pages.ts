@@ -32,7 +32,9 @@ export class RecordTypeDeletePage {
     await this.throwOnMissingSaveButton();
     const NEW_VALUE_SELECTOR = 'select#p2';
     if (newRecordTypeId) {
-      await this.page.locator(NEW_VALUE_SELECTOR).selectOption(newRecordTypeId.slice(0, 15));
+      await this.page
+        .locator(NEW_VALUE_SELECTOR)
+        .selectOption(newRecordTypeId.slice(0, 15));
     }
     await this.save();
   }
@@ -47,7 +49,7 @@ export class RecordTypeDeletePage {
     const saveButtonCount = await this.page.locator(this.saveButton).count();
     if (saveButtonCount === 0) {
       const bodyElement = this.page.locator('div.pbBody');
-      if (await bodyElement.count() > 0) {
+      if ((await bodyElement.count()) > 0) {
         const errorMsg = await bodyElement.textContent();
         if (errorMsg?.trim()) {
           throw new Error(errorMsg.trim());
@@ -57,8 +59,10 @@ export class RecordTypeDeletePage {
   }
 
   async throwPageErrors(): Promise<void> {
-    const errorElement = this.page.locator('div#validationError div.messageText');
-    if (await errorElement.count() > 0) {
+    const errorElement = this.page.locator(
+      'div#validationError div.messageText'
+    );
+    if ((await errorElement.count()) > 0) {
       const errorMsg = await errorElement.innerText();
       if (errorMsg?.trim()) {
         throw new Error(errorMsg.trim());

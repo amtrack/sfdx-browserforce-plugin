@@ -16,7 +16,9 @@ export class OmniChannelSettings extends BrowserforcePlugin {
 
     const enableStatusBasedCapacityModel = await page
       .locator(STATUS_CAPACITY_TOGGLE_SELECTOR)
-      .evaluate((el) => (el.getAttribute('checked') === 'checked' ? true : false));
+      .evaluate((el) =>
+        el.getAttribute('checked') === 'checked' ? true : false
+      );
 
     return { enableStatusBasedCapacityModel };
   }

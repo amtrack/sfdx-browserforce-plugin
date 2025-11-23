@@ -50,7 +50,7 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
       .locator(`xpath=${LIST_VIEW_PORTAL_LINKS_XPATH_SELECTOR}`)
       .first()
       .waitFor();
-    
+
     const response: Config = await page
       .locator(`xpath=${LIST_VIEW_PORTAL_LINKS_XPATH_SELECTOR}`)
       .evaluateAll((links: HTMLAnchorElement[]) => {
@@ -88,7 +88,9 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
       const portalProfilePage = await this.browserforce.openPage(
         `${PORTAL_PROFILE_MEMBERSHIP_PATH}?portalId=${portal._id}&setupid=CustomerSuccessPortalSettings`
       );
-      await portalProfilePage.locator(PORTAL_ID_SELECTOR).waitFor({ state: 'attached' });
+      await portalProfilePage
+        .locator(PORTAL_ID_SELECTOR)
+        .waitFor({ state: 'attached' });
       const profiles = await portalProfilePage
         .locator(PORTAL_PROFILE_MEMBERSHIP_PROFILES_SELECTOR)
         .evaluateAll((ths: HTMLTableHeaderCellElement[]) => {
@@ -259,7 +261,10 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
               membershipUrlAttributes
             )}`
           );
-          await portalProfilePage.locator(SAVE_BUTTON_SELECTOR).first().waitFor();
+          await portalProfilePage
+            .locator(SAVE_BUTTON_SELECTOR)
+            .first()
+            .waitFor();
           await portalProfilePage.locator(SAVE_BUTTON_SELECTOR).first().click();
           await portalProfilePage.waitForLoadState('load');
           await portalProfilePage.close();

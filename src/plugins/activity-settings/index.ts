@@ -32,14 +32,13 @@ export class ActivitySettings extends BrowserforcePlugin {
     }
     const page = await this.browserforce.openPage(BASE_PATH);
     await page.locator(MANY_WHO_PREF_INPUT_SELECTOR).waitFor();
-    
-    await page.locator(MANY_WHO_PREF_INPUT_SELECTOR).evaluate(
-      (e: HTMLInputElement, v: boolean) => {
+
+    await page
+      .locator(MANY_WHO_PREF_INPUT_SELECTOR)
+      .evaluate((e: HTMLInputElement, v: boolean) => {
         e.checked = v;
-      },
-      config.allowUsersToRelateMultipleContactsToTasksAndEvents
-    );
-    
+      }, config.allowUsersToRelateMultipleContactsToTasksAndEvents);
+
     await Promise.all([
       page.waitForLoadState('load'),
       page.locator(SUBMIT_BUTTON_SELECTOR).click(),

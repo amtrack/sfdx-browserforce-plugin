@@ -46,7 +46,10 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
       const isLEX =
         page.url().includes('/one/one.app') ||
         page.url().includes('/lightning/');
-      const getObjectPageUrl = function (customObject: { _id: string }, isLexUi = true) {
+      const getObjectPageUrl = function (
+        customObject: { _id: string },
+        isLexUi = true
+      ) {
         const classicUiPath = `${customObject._id}/e`;
         if (isLexUi) {
           return `lightning/setup/ObjectManager/${
@@ -133,7 +136,10 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
       const isLEX =
         page.url().includes('/one/one.app') ||
         page.url().includes('/lightning/');
-      const getObjectPageUrl = function (customObject: { _id?: string; available: boolean }, isLexUi = true) {
+      const getObjectPageUrl = function (
+        customObject: { _id?: string; available: boolean },
+        isLexUi = true
+      ) {
         const classicUiPath = `${customObject._id}/e?options_9=${
           customObject.available ? 1 : 0
         }&retURL=/${customObject._id}`;
@@ -157,7 +163,7 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
             SAVE_BUTTON_SELECTOR
           );
         await frameOrPage.locator(SAVE_BUTTON_SELECTOR).first().click();
-        await editPage.waitForLoadState('load');
+        await editPage.locator('h2.pageDescription').waitFor();
         await editPage.close();
       }
       await page.close();

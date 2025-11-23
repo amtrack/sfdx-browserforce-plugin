@@ -40,7 +40,7 @@ export class LoginPage {
   async throwPageErrors(): Promise<void> {
     const errorLocator = this.page.locator(ERROR_DIV_SELECTOR);
     const errorCount = await errorLocator.count();
-    
+
     if (errorCount > 0) {
       const errorMessage = (await errorLocator.first().innerText())?.trim();
       if (errorMessage) {

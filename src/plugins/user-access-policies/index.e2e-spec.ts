@@ -17,10 +17,14 @@ describe(UserAccessPolicies.name, function () {
     plugin = new UserAccessPolicies(global.bf);
   });
 
-  const configActivate = readJsonFile('./activate.json').settings.userAccessPolicies;
-  const configDeactivate = readJsonFile('./deactivate.json').settings.userAccessPolicies;
-  const multiConfig = readJsonFile('./multiple-policies.json').settings.userAccessPolicies;
-  const changeTriggerConfig = readJsonFile('./change-trigger-type.json').settings.userAccessPolicies;
+  const configActivate =
+    readJsonFile('./activate.json').settings.userAccessPolicies;
+  const configDeactivate =
+    readJsonFile('./deactivate.json').settings.userAccessPolicies;
+  const multiConfig = readJsonFile('./multiple-policies.json').settings
+    .userAccessPolicies;
+  const changeTriggerConfig = readJsonFile('./change-trigger-type.json')
+    .settings.userAccessPolicies;
 
   it('should deploy a CustomObject for testing', () => {
     const sourceDeployCmd = child.spawnSync('sf', [

@@ -118,8 +118,8 @@ This allows to run multiple actions (from multiple plugins) using a single confi
 
 Plugins are written in [Typescript](https://www.typescriptlang.org), just like `sf` and most of the available sf plugins.
 
-[Puppeteer](https://pptr.dev) is being used as a library for browser automation.
-If you need more inspiration regarding Puppeteer, checkout [this curated list](https://github.com/transitive-bullshit/awesome-puppeteer) of awesome Puppeteer resources.
+[Playwright](https://playwright.dev) is being used as a library for browser automation.
+If you need more inspiration regarding Playwright, checkout the [official documentation](https://playwright.dev/docs/intro) and [best practices guide](docs/PLAYWRIGHT.md).
 
 The simplified browserforce plugin lifecycle can be described as follows
 
@@ -153,6 +153,44 @@ In this example, you would return `{enabled: boolean}` as part of `retrieve`, an
 
 The [Salesforce CLI Plug-In Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_plugins.meta/sfdx_cli_plugins/cli_plugins_debug.htm) describes debugging sfdx plugins using VS Code very well.
 
+### Playwright Debugging and Tracing
+
+When developing or debugging Playwright-based plugins, you have several tools at your disposal:
+
+#### Visual Debugging
+
+To see the browser while tests run:
+
+```bash
+BROWSER_DEBUG=true npm run test:e2e -- --grep "YourPlugin"
+```
+
+To slow down execution for better observation (value in milliseconds):
+
+```bash
+BROWSER_SLOWMO=1000 npm run test:e2e -- --grep "YourPlugin"
+```
+
+#### Playwright Tracing
+
+Playwright tracing captures detailed information about test execution including screenshots, DOM snapshots, network activity, and console logs. This is invaluable for debugging test failures.
+
+To generate a trace for a specific test:
+
+```bash
+PLAYWRIGHT_TRACE=true npm run test:e2e -- --grep "YourPlugin"
+```
+
+After the test completes, a trace file will be saved with a timestamp (e.g., `trace-2025-11-23T19-00-00-000Z.zip`).
+
+To view the trace:
+
+```bash
+npx playwright show-trace trace-2025-11-23T19-00-00-000Z.zip
+```
+
+This opens an interactive viewer in your browser where you can step through each action, view screenshots and DOM snapshots, inspect network requests, and review console logs.
+
 ## Testing
 
 To run **unit tests**:
@@ -175,6 +213,3 @@ sf org create scratch -f config/project-scratch-def.json -d
 npm run test:e2e
 npm run test:e2e -- -g "AdminsCanLogInAsAnyUser" # will only run tests matching `AdminsCanLogInAsAnyUser`
 ```
-
-> Note: You can run the e2e tests in non-headless mode (opening a browser) by setting the environment variable `BROWSER_DEBUG=true`.
-> Note: You can also slow down the e2e test in non-headless mode by setting the environmnet variable, where the number is milliseconds of delay `BROWSER_SLOWMO=250`.

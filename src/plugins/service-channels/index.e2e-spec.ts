@@ -36,6 +36,10 @@ describe(ServiceChannels.name, function () {
       },
     },
   ];
+  it('should disable status based capacity model', async () => {
+    const omnniChannelPlugin = new OmniChannelSettings(global.bf);
+    await omnniChannelPlugin.run({ enableStatusBasedCapacityModel: false });
+  });
 
   it('should create service channel as a prerequisite', () => {
     const sourceDeployCmd = child.spawnSync('sf', [
