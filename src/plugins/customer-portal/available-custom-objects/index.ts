@@ -163,7 +163,7 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
             SAVE_BUTTON_SELECTOR
           );
         await frameOrPage.locator(SAVE_BUTTON_SELECTOR).first().click();
-        await editPage.locator('h2.pageDescription').waitFor();
+        await editPage.getByRole('heading', { name: 'Details' }).waitFor();
         await editPage.close();
       }
       await page.close();
