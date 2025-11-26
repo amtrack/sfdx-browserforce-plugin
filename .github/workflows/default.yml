@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - next
   pull_request:
     branches:
       - main
@@ -45,7 +46,7 @@ jobs:
           sf org delete scratch --no-prompt
   release:
     needs: test
-    if: ${{ github.ref == 'refs/heads/main' }}
+    if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/next' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
