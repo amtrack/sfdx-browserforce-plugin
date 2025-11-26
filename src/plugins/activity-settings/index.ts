@@ -14,7 +14,6 @@ type Config = {
 export class ActivitySettings extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
     const page = await this.browserforce.openPage(BASE_PATH);
-    await page.locator(MANY_WHO_PREF_INPUT_SELECTOR).waitFor();
     const response = {
       allowUsersToRelateMultipleContactsToTasksAndEvents: await page
         .locator(MANY_WHO_PREF_INPUT_SELECTOR)
