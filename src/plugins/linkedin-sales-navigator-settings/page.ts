@@ -1,12 +1,16 @@
-import { Page } from 'playwright';
-import { Browserforce, throwPageErrors } from '../../browserforce.js';
+import type { Page } from 'playwright';
+import type { Browserforce } from '../../browserforce.js';
 
 const ENABLE_TOGGLE =
   'div[data-aura-class="setup_sales_linkedinLinkedInSetupRow"] input[type="checkbox"]:not(:disabled)';
+
+// unfortunately the divs intercept pointer events so we need to click on the label instead
+const ENABLE_BUTTON =
+  'div[data-aura-class="setup_sales_linkedinLinkedInSetupRow"]:has(input[type="checkbox"]:not(:disabled)) label';
 const CONFIRM_CHECKBOX =
-  'lightning-input lightning-primitive-input-checkbox input[name="LinkedIn Sales Navigator Integration Acceptance Checkbox"]:not(:disabled)';
+  'section[role="dialog"] lightning-input lightning-primitive-input-checkbox';
 const ACCEPT_BUTTON =
-  'section[data-aura-class="setup_sales_linkedinLinkedInSetupAcceptTermsModal"] div div button:not(:disabled):nth-child(2)';
+  'section[role="dialog"] div div button:not(:disabled):nth-child(2)';
 
 export class LinkedInSalesNavigatorPage {
   private page: Page;
@@ -28,22 +32,18 @@ export class LinkedInSalesNavigatorPage {
   }
 
   public async setStatus(enable: boolean): Promise<void> {
-    // NOTE: Unfortunately a simple click() on the locator does not work here
-    await this.page
-      .locator(ENABLE_TOGGLE)
-      .evaluate((checkbox: HTMLInputElement) => checkbox.click());
-
+    const afterSavePromise = Promise.race([
+      this.page.waitForResponse(/LinkedInIntegrationSetup.updatePref=1/),
+      this.browserforce.waitForPageErrors(this.page),
+    ]);
     if (enable) {
-      await this.page
-        .locator(CONFIRM_CHECKBOX)
-        .evaluate((checkbox: HTMLInputElement) => checkbox.click());
-      await this.page
-        .locator(ACCEPT_BUTTON)
-        .evaluate((button: HTMLButtonElement) => button.click());
+      await this.page.locator(ENABLE_BUTTON).click();
+      await this.page.locator(CONFIRM_CHECKBOX).click();
+      await this.page.locator(ACCEPT_BUTTON).click();
+    } else {
+      await this.page.locator(ENABLE_BUTTON).click();
     }
-
-    await throwPageErrors(this.page);
-    await this.browserforce.waitForIdle(this.page);
+    await afterSavePromise;
     await this.page.close();
   }
 }
