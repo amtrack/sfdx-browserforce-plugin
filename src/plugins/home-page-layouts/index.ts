@@ -120,7 +120,6 @@ export class HomePageLayouts extends BrowserforcePlugin {
         );
       }
       const profileSelector = `select[id='${profile.Id!.substring(0, 15)}']`;
-      await page.locator(profileSelector).waitFor();
       await page
         .locator(profileSelector)
         .selectOption(homePageLayout.Id!.substring(0, 15));

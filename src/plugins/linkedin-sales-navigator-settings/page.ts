@@ -22,7 +22,6 @@ export class LinkedInSalesNavigatorPage {
   }
 
   public async getStatus(): Promise<boolean> {
-    await this.page.locator(ENABLE_TOGGLE).waitFor();
     const isEnabled = await this.page.locator(ENABLE_TOGGLE).isChecked();
     await this.page.close();
     return isEnabled;
@@ -30,17 +29,14 @@ export class LinkedInSalesNavigatorPage {
 
   public async setStatus(enable: boolean): Promise<void> {
     // NOTE: Unfortunately a simple click() on the locator does not work here
-    await this.page.locator(ENABLE_TOGGLE).waitFor();
     await this.page
       .locator(ENABLE_TOGGLE)
       .evaluate((checkbox: HTMLInputElement) => checkbox.click());
 
     if (enable) {
-      await this.page.locator(CONFIRM_CHECKBOX).waitFor();
       await this.page
         .locator(CONFIRM_CHECKBOX)
         .evaluate((checkbox: HTMLInputElement) => checkbox.click());
-      await this.page.locator(ACCEPT_BUTTON).waitFor();
       await this.page
         .locator(ACCEPT_BUTTON)
         .evaluate((button: HTMLButtonElement) => button.click());

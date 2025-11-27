@@ -144,7 +144,6 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
           const page = await this.browserforce.openPage(
             `${CERT_PREFIX_PATH}/e?${queryString.stringify(urlAttributes)}`
           );
-          await page.locator(SAVE_BUTTON_SELECTOR).first().waitFor();
           await page.locator(SAVE_BUTTON_SELECTOR).first().click();
           await page.waitForLoadState('load');
           await page.close();
@@ -156,7 +155,6 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
         const page = await this.browserforce.openPage(
           `${KEYSTORE_IMPORT_PATH}`
         );
-        await page.locator(FILE_UPLOAD_SELECTOR).waitFor();
         // TODO: make relative to this.command.flags.definitionfile
         if (!certificate.filePath) {
           throw new Error(
@@ -169,12 +167,10 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
         }
         await page.locator(FILE_UPLOAD_SELECTOR).setInputFiles(filePath);
         if (certificate.password) {
-          await page.locator(KEYSTORE_PASSWORD_SELECTOR).waitFor();
           await page
             .locator(KEYSTORE_PASSWORD_SELECTOR)
             .fill(certificate.password);
         }
-        await page.locator(SAVE_BUTTON_SELECTOR).first().waitFor();
         await page.locator(SAVE_BUTTON_SELECTOR).first().click();
         await page.waitForLoadState('load');
         try {
@@ -199,7 +195,6 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
           const certPage = await this.browserforce.openPage(
             `${importedCert.Id}/e?MasterLabel=${certificate.name}&DeveloperName=${certificate.name}`
           );
-          await certPage.locator(SAVE_BUTTON_SELECTOR).first().waitFor();
           await certPage.locator(SAVE_BUTTON_SELECTOR).first().click();
           await certPage.waitForLoadState('load');
           await this.browserforce.throwPageErrors(certPage);

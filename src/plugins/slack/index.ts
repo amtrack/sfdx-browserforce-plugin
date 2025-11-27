@@ -16,7 +16,6 @@ export type Config = {
 export class Slack extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {
     const page = await this.browserforce.openPage(BASE_PATH);
-    await page.locator(TOS_CHECKBOX).waitFor();
     const response = {
       agreeToTermsAndConditions: await page.locator(TOS_CHECKBOX).isChecked(),
       enableSalesCloudForSlack: await page

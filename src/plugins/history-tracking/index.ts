@@ -45,8 +45,6 @@ export class HistoryTracking extends BrowserforcePlugin {
       // Retrieve the object history tracking
       // If this is a custom object, this checkbox does not exist, so skip
       if (!historyTrackingConfig.objectApiName.includes('__c')) {
-        await page.locator(ENABLE_HISTORY_SELECTOR).waitFor();
-
         historyTrackingResult.enableHistoryTracking = await page
           .locator(ENABLE_HISTORY_SELECTOR)
           .evaluate((el) =>
@@ -134,8 +132,6 @@ export class HistoryTracking extends BrowserforcePlugin {
       // Retrieve the object history tracking
       // If this is a custom object, this checkbox does not exist, so skip
       if (!historyTrackingConfig.objectApiName.includes('__c')) {
-        await page.locator(ENABLE_HISTORY_SELECTOR).waitFor();
-
         const historyTrackingEnabled = await page
           .locator(ENABLE_HISTORY_SELECTOR)
           .evaluate((el) =>

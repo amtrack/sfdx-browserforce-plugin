@@ -19,10 +19,8 @@ type Config = {
 export class EmailDeliverability extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {
     const page = await this.browserforce.openPage(BASE_PATH);
-    await page.locator(ACCESS_LEVEL_SELECTOR).waitFor();
     const selectedOption = await page
       .locator(`${ACCESS_LEVEL_SELECTOR} > option[selected]`)
-      .first()
       .textContent();
     await page.close();
     if (!selectedOption) {
@@ -39,7 +37,6 @@ export class EmailDeliverability extends BrowserforcePlugin {
       throw new Error(`Invalid email access level ${config.accessLevel}`);
     }
     const page = await this.browserforce.openPage(BASE_PATH);
-    await page.locator(ACCESS_LEVEL_SELECTOR).waitFor();
     await page.locator(ACCESS_LEVEL_SELECTOR).selectOption(accessLevelNumber);
     await page.locator(SAVE_BUTTON_SELECTOR).click();
     await page.locator(CONFIRM_MESSAGE_SELECTOR).waitFor();

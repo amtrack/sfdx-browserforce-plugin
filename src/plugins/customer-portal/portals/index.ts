@@ -64,7 +64,6 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
       });
     for (const portal of response) {
       const portalPage = await this.browserforce.openPage(`${portal._id}/e`);
-      await portalPage.locator(PORTAL_DESCRIPTION_SELECTOR).waitFor();
       portal.description = await portalPage
         .locator(PORTAL_DESCRIPTION_SELECTOR)
         .evaluate((el: HTMLInputElement) => el.value);
@@ -239,7 +238,6 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
             .locator(`#${PORTAL_SELF_REG_USER_DEFAULT_PROFILE_ID_SELECTOR}`)
             .selectOption(profileValue);
         }
-        await page.locator(SAVE_BUTTON_SELECTOR).first().waitFor();
         await page.locator(SAVE_BUTTON_SELECTOR).first().click();
         await page.waitForLoadState('load');
         if ((await page.url()).includes(portal._id)) {
@@ -261,10 +259,6 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
               membershipUrlAttributes
             )}`
           );
-          await portalProfilePage
-            .locator(SAVE_BUTTON_SELECTOR)
-            .first()
-            .waitFor();
           await portalProfilePage.locator(SAVE_BUTTON_SELECTOR).first().click();
           await portalProfilePage.waitForLoadState('load');
           await portalProfilePage.close();

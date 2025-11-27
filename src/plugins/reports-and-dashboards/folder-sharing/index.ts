@@ -52,13 +52,11 @@ export class FolderSharing extends BrowserforcePlugin {
       );
     }
     const page = await this.browserforce.openPage(BASE_PATH);
-    await page.locator(ENABLE_CHECKBOX_SELECTOR).waitFor();
     await page
       .locator(ENABLE_CHECKBOX_SELECTOR)
       .evaluate((e: HTMLInputElement, v: boolean) => {
         e.checked = v;
       }, config.enableEnhancedFolderSharing);
-    await page.locator(SAVE_BUTTON_SELECTOR).waitFor();
     await page.locator(SAVE_BUTTON_SELECTOR).click();
     await page.waitForLoadState('load');
     await page.close();

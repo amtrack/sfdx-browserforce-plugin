@@ -20,7 +20,6 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
   private logger = this.browserforce.logger;
   public async retrieve(definition?: Config): Promise<Config> {
     const page = await this.browserforce.openPage(BASE_PATH);
-    await page.locator(CONFIGURE_SELECTOR).waitFor();
     await page.locator(CONFIGURE_SELECTOR).click();
     await page.waitForLoadState('load');
 
@@ -28,7 +27,6 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
     if (definition) {
       for (const [keyTab, valueTab] of Object.entries(formConfig)) {
         if (definition[keyTab]) {
-          await page.locator(`td[id="${valueTab.id}"]`).waitFor();
           await page.locator(`td[id="${valueTab.id}"]`).click();
           for (const [keyItem, valueItem] of Object.entries(
             valueTab.properties
@@ -92,9 +90,6 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
     );
     await page
       .locator(`td[id="${formConfig.pricingAndCalculation.id}"]`)
-      .waitFor();
-    await page
-      .locator(`td[id="${formConfig.pricingAndCalculation.id}"]`)
       .click();
 
     const generateButtonCount = await page
@@ -119,7 +114,6 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
     */
     for (const [keyTab, valueTab] of Object.entries(formConfig)) {
       if (config[keyTab]) {
-        await page.locator(`td[id="${valueTab.id}"]`).waitFor();
         await page.locator(`td[id="${valueTab.id}"]`).click();
         for (const [keyItem, valueItem] of Object.entries(
           valueTab.properties
@@ -217,9 +211,6 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
       this.logger?.log(`'Authorize New Calculation Service' link`);
       await page
         .locator(`td[id="${formConfig.pricingAndCalculation.id}"]`)
-        .waitFor();
-      await page
-        .locator(`td[id="${formConfig.pricingAndCalculation.id}"]`)
         .click();
 
       const authorizeLinkCount = await page
@@ -236,7 +227,6 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
 
         if (newPage) {
           // Click on 'Allow' button
-          await newPage.locator(ALLOW_SELECTOR).waitFor();
           await newPage.locator(ALLOW_SELECTOR).click();
           await page.waitForLoadState('load'); // Wait for the main page to refresh
 
