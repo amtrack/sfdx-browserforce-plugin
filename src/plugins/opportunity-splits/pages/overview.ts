@@ -38,7 +38,9 @@ export class OverviewPage {
     await this.page.locator(DISABLE_LINK).click();
     await this.page.locator(DISABLE_CONFIRM_CHECKBOX).click();
     await this.page.locator(DISABLE_CONFIRM_BUTTON).click();
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForURL(
+      (url) => url.pathname === '/opp/opportunitySplitSetupLanding.apexp'
+    );
     return this;
   }
 }

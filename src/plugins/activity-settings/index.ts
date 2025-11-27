@@ -39,7 +39,8 @@ export class ActivitySettings extends BrowserforcePlugin {
       }, config.allowUsersToRelateMultipleContactsToTasksAndEvents);
 
     await page.locator(SUBMIT_BUTTON_SELECTOR).click();
-    await page.waitForLoadState('load');
+    // ui/setup/Setup?setupid=Activity
+    await page.waitForURL((url) => url.pathname !== `/${BASE_PATH}`);
     await page.close();
   }
 }

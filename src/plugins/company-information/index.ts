@@ -12,14 +12,12 @@ export type Config = {
 export class CompanyInformation extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
     const page = await this.browserforce.openPage(getUrl(this.org.getOrgId()));
-    await page.locator(CURRENCY_DROPDOWN_SELECTOR).waitFor();
 
     const response: Config = {
       defaultCurrencyIsoCode: '',
     };
     const selectedOption = await page
       .locator(`${CURRENCY_DROPDOWN_SELECTOR} > option[selected]`)
-      .first()
       .textContent();
     if (selectedOption) {
       response.defaultCurrencyIsoCode = selectedOption;
@@ -33,11 +31,6 @@ export class CompanyInformation extends BrowserforcePlugin {
       const page = await this.browserforce.openPage(
         getUrl(this.org.getOrgId())
       );
-      // wait for selectors
-      await page.locator(CURRENCY_DROPDOWN_SELECTOR).waitFor();
-      await page.locator(SAVE_BUTTON_SELECTOR).waitFor();
-
-      // apply changes
       const optionLocator = page.locator(
         `${CURRENCY_DROPDOWN_SELECTOR} > option`
       );
@@ -72,7 +65,7 @@ export class CompanyInformation extends BrowserforcePlugin {
 
       // save
       await page.locator(SAVE_BUTTON_SELECTOR).click();
-      await page.waitForLoadState('load');
+      await page.waitForURL((url) => !url.pathname.endsWith('/e'));
       await page.close();
     }
   }

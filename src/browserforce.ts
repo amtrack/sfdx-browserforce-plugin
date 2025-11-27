@@ -76,6 +76,10 @@ export class Browserforce {
     await throwPageErrors(page);
   }
 
+  public async waitForPageErrors(page: Page): Promise<void> {
+    await waitForPageErrors(page);
+  }
+
   public async getNewPage(): Promise<Page> {
     const page = await this.context.newPage();
     page.setDefaultNavigationTimeout(
@@ -224,6 +228,24 @@ export async function throwPageErrors(page: Page): Promise<void> {
     if (errorMsg) {
       throw new Error(errorMsg);
     }
+  }
+}
+
+export async function waitForPageErrors(page: Page): Promise<void> {
+  const anyErrorsLocator = page.locator(
+    `${ERROR_DIV_SELECTOR}, ${ERROR_DIVS_SELECTOR}`
+  );
+  await anyErrorsLocator.first().waitFor({ state: 'visible' });
+  const errorMessages = (await anyErrorsLocator.allInnerTexts())
+    .map((t) => t.trim())
+    .filter(Boolean);
+  if (errorMessages.length === 1) {
+    throw new Error(errorMessages[0]);
+  } else if (errorMessages.length > 1) {
+    throw new AggregateError(
+      errorMessages.map((e) => new Error(e)),
+      'Page has multiple errors'
+    );
   }
 }
 

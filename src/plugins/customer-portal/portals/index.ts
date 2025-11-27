@@ -239,13 +239,10 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
             .selectOption(profileValue);
         }
         await page.locator(SAVE_BUTTON_SELECTOR).first().click();
-        await page.waitForLoadState('load');
-        if ((await page.url()).includes(portal._id)) {
-          // error handling
-          await page.locator(PORTAL_DESCRIPTION_SELECTOR).waitFor();
-          await this.browserforce.throwPageErrors(page);
-          throw new Error(`saving customer portal '${portal._id}' failed`);
-        }
+        await Promise.race([
+          page.waitForURL((url) => !url.href.includes(portal._id)),
+          this.browserforce.waitForPageErrors(page),
+        ]);
         // portalProfileMemberships
         if (portal.portalProfileMemberships) {
           const membershipUrlAttributes: { [key: string]: number } = {};
@@ -260,7 +257,12 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
             )}`
           );
           await portalProfilePage.locator(SAVE_BUTTON_SELECTOR).first().click();
-          await portalProfilePage.waitForLoadState('load');
+          await Promise.race([
+            portalProfilePage.waitForURL(
+              (url) => url.pathname !== `/${PORTAL_PROFILE_MEMBERSHIP_PATH}`
+            ),
+            this.browserforce.waitForPageErrors(portalProfilePage),
+          ]);
           await portalProfilePage.close();
         }
         await page.close();

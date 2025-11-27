@@ -14,7 +14,9 @@ export class LayoutSelectionPage {
 
   public async choose(): Promise<OverviewPage> {
     await this.page.locator(SAVE_BUTTON).click();
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForURL(
+      (url) => url.pathname === '/opp/opportunitySplitSetupOverview.apexp'
+    );
     return new OverviewPage(this.page);
   }
 }

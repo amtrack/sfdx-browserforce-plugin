@@ -25,12 +25,14 @@ export class OmniChannelSettings extends BrowserforcePlugin {
 
   public async apply(config: Config): Promise<void> {
     const page = await this.browserforce.openPage(BASE_PATH);
-
     await page.locator(STATUS_CAPACITY_TOGGLE_SELECTOR).click();
-
     await page.locator(SAVE_BUTTON_SELECTOR).click();
-
-    await page.waitForLoadState('networkidle');
+    // omnichannel/settings.apexp
+    // ->
+    // omnichannel/settings.apexp?setupid=OmniChannelSettings
+    await page.waitForURL((url) =>
+      url.searchParams.has('setupid', 'OmniChannelSettings')
+    );
     await page.close();
   }
 }

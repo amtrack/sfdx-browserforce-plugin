@@ -145,7 +145,8 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
             `${CERT_PREFIX_PATH}/e?${queryString.stringify(urlAttributes)}`
           );
           await page.locator(SAVE_BUTTON_SELECTOR).first().click();
-          await page.waitForLoadState('load');
+          // -> id (15 character Salesforce ID starting with 0P1)
+          await page.waitForURL((url) => /\/0P1\w{12}/.test(url.pathname));
           await page.close();
         }
       }
@@ -172,7 +173,9 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
             .fill(certificate.password);
         }
         await page.locator(SAVE_BUTTON_SELECTOR).first().click();
-        await page.waitForLoadState('load');
+        await page.waitForURL(
+          (url) => url.pathname !== `/${KEYSTORE_IMPORT_PATH}`
+        );
         try {
           await this.browserforce.throwPageErrors(page);
         } catch (e) {
@@ -196,8 +199,12 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
             `${importedCert.Id}/e?MasterLabel=${certificate.name}&DeveloperName=${certificate.name}`
           );
           await certPage.locator(SAVE_BUTTON_SELECTOR).first().click();
-          await certPage.waitForLoadState('load');
-          await this.browserforce.throwPageErrors(certPage);
+          await Promise.race([
+            await page.waitForURL(
+              (url) => url.pathname !== `/${importedCert.Id}/e`
+            ),
+            this.browserforce.throwPageErrors(certPage),
+          ]);
           await certPage.close();
         }
         await page.close();

@@ -17,7 +17,9 @@ export class SetupPage {
   public async enable(): Promise<LayoutSelectionPage> {
     await this.page.locator(SAVE_BUTTON).click();
     await this.page.locator(MODAL_CONFIRM_BUTTON).click();
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForURL(
+      (url) => url.pathname === '/opp/opportunitySplitSetupLayout.apexp'
+    );
     return new LayoutSelectionPage(this.page);
   }
 }

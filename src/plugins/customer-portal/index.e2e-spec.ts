@@ -86,9 +86,15 @@ describe('CustomerPortal', () => {
       } catch (e) {
         err = e;
       }
-      assert.throws(() => {
-        throw err;
-      }, /This user has insufficient permissions to be a portal administrator/);
+      const errors =
+        err instanceof AggregateError ? [err, ...err.errors] : [err];
+      assert(
+        errors.find((e) =>
+          /This user has insufficient permissions to be a portal administrator/.test(
+            e
+          )
+        )
+      );
     });
     it('should set up user for portal', async () => {
       const sourceDeployCmd = child.spawnSync('sf', [

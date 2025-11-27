@@ -101,9 +101,10 @@ export class AuthenticationConfiguration extends BrowserforcePlugin {
       );
     }
     await frameOrPage.locator(SAVE_BUTTON_SELECTOR).first().click();
-    await page.waitForLoadState();
-    // Wait for Salesforce to update the data in the background
-    await page.waitForTimeout(2000);
+    //domainname/DomainName.apexp?isdtp=p1
+    await page.waitForResponse(
+      (resp) => new URL(resp.url()).pathname === '/domainname/DomainName.apexp'
+    );
     await page.close();
   }
 }

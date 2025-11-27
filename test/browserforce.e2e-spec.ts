@@ -1,6 +1,7 @@
 import { Org } from '@salesforce/core';
 import { Ux } from '@salesforce/sf-plugins-core';
 import assert from 'assert';
+import type { Page } from 'playwright';
 import { Browserforce } from '../src/browserforce.js';
 
 describe('Browserforce', function () {
@@ -33,19 +34,18 @@ describe('Browserforce', function () {
   });
   describe('waitForSelectorInFrameOrPage()', () => {
     it('should query a selector in LEX and Classic UI', async () => {
-      const page = await global.bf.openPage(
+      const page: Page = await global.bf.openPage(
         'lightning/setup/ExternalStrings/home'
       );
       const frame = await global.bf.waitForSelectorInFrameOrPage(
         page,
         'input[name="edit"]'
       );
-      const button = await frame.locator('input[name="edit"]');
-      assert.notDeepStrictEqual(button, null);
-      assert.ok(!page.url().includes('/page?'));
-      await button.click();
-      await page.waitForLoadState('load');
-      assert.ok(page.url().includes('/page?'));
+      await frame.locator('input[name="edit"]').click();
+      // lightning/setup/ExternalStrings/home
+      // ->
+      // lightning/setup/ExternalStrings/page?address=/101/e
+      await page.waitForURL((url) => url.searchParams.has('address'));
       await page.close();
     });
   });
