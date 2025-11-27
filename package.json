@@ -11,7 +11,7 @@
     "@mdapi-issues/listmetadata-standardvalueset": "3.1.0",
     "@salesforce/sf-plugins-core": "12.2.4",
     "p-retry": "7.0.0",
-    "playwright": "^1.56.1"
+    "playwright": "1.57.0"
   },
   "devDependencies": {
     "@salesforce/dev-scripts": "11.0.4",
