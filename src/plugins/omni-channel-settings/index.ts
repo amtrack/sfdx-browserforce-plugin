@@ -12,37 +12,25 @@ type Config = {
 
 export class OmniChannelSettings extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {
-    // Open the omni-channel setup page
     const page = await this.browserforce.openPage(BASE_PATH);
 
-    // Retrieve the service channel config
-    await page.waitForSelector(STATUS_CAPACITY_TOGGLE_SELECTOR);
-    const enableStatusBasedCapacityModel = await page.$eval(
-      STATUS_CAPACITY_TOGGLE_SELECTOR,
-      (el) => (el.getAttribute('checked') === 'checked' ? true : false)
-    );
+    const enableStatusBasedCapacityModel = await page
+      .locator(STATUS_CAPACITY_TOGGLE_SELECTOR)
+      .evaluate((el) =>
+        el.getAttribute('checked') === 'checked' ? true : false
+      );
 
     return { enableStatusBasedCapacityModel };
   }
 
   public async apply(config: Config): Promise<void> {
-    // Open the omni-channel setup page
     const page = await this.browserforce.openPage(BASE_PATH);
 
-    // Click the checkbox
-    const capacityModel = await page.waitForSelector(
-      STATUS_CAPACITY_TOGGLE_SELECTOR
-    );
-    await capacityModel.click();
+    await page.locator(STATUS_CAPACITY_TOGGLE_SELECTOR).click();
 
-    // Save the settings
-    const saveButton = await page.waitForSelector(SAVE_BUTTON_SELECTOR);
-    await saveButton.click();
+    await page.locator(SAVE_BUTTON_SELECTOR).click();
 
-    // Wait for the page to refresh
-    await page.waitForNavigation();
-
-    // Close the page
+    await page.waitForLoadState('networkidle');
     await page.close();
   }
 }

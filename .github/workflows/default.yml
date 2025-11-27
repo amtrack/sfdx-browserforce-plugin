@@ -29,7 +29,6 @@ jobs:
         run: |
           npm ci --ignore-scripts
           npm install --ignore-scripts --global @salesforce/cli@${SF_CLI_VERSION:-"latest"}
-          npx puppeteer browsers install chrome
       - name: Run unit tests
         run: npm run test
       - name: Authenticate DevHub and create scratch org

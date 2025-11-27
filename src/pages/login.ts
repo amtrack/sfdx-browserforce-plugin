@@ -1,5 +1,5 @@
 import { type Org } from '@salesforce/core';
-import { type Page } from 'puppeteer';
+import { type Page } from 'playwright';
 
 const FRONT_DOOR_PATH = 'secur/frontdoor.jsp';
 const POST_LOGIN_PATH = 'setup/forcecomHomepage.apexp';
@@ -25,8 +25,7 @@ export class LoginPage {
         conn.accessToken
       }&retURL=${encodeURIComponent(POST_LOGIN_PATH)}`,
       {
-        // should have waited at least 500ms for network connections, redirects should probably have happened already
-        waitUntil: ['load', 'networkidle2'],
+        waitUntil: 'load',
       }
     );
     const url = new URL(response.url());
@@ -39,14 +38,11 @@ export class LoginPage {
   }
 
   async throwPageErrors(): Promise<void> {
-    const errorHandle = await this.page.$(ERROR_DIV_SELECTOR);
-    if (errorHandle) {
-      const errorMessage = (
-        await this.page.evaluate(
-          (div: HTMLDivElement) => div.innerText,
-          errorHandle
-        )
-      )?.trim();
+    const errorLocator = this.page.locator(ERROR_DIV_SELECTOR);
+    const errorCount = await errorLocator.count();
+
+    if (errorCount > 0) {
+      const errorMessage = (await errorLocator.first().innerText())?.trim();
       if (errorMessage) {
         throw new Error(errorMessage);
       }

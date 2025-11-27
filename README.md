@@ -54,7 +54,7 @@ $ sf browserforce apply -f ./config/currency.json --target-org myOrg@example.com
 
 - 🔧 configuration using JSON Schema (similar to the [Scratch Org Definition Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_scratch_orgs_def_file.htm))
 - 🧠 idempotency of the `apply` command only applies what's necessary and allows re-execution (concept similar to [terraform](https://www.terraform.io/docs/commands/apply.html))
-- 🏎️ browser automation powered by Puppeteer and "Chrome for Testing", [learn more about Puppeteer and Browserforce](#puppeteer)
+- 🏎️ browser automation powered by Playwright, [learn more about Playwright and Browserforce](#playwright)
 
 # Supported Browserforce Settings
 
@@ -126,30 +126,68 @@ Both the `browserforce apply` and `browserforce plan` commands expect a config f
 - `BROWSERFORCE_RETRY_MAX_RETRIES`: number of retries on failures opening a page (default: `4`)
 - `BROWSERFORCE_RETRY_TIMEOUT_MS`: initial time between retries in exponential mode (default: `4000`)
 
-# Puppeteer
+# Migration to Playwright
 
-We use [Puppeteer](https://github.com/puppeteer/puppeteer) for browser automation which comes with its own "Chrome for Testing" browser.
+**Important Notice for Next Version Release:**
 
-The puppeteer [installation doc](https://github.com/puppeteer/puppeteer#installation) describes how this works:
+This project is transitioning from Puppeteer to Playwright for browser automation. The migration is planned for the next major version release.
 
-> When you install Puppeteer, it automatically downloads a recent version of
-> [Chrome for Testing](https://goo.gle/chrome-for-testing) (~170MB macOS, ~282MB Linux, ~280MB Windows) that is [guaranteed to
-> work](https://pptr.dev/faq#q-why-doesnt-puppeteer-vxxx-work-with-chromium-vyyy)
-> with Puppeteer. The browser is downloaded to the `$HOME/.cache/puppeteer` folder
-> by default (starting with Puppeteer v19.0.0).
+## What This Means for Users
 
-In most of the cases this just works! If you still want to skip the download and use another browser installation, you can do this as follows:
+### Current Version (Puppeteer-based)
+- Continues to work as expected
+- No action required from users
+- Maintained for stability
 
-```console
-export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-sf plugins install sfdx-browserforce-plugin
-export PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
-sf browserforce:apply ...
-```
+### Next Version (Playwright-based)
+The upcoming release will include:
+
+1. **Improved Reliability**: Playwright offers better auto-waiting and more robust element interaction
+2. **Better Frame Support**: Native iframe handling without workarounds
+3. **Enhanced Debugging**: Built-in trace viewer and inspector tools
+4. **Modern API**: More intuitive locator-based API
+
+### Migration Actions Required
+
+**For Plugin Developers:**
+If you've created custom plugins or extended this project:
+
+1. **Update Browser Automation Code**:
+   - Replace `page.$()` with `page.locator()`
+   - Replace `page.$$()` with `page.locator().all()`
+   - Update `ElementHandle` references to `Locator`
+   - Review frame handling code (Playwright has better native support)
+
+2. **Update Dependencies**:
+   - Remove `puppeteer` dependency
+   - Add `playwright` or `@playwright/test` dependency
+
+3. **Review Documentation**:
+   - See [`docs/PLAYWRIGHT.md`](docs/PLAYWRIGHT.md) for best practices
+
+**For End Users:**
+- No configuration changes required
+- Browser download process remains similar
+- Environment variables remain compatible
+- All existing configuration files will continue to work
+
+# Playwright
+
+We use [Playwright](https://playwright.dev/) for browser automation which comes with its own Chromium browser.
+
+The Playwright [installation guide](https://playwright.dev/docs/intro) describes how this works:
+
+> Playwright comes with bundled browser binaries for Chromium, Firefox, and WebKit. When you install Playwright, it automatically downloads the Chromium browser to ensure consistent automation across different environments. The browser is downloaded to the OS-specific cache directory.
+
+In most cases this just works! If you want to skip the download and use another browser installation, you can do this as follows:
+
+
+For more information on browser automation best practices, see the [Playwright documentation](docs/PLAYWRIGHT.md).
 
 Troubleshooting:
 
 - The installation is triggered via the `postinstall` hook of npm/yarn. If you've disabled running scripts with npm (`--ignore-scripts` or via config file), it will not download the browser.
+- If you encounter issues with browser downloads, you can manually install browsers with: `npx playwright install chromium`
 
 # Contributing
 

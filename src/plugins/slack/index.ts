@@ -16,15 +16,12 @@ export type Config = {
 export class Slack extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {
     const page = await this.browserforce.openPage(BASE_PATH);
+    await page.locator(TOS_CHECKBOX).waitFor();
     const response = {
-      agreeToTermsAndConditions: await page
-        .locator(TOS_CHECKBOX)
-        .map((checkbox) => checkbox.checked)
-        .wait(),
+      agreeToTermsAndConditions: await page.locator(TOS_CHECKBOX).isChecked(),
       enableSalesCloudForSlack: await page
         .locator(SALES_CLOUD_FOR_SLACK_CHECKBOX)
-        .map((checkbox) => checkbox.checked)
-        .wait(),
+        .isChecked(),
     };
     await page.close();
     return response;
@@ -40,23 +37,21 @@ export class Slack extends BrowserforcePlugin {
     const page = await this.browserforce.openPage(BASE_PATH);
     if (state.agreeToTermsAndConditions !== config.agreeToTermsAndConditions) {
       await Promise.all([
-        page.locator(TOAST_MESSAGE).wait(),
-        // NOTE: Unfortunately a simple click() on the locator does not work here
-        (
-          await page.locator(TOS_CHECKBOX).waitHandle()
-        ).evaluate((checkbox) => checkbox.click()),
+        page.locator(TOAST_MESSAGE).waitFor({ state: 'visible' }),
+        page
+          .locator(TOS_CHECKBOX)
+          .evaluate((checkbox: HTMLInputElement) => checkbox.click()),
       ]);
-      await page.waitForSelector(TOAST_MESSAGE, { hidden: true });
+      await page.locator(TOAST_MESSAGE).waitFor({ state: 'hidden' });
     }
     if (state.enableSalesCloudForSlack !== config.enableSalesCloudForSlack) {
       await Promise.all([
-        page.locator(TOAST_MESSAGE).wait(),
-        // NOTE: Unfortunately a simple click() on the locator does not work here
-        (
-          await page.locator(SALES_CLOUD_FOR_SLACK_CHECKBOX).waitHandle()
-        ).evaluate((checkbox) => checkbox.click()),
+        page.locator(TOAST_MESSAGE).waitFor({ state: 'visible' }),
+        page
+          .locator(SALES_CLOUD_FOR_SLACK_CHECKBOX)
+          .evaluate((checkbox: HTMLInputElement) => checkbox.click()),
       ]);
-      await page.waitForSelector(TOAST_MESSAGE, { hidden: true });
+      await page.locator(TOAST_MESSAGE).waitFor({ state: 'hidden' });
     }
     await page.close();
   }

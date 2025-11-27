@@ -21,12 +21,11 @@ export class CustomerPortalEnable extends BrowserforcePlugin {
     const page = await this.browserforce.openPage(BASE_PATH);
     await page
       .locator(ENABLE_CHECKBOX)
-      .map((checkbox) => (checkbox.checked = true))
-      .wait();
-    await Promise.all([
-      page.waitForNavigation(),
-      page.locator(SAVE_BUTTON).click(),
-    ]);
+      .evaluate((checkbox: HTMLInputElement) => {
+        checkbox.checked = true;
+      });
+    await page.locator(SAVE_BUTTON).first().click();
+    await page.waitForLoadState('load');
     await page.close();
   }
 }

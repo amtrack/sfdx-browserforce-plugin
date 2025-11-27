@@ -45,12 +45,13 @@ export class HistoryTracking extends BrowserforcePlugin {
       // Retrieve the object history tracking
       // If this is a custom object, this checkbox does not exist, so skip
       if (!historyTrackingConfig.objectApiName.includes('__c')) {
-        await page.waitForSelector(ENABLE_HISTORY_SELECTOR);
+        await page.locator(ENABLE_HISTORY_SELECTOR).waitFor();
 
-        historyTrackingResult.enableHistoryTracking = await page.$eval(
-          ENABLE_HISTORY_SELECTOR,
-          (el) => (el.getAttribute('checked') === 'checked' ? true : false)
-        );
+        historyTrackingResult.enableHistoryTracking = await page
+          .locator(ENABLE_HISTORY_SELECTOR)
+          .evaluate((el) =>
+            el.getAttribute('checked') === 'checked' ? true : false
+          );
       }
 
       // If we have no field history tracking, there is nothing more to do
@@ -96,10 +97,13 @@ export class HistoryTracking extends BrowserforcePlugin {
           fieldHistoryTracking.fieldApiName
         );
 
-        fieldHistoryTrackingResult.enableHistoryTracking = await page.$eval(
-          ENABLE_FIELD_HISTORY_SELECTOR.replace('{APINAME}', fieldApiName),
-          (el) => (el.getAttribute('checked') === 'checked' ? true : false)
-        );
+        fieldHistoryTrackingResult.enableHistoryTracking = await page
+          .locator(
+            ENABLE_FIELD_HISTORY_SELECTOR.replace('{APINAME}', fieldApiName)
+          )
+          .evaluate((el) =>
+            el.getAttribute('checked') === 'checked' ? true : false
+          );
 
         fieldHistoryTrackingConfigs.push(fieldHistoryTrackingResult);
       }
@@ -130,23 +134,19 @@ export class HistoryTracking extends BrowserforcePlugin {
       // Retrieve the object history tracking
       // If this is a custom object, this checkbox does not exist, so skip
       if (!historyTrackingConfig.objectApiName.includes('__c')) {
-        await page.waitForSelector(ENABLE_HISTORY_SELECTOR);
+        await page.locator(ENABLE_HISTORY_SELECTOR).waitFor();
 
-        const historyTrackingEnabled = await page.$eval(
-          ENABLE_HISTORY_SELECTOR,
-          (el) => (el.getAttribute('checked') === 'checked' ? true : false)
-        );
+        const historyTrackingEnabled = await page
+          .locator(ENABLE_HISTORY_SELECTOR)
+          .evaluate((el) =>
+            el.getAttribute('checked') === 'checked' ? true : false
+          );
 
         if (
           historyTrackingConfig.enableHistoryTracking !== historyTrackingEnabled
         ) {
           // Click the checkbox
-          const enableHistoryTracking = await page.waitForSelector(
-            ENABLE_HISTORY_SELECTOR
-          );
-          await enableHistoryTracking.evaluate((node) =>
-            (node as HTMLElement).click()
-          );
+          await page.locator(ENABLE_HISTORY_SELECTOR).click();
         }
       }
 
@@ -172,32 +172,28 @@ export class HistoryTracking extends BrowserforcePlugin {
             fieldApiName
           );
 
-          const fieldHistoryTrackingEnabled = await page.$eval(
-            fieldSelector,
-            (el) => (el.getAttribute('checked') === 'checked' ? true : false)
-          );
+          const fieldHistoryTrackingEnabled = await page
+            .locator(fieldSelector)
+            .evaluate((el) =>
+              el.getAttribute('checked') === 'checked' ? true : false
+            );
 
           if (
             fieldHistoryTracking.enableHistoryTracking !==
             fieldHistoryTrackingEnabled
           ) {
             // Click the checkbox
-            const enableFieldHistoryTracking = await page.waitForSelector(
-              fieldSelector
-            );
-            await enableFieldHistoryTracking.evaluate((node) =>
-              (node as HTMLElement).click()
-            );
+            await page.locator(fieldSelector).click();
           }
         }
       }
 
       // Save the settings
-      const saveButton = await page.waitForSelector(SAVE_BUTTON_SELECTOR);
-      await saveButton.evaluate((node) => (node as HTMLElement).click());
-
-      // Wait for the page to refresh
-      await page.waitForNavigation();
+      await page
+        .locator(SAVE_BUTTON_SELECTOR)
+        .filter({ visible: true })
+        .first()
+        .click();
 
       // Close the page
       await page.close();

@@ -46,7 +46,10 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
       const isLEX =
         page.url().includes('/one/one.app') ||
         page.url().includes('/lightning/');
-      const getObjectPageUrl = function (customObject, isLexUi = true) {
+      const getObjectPageUrl = function (
+        customObject: { _id: string },
+        isLexUi = true
+      ) {
         const classicUiPath = `${customObject._id}/e`;
         if (isLexUi) {
           return `lightning/setup/ObjectManager/${
@@ -85,10 +88,9 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
           );
         response.push({
           ...result,
-          available: await frameOrPage.$eval(
-            CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL_SELECTOR,
-            (el: HTMLInputElement) => el.checked
-          ),
+          available: await frameOrPage
+            .locator(CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL_SELECTOR)
+            .evaluate((el: HTMLInputElement) => el.checked),
         });
         await editPage.close();
       }
@@ -134,7 +136,10 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
       const isLEX =
         page.url().includes('/one/one.app') ||
         page.url().includes('/lightning/');
-      const getObjectPageUrl = function (customObject, isLexUi = true) {
+      const getObjectPageUrl = function (
+        customObject: { _id?: string; available: boolean },
+        isLexUi = true
+      ) {
         const classicUiPath = `${customObject._id}/e?options_9=${
           customObject.available ? 1 : 0
         }&retURL=/${customObject._id}`;
@@ -157,10 +162,8 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
             editPage,
             SAVE_BUTTON_SELECTOR
           );
-        await Promise.all([
-          editPage.waitForNavigation(),
-          frameOrPage.click(SAVE_BUTTON_SELECTOR),
-        ]);
+        await frameOrPage.locator(SAVE_BUTTON_SELECTOR).first().click();
+        await editPage.getByRole('heading', { name: 'Details' }).waitFor();
         await editPage.close();
       }
       await page.close();

@@ -2,6 +2,7 @@ import assert from 'assert';
 import { SalesforceToSalesforce } from './index.js';
 
 describe(SalesforceToSalesforce.name, function () {
+  this.timeout('2m');
   let plugin: SalesforceToSalesforce;
   before(() => {
     plugin = new SalesforceToSalesforce(global.bf);

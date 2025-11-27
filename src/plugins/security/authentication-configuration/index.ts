@@ -21,31 +21,31 @@ export class AuthenticationConfiguration extends BrowserforcePlugin {
       page,
       SETUP_FORM_SELECTOR
     );
-    await frameOrPage.waitForSelector(SERVICE_CHECKBOX_SELECTOR);
 
-    const services = await frameOrPage.$$eval(
-      SERVICE_CHECKBOX_SELECTOR,
-      (inputs, definedServices) =>
-        (inputs as HTMLInputElement[])
-          .map((cb) => {
-            const labelElement = document.querySelector(
-              `label[for="${cb.id}"]`
-            );
-            const label = labelElement
-              ? labelElement.textContent!.trim()
-              : cb.id;
-            return {
-              label,
-              enabled: cb.checked,
-            };
-          })
-          .filter((service) =>
-            definedServices.some(
-              (definedService) => definedService.label === service.label
-            )
-          ),
-      definition.services
-    );
+    const services = await frameOrPage
+      .locator(SERVICE_CHECKBOX_SELECTOR)
+      .evaluateAll(
+        (inputs, definedServices) =>
+          (inputs as HTMLInputElement[])
+            .map((cb) => {
+              const labelElement = document.querySelector(
+                `label[for="${cb.id}"]`
+              );
+              const label = labelElement
+                ? labelElement.textContent!.trim()
+                : cb.id;
+              return {
+                label,
+                enabled: cb.checked,
+              };
+            })
+            .filter((service) =>
+              definedServices.some(
+                (definedService) => definedService.label === service.label
+              )
+            ),
+        definition.services
+      );
 
     await page.close();
     return { services };
@@ -57,12 +57,11 @@ export class AuthenticationConfiguration extends BrowserforcePlugin {
       page,
       SETUP_FORM_SELECTOR
     );
-    await frameOrPage.waitForSelector(SERVICE_CHECKBOX_SELECTOR);
 
     for (const svc of plan.services) {
-      const checkboxId = (await frameOrPage.$$eval(
-        SERVICE_CHECKBOX_SELECTOR,
-        (inputs, serviceName) => {
+      const checkboxId = (await frameOrPage
+        .locator(SERVICE_CHECKBOX_SELECTOR)
+        .evaluateAll((inputs, serviceName) => {
           for (const inp of inputs as HTMLInputElement[]) {
             const labelElement = document.querySelector(
               `label[for="${inp.id}"]`
@@ -75,39 +74,36 @@ export class AuthenticationConfiguration extends BrowserforcePlugin {
             }
           }
           return null;
-        },
-        svc.label
-      )) as string | null;
+        }, svc.label)) as string | null;
 
       if (!checkboxId) {
         throw new Error(`Authentication service "${svc.label}" not found`);
       }
 
       const selector = `[id="${checkboxId}"]`;
-      const isChecked = await frameOrPage.$eval(
-        selector,
-        (el) => (el as HTMLInputElement).checked
-      );
+      const isChecked = await frameOrPage
+        .locator(selector)
+        .evaluate((el) => (el as HTMLInputElement).checked);
 
       if (svc.enabled !== isChecked) {
-        await frameOrPage.click(selector);
+        await frameOrPage.locator(selector).click();
       }
     }
 
-    const anyChecked = await frameOrPage.$$eval(
-      SERVICE_CHECKBOX_SELECTOR,
-      (inputs) => (inputs as HTMLInputElement[]).some((cb) => cb.checked)
-    );
+    const anyChecked = await frameOrPage
+      .locator(SERVICE_CHECKBOX_SELECTOR)
+      .evaluateAll((inputs) =>
+        (inputs as HTMLInputElement[]).some((cb) => cb.checked)
+      );
     if (!anyChecked) {
       throw new Error(
-        'Change failed: “You must select at least one authentication service.”'
+        'Change failed: "You must select at least one authentication service."'
       );
     }
-    await frameOrPage.waitForSelector(SAVE_BUTTON_SELECTOR);
-    await Promise.all([
-      frameOrPage.waitForNavigation({ waitUntil: 'networkidle0' }),
-      frameOrPage.click(SAVE_BUTTON_SELECTOR),
-    ]);
+    await frameOrPage.locator(SAVE_BUTTON_SELECTOR).first().click();
+    await page.waitForLoadState();
+    // Wait for Salesforce to update the data in the background
+    await page.waitForTimeout(2000);
     await page.close();
   }
 }

@@ -12,17 +12,17 @@ export type Config = {
 export class CompanyInformation extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
     const page = await this.browserforce.openPage(getUrl(this.org.getOrgId()));
-    await page.waitForSelector(CURRENCY_DROPDOWN_SELECTOR);
+    await page.locator(CURRENCY_DROPDOWN_SELECTOR).waitFor();
 
     const response: Config = {
       defaultCurrencyIsoCode: '',
     };
-    const selectedOptions = await page.$$eval(
-      `${CURRENCY_DROPDOWN_SELECTOR} > option[selected]`,
-      (options) => options.map((option) => option.textContent)
-    );
-    if (selectedOptions?.length) {
-      response.defaultCurrencyIsoCode = selectedOptions[0] ?? '';
+    const selectedOption = await page
+      .locator(`${CURRENCY_DROPDOWN_SELECTOR} > option[selected]`)
+      .first()
+      .textContent();
+    if (selectedOption) {
+      response.defaultCurrencyIsoCode = selectedOption;
     }
     await page.close();
     return response;
@@ -34,29 +34,36 @@ export class CompanyInformation extends BrowserforcePlugin {
         getUrl(this.org.getOrgId())
       );
       // wait for selectors
-      await page.waitForSelector(CURRENCY_DROPDOWN_SELECTOR);
-      const selectElem = await page.$(CURRENCY_DROPDOWN_SELECTOR);
-      await page.waitForSelector(SAVE_BUTTON_SELECTOR);
+      await page.locator(CURRENCY_DROPDOWN_SELECTOR).waitFor();
+      await page.locator(SAVE_BUTTON_SELECTOR).waitFor();
 
       // apply changes
-      // await page.click(CURRENCY_DROPDOWN_SELECTOR);
-      const optionList = await page.$$eval(
-        `${CURRENCY_DROPDOWN_SELECTOR} > option`,
-        (options) =>
-          options.map((option) => ({
-            value: (option as HTMLOptionElement).value,
-            textContent: option.textContent,
-          }))
+      const optionLocator = page.locator(
+        `${CURRENCY_DROPDOWN_SELECTOR} > option`
       );
+      const optionCount = await optionLocator.count();
+      const optionList: Array<{ value: string; textContent: string }> = [];
+
+      for (let i = 0; i < optionCount; i++) {
+        const option = optionLocator.nth(i);
+        const value = await option.getAttribute('value');
+        const textContent = await option.textContent();
+        if (value && textContent) {
+          optionList.push({ value, textContent });
+        }
+      }
+
       const toBeSelectedOption = optionList.find(
-        (option) => option.textContent == config.defaultCurrencyIsoCode
+        (option) => option.textContent === config.defaultCurrencyIsoCode
       );
       if (!toBeSelectedOption) {
         throw new Error(
           `Invalid currency provided. '${config.defaultCurrencyIsoCode}' is not a valid option available for currencies. Please use the exact name as it appears in the list.`
         );
       }
-      await selectElem!.select(toBeSelectedOption.value);
+      await page
+        .locator(CURRENCY_DROPDOWN_SELECTOR)
+        .selectOption(toBeSelectedOption.value);
 
       // auto accept the dialog when it appears
       page.on('dialog', (dialog) => {
@@ -65,8 +72,8 @@ export class CompanyInformation extends BrowserforcePlugin {
 
       // save
       await Promise.all([
-        page.waitForNavigation(),
-        page.click(SAVE_BUTTON_SELECTOR),
+        page.waitForLoadState('load'),
+        page.locator(SAVE_BUTTON_SELECTOR).click(),
       ]);
       await page.close();
     }

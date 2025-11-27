@@ -1,78 +1,72 @@
-import { ElementHandle, Page } from 'puppeteer';
+import { Page } from 'playwright';
 import { BrowserforcePlugin } from '../../plugin.js';
 
 const BASE_PATH = 'lightning/setup/DensitySetup/home';
-
-const PICKER_ITEMS_SELECTOR =
-  'one-density-visual-picker one-density-visual-picker-item input';
 
 type Config = {
   density: string;
 };
 
-type Density = {
-  value: string;
-  checked: boolean;
-  elementHandle: ElementHandle;
-};
-
 export class DensitySettings extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
     const page = await this.browserforce.openPage(BASE_PATH);
-    const densities = await this.getDensities(page);
-    const selected = densities.find((input) => input.checked);
+    const density = await this.getSelectedDensity(page);
     await page.close();
     return {
-      density: selected!.value,
+      density,
     };
   }
 
   public async apply(config: Config): Promise<void> {
     const page = await this.browserforce.openPage(BASE_PATH);
-    await this.setDensity(page, config.density);
+
+    // Find the radio button by its value attribute
+    const radioButton = page.getByRole('img', { name: config.density });
+
+    // Wait for the radio button to be attached to the DOM
+    try {
+      await radioButton.waitFor({ state: 'attached', timeout: 10000 });
+    } catch (error) {
+      const allRadios = await page.getByRole('radio').all();
+      const radioValues = await Promise.all(
+        allRadios.map(async (radio) => {
+          try {
+            return await radio.getAttribute('value');
+          } catch {
+            return 'unknown';
+          }
+        })
+      );
+      throw new Error(
+        `Could not find density "${
+          config.density
+        }". Available options: ${radioValues.filter(Boolean).join(', ')}`
+      );
+    }
+
+    // Click the radio button with force to bypass label interception
+    await radioButton.click();
+    await this.browserforce.waitForIdle(page);
     await page.close();
   }
 
-  async getDensities(page: Page): Promise<Density[]> {
-    await page.waitForSelector(PICKER_ITEMS_SELECTOR);
-    const elementHandles = await page.$$(PICKER_ITEMS_SELECTOR);
-    const result = await page.$$eval(
-      PICKER_ITEMS_SELECTOR,
-      (radioInputs: HTMLInputElement[]) =>
-        radioInputs.map((input) => {
-          return {
-            value: input.value,
-            checked: input.checked,
-          };
-        })
-    );
-    return result.map((input, i) => {
-      return { ...input, elementHandle: elementHandles[i] };
-    });
-  }
+  private async getSelectedDensity(page: Page): Promise<string> {
+    // Density options are represented as radio buttons with accessible names
+    const densityOptions = ['Comfy', 'Compact'];
 
-  async setDensity(page: Page, name: string): Promise<void> {
-    const densities = await this.getDensities(page);
-    const densityToSelect = densities.find((input) => input.value === name);
-    if (!densityToSelect) {
-      throw new Error(
-        `Could not find density "${name}" in list of densities: ${densities.map(
-          (d) => d.value
-        )}`
-      );
+    for (const densityName of densityOptions) {
+      // Find the radio button by its accessible name (starts with the density name)
+      // Example: "Comfy Comfy For users who want a spacious view..."
+      const radioButton = page.getByRole('radio', {
+        name: new RegExp(`^${densityName}`, 'i'),
+      });
+
+      // Check if this radio button is checked
+      if (await radioButton.isChecked()) {
+        return densityName;
+      }
     }
-    await Promise.all([
-      page.waitForResponse(
-        (response) =>
-          response
-            .url()
-            .includes(
-              'UserSettings.DensityUserSettings.setDefaultDensitySetting=1'
-            ) && response.status() === 200
-      ),
-      densityToSelect.elementHandle.evaluate((input: HTMLInputElement) =>
-        input.click()
-      ),
-    ]);
+
+    throw new Error('No density option is selected');
   }
 }

@@ -155,18 +155,6 @@ export const formConfig: FormConfig = {
         type: 'number',
         name: 'page:form:pb:j_id126:j_id162',
       },
-      enableExpandCollapseBundles: {
-        label: 'Enable Expand/Collapse Bundles',
-        component: 'input',
-        type: 'boolean',
-        name: 'page:form:pb:j_id126:j_id164',
-      },
-      defaultBundleSetting: {
-        label: 'Default Bundle Setting',
-        component: 'select',
-        type: 'string',
-        name: 'page:form:pb:j_id126:j_id166:j_id168',
-      },
       actionsColumnPlacement: {
         label: 'Actions Column Placement',
         component: 'select',
@@ -226,6 +214,18 @@ export const formConfig: FormConfig = {
         component: 'input',
         type: 'boolean',
         name: 'page:form:pb:j_id126:j_id171',
+      },
+      enableExpandCollapseBundles: {
+        label: 'Enable Expand/Collapse Bundles',
+        component: 'input',
+        type: 'boolean',
+        name: 'page:form:pb:j_id126:j_id164',
+      },
+      defaultBundleSetting: {
+        label: 'Default Bundle Setting',
+        component: 'select',
+        type: 'string',
+        name: 'page:form:pb:j_id126:j_id166:j_id168',
       },
     },
   },
