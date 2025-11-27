@@ -81,9 +81,7 @@ export class AuthenticationConfiguration extends BrowserforcePlugin {
       }
 
       const selector = `[id="${checkboxId}"]`;
-      const isChecked = await frameOrPage
-        .locator(selector)
-        .evaluate((el) => (el as HTMLInputElement).checked);
+      const isChecked = await frameOrPage.locator(selector).isChecked();
 
       if (svc.enabled !== isChecked) {
         await frameOrPage.locator(selector).click();

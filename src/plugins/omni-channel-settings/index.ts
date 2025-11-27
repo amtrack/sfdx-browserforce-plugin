@@ -13,13 +13,9 @@ type Config = {
 export class OmniChannelSettings extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {
     const page = await this.browserforce.openPage(BASE_PATH);
-
     const enableStatusBasedCapacityModel = await page
       .locator(STATUS_CAPACITY_TOGGLE_SELECTOR)
-      .evaluate((el) =>
-        el.getAttribute('checked') === 'checked' ? true : false
-      );
-
+      .isChecked();
     return { enableStatusBasedCapacityModel };
   }
 
