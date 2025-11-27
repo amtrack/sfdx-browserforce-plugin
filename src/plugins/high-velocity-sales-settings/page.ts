@@ -24,10 +24,8 @@ export class HighVelocitySalesSetupPage {
       await this.page.locator(AUTOMATION_TAB_ITEM).click();
     }
     await this.page.locator(SET_UP_AND_ENABLE_HVS_BUTTON).waitFor();
-    await Promise.all([
-      this.page.locator(ENABLE_TOGGLE).waitFor({ timeout: 90_000 }),
-      this.page.locator(SET_UP_AND_ENABLE_HVS_BUTTON).click(),
-    ]);
+    await this.page.locator(SET_UP_AND_ENABLE_HVS_BUTTON).click();
+    await this.page.locator(ENABLE_TOGGLE).waitFor({ timeout: 90_000 });
     await throwPageErrors(this.page);
     await this.page.close();
   }

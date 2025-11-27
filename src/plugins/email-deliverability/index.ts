@@ -41,10 +41,8 @@ export class EmailDeliverability extends BrowserforcePlugin {
     const page = await this.browserforce.openPage(BASE_PATH);
     await page.locator(ACCESS_LEVEL_SELECTOR).waitFor();
     await page.locator(ACCESS_LEVEL_SELECTOR).selectOption(accessLevelNumber);
-    await Promise.all([
-      page.locator(CONFIRM_MESSAGE_SELECTOR).waitFor(),
-      page.locator(SAVE_BUTTON_SELECTOR).click(),
-    ]);
+    await page.locator(SAVE_BUTTON_SELECTOR).click();
+    await page.locator(CONFIRM_MESSAGE_SELECTOR).waitFor();
     await page.close();
   }
 }

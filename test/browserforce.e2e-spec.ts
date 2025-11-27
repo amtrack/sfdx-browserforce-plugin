@@ -43,7 +43,8 @@ describe('Browserforce', function () {
       const button = await frame.locator('input[name="edit"]');
       assert.notDeepStrictEqual(button, null);
       assert.ok(!page.url().includes('/page?'));
-      await Promise.all([page.waitForNavigation(), button.click()]);
+      await button.click();
+      await page.waitForLoadState('load');
       assert.ok(page.url().includes('/page?'));
       await page.close();
     });

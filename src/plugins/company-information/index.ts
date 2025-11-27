@@ -71,10 +71,8 @@ export class CompanyInformation extends BrowserforcePlugin {
       });
 
       // save
-      await Promise.all([
-        page.waitForLoadState('load'),
-        page.locator(SAVE_BUTTON_SELECTOR).click(),
-      ]);
+      await page.locator(SAVE_BUTTON_SELECTOR).click();
+      await page.waitForLoadState('load');
       await page.close();
     }
   }
