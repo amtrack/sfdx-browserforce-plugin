@@ -190,7 +190,7 @@ export class Browserforce {
     try {
       await page.waitForLoadState('networkidle', { timeout: maxWaitTime });
     } catch {
-      console.log(
+      console.warn(
         `Waited ${maxWaitTime}ms, continuing regardless of network state`
       );
     }
