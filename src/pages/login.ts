@@ -23,10 +23,7 @@ export class LoginPage {
     const response = await this.page.goto(
       `${conn.instanceUrl.replace(/\/$/, '')}/${FRONT_DOOR_PATH}?sid=${
         conn.accessToken
-      }&retURL=${encodeURIComponent(POST_LOGIN_PATH)}`,
-      {
-        waitUntil: 'load',
-      }
+      }&retURL=${encodeURIComponent(POST_LOGIN_PATH)}`
     );
     const url = new URL(response.url());
     if (url.searchParams.has('startURL')) {

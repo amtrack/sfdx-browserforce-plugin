@@ -85,12 +85,7 @@ export class Browserforce {
   }
 
   // path instead of url
-  public async openPage(
-    urlPath: string,
-    options?: {
-      waitUntil?: 'load' | 'domcontentloaded' | 'networkidle' | 'commit';
-    }
-  ): Promise<Page> {
+  public async openPage(urlPath: string): Promise<Page> {
     let page: Page;
     const result = await pRetry(
       async () => {
@@ -99,7 +94,7 @@ export class Browserforce {
           ? await this.getLightningSetupUrl()
           : this.getInstanceUrl();
         const url = `${setupUrl}/${urlPath}`;
-        const response = await page.goto(url, options ?? { waitUntil: 'load' });
+        const response = await page.goto(url);
         if (response) {
           if (!response.ok()) {
             await this.throwPageErrors(page);
@@ -181,8 +176,7 @@ export class Browserforce {
       const page = await this.getNewPage();
       try {
         const lightningResponse = await page.goto(
-          `${this.getInstanceUrl()}/lightning/setup/SetupOneHome/home`,
-          { waitUntil: 'load' }
+          `${this.getInstanceUrl()}/lightning/setup/SetupOneHome/home`
         );
         this.lightningSetupUrl = new URL(lightningResponse.url()).origin;
       } finally {
