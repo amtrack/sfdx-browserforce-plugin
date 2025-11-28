@@ -113,4 +113,9 @@ describe(HistoryTracking.name, function () {
     const res = await plugin.retrieve(disableHistoryTracking);
     assert.deepStrictEqual(res, disableHistoryTracking);
   });
+  it('should remove the CustomObject and field', async () => {
+    const conn = global.bf.org.getConnection();
+    await conn.metadata.delete('CustomObject', ['Test__c']);
+    await conn.metadata.delete('CustomField', ['Contact.Test__c']);
+  });
 });

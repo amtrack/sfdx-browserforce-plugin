@@ -17,6 +17,12 @@ describe(Picklists.name, function () {
   before(() => {
     plugin = new Picklists(global.bf);
   });
+  after(() => {
+    it('should remove the CustomObject', async () => {
+      const conn = global.bf.org.getConnection();
+      await conn.metadata.delete('CustomObject', ['Vehicle__c']);
+    });
+  });
 
   const configNew = readJsonFile('./new.json').settings.picklists;
   const configReplace = readJsonFile('./replace.json').settings.picklists;
@@ -73,40 +79,39 @@ describe(Picklists.name, function () {
   it('should replace and deactivate a picklist value', async () => {
     await plugin.run(configReplaceAndDeactivate);
   });
-});
+  describe(FieldDependencies.name, function () {
+    this.timeout('10m');
+    let plugin: FieldDependencies;
+    before(() => {
+      plugin = new FieldDependencies(global.bf);
+    });
 
-describe(FieldDependencies.name, function () {
-  this.timeout('10m');
-  let plugin: FieldDependencies;
-  before(() => {
-    plugin = new FieldDependencies(global.bf);
-  });
+    const configSet = readJsonFile('./field-dependencies/set.json').settings
+      .picklists.fieldDependencies;
+    const configUnset = readJsonFile('./field-dependencies/unset.json').settings
+      .picklists.fieldDependencies;
+    const configChange = readJsonFile('./field-dependencies/change.json')
+      .settings.picklists.fieldDependencies;
 
-  const configSet = readJsonFile('./field-dependencies/set.json').settings
-    .picklists.fieldDependencies;
-  const configUnset = readJsonFile('./field-dependencies/unset.json').settings
-    .picklists.fieldDependencies;
-  const configChange = readJsonFile('./field-dependencies/change.json').settings
-    .picklists.fieldDependencies;
-
-  it('should not do anything when the dependency is already set', async () => {
-    const res = await plugin.run(configSet);
-    assert.deepStrictEqual(res, { message: 'no action necessary' });
-  });
-  it('should unset a field dependency', async () => {
-    await plugin.run(configUnset);
-  });
-  it('should not do anything when the dependency is already unset', async () => {
-    const res = await plugin.run(configUnset);
-    assert.deepStrictEqual(res, { message: 'no action necessary' });
-  });
-  it('should set a field dependency', async () => {
-    await plugin.run(configSet);
-  });
-  it('should change a field dependency', async () => {
-    await plugin.run(configChange);
-  });
-  it('should change back a field dependency', async () => {
-    await plugin.run(configSet);
+    it('should not do anything when the dependency is already set', async () => {
+      const res = await plugin.run(configSet);
+      assert.deepStrictEqual(res, { message: 'no action necessary' });
+    });
+    it('should unset a field dependency', async () => {
+      await plugin.run(configUnset);
+    });
+    it('should not do anything when the dependency is already unset', async () => {
+      const res = await plugin.run(configUnset);
+      assert.deepStrictEqual(res, { message: 'no action necessary' });
+    });
+    it('should set a field dependency', async () => {
+      await plugin.run(configSet);
+    });
+    it('should change a field dependency', async () => {
+      await plugin.run(configChange);
+    });
+    it('should change back a field dependency', async () => {
+      await plugin.run(configSet);
+    });
   });
 });

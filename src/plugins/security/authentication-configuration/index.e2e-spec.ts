@@ -98,21 +98,9 @@ describe(AuthenticationConfiguration.name, function () {
       assert.deepStrictEqual(res, resetTestState);
     });
 
-    it('should remove the testing AuthProvider', () => {
-      const sourceDeployCmd = child.spawnSync('sf', [
-        'project',
-        'delete',
-        'source',
-        '--metadata',
-        'AuthProvider:TestAuthMethod',
-        '--no-prompt',
-        '--json',
-      ]);
-      assert.deepStrictEqual(
-        sourceDeployCmd.status,
-        0,
-        sourceDeployCmd.output.toString()
-      );
+    it('should remove the testing AuthProvider', async () => {
+      const conn = global.bf.org.getConnection();
+      await conn.metadata.delete('AuthProvider', ['TestAuthMethod']);
     });
   });
 });
