@@ -76,4 +76,8 @@ describe(RecordTypes.name, function () {
     const res = await plugin.run(configDeleteAndReplace);
     assert.deepStrictEqual(res, { message: 'no action necessary' });
   });
+  it('should remove the CustomObject', async () => {
+    const conn = global.bf.org.getConnection();
+    await conn.metadata.delete('CustomObject', ['Vehicle__c']);
+  });
 });
