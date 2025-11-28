@@ -1,3 +1,4 @@
+import { waitForPageErrors } from '../../../browserforce.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
 
 const ADD_BUTTON_SELECTOR = 'a[id$=":duelingListBox:backingList_add"]';
@@ -189,7 +190,6 @@ export class Capacity extends BrowserforcePlugin {
             .getByRole('option', { name: optionTitle, exact: true })
             .click();
           await page.locator(ADD_BUTTON_SELECTOR).click();
-          await page.waitForLoadState('domcontentloaded');
         }
       }
 
@@ -199,7 +199,6 @@ export class Capacity extends BrowserforcePlugin {
             .getByRole('option', { name: optionTitle, exact: true })
             .click();
           await page.locator(REMOVE_BUTTON_SELECTOR).click();
-          await page.waitForLoadState('domcontentloaded');
         }
       }
     }
@@ -222,7 +221,10 @@ export class Capacity extends BrowserforcePlugin {
 
     // Save the settings and wait for page refresh
     await page.locator(SAVE_BUTTON_SELECTOR).first().click();
-    await page.waitForLoadState('load');
+    await Promise.race([
+      page.waitForURL((url) => !url.pathname.endsWith('/e')),
+      waitForPageErrors(page),
+    ]);
     // Close the page
     await page.close();
   }

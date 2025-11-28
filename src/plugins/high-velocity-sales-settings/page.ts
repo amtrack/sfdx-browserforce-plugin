@@ -1,5 +1,5 @@
 import { Page } from 'playwright';
-import { throwPageErrors } from '../../browserforce.js';
+import { waitForPageErrors } from '../../browserforce.js';
 
 const SET_UP_AND_ENABLE_HVS_BUTTON = 'button.setupAndEnableButton';
 const ENABLE_TOGGLE = '#toggleHighVelocitySalesPref';
@@ -24,8 +24,10 @@ export class HighVelocitySalesSetupPage {
       await this.page.locator(AUTOMATION_TAB_ITEM).click();
     }
     await this.page.locator(SET_UP_AND_ENABLE_HVS_BUTTON).click();
-    await this.page.locator(ENABLE_TOGGLE).waitFor({ timeout: 90_000 });
-    await throwPageErrors(this.page);
+    await Promise.race([
+      this.page.locator(ENABLE_TOGGLE).waitFor({ timeout: 90_000 }),
+      waitForPageErrors(this.page),
+    ]);
     await this.page.close();
   }
 }

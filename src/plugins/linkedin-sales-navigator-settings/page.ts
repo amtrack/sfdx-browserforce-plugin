@@ -1,5 +1,5 @@
 import type { Page } from 'playwright';
-import type { Browserforce } from '../../browserforce.js';
+import { waitForPageErrors } from '../../browserforce.js';
 
 const ENABLE_TOGGLE =
   'div[data-aura-class="setup_sales_linkedinLinkedInSetupRow"] input[type="checkbox"]:not(:disabled)';
@@ -14,11 +14,9 @@ const ACCEPT_BUTTON =
 
 export class LinkedInSalesNavigatorPage {
   private page: Page;
-  private browserforce: Browserforce;
 
-  constructor(page: Page, browserforce: Browserforce) {
+  constructor(page: Page) {
     this.page = page;
-    this.browserforce = browserforce;
   }
 
   public static getUrl(): string {
@@ -34,7 +32,7 @@ export class LinkedInSalesNavigatorPage {
   public async setStatus(enable: boolean): Promise<void> {
     const afterSavePromise = Promise.race([
       this.page.waitForResponse(/LinkedInIntegrationSetup.updatePref=1/),
-      this.browserforce.waitForPageErrors(this.page),
+      waitForPageErrors(this.page),
     ]);
     if (enable) {
       await this.page.locator(ENABLE_BUTTON).click();

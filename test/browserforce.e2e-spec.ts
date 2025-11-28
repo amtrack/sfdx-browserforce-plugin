@@ -49,7 +49,7 @@ describe('Browserforce', function () {
       await page.close();
     });
   });
-  describe('throwPageErrors()', () => {
+  describe('openPage()', () => {
     it('should throw the page error on internal errors', async () => {
       process.env.BROWSERFORCE_RETRY_TIMEOUT_MS = '0';
       await assert.rejects(async () => {

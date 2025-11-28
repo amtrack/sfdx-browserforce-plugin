@@ -1,5 +1,5 @@
 import { Page } from 'playwright';
-import { retry, throwPageErrors } from '../../browserforce.js';
+import { retry } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
 
 const BASE_PATH = 'accounts/accountSetup.apexp';
@@ -45,7 +45,6 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
       await page.getByRole('button', { name: 'Disable' }).click();
     }
 
-    await throwPageErrors(page);
     await page.close();
   }
 

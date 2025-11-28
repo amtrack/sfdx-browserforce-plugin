@@ -1,10 +1,9 @@
 import { type Org } from '@salesforce/core';
 import { type Page } from 'playwright';
+import { waitForPageErrors } from '../browserforce.js';
 
 const FRONT_DOOR_PATH = 'secur/frontdoor.jsp';
 const POST_LOGIN_PATH = 'setup/forcecomHomepage.apexp';
-
-const ERROR_DIV_SELECTOR = '#error';
 
 export class LoginPage {
   private page: Page;
@@ -20,29 +19,15 @@ export class LoginPage {
       throw new Error('login failed');
     }
     const conn = org.getConnection();
-    const response = await this.page.goto(
+    await this.page.goto(
       `${conn.instanceUrl.replace(/\/$/, '')}/${FRONT_DOOR_PATH}?sid=${
         conn.accessToken
       }&retURL=${encodeURIComponent(POST_LOGIN_PATH)}`
     );
-    const url = new URL(response.url());
-    if (url.searchParams.has('startURL')) {
-      // when query param startURL exists, the login failed
-      // e.g. /?ec=302&startURL=https...
-      await this.throwPageErrors();
-    }
+    await Promise.race([
+      this.page.waitForURL((url) => url.pathname === `/${POST_LOGIN_PATH}`),
+      waitForPageErrors(this.page),
+    ]);
     return this;
-  }
-
-  async throwPageErrors(): Promise<void> {
-    const errorLocator = this.page.locator(ERROR_DIV_SELECTOR);
-    const errorCount = await errorLocator.count();
-
-    if (errorCount > 0) {
-      const errorMessage = (await errorLocator.first().innerText())?.trim();
-      if (errorMessage) {
-        throw new Error(errorMessage);
-      }
-    }
   }
 }

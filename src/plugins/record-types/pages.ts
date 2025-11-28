@@ -1,4 +1,5 @@
 import { Page } from 'playwright';
+import { waitForPageErrors } from '../../browserforce.js';
 
 export class RecordTypePage {
   private page: Page;
@@ -15,13 +16,18 @@ export class RecordTypePage {
       15
     )}")]`;
     await this.page.locator(`xpath=${xpath}`).first().click();
-    await this.page.waitForLoadState('networkidle');
+    await Promise.race([
+      this.page.waitForURL(
+        (url) => url.pathname === '/setup/ui/recordtypedelete.jsp'
+      ),
+      waitForPageErrors(this.page),
+    ]);
     return new RecordTypeDeletePage(this.page);
   }
 }
 
 export class RecordTypeDeletePage {
-  protected page;
+  protected page: Page;
   protected saveButton = 'input[name="save"]';
 
   constructor(page: Page) {
@@ -41,8 +47,12 @@ export class RecordTypeDeletePage {
 
   async save(): Promise<void> {
     await this.page.locator(this.saveButton).click();
-    await this.page.waitForLoadState('load');
-    await this.throwPageErrors();
+    await Promise.race([
+      this.page.waitForURL(
+        (url) => url.pathname === '/ui/setup/rectype/RecordTypes'
+      ),
+      waitForPageErrors(this.page),
+    ]);
   }
 
   async throwOnMissingSaveButton(): Promise<void> {
@@ -54,18 +64,6 @@ export class RecordTypeDeletePage {
         if (errorMsg?.trim()) {
           throw new Error(errorMsg.trim());
         }
-      }
-    }
-  }
-
-  async throwPageErrors(): Promise<void> {
-    const errorElement = this.page.locator(
-      'div#validationError div.messageText'
-    );
-    if ((await errorElement.count()) > 0) {
-      const errorMsg = await errorElement.innerText();
-      if (errorMsg?.trim()) {
-        throw new Error(errorMsg.trim());
       }
     }
   }

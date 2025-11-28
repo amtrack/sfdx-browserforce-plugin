@@ -67,4 +67,17 @@ describe(ServiceChannels.name, function () {
     const res = await plugin.retrieve(configureServiceChannels);
     assert.deepStrictEqual(res, configureServiceChannels);
   });
+
+  it('should delete Service Channels', async () => {
+    const conn = global.bf.org.getConnection();
+    const result = await conn.query(
+      "SELECT Id FROM ServiceChannel WHERE DeveloperName IN ('CaseTest', 'LeadTest')"
+    );
+    if (result.records?.length) {
+      await conn.delete(
+        'ServiceChannel',
+        result.records.map((r) => r.Id)
+      );
+    }
+  });
 });

@@ -1,3 +1,4 @@
+import { waitForPageErrors } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
 
 const BASE_PATH = 'ui/setup/layout/FieldHistoryTracking?pEntity={APINAME}';
@@ -108,6 +109,8 @@ export class HistoryTracking extends BrowserforcePlugin {
 
       historyTrackingResult.fieldHistoryTracking = fieldHistoryTrackingConfigs;
       historyTrackingConfigs.push(historyTrackingResult);
+
+      await page.close();
     }
 
     return historyTrackingConfigs;
@@ -185,11 +188,18 @@ export class HistoryTracking extends BrowserforcePlugin {
       }
 
       // Save the settings
+      const afterSavePromise = Promise.race([
+        page.waitForURL(
+          (url) => url.pathname !== `/ui/setup/layout/FieldHistoryTracking`
+        ),
+        waitForPageErrors(page),
+      ]);
       await page
         .locator(SAVE_BUTTON_SELECTOR)
-        .filter({ visible: true })
+        .filter({ visible: true }) // there are three save buttons [not visible, top row, bottom row]
         .first()
         .click();
+      await afterSavePromise;
 
       // Close the page
       await page.close();

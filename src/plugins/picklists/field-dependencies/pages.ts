@@ -1,5 +1,5 @@
 import { Page } from 'playwright';
-import { throwPageErrors } from '../../../browserforce.js';
+import { waitForPageErrors } from '../../../browserforce.js';
 
 export class FieldDependencyPage {
   private page: Page;
@@ -31,17 +31,19 @@ export class FieldDependencyPage {
       this.page.on('dialog', async (dialog) => {
         await dialog.accept();
       });
-
+      const promise = Promise.race([
+        this.page.waitForResponse(/setup\/ui\/dependencyList.jsp/),
+        waitForPageErrors(this.page),
+      ]);
       await actionLinks[0].click();
-      await this.page.waitForLoadState('networkidle');
-      await throwPageErrors(this.page);
+      await promise;
     }
     return new FieldDependencyPage(this.page);
   }
 }
 
 export class NewFieldDependencyPage {
-  protected page;
+  protected page: Page;
   protected saveButton = 'input[name="save"]';
 
   constructor(page: Page) {
@@ -67,13 +69,22 @@ export class NewFieldDependencyPage {
 
   async save(): Promise<void> {
     await this.page.locator(this.saveButton).first().click();
-    await throwPageErrors(this.page);
+    await Promise.race([
+      this.page.waitForURL(
+        (url) => url.pathname === '/p/dependency/EditDependencyUI/e'
+      ),
+      waitForPageErrors(this.page),
+    ]);
+
     // second step in wizard
     this.page.on('dialog', async (dialog) => {
       await dialog.accept();
     });
     await this.page.locator(this.saveButton).first().click();
-    await throwPageErrors(this.page);
+    await Promise.race([
+      this.page.waitForURL((url) => /\/01I\w{12}/.test(url.pathname)),
+      waitForPageErrors(this.page),
+    ]);
     await this.page.close();
   }
 }

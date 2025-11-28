@@ -2,6 +2,7 @@ import type { Record } from '@jsforce/jsforce-node';
 import { existsSync } from 'fs';
 import * as path from 'path';
 import * as queryString from 'querystring';
+import { waitForPageErrors } from '../../../browserforce.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
 
 const CERT_PREFIX_PATH = '0P1';
@@ -173,19 +174,21 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
             .fill(certificate.password);
         }
         await page.locator(SAVE_BUTTON_SELECTOR).first().click();
-        await page.waitForURL(
-          (url) => url.pathname !== `/${KEYSTORE_IMPORT_PATH}`
-        );
-        try {
-          await this.browserforce.throwPageErrors(page);
-        } catch (e) {
-          if (e instanceof Error && e.message === 'Data Not Available') {
-            throw new Error(
-              'Failed to import certificate from Keystore. Please enable Identity Provider first. https://salesforce.stackexchange.com/questions/61618/import-keystore-in-certificate-and-key-management'
-            );
-          }
-          throw e;
-        }
+        await Promise.race([
+          page.waitForURL((url) => url.pathname !== `/${KEYSTORE_IMPORT_PATH}`),
+          async () => {
+            try {
+              await waitForPageErrors(page);
+            } catch (e) {
+              if (e instanceof Error && e.message === 'Data Not Available') {
+                throw new Error(
+                  'Failed to import certificate from Keystore. Please enable Identity Provider first. https://salesforce.stackexchange.com/questions/61618/import-keystore-in-certificate-and-key-management'
+                );
+              }
+              throw e;
+            }
+          },
+        ]);
         if (certificate.name) {
           // rename cert as it has the wrong name
           //  JKS aliases are case-insensitive (and so lowercase)
@@ -203,7 +206,7 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
             await page.waitForURL(
               (url) => url.pathname !== `/${importedCert.Id}/e`
             ),
-            this.browserforce.throwPageErrors(certPage),
+            waitForPageErrors(certPage),
           ]);
           await certPage.close();
         }

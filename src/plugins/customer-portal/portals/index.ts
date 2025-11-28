@@ -1,4 +1,5 @@
 import * as queryString from 'querystring';
+import { waitForPageErrors } from '../../../browserforce.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
 import { semanticallyCleanObject } from '../../utils.js';
 
@@ -241,7 +242,7 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
         await page.locator(SAVE_BUTTON_SELECTOR).first().click();
         await Promise.race([
           page.waitForURL((url) => !url.href.includes(portal._id)),
-          this.browserforce.waitForPageErrors(page),
+          waitForPageErrors(page),
         ]);
         // portalProfileMemberships
         if (portal.portalProfileMemberships) {
@@ -261,7 +262,7 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
             portalProfilePage.waitForURL(
               (url) => url.pathname !== `/${PORTAL_PROFILE_MEMBERSHIP_PATH}`
             ),
-            this.browserforce.waitForPageErrors(portalProfilePage),
+            waitForPageErrors(portalProfilePage),
           ]);
           await portalProfilePage.close();
         }

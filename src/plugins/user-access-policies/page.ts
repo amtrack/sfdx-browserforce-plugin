@@ -1,5 +1,4 @@
 import type { Page } from 'playwright';
-import { throwPageErrors } from '../../browserforce.js';
 
 export class UserAccessPoliciesPage {
   private page: Page;
@@ -29,8 +28,6 @@ export class UserAccessPoliciesPage {
       await automateButton.click();
 
       await this.handleActivationModal(triggerOn);
-
-      await throwPageErrors(this.page);
     } catch (error) {
       throw new Error(`Failed to activate policy: ${error.message}`);
     }
@@ -49,8 +46,6 @@ export class UserAccessPoliciesPage {
       await deactivateButton.click();
 
       await this.handleConfirmationModal();
-
-      await throwPageErrors(this.page);
     } catch (error) {
       throw new Error(`Failed to deactivate policy: ${error.message}`);
     }

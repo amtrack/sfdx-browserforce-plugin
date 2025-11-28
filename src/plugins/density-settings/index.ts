@@ -1,4 +1,5 @@
 import { Page } from 'playwright';
+import { waitForPageErrors } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
 
 const BASE_PATH = 'lightning/setup/DensitySetup/home';
@@ -45,8 +46,12 @@ export class DensitySettings extends BrowserforcePlugin {
     }
 
     // Click the radio button with force to bypass label interception
+    const promise = Promise.race([
+      page.waitForResponse(/DensityUserSettings\.setDefaultDensitySetting=1/),
+      waitForPageErrors(page),
+    ]);
     await radioButton.click();
-    await this.browserforce.waitForIdle(page);
+    await promise;
     await page.close();
   }
 

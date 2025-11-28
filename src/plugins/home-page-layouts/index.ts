@@ -1,4 +1,5 @@
 import type { Record } from '@jsforce/jsforce-node';
+import { waitForPageErrors } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
 
 const BASE_PATH = 'setup/ui/assignhomelayoutedit.jsp';
@@ -126,7 +127,10 @@ export class HomePageLayouts extends BrowserforcePlugin {
     }
 
     await page.locator(SAVE_BUTTON_SELECTOR).first().click();
-    await page.waitForLoadState('load');
+    await Promise.race([
+      page.waitForURL((url) => url.pathname !== `/${BASE_PATH}`),
+      waitForPageErrors(page),
+    ]);
     await page.close();
   }
 }

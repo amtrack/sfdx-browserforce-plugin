@@ -1,4 +1,5 @@
 import { Page } from 'playwright';
+import { waitForPageErrors } from '../../browserforce.js';
 
 // table columns
 //    <td> (actions) | <th> (label) | <td> (API name)
@@ -47,12 +48,23 @@ export class PicklistPage {
     const NEW_ACTION_BUTTON_XPATH =
       '//tr[td[2]]//input[contains(@onclick, "/setup/ui/picklist_masteredit")][@value=" New "]';
     await this.page.locator(`xpath=${NEW_ACTION_BUTTON_XPATH}`).first().click();
-    await this.page.waitForLoadState('networkidle');
+    await Promise.race([
+      this.page.waitForURL(
+        (url) => url.pathname === '/setup/ui/picklist_masteredit.jsp'
+      ),
+      waitForPageErrors(this.page),
+    ]);
   }
 
   public async clickReplaceActionButton(): Promise<PicklistReplacePage> {
     const REPLACE_ACTION_BUTTON = 'input[name="replace"][type="button"]';
     await this.page.locator(REPLACE_ACTION_BUTTON).click();
+    await Promise.race([
+      this.page.waitForURL(
+        (url) => url.pathname === '/setup/ui/replacePickList.jsp'
+      ),
+      waitForPageErrors(this.page),
+    ]);
     return new PicklistReplacePage(this.page);
   }
 
@@ -65,9 +77,13 @@ export class PicklistPage {
     this.page.on('dialog', async (dialog) => {
       await dialog.accept();
     });
-
     await this.page.locator(`xpath=${xpath}`).first().click();
-    await throwPageErrors(this.page);
+    await Promise.race([
+      this.page.waitForURL(
+        (url) => url.pathname === '/setup/ui/picklist_masterdelete.jsp'
+      ),
+      waitForPageErrors(this.page),
+    ]);
     return new PicklistReplaceAndDeletePage(this.page);
   }
 
@@ -88,13 +104,16 @@ export class PicklistPage {
     });
 
     await this.page.locator(`xpath=${xpath}`).first().click();
-    await throwPageErrors(this.page);
+    await Promise.race([
+      this.page.waitForURL((url) => /\/00N.*/.test(url.pathname)), // Salesforce record id
+      waitForPageErrors(this.page),
+    ]);
     return new PicklistPage(this.page);
   }
 }
 
 export class DefaultPicklistAddPage {
-  protected page;
+  protected page: Page;
   protected saveButton = 'input.btn[name="save"]';
 
   constructor(page: Page) {
@@ -110,14 +129,17 @@ export class DefaultPicklistAddPage {
   }
 
   async save(): Promise<void> {
+    const urlBefore = this.page.url();
     await this.page.locator(this.saveButton).click();
-    await this.page.waitForLoadState('load');
-    await throwPageErrors(this.page);
+    await Promise.race([
+      this.page.waitForURL((url) => url.href !== urlBefore),
+      waitForPageErrors(this.page),
+    ]);
   }
 }
 
 export class StatusPicklistAddPage {
-  protected page;
+  protected page: Page;
   protected saveButton = 'input.btn[name="save"]';
 
   constructor(page: Page) {
@@ -140,13 +162,18 @@ export class StatusPicklistAddPage {
 
   async save(): Promise<void> {
     await this.page.locator(this.saveButton).click();
-    await this.page.waitForLoadState('load');
-    await throwPageErrors(this.page);
+    await Promise.race([
+      this.page.waitForURL(
+        (url) =>
+          url.pathname === '/_ui/common/config/field/StandardFieldAttributes/d'
+      ),
+      waitForPageErrors(this.page),
+    ]);
   }
 }
 
 export class PicklistReplacePage {
-  protected page;
+  protected page: Page;
   protected saveButton = 'input[name="save"]';
 
   constructor(page: Page) {
@@ -175,7 +202,10 @@ export class PicklistReplacePage {
 
   async save(): Promise<void> {
     await this.page.locator(this.saveButton).click();
-    await throwPageErrors(this.page);
+    await Promise.race([
+      this.page.waitForURL((url) => url.searchParams.has('msg')),
+      waitForPageErrors(this.page),
+    ]);
   }
 }
 
@@ -199,16 +229,14 @@ export class PicklistReplaceAndDeletePage extends PicklistReplacePage {
 
   async save(): Promise<void> {
     await this.page.locator(this.saveButton).click({ timeout: 180000 });
-    await throwPageErrors(this.page);
-  }
-}
-
-async function throwPageErrors(page: Page): Promise<void> {
-  const errorElement = page.locator('div#validationError div.messageText');
-  if ((await errorElement.count()) > 0) {
-    const errorMsg = await errorElement.innerText();
-    if (errorMsg && errorMsg.trim()) {
-      throw new Error(errorMsg.trim());
-    }
+    // TODO: this might take really long
+    // await this.page.locator(this.saveButton).click({ noWaitAfter: true });
+    // /setup/ui/picklist_masterdelete.jsp?id=01JPw00000S7y4B&tid=a02&...
+    // ->
+    // /setup/ui/picklist_masterdelete.jsp
+    await Promise.race([
+      this.page.waitForURL((url) => !url.searchParams.has('id')),
+      waitForPageErrors(this.page),
+    ]);
   }
 }

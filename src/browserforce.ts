@@ -10,8 +10,6 @@ import {
 } from 'playwright';
 import { LoginPage } from './pages/login.js';
 
-const ERROR_DIV_SELECTOR = '#errorTitle';
-const ERROR_DIVS_SELECTOR = 'div.errorMsg';
 const VF_IFRAME_SELECTOR = 'force-aloha-page iframe[name^=vfFrameId]';
 
 export class Browserforce {
@@ -72,14 +70,6 @@ export class Browserforce {
     return this;
   }
 
-  public async throwPageErrors(page: Page): Promise<void> {
-    await throwPageErrors(page);
-  }
-
-  public async waitForPageErrors(page: Page): Promise<void> {
-    await waitForPageErrors(page);
-  }
-
   public async getNewPage(): Promise<Page> {
     const page = await this.context.newPage();
     page.setDefaultNavigationTimeout(
@@ -99,11 +89,14 @@ export class Browserforce {
           : this.getInstanceUrl();
         const url = `${setupUrl}/${urlPath}`;
         const response = await page.goto(url);
-        if (response) {
-          if (!response.ok()) {
-            await this.throwPageErrors(page);
-            throw new Error(`${response.status()}: ${response.statusText()}`);
-          }
+        if (response && !response.ok()) {
+          await Promise.race([
+            waitForPageErrors(page, 5_000),
+            (async () => {
+              await page.waitForTimeout(10_000);
+              throw new Error(`${response.status()}: ${response.statusText()}`);
+            })(),
+          ]);
         }
         return page;
       },
@@ -189,63 +182,23 @@ export class Browserforce {
     }
     return this.lightningSetupUrl;
   }
-
-  public async waitForIdle(page: Page, maxWaitTime = 2000): Promise<void> {
-    try {
-      await page.waitForLoadState('networkidle', { timeout: maxWaitTime });
-    } catch {
-      console.warn(
-        `Waited ${maxWaitTime}ms, continuing regardless of network state`
-      );
-    }
-  }
 }
 
-export async function throwPageErrors(page: Page): Promise<void> {
-  const errorLocator = page.locator(ERROR_DIV_SELECTOR);
-  const errorCount = await errorLocator.count();
-
-  if (errorCount > 0) {
-    const errorMsg = await errorLocator.first().innerText();
-    if (errorMsg && errorMsg.trim()) {
-      throw new Error(errorMsg.trim());
-    }
-  }
-
-  const errorDivsLocator = page.locator(ERROR_DIVS_SELECTOR);
-  const errorDivsCount = await errorDivsLocator.count();
-
-  if (errorDivsCount > 0) {
-    const errorMessages: string[] = [];
-    for (let i = 0; i < errorDivsCount; i++) {
-      const text = await errorDivsLocator.nth(i).innerText();
-      errorMessages.push(text);
-    }
-    const errorMsg = errorMessages
-      .map((m) => m.trim())
-      .join(' ')
-      .trim();
-    if (errorMsg) {
-      throw new Error(errorMsg);
-    }
-  }
-}
-
-export async function waitForPageErrors(page: Page): Promise<void> {
+export async function waitForPageErrors(
+  page: Page,
+  timeout = 90_000
+): Promise<void> {
   const anyErrorsLocator = page.locator(
-    `${ERROR_DIV_SELECTOR}, ${ERROR_DIVS_SELECTOR}`
+    `#error, #errorTitle, #errorDesc, #validationError, div.errorMsg`
   );
-  await anyErrorsLocator.first().waitFor({ state: 'visible' });
+  await anyErrorsLocator.first().waitFor({ state: 'attached', timeout });
   const errorMessages = (await anyErrorsLocator.allInnerTexts())
     .map((t) => t.trim())
     .filter(Boolean);
   if (errorMessages.length === 1) {
     throw new Error(errorMessages[0]);
   } else if (errorMessages.length > 1) {
-    throw new AggregateError(
-      errorMessages.map((e) => new Error(e)),
-      'Page has multiple errors'
-    );
+    throw new Error(errorMessages.join('\n'));
   }
 }
 

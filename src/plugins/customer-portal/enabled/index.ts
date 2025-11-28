@@ -1,3 +1,4 @@
+import { waitForPageErrors } from '../../../browserforce.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
 
 const BASE_PATH = '_ui/core/portal/CustomerSuccessPortalSetup/e';
@@ -22,8 +23,8 @@ export class CustomerPortalEnable extends BrowserforcePlugin {
     await page.locator(ENABLE_CHECKBOX).setChecked(true);
     await page.locator(SAVE_BUTTON).first().click();
     await Promise.race([
-      page.waitForURL((url) => url.pathname !== `${BASE_PATH}`),
-      this.browserforce.waitForPageErrors(page),
+      page.waitForURL((url) => url.pathname !== `/${BASE_PATH}`),
+      waitForPageErrors(page),
     ]);
     await page.close();
   }

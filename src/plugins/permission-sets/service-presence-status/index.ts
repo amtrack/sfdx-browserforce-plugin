@@ -1,3 +1,4 @@
+import { waitForPageErrors } from '../../../browserforce.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
 
 const ADD_BUTTON_SELECTOR = 'a[id$=":duelingListBox:backingList_add"]';
@@ -84,7 +85,10 @@ export class ServicePresenceStatus extends BrowserforcePlugin {
 
     // Save the settings and wait for page refresh
     await page.locator(SAVE_BUTTON_SELECTOR).click();
-    await page.waitForLoadState('load');
+    await Promise.race([
+      page.waitForURL((url) => !url.pathname.endsWith('/e')),
+      waitForPageErrors(page),
+    ]);
 
     // Close the page
     await page.close();
