@@ -1,4 +1,4 @@
-import { Page } from 'playwright';
+import type { Page } from 'playwright';
 import { LayoutSelectionPage } from './layout-selection.js';
 
 const SAVE_BUTTON = 'input[id$=":form:SaveButton"]';

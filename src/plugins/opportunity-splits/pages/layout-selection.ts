@@ -1,4 +1,4 @@
-import { Page } from 'playwright';
+import type { Page } from 'playwright';
 import { OverviewPage } from './overview.js';
 
 const SAVE_BUTTON = 'input[id$=":save"]';

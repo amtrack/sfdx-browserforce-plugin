@@ -3,10 +3,10 @@ import { type Ux } from '@salesforce/sf-plugins-core';
 import pRetry from 'p-retry';
 import {
   chromium,
-  Browser,
-  BrowserContext,
-  Page,
-  FrameLocator,
+  type Browser,
+  type BrowserContext,
+  type Page,
+  type FrameLocator,
 } from 'playwright';
 import { LoginPage } from './pages/login.js';
 

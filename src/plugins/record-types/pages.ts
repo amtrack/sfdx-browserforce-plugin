@@ -1,4 +1,4 @@
-import { Page } from 'playwright';
+import type { Page } from 'playwright';
 import { waitForPageErrors } from '../../browserforce.js';
 
 export class RecordTypePage {

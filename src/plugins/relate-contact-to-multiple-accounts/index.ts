@@ -1,4 +1,4 @@
-import { Page } from 'playwright';
+import type { Page } from 'playwright';
 import { retry } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
 

@@ -1,4 +1,4 @@
-import { Page } from 'playwright';
+import type { Page } from 'playwright';
 import { waitForPageErrors } from '../../browserforce.js';
 
 const SET_UP_AND_ENABLE_HVS_BUTTON = 'button.setupAndEnableButton';

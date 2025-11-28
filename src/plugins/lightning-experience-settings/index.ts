@@ -1,4 +1,4 @@
-import { Locator, Page } from 'playwright';
+import type { Locator, Page } from 'playwright';
 import { BrowserforcePlugin } from '../../plugin.js';
 
 const BASE_PATH = 'lightning/setup/ThemingAndBranding/home';

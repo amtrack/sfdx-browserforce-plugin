@@ -1,4 +1,4 @@
-import { Page } from 'playwright';
+import type { Page } from 'playwright';
 
 const IN_PROGRESS = '#enablingInProgress, #disablingInProgress';
 const COMPLETED = '#prefSettingSucceeded';
