@@ -3,11 +3,9 @@ import { BrowserforcePlugin } from '../../plugin.js';
 
 const BASE_PATH = 'ui/setup/layout/FieldHistoryTracking?pEntity={APINAME}';
 
-const ENABLE_HISTORY_SELECTOR =
-  'input[id="enable"][type="checkbox"][name="enable"]';
+const ENABLE_HISTORY_SELECTOR = 'input[type="checkbox"][id="enable"]';
 const ENABLE_FIELD_HISTORY_SELECTOR = 'input[id="{APINAME}_fht"]';
-const SAVE_BUTTON_SELECTOR =
-  'input[class="btn"][type="submit"][name="save"][title="Save"]';
+const SAVE_BUTTON_SELECTOR = 'input[type="submit"][name="save"]';
 
 type HistoryTrackingConfig = {
   objectApiName: string;
@@ -48,9 +46,7 @@ export class HistoryTracking extends BrowserforcePlugin {
       if (!historyTrackingConfig.objectApiName.includes('__c')) {
         historyTrackingResult.enableHistoryTracking = await page
           .locator(ENABLE_HISTORY_SELECTOR)
-          .evaluate((el) =>
-            el.getAttribute('checked') === 'checked' ? true : false
-          );
+          .isChecked();
       }
 
       // If we have no field history tracking, there is nothing more to do
@@ -100,9 +96,7 @@ export class HistoryTracking extends BrowserforcePlugin {
           .locator(
             ENABLE_FIELD_HISTORY_SELECTOR.replace('{APINAME}', fieldApiName)
           )
-          .evaluate((el) =>
-            el.getAttribute('checked') === 'checked' ? true : false
-          );
+          .isChecked();
 
         fieldHistoryTrackingConfigs.push(fieldHistoryTrackingResult);
       }
@@ -137,9 +131,7 @@ export class HistoryTracking extends BrowserforcePlugin {
       if (!historyTrackingConfig.objectApiName.includes('__c')) {
         const historyTrackingEnabled = await page
           .locator(ENABLE_HISTORY_SELECTOR)
-          .evaluate((el) =>
-            el.getAttribute('checked') === 'checked' ? true : false
-          );
+          .isChecked();
 
         if (
           historyTrackingConfig.enableHistoryTracking !== historyTrackingEnabled
@@ -173,9 +165,7 @@ export class HistoryTracking extends BrowserforcePlugin {
 
           const fieldHistoryTrackingEnabled = await page
             .locator(fieldSelector)
-            .evaluate((el) =>
-              el.getAttribute('checked') === 'checked' ? true : false
-            );
+            .isChecked();
 
           if (
             fieldHistoryTracking.enableHistoryTracking !==

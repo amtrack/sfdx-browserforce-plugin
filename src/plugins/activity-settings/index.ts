@@ -34,9 +34,7 @@ export class ActivitySettings extends BrowserforcePlugin {
 
     await page
       .locator(MANY_WHO_PREF_INPUT_SELECTOR)
-      .evaluate((e: HTMLInputElement, v: boolean) => {
-        e.checked = v;
-      }, config.allowUsersToRelateMultipleContactsToTasksAndEvents);
+      .setChecked(config.allowUsersToRelateMultipleContactsToTasksAndEvents);
 
     await page.locator(SUBMIT_BUTTON_SELECTOR).click();
     // ui/setup/Setup?setupid=Activity

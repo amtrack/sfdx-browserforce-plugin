@@ -73,7 +73,7 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
         .evaluate((el: HTMLInputElement) => el.value);
       portal.isSelfRegistrationActivated = await portalPage
         .locator(`#${PORTAL_IS_SELF_REGISTRATION_ACTIVATED_ID_SELECTOR}`)
-        .evaluate((el: HTMLInputElement) => el.checked);
+        .isChecked();
       portal.selfRegUserDefaultLicense = await portalPage
         .locator(`#${PORTAL_SELF_REG_USER_DEFAULT_LICENSE_ID_SELECTOR}`)
         .evaluate((el: HTMLSelectElement) => el.selectedOptions[0].text);

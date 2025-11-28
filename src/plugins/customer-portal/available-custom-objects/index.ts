@@ -90,7 +90,7 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
           ...result,
           available: await frameOrPage
             .locator(CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL_SELECTOR)
-            .evaluate((el: HTMLInputElement) => el.checked),
+            .isChecked(),
         });
         await editPage.close();
       }

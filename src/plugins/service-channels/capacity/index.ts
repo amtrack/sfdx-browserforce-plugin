@@ -69,14 +69,10 @@ export class Capacity extends BrowserforcePlugin {
         });
       const checkAgentCapacityOnReopenedWorkItems = await page
         .locator(STATUS_CHANGE_CAPACITY_SELECTOR)
-        .evaluate((el: HTMLInputElement) =>
-          el.getAttribute('checked') === 'checked' ? true : false
-        );
+        .isChecked();
       const checkAgentCapacityOnReassignedWorkItems = await page
         .locator(OWNER_CHANGE_CAPACITY_SELECTOR)
-        .evaluate((el: HTMLInputElement) =>
-          el.getAttribute('checked') === 'checked' ? true : false
-        );
+        .isChecked();
 
       await page.close();
       return {
@@ -169,6 +165,7 @@ export class Capacity extends BrowserforcePlugin {
         .selectOption(configCapacity!.statusField);
     }
 
+    // TODO: find another condition
     await page.waitForLoadState('networkidle');
 
     if (configCapacity?.valuesForInProgress) {
@@ -206,17 +203,13 @@ export class Capacity extends BrowserforcePlugin {
     if (configCapacity?.checkAgentCapacityOnReassignedWorkItems !== undefined) {
       await page
         .locator(STATUS_CHANGE_CAPACITY_SELECTOR)
-        .evaluate((e: HTMLInputElement, v: boolean) => {
-          e.checked = v;
-        }, configCapacity.checkAgentCapacityOnReassignedWorkItems);
+        .setChecked(configCapacity.checkAgentCapacityOnReassignedWorkItems);
     }
 
     if (configCapacity?.checkAgentCapacityOnReopenedWorkItems !== undefined) {
       await page
         .locator(OWNER_CHANGE_CAPACITY_SELECTOR)
-        .evaluate((e: HTMLInputElement, v: boolean) => {
-          e.checked = v;
-        }, configCapacity.checkAgentCapacityOnReopenedWorkItems);
+        .setChecked(configCapacity.checkAgentCapacityOnReopenedWorkItems);
     }
 
     // Save the settings and wait for page refresh

@@ -92,10 +92,8 @@ export class LightningExperienceSettings extends BrowserforcePlugin {
       const developerName = await developerNameLocator.nth(i).innerText();
       const hasIcon = await stateLocator
         .nth(i)
-        .evaluate(
-          (cell) =>
-            cell.shadowRoot?.querySelector('lightning-primitive-icon') !== null
-        );
+        .filter({ has: page.locator('lightning-primitive-icon') })
+        .isVisible();
       themes.push({
         developerName,
         isActive: hasIcon,

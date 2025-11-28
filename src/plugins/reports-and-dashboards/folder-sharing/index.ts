@@ -28,7 +28,7 @@ export class FolderSharing extends BrowserforcePlugin {
       if (inputEnable > 0) {
         response.enableEnhancedFolderSharing = await frameOrPage
           .locator(ENABLE_CHECKBOX_SELECTOR)
-          .evaluate((el: HTMLInputElement) => el.checked);
+          .isChecked();
       } else {
         // already enabled
         response.enableEnhancedFolderSharing = true;
@@ -54,9 +54,7 @@ export class FolderSharing extends BrowserforcePlugin {
     const page = await this.browserforce.openPage(BASE_PATH);
     await page
       .locator(ENABLE_CHECKBOX_SELECTOR)
-      .evaluate((e: HTMLInputElement, v: boolean) => {
-        e.checked = v;
-      }, config.enableEnhancedFolderSharing);
+      .setChecked(config.enableEnhancedFolderSharing);
     await Promise.all([
       page.waitForEvent('load'),
       page.locator(SAVE_BUTTON_SELECTOR).click(),
