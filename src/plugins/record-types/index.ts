@@ -43,14 +43,18 @@ export class RecordTypes extends BrowserforcePlugin {
             );
           }
         }
-        response.deletions.push({
-          ...deletion,
-        });
-      } else {
         response.deletions.push(deletion);
       }
     }
     return response;
+  }
+
+  public diff(source: Config, target: Config): Partial<Config> | undefined {
+    const changes: Partial<Config> = {};
+    if (target.deletions?.length && source.deletions?.length) {
+      changes.deletions = source.deletions;
+    }
+    return Object.keys(changes).length ? changes : undefined;
   }
 
   public async apply(config: Config): Promise<void> {
