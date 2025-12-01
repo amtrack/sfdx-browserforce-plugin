@@ -99,7 +99,6 @@ export class AuthenticationConfiguration extends BrowserforcePlugin {
       );
     }
     await frameOrPage.locator(SAVE_BUTTON_SELECTOR).first().click();
-    //domainname/DomainName.apexp?isdtp=p1
     await page.waitForResponse(
       (resp) => new URL(resp.url()).pathname === '/domainname/DomainName.apexp'
     );
