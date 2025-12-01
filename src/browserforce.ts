@@ -35,7 +35,7 @@ export class Browserforce {
       slowMo: parseInt(process.env.BROWSER_SLOWMO, 10) ?? 0,
     });
     this.context = await this.browser.newContext({
-      viewport: { width: 1280, height: 768 * 2 },
+      viewport: { width: 1280, height: 1536 },
     });
 
     // Start tracing if PLAYWRIGHT_TRACE is set
