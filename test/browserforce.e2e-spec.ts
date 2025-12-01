@@ -52,12 +52,14 @@ describe('Browserforce', function () {
   describe('openPage()', () => {
     it('should throw the page error on internal errors', async () => {
       process.env.BROWSERFORCE_RETRY_TIMEOUT_MS = '0';
+      process.env.BROWSERFORCE_RETRY_MAX_RETRIES = '0';
       await assert.rejects(async () => {
         await global.bf.openPage(
           '_ui/common/config/field/StandardFieldAttributes/d?type=Account&id=INVALID_Name'
         );
       }, /Insufficient Privileges/);
       delete process.env.BROWSERFORCE_RETRY_TIMEOUT_MS;
+      delete process.env.BROWSERFORCE_RETRY_MAX_RETRIES;
     });
     it('should not throw any error opening a page', async () => {
       const page = await global.bf.openPage(
