@@ -21,7 +21,7 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {
     const page = await this.browserforce.openPage(BASE_PATH);
     await page.locator(CONFIGURE_SELECTOR).click();
-    await page.waitForLoadState('load');
+    await page.waitForEvent('load');
 
     const response = {} as Config;
     if (definition) {
@@ -79,7 +79,7 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
   public async apply(config: Config): Promise<void> {
     const page = await this.browserforce.openPage(BASE_PATH);
     await page.locator(CONFIGURE_SELECTOR).click();
-    await page.waitForLoadState('load');
+    await page.waitForEvent('load');
 
     /*
     This to click on the 'Generate Integration User Permissions button' for first time setup.
@@ -171,7 +171,7 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
               }
               if (item.immediatelySave) {
                 await page.locator(SAVE_SELECTOR).click();
-                await page.waitForLoadState('load');
+                await page.waitForEvent('load');
               }
             } catch (e) {
               if (
@@ -200,7 +200,7 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
         }
       }
       await page.locator(SAVE_SELECTOR).click();
-      await page.waitForLoadState('load');
+      await page.waitForEvent('load');
     }
 
     /*
@@ -228,7 +228,7 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
         if (newPage) {
           // Click on 'Allow' button
           await newPage.locator(ALLOW_SELECTOR).click();
-          await page.waitForLoadState('load'); // Wait for the main page to refresh
+          await page.waitForEvent('load'); // Wait for the main page to refresh
 
           this.logger?.log('The main page has refreshed after allowing.');
           await newPage.close();

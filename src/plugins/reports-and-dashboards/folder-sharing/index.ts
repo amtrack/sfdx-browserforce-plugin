@@ -57,8 +57,10 @@ export class FolderSharing extends BrowserforcePlugin {
       .evaluate((e: HTMLInputElement, v: boolean) => {
         e.checked = v;
       }, config.enableEnhancedFolderSharing);
-    await page.locator(SAVE_BUTTON_SELECTOR).click();
-    await page.waitForLoadState('load');
+    await Promise.all([
+      page.waitForEvent('load'),
+      page.locator(SAVE_BUTTON_SELECTOR).click(),
+    ]);
     await page.close();
   }
 }
