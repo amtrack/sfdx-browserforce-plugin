@@ -16,7 +16,7 @@ export class PermissionSets extends BrowserforcePlugin {
 
     const permissionSets: PermissionSet[] = [];
 
-    for await (const permissionSet of definition) {
+    for (const permissionSet of definition) {
       permissionSets.push({
         permissionSetName: permissionSet.permissionSetName,
         servicePresenceStatuses: await pluginServicePresenceStatus.retrieve(
@@ -33,7 +33,7 @@ export class PermissionSets extends BrowserforcePlugin {
       this.browserforce
     );
 
-    for await (const permissionSet of plan) {
+    for (const permissionSet of plan) {
       await pluginServicePresenceStatus.apply(permissionSet);
     }
   }

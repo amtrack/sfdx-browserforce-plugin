@@ -30,7 +30,7 @@ export class HistoryTracking extends BrowserforcePlugin {
       await this.getTableEnumOrIdByObjectApiName(definition);
 
     // Now we can iterate over all history tracking configurations in the definition
-    for await (const historyTrackingConfig of definition) {
+    for (const historyTrackingConfig of definition) {
       const historyTrackingResult = { ...historyTrackingConfig };
 
       // Open the object history tracking setup page
@@ -85,7 +85,7 @@ export class HistoryTracking extends BrowserforcePlugin {
         );
 
       // We can now retrieve the field history settings for the fields specified for the object
-      for await (const fieldHistoryTracking of historyTrackingConfig.fieldHistoryTracking) {
+      for (const fieldHistoryTracking of historyTrackingConfig.fieldHistoryTracking) {
         const fieldHistoryTrackingResult = { ...fieldHistoryTracking };
 
         const fieldApiName = fieldSelectorByFieldApiName.get(
@@ -117,7 +117,7 @@ export class HistoryTracking extends BrowserforcePlugin {
       await this.getTableEnumOrIdByObjectApiName(plan);
 
     // Now we can iterate over all history tracking configurations in the plan
-    for await (const historyTrackingConfig of plan) {
+    for (const historyTrackingConfig of plan) {
       // Open the object history tracking setup page
       const page = await this.browserforce.openPage(
         BASE_PATH.replace(
@@ -153,7 +153,7 @@ export class HistoryTracking extends BrowserforcePlugin {
           );
 
         // We can now retrieve the field history settings for the fields specified for the object
-        for await (const fieldHistoryTracking of historyTrackingConfig.fieldHistoryTracking) {
+        for (const fieldHistoryTracking of historyTrackingConfig.fieldHistoryTracking) {
           const fieldApiName = fieldSelectorByFieldApiName.get(
             fieldHistoryTracking.fieldApiName
           );
