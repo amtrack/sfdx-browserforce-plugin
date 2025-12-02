@@ -10,7 +10,15 @@ describe(LightningExperienceSettings.name, function () {
       configOriginal = await plugin.retrieve();
     });
 
+    const configSLDS2 = { activeThemeName: 'SalesforceCosmos' };
     const configLightningLite = { activeThemeName: 'LightningLite' };
+    it('should activate SalesforceCosmos theme (SLDS2)', async () => {
+      await plugin.run(configSLDS2);
+    });
+    it('SalesforceCosmos theme should already be activated', async () => {
+      const state = await plugin.retrieve();
+      assert.deepStrictEqual(state, configSLDS2);
+    });
     it('should activate LightningLite theme', async () => {
       await plugin.run(configLightningLite);
     });

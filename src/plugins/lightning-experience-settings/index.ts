@@ -135,26 +135,27 @@ export class LightningExperienceSettings extends BrowserforcePlugin {
       .first()
       .waitFor();
 
-    const menuItems = menuButton.locator('slot lightning-menu-item');
-    const menuItemCount = await menuItems.count();
     // second last item: [show, activate, preview]
-    const activateMenuItem = menuItems.nth(menuItemCount - 2);
+    const activateMenuItem = menuButton
+      .locator('slot lightning-menu-item')
+      .nth(-2);
 
-    await activateMenuItem.click();
-
-    // When switching from a SDLS2 to a SLDS1 theme, the following modal appears:
-    // Activate this theme?
-    // This theme uses SLDS 1. When you activate this theme, you also disable SLDS 2.
-    // - Never Mind
-    // - Activate
-    const confirmButton = await page.locator(
-      'lightning-modal lightning-button[variant="brand"]'
-    );
-    if (await confirmButton.isVisible()) {
-      await confirmButton.waitFor({ state: 'visible' });
-      await confirmButton.click();
-    }
-
-    await page.locator('span.breadcrumbDetail.uiOutputText').waitFor();
+    await Promise.all([
+      Promise.race([
+        page.waitForEvent('load'), // immediate page reload when SLDS1 theme was activated
+        Promise.all([
+          page.waitForEvent('load'),
+          // When switching from a SDLS2 to a SLDS1 theme, the following modal appears:
+          // Activate this theme?
+          // This theme uses SLDS 1. When you activate this theme, you also disable SLDS 2.
+          // - Never Mind
+          // - Activate <--
+          page
+            .locator('lightning-modal lightning-button[variant="brand"]')
+            .click(),
+        ]),
+      ]),
+      activateMenuItem.click(),
+    ]);
   }
 }
