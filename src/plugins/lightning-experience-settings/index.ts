@@ -19,48 +19,6 @@ type Theme = {
 };
 
 export class LightningExperienceSettings extends BrowserforcePlugin {
-  async setupDOMObserver(
-    page: Page,
-    elementName: string,
-    callbackName: string
-  ): Promise<void> {
-    await page.evaluate(
-      ({
-        elementName,
-        callbackName,
-      }: {
-        elementName: string;
-        callbackName: string;
-      }) => {
-        const observer = new MutationObserver((mutations) => {
-          for (const mutation of mutations) {
-            for (const node of Array.from(mutation.addedNodes)) {
-              if (
-                node instanceof Element &&
-                node.tagName.toLowerCase() === elementName
-              ) {
-                observer.disconnect();
-                // Call the exposed function to handle the element
-                (window as any)[callbackName]();
-                return;
-              }
-            }
-          }
-        });
-        observer.observe(document.body, { childList: true, subtree: false });
-        // Clean up observer after navigation starts (element won't appear)
-        window.addEventListener(
-          'beforeunload',
-          () => {
-            observer.disconnect();
-          },
-          { once: true }
-        );
-      },
-      { elementName, callbackName }
-    );
-  }
-
   public async retrieve(): Promise<Config> {
     const page = await this.browserforce.openPage(BASE_PATH);
     const themes = await this.getThemeData(page);
