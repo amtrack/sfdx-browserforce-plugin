@@ -38,14 +38,14 @@ export class Slack extends BrowserforcePlugin {
       await page
         .locator(TOS_CHECKBOX)
         .evaluate((checkbox: HTMLInputElement) => checkbox.click());
-      await page.locator(TOAST_MESSAGE).waitFor({ state: 'visible' });
+      await page.locator(TOAST_MESSAGE).waitFor();
       await page.locator(TOAST_MESSAGE).waitFor({ state: 'hidden' });
     }
     if (state.enableSalesCloudForSlack !== config.enableSalesCloudForSlack) {
       await page
         .locator(SALES_CLOUD_FOR_SLACK_CHECKBOX)
         .evaluate((checkbox: HTMLInputElement) => checkbox.click());
-      await page.locator(TOAST_MESSAGE).waitFor({ state: 'visible' });
+      await page.locator(TOAST_MESSAGE).waitFor();
       await page.locator(TOAST_MESSAGE).waitFor({ state: 'hidden' });
     }
     await page.close();

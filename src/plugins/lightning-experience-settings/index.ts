@@ -123,7 +123,7 @@ export class LightningExperienceSettings extends BrowserforcePlugin {
     await page
       .locator(`${THEME_ROW_SELECTOR} lightning-button-menu`)
       .first()
-      .waitFor({ state: 'visible' });
+      .waitFor();
 
     const menuButton = newActiveThemeRowLocator.locator(
       'td lightning-primitive-cell-factory lightning-primitive-cell-actions lightning-button-menu'
@@ -135,7 +135,7 @@ export class LightningExperienceSettings extends BrowserforcePlugin {
         `${THEME_ROW_SELECTOR} lightning-button-menu slot lightning-menu-item`
       )
       .first()
-      .waitFor({ state: 'visible' });
+      .waitFor();
 
     const menuItems = menuButton.locator('slot lightning-menu-item');
     const menuItemCount = await menuItems.count();

@@ -23,7 +23,7 @@ export class UserAccessPoliciesPage {
         name: 'Automate Policy',
       });
 
-      await automateButton.waitFor({ state: 'visible', timeout: 5000 });
+      await automateButton.waitFor({ timeout: 5000 });
       await this.waitForButtonEnabled(automateButton);
       await automateButton.click();
 
@@ -42,7 +42,7 @@ export class UserAccessPoliciesPage {
         name: 'Deactivate',
       });
 
-      await deactivateButton.waitFor({ state: 'visible', timeout: 5000 });
+      await deactivateButton.waitFor({ timeout: 5000 });
       await deactivateButton.click();
 
       await this.handleConfirmationModal();
@@ -60,7 +60,7 @@ export class UserAccessPoliciesPage {
     const modalHeader = this.page.locator(
       'lightning-modal-header.automate_policy_modal'
     );
-    await modalHeader.waitFor({ state: 'visible', timeout: 10000 });
+    await modalHeader.waitFor({ timeout: 10000 });
 
     await this.page.waitForTimeout(500);
 
@@ -96,7 +96,7 @@ export class UserAccessPoliciesPage {
       name: 'Activate',
       exact: true,
     });
-    await activateButton.waitFor({ state: 'visible', timeout: 5000 });
+    await activateButton.waitFor({ timeout: 5000 });
     await activateButton.click();
 
     await this.page.waitForTimeout(1000);
@@ -112,7 +112,7 @@ export class UserAccessPoliciesPage {
       const deactivateButton = this.page.locator(
         'lightning-modal-footer button:has-text("Deactivate")'
       );
-      await deactivateButton.waitFor({ state: 'visible', timeout: 5000 });
+      await deactivateButton.waitFor({ timeout: 5000 });
       await deactivateButton.click();
 
       await this.page.waitForTimeout(1000);
