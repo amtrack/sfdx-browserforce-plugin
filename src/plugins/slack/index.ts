@@ -5,7 +5,7 @@ const BASE_PATH = 'lightning/setup/SlackSetupAssistant/home';
 const TOS_CHECKBOX =
   'setup_service-slack-agree-to-terms input[type="checkbox"]';
 // unfortunately the divs intercept pointer events so we need to click on the label instead
-const TOS_CHECKBOX_TOGGLE = `setup_service-slack-agree-to-terms lightning-primitive-input-toggle:has(${TOS_CHECKBOX})`;
+const TOS_CHECKBOX_TOGGLE = `setup_service-slack-agree-to-terms lightning-primitive-input-toggle`;
 const SALES_CLOUD_FOR_SLACK_CHECKBOX =
   'input[type="checkbox"][name="SlkSetupStepSalesCloudForSlack"]';
 // unfortunately the divs intercept pointer events so we need to click on the label instead
