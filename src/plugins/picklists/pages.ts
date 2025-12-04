@@ -228,8 +228,8 @@ export class PicklistReplaceAndDeletePage extends PicklistReplacePage {
   }
 
   async save(): Promise<void> {
-    await this.page.locator(this.saveButton).click({ timeout: 180000 });
-    // TODO: this might take really long
+    await this.page.locator(this.saveButton).click({ timeout: 300_000 }); // 5 minutes
+    // NOTE: this might take really long
     // await this.page.locator(this.saveButton).click({ noWaitAfter: true });
     // /setup/ui/picklist_masterdelete.jsp?id=01JPw00000S7y4B&tid=a02&...
     // ->
