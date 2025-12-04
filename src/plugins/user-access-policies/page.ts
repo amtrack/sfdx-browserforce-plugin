@@ -99,6 +99,7 @@ export class UserAccessPoliciesPage {
     await activateButton.waitFor({ timeout: 5000 });
     await activateButton.click();
 
+    // TODO: use a better indicator
     await this.page.waitForTimeout(1000);
   }
 
@@ -115,6 +116,7 @@ export class UserAccessPoliciesPage {
       await deactivateButton.waitFor({ timeout: 5000 });
       await deactivateButton.click();
 
+      // TODO: use a better indicator
       await this.page.waitForTimeout(1000);
     } catch (e) {
       throw new Error(
