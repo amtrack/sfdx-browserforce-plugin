@@ -25,8 +25,8 @@ export class PicklistPage {
       .locator('input[name="new"][onclick*="picklist_masteredit"]')
       .waitFor();
     const resolvePicklistValueNames = async (xpath: string) => {
-      const elements = await this.page.locator(`xpath=${xpath}`).all();
-      const fullNames = await Promise.all(elements.map((el) => el.innerText()));
+      const locator = this.page.locator(`xpath=${xpath}`);
+      const fullNames = await locator.allInnerTexts();
       return fullNames;
     };
     const active = await resolvePicklistValueNames(
