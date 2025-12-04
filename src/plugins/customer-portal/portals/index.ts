@@ -10,16 +10,6 @@ const PORTAL_PROFILE_MEMBERSHIP_PATH =
 const SAVE_BUTTON_SELECTOR = 'input[name="save"]';
 const LIST_VIEW_PORTAL_LINKS_XPATH_SELECTOR =
   '//div[contains(@class,"pbBody")]//th[contains(@class,"dataCell")]//a[starts-with(@href, "/060")]';
-const PORTAL_DESCRIPTION_SELECTOR = '#Description';
-const PORTAL_ID_SELECTOR = '#portalId';
-const PORTAL_ADMIN_ID_SELECTOR = 'Admin';
-const PORTAL_IS_SELF_REGISTRATION_ACTIVATED_ID_SELECTOR =
-  'IsSelfRegistrationActivated';
-const PORTAL_SELF_REG_USER_DEFAULT_LICENSE_ID_SELECTOR =
-  'SelfRegUserDefaultLicense';
-const PORTAL_SELF_REG_USER_DEFAULT_ROLE_ID_SELECTOR = 'SelfRegUserDefaultRole';
-const PORTAL_SELF_REG_USER_DEFAULT_PROFILE_ID_SELECTOR =
-  'SelfRegUserDefaultProfile';
 const PORTAL_PROFILE_MEMBERSHIP_PROFILES_SELECTOR = 'th.dataCell';
 const PORTAL_PROFILE_MEMBERSHIP_CHECKBOXES_SELECTOR = 'td.dataCell input';
 
@@ -51,9 +41,10 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
       .locator(`xpath=${LIST_VIEW_PORTAL_LINKS_XPATH_SELECTOR}`)
       .first()
       .waitFor();
-
     const response: Config = await page
-      .locator(`xpath=${LIST_VIEW_PORTAL_LINKS_XPATH_SELECTOR}`)
+      .locator(
+        'xpath=//div[contains(@class,"pbBody")]//th[contains(@class,"dataCell")]//a[starts-with(@href, "/060")]'
+      )
       .evaluateAll((links: HTMLAnchorElement[]) => {
         return links.map((a) => {
           return {
@@ -66,30 +57,29 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
     for (const portal of response) {
       const portalPage = await this.browserforce.openPage(`${portal._id}/e`);
       portal.description = await portalPage
-        .locator(PORTAL_DESCRIPTION_SELECTOR)
-        .evaluate((el: HTMLInputElement) => el.value);
-      portal.adminUser = await portalPage
-        .locator(`#${PORTAL_ADMIN_ID_SELECTOR}`)
-        .evaluate((el: HTMLInputElement) => el.value);
+        .locator('input#Description')
+        .inputValue();
+      portal.adminUser = await portalPage.locator('input#Admin').inputValue();
       portal.isSelfRegistrationActivated = await portalPage
-        .locator(`#${PORTAL_IS_SELF_REGISTRATION_ACTIVATED_ID_SELECTOR}`)
+        .locator('input#IsSelfRegistrationActivated')
         .isChecked();
       portal.selfRegUserDefaultLicense = await portalPage
-        .locator(`#${PORTAL_SELF_REG_USER_DEFAULT_LICENSE_ID_SELECTOR}`)
-        .evaluate((el: HTMLSelectElement) => el.selectedOptions[0].text);
+        .locator('select#SelfRegUserDefaultLicense option:checked')
+        .textContent();
       portal.selfRegUserDefaultRole = await portalPage
-        .locator(`#${PORTAL_SELF_REG_USER_DEFAULT_ROLE_ID_SELECTOR}`)
-        .evaluate((el: HTMLSelectElement) => el.selectedOptions[0].text);
+        .locator('select#SelfRegUserDefaultRole option:checked')
+        .textContent();
       portal.selfRegUserDefaultProfile = await portalPage
-        .locator(`#${PORTAL_SELF_REG_USER_DEFAULT_PROFILE_ID_SELECTOR}`)
-        .evaluate((el: HTMLSelectElement) => el.selectedOptions[0].text);
+        .locator('select#SelfRegUserDefaultProfile option:checked')
+        .textContent();
       await portalPage.close();
       // portalProfileMemberships
       const portalProfilePage = await this.browserforce.openPage(
         `${PORTAL_PROFILE_MEMBERSHIP_PATH}?portalId=${portal._id}&setupid=CustomerSuccessPortalSettings`
       );
+      // TODO: is this necessary?
       await portalProfilePage
-        .locator(PORTAL_ID_SELECTOR)
+        .locator('input#portalId[type="hidden"]')
         .waitFor({ state: 'attached' });
       const profiles = await portalProfilePage
         .locator(PORTAL_PROFILE_MEMBERSHIP_PROFILES_SELECTOR)
@@ -196,52 +186,34 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
           urlAttributes['Description'] = portal.description;
         }
         if (portal.adminUser) {
-          urlAttributes[PORTAL_ADMIN_ID_SELECTOR] = portal.adminUser;
+          urlAttributes['Admin'] = portal.adminUser;
         }
         if (portal.isSelfRegistrationActivated !== undefined) {
-          urlAttributes[PORTAL_IS_SELF_REGISTRATION_ACTIVATED_ID_SELECTOR] =
+          urlAttributes['IsSelfRegistrationActivated'] =
             portal.isSelfRegistrationActivated ? 1 : 0;
         }
         const page = await this.browserforce.openPage(
           `${portal._id}/e?${queryString.stringify(urlAttributes)}`
         );
-        await page.locator(PORTAL_DESCRIPTION_SELECTOR).waitFor();
+        await page.locator('input#Description').waitFor();
         if (portal.selfRegUserDefaultLicense) {
-          const licenseValue = await page
-            .locator(
-              `xpath=//select[@id="${PORTAL_SELF_REG_USER_DEFAULT_LICENSE_ID_SELECTOR}"]//option[text()="${portal.selfRegUserDefaultLicense}"]`
-            )
-            .first()
-            .evaluate((option: HTMLOptionElement) => option.value);
           await page
-            .locator(`#${PORTAL_SELF_REG_USER_DEFAULT_LICENSE_ID_SELECTOR}`)
-            .selectOption(licenseValue);
+            .locator('select#SelfRegUserDefaultLicense')
+            .selectOption({ label: portal.selfRegUserDefaultLicense });
         }
         if (portal.selfRegUserDefaultRole) {
-          const roleValue = await page
-            .locator(
-              `xpath=//select[@id="${PORTAL_SELF_REG_USER_DEFAULT_ROLE_ID_SELECTOR}"]//option[text()="${portal.selfRegUserDefaultRole}"]`
-            )
-            .first()
-            .evaluate((option: HTMLOptionElement) => option.value);
           await page
-            .locator(`#${PORTAL_SELF_REG_USER_DEFAULT_ROLE_ID_SELECTOR}`)
-            .selectOption(roleValue);
+            .locator('select#SelfRegUserDefaultRole')
+            .selectOption({ label: portal.selfRegUserDefaultRole });
         }
         if (portal.selfRegUserDefaultProfile) {
-          const profileValue = await page
-            .locator(
-              `xpath=//select[@id="${PORTAL_SELF_REG_USER_DEFAULT_PROFILE_ID_SELECTOR}"]//option[text()="${portal.selfRegUserDefaultProfile}"]`
-            )
-            .first()
-            .evaluate((option: HTMLOptionElement) => option.value);
           await page
-            .locator(`#${PORTAL_SELF_REG_USER_DEFAULT_PROFILE_ID_SELECTOR}`)
-            .selectOption(profileValue);
+            .locator('select#SelfRegUserDefaultProfile')
+            .selectOption({ label: portal.selfRegUserDefaultProfile });
         }
         await page.locator(SAVE_BUTTON_SELECTOR).first().click();
         await Promise.race([
-          page.waitForURL((url) => !url.href.includes(portal._id)),
+          page.waitForURL((url) => !url.pathname.includes(portal._id)),
           waitForPageErrors(page),
         ]);
         // portalProfileMemberships

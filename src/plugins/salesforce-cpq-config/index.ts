@@ -45,13 +45,13 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
                 ) {
                   response[keyTab][keyItem] = await page
                     .locator(`${item.component}[name="${item.name}"]`)
-                    .evaluate((el: HTMLInputElement) => el.value);
+                    .inputValue();
                 } else if (item.component === 'select') {
                   response[keyTab][keyItem] = await page
-                    .locator(`${item.component}[name="${item.name}"]`)
-                    .evaluate(
-                      (el: HTMLSelectElement) => el.selectedOptions[0].text
-                    );
+                    .locator(
+                      `${item.component}[name="${item.name}"] option:checked`
+                    )
+                    .textContent();
                 }
               } catch (e) {
                 if (

@@ -52,16 +52,14 @@ export class Capacity extends BrowserforcePlugin {
       return {};
     }
 
-    const capacityModel =
-      (await page
-        .locator(`${CAPACITY_MODEL_SELECTOR} > option[selected]`)
-        .evaluate((el: HTMLOptionElement) => el.value)) ?? '';
+    const capacityModel = await page
+      .locator(`${CAPACITY_MODEL_SELECTOR}`)
+      .inputValue();
 
     if (capacityModel === 'StatusBased') {
-      const statusField =
-        (await page
-          .locator(`${STATUS_FIELD_SELECTOR} > option[selected]`)
-          .evaluate((el: HTMLOptionElement) => el.value)) ?? '';
+      const statusField = await page
+        .locator(`${STATUS_FIELD_SELECTOR}`)
+        .inputValue();
       const valuesForInProgress = await page
         .locator(`${VALUES_IN_PROGRESS_SELECTOR} > option:not(:disabled)`)
         .evaluateAll((options: HTMLOptionElement[]) => {
