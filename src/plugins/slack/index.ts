@@ -10,7 +10,6 @@ const SALES_CLOUD_FOR_SLACK_CHECKBOX =
   'input[type="checkbox"][name="SlkSetupStepSalesCloudForSlack"]';
 // unfortunately the divs intercept pointer events so we need to click on the label instead
 const SALES_CLOUD_FOR_SLACK_CHECKBOX_TOGGLE = `lightning-primitive-input-toggle:has(${SALES_CLOUD_FOR_SLACK_CHECKBOX})`;
-const TOAST_MESSAGE = 'div[id^="toastDescription"]';
 
 export type Config = {
   agreeToTermsAndConditions: boolean;
@@ -40,17 +39,15 @@ export class Slack extends BrowserforcePlugin {
     const page = await this.browserforce.openPage(BASE_PATH);
     if (state.agreeToTermsAndConditions !== config.agreeToTermsAndConditions) {
       await Promise.all([
-        page.locator(TOAST_MESSAGE).waitFor(),
+        page.waitForResponse(/handleSlackSalesAppPrefToggle=1/),
         page.locator(TOS_CHECKBOX_TOGGLE).click(),
       ]);
-      await page.locator(TOAST_MESSAGE).waitFor({ state: 'hidden' });
     }
     if (state.enableSalesCloudForSlack !== config.enableSalesCloudForSlack) {
       await Promise.all([
-        page.locator(TOAST_MESSAGE).waitFor(),
+        page.waitForResponse(/handleSlackSalesAppPrefToggle=1/),
         page.locator(SALES_CLOUD_FOR_SLACK_CHECKBOX_TOGGLE).click(),
       ]);
-      await page.locator(TOAST_MESSAGE).waitFor({ state: 'hidden' });
     }
     await page.close();
   }
