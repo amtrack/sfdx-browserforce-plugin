@@ -13,7 +13,7 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
     const page = await this.browserforce.openPage(BASE_PATH);
     const response = {
       enabled: await page
-        .getByRole('checkbox', { name: 'Allow users to relate a' })
+        .locator('input[id$=":sharedContactsCheckBox"]')
         .isChecked(),
     };
     await page.close();
@@ -24,25 +24,25 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
     const page = await this.browserforce.openPage(BASE_PATH);
     await this.waitForProcessFinished(page);
     // First we have to click the 'Edit' button, to make the checkbox editable
-    await page.getByRole('button', { name: 'edit' }).first().click();
+    await Promise.all([
+      page.waitForEvent('load'),
+      page.locator('input[id$=":edit"]').first().click(),
+    ]);
     // Change the value of the checkbox
     await page
-      .getByRole('checkbox', { name: 'Allow users to relate a' })
-      .click();
-    await page
-      .getByRole('button', { name: 'save' })
-      .first()
-      .click({ timeout: 90_000 });
+      .locator('input[id$=":sharedContactsCheckBox"]')
+      .setChecked(config.enabled);
 
-    if (
-      await page
-        .getByRole('heading', { name: 'Disable Contacts to Multiple' })
-        .isVisible()
-    ) {
-      await page
-        .getByRole('checkbox', { name: 'Yes, I understand that this' })
-        .click();
-      await page.getByRole('button', { name: 'Disable' }).click();
+    const saveButton = page.locator('input[id$=":save"]').first();
+    if (config.enabled) {
+      await Promise.all([page.waitForEvent('load'), saveButton.click()]);
+    } else {
+      await saveButton.click();
+      await page.locator('input#disable_confirm').click();
+      await Promise.all([
+        page.waitForEvent('load'),
+        page.locator('input#sharedContactsDisableConfirmButton').click(),
+      ]);
     }
 
     await page.close();
@@ -50,22 +50,14 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
 
   async waitForProcessFinished(page: Page): Promise<void> {
     await retry(async () => {
-      const enablingCount = await page
-        .getByText("In progress: We're enabling")
-        .count();
-      if (enablingCount > 0) {
-        const message = await page
-          .getByText("In progress: We're enabling")
-          .innerText();
+      const enabling = page.locator('#enablingInProgress');
+      if ((await enabling.count()) > 0) {
+        const message = await enabling.innerText();
         throw new Error(message);
       }
-      const disablingCount = await page
-        .getByText("In progress: We're disabling")
-        .count();
-      if (disablingCount > 0) {
-        const message = await page
-          .getByText("In progress: We're disabling")
-          .innerText();
+      const disabling = page.locator('#disablingInProgress');
+      if ((await disabling.count()) > 0) {
+        const message = await disabling.innerText();
         throw new Error(message);
       }
     });
