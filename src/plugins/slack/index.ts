@@ -39,7 +39,7 @@ export class Slack extends BrowserforcePlugin {
     const page = await this.browserforce.openPage(BASE_PATH);
     if (state.agreeToTermsAndConditions !== config.agreeToTermsAndConditions) {
       await Promise.all([
-        page.waitForResponse(/handleSlackSalesAppPrefToggle=1/),
+        page.waitForResponse(/handleSlackBetaTOSPref=1/),
         page.locator(TOS_CHECKBOX_TOGGLE).click(),
       ]);
     }
