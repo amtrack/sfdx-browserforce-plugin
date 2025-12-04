@@ -35,7 +35,7 @@ export class LinkedInSalesNavigatorPage {
         this.page.waitForResponse(/LinkedInIntegrationSetup.updatePref=1/),
         waitForPageErrors(this.page),
       ]),
-      async () => {
+      (async () => {
         if (enable) {
           await this.page.locator(ENABLE_BUTTON).click();
           await this.page.locator(CONFIRM_CHECKBOX).click();
@@ -43,7 +43,7 @@ export class LinkedInSalesNavigatorPage {
         } else {
           await this.page.locator(ENABLE_BUTTON).click();
         }
-      },
+      })(),
     ]);
     await this.page.close();
   }

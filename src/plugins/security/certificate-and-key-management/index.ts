@@ -176,7 +176,7 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
         await page.locator(SAVE_BUTTON_SELECTOR).first().click();
         await Promise.race([
           page.waitForURL((url) => url.pathname !== `/${KEYSTORE_IMPORT_PATH}`),
-          async () => {
+          (async () => {
             try {
               await waitForPageErrors(page);
             } catch (e) {
@@ -187,7 +187,7 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
               }
               throw e;
             }
-          },
+          })(),
         ]);
         if (certificate.name) {
           // rename cert as it has the wrong name
