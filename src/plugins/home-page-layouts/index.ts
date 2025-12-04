@@ -93,6 +93,7 @@ export class HomePageLayouts extends BrowserforcePlugin {
         (p) => p.Name === assignment.profile
       );
       if (!profile) {
+        await page.close();
         throw new Error(`could not find profile '${assignment.profile}'`);
       }
       let homePageLayout = homePageLayouts.records.find(
@@ -102,6 +103,7 @@ export class HomePageLayouts extends BrowserforcePlugin {
         homePageLayout = { Id: 'default', Name: 'default' };
       }
       if (homePageLayout === undefined) {
+        await page.close();
         throw new Error(
           `Could not find home page layout "${homePageLayoutName}" in list of home page layouts: ${homePageLayouts.records.map(
             (l) => l.Name

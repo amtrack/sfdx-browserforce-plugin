@@ -37,6 +37,7 @@ export class CompanyInformation extends BrowserforcePlugin {
         .locator(`${CURRENCY_DROPDOWN_SELECTOR} > option`)
         .allTextContents();
       if (!availableCurrencies.includes(config.defaultCurrencyIsoCode)) {
+        await page.close();
         throw new Error(
           `Invalid currency provided. '${config.defaultCurrencyIsoCode}' is not a valid option available for currencies. Please use the exact name as it appears in the list.`
         );

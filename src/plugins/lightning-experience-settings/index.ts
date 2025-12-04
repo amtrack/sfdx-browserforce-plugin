@@ -68,6 +68,7 @@ export class LightningExperienceSettings extends BrowserforcePlugin {
       (theme) => theme.developerName === themeDeveloperName
     );
     if (!theme) {
+      await page.close();
       throw new Error(
         `Could not find theme "${themeDeveloperName}" in list of themes: ${data.map(
           (d) => d.developerName

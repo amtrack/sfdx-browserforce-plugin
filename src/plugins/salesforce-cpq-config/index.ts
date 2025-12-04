@@ -161,6 +161,7 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
                   const availableOption = selectFieldOptions.map(
                     (option) => option.text
                   );
+                  await page.close();
                   throw new Error(
                     `Fail to set '${item.label}' with value '${
                       config[keyTab][keyItem]

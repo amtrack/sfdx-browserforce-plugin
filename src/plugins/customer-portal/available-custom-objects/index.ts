@@ -70,6 +70,7 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
           );
         });
         if (!customObject) {
+          await page.close();
           throw new Error(
             `Could not find CustomObject: {DeveloperName: ${availableCustomObject.name}, NamespacePrefix: ${availableCustomObject.namespacePrefix}`
           );

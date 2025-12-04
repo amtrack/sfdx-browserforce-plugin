@@ -171,6 +171,7 @@ export class Picklists extends BrowserforcePlugin {
               action.replaceAllBlankValues
             );
           } else {
+            await page.close();
             throw new Error(
               `Could not determine action for input: ${JSON.stringify(action)}`
             );

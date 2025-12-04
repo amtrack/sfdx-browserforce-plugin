@@ -154,9 +154,6 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
     }
     if (plan.importFromKeystore) {
       for (const certificate of plan.importFromKeystore) {
-        const page = await this.browserforce.openPage(
-          `${KEYSTORE_IMPORT_PATH}`
-        );
         // TODO: make relative to this.command.flags.definitionfile
         if (!certificate.filePath) {
           throw new Error(
@@ -167,6 +164,9 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
         if (!existsSync(filePath)) {
           throw new Error(`file does not exist: ${filePath}`);
         }
+        const page = await this.browserforce.openPage(
+          `${KEYSTORE_IMPORT_PATH}`
+        );
         await page.locator(FILE_UPLOAD_SELECTOR).setInputFiles(filePath);
         if (certificate.password) {
           await page

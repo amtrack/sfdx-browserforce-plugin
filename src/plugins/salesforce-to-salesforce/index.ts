@@ -40,6 +40,7 @@ export class SalesforceToSalesforce extends BrowserforcePlugin {
 
       const result = await this.retrieve();
       if (result.enabled !== config.enabled) {
+        await page.close();
         throw new Error('setting was not applied as expected');
       }
     });

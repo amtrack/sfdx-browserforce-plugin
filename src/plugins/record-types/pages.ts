@@ -62,6 +62,7 @@ export class RecordTypeDeletePage {
       if ((await bodyElement.count()) > 0) {
         const errorMsg = await bodyElement.textContent();
         if (errorMsg?.trim()) {
+          await this.page.close();
           throw new Error(errorMsg.trim());
         }
       }

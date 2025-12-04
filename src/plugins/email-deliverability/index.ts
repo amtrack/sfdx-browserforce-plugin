@@ -24,6 +24,7 @@ export class EmailDeliverability extends BrowserforcePlugin {
       .textContent();
     await page.close();
     if (!selectedOption) {
+      await page.close();
       throw new Error('Selected access level not found...');
     }
     return {
