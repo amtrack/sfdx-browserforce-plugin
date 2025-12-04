@@ -88,7 +88,7 @@ export class HomePageLayouts extends BrowserforcePlugin {
     const profiles = await this.org
       .getConnection()
       .tooling.query<ProfileRecord>(
-        `SELECT Id, Name FROM Profile WHERE NAME IN (${profilesList})`
+        `SELECT Id, Name FROM Profile WHERE Name IN (${profilesList})`
       );
     const homePageLayouts = await this.org
       .getConnection()
