@@ -8,10 +8,6 @@ const PORTAL_PROFILE_MEMBERSHIP_PATH =
   '_ui/core/portal/PortalProfileMembershipPage/e';
 
 const SAVE_BUTTON_SELECTOR = 'input[name="save"]';
-const LIST_VIEW_PORTAL_LINKS_XPATH_SELECTOR =
-  '//div[contains(@class,"pbBody")]//th[contains(@class,"dataCell")]//a[starts-with(@href, "/060")]';
-const PORTAL_PROFILE_MEMBERSHIP_PROFILES_SELECTOR = 'th.dataCell';
-const PORTAL_PROFILE_MEMBERSHIP_CHECKBOXES_SELECTOR = 'td.dataCell input';
 
 export type Config = PortalConfig[];
 
@@ -37,15 +33,12 @@ type PortalProfileMembership = {
 export class CustomerPortalSetup extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
     const page = await this.browserforce.openPage(LIST_VIEW_PATH);
-    await page
-      .locator(`xpath=${LIST_VIEW_PORTAL_LINKS_XPATH_SELECTOR}`)
-      .first()
-      .waitFor();
-    const response: Config = await page
-      .locator(
-        'xpath=//div[contains(@class,"pbBody")]//th[contains(@class,"dataCell")]//a[starts-with(@href, "/060")]'
-      )
-      .evaluateAll((links: HTMLAnchorElement[]) => {
+    const portalLinksLocator = page.locator(
+      'xpath=//div[contains(@class,"pbBody")]//th[contains(@class,"dataCell")]//a[starts-with(@href, "/060")]'
+    );
+    await portalLinksLocator.first().waitFor();
+    const response: Config = await portalLinksLocator.evaluateAll(
+      (links: HTMLAnchorElement[]) => {
         return links.map((a) => {
           return {
             _id: a.pathname.split('/')[1],
@@ -53,7 +46,8 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
             portalProfileMemberships: [],
           };
         });
-      });
+      }
+    );
     for (const portal of response) {
       const portalPage = await this.browserforce.openPage(`${portal._id}/e`);
       portal.description = await portalPage
@@ -77,17 +71,11 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
       const portalProfilePage = await this.browserforce.openPage(
         `${PORTAL_PROFILE_MEMBERSHIP_PATH}?portalId=${portal._id}&setupid=CustomerSuccessPortalSettings`
       );
-      // TODO: is this necessary?
-      await portalProfilePage
-        .locator('input#portalId[type="hidden"]')
-        .waitFor({ state: 'attached' });
-      const profiles = await portalProfilePage
-        .locator(PORTAL_PROFILE_MEMBERSHIP_PROFILES_SELECTOR)
-        .evaluateAll((ths: HTMLTableHeaderCellElement[]) => {
-          return ths.map((th) => th.innerText.trim());
-        });
+      const profilesLocator = portalProfilePage.locator('th.dataCell');
+      await profilesLocator.first().waitFor();
+      const profiles = await profilesLocator.allTextContents();
       const checkboxes = await portalProfilePage
-        .locator(PORTAL_PROFILE_MEMBERSHIP_CHECKBOXES_SELECTOR)
+        .locator('td.dataCell input')
         .evaluateAll((inputs: HTMLInputElement[]) => {
           return inputs.map((input) => {
             return {

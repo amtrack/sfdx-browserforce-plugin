@@ -29,34 +29,22 @@ export class HomePageLayouts extends BrowserforcePlugin {
     const page = await this.browserforce.openPage(BASE_PATH);
     await page.locator(BASE_SELECTOR).waitFor();
 
-    const profiles = await page
-      .locator('table.detailList tbody tr td label')
-      .evaluateAll((labels: HTMLLabelElement[]) => {
-        return labels.map((label) => {
-          for (let i = 0; i < label.childNodes.length; i++) {
-            if (label.childNodes[i].nodeType === label.TEXT_NODE) {
-              return label.childNodes[i].nodeValue ?? '';
-            }
-          }
-          throw new Error('retrieving HomePageLayouts failed');
-        });
-      });
+    const profiles = (
+      await page.locator('table.detailList tbody tr td label').allTextContents()
+    ).map((label) => label.replace(/^\*/, '')); // removing * from assistiveText
 
-    const layouts = await page
-      .locator('table.detailList tbody tr td select')
-      .evaluateAll((selects: HTMLSelectElement[]) => {
-        return selects
-          .map((select) => select.selectedOptions[0].text)
-          .map((text) => (text === 'Home Page Default' ? '' : text));
-      });
+    const layouts = (
+      await page
+        .locator('table.detailList tbody tr td select option:checked')
+        .allTextContents()
+    ).map((layout) => (layout === 'Home Page Default' ? '' : layout)); // value is "default" instead of an id
 
-    const homePageLayoutAssignments: HomePageLayoutAssignment[] = [];
-    for (let i = 0; i < profiles.length; i++) {
-      homePageLayoutAssignments.push({
-        profile: profiles[i],
+    const homePageLayoutAssignments: HomePageLayoutAssignment[] = profiles.map(
+      (profile, i) => ({
+        profile,
         layout: layouts[i],
-      });
-    }
+      })
+    );
     await page.close();
     return {
       homePageLayoutAssignments,
