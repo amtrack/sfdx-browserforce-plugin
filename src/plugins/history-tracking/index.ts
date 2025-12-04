@@ -178,18 +178,17 @@ export class HistoryTracking extends BrowserforcePlugin {
       }
 
       // Save the settings
-      const afterSavePromise = Promise.race([
-        page.waitForURL(
-          (url) => url.pathname !== `/ui/setup/layout/FieldHistoryTracking`
-        ),
-        waitForPageErrors(page),
-      ]);
       await page
         .locator(SAVE_BUTTON_SELECTOR)
         .filter({ visible: true }) // there are three save buttons [not visible, top row, bottom row]
         .first()
         .click();
-      await afterSavePromise;
+      await Promise.race([
+        page.waitForURL(
+          (url) => url.pathname !== `/ui/setup/layout/FieldHistoryTracking`
+        ),
+        waitForPageErrors(page),
+      ]);
 
       // Close the page
       await page.close();

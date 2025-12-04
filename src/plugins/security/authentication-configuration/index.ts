@@ -98,10 +98,13 @@ export class AuthenticationConfiguration extends BrowserforcePlugin {
         'Change failed: "You must select at least one authentication service."'
       );
     }
-    await frameOrPage.locator(SAVE_BUTTON_SELECTOR).first().click();
-    await page.waitForResponse(
-      (resp) => new URL(resp.url()).pathname === '/domainname/DomainName.apexp'
-    );
+    await Promise.all([
+      page.waitForResponse(
+        (resp) =>
+          new URL(resp.url()).pathname === '/domainname/DomainName.apexp'
+      ),
+      frameOrPage.locator(SAVE_BUTTON_SELECTOR).first().click(),
+    ]);
     await page.close();
   }
 }

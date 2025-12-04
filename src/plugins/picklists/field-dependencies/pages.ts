@@ -31,12 +31,13 @@ export class FieldDependencyPage {
       this.page.on('dialog', async (dialog) => {
         await dialog.accept();
       });
-      const promise = Promise.race([
-        this.page.waitForResponse(/setup\/ui\/dependencyList.jsp/),
-        waitForPageErrors(this.page),
+      await Promise.all([
+        Promise.race([
+          this.page.waitForResponse(/setup\/ui\/dependencyList.jsp/),
+          waitForPageErrors(this.page),
+        ]),
+        actionLinks[0].click(),
       ]);
-      await actionLinks[0].click();
-      await promise;
     }
     return new FieldDependencyPage(this.page);
   }

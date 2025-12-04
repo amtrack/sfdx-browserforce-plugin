@@ -30,18 +30,21 @@ export class LinkedInSalesNavigatorPage {
   }
 
   public async setStatus(enable: boolean): Promise<void> {
-    const afterSavePromise = Promise.race([
-      this.page.waitForResponse(/LinkedInIntegrationSetup.updatePref=1/),
-      waitForPageErrors(this.page),
+    await Promise.all([
+      Promise.race([
+        this.page.waitForResponse(/LinkedInIntegrationSetup.updatePref=1/),
+        waitForPageErrors(this.page),
+      ]),
+      async () => {
+        if (enable) {
+          await this.page.locator(ENABLE_BUTTON).click();
+          await this.page.locator(CONFIRM_CHECKBOX).click();
+          await this.page.locator(ACCEPT_BUTTON).click();
+        } else {
+          await this.page.locator(ENABLE_BUTTON).click();
+        }
+      },
     ]);
-    if (enable) {
-      await this.page.locator(ENABLE_BUTTON).click();
-      await this.page.locator(CONFIRM_CHECKBOX).click();
-      await this.page.locator(ACCEPT_BUTTON).click();
-    } else {
-      await this.page.locator(ENABLE_BUTTON).click();
-    }
-    await afterSavePromise;
     await this.page.close();
   }
 }

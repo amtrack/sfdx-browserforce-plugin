@@ -39,13 +39,17 @@ export class Slack extends BrowserforcePlugin {
     const state = await this.retrieve();
     const page = await this.browserforce.openPage(BASE_PATH);
     if (state.agreeToTermsAndConditions !== config.agreeToTermsAndConditions) {
-      await page.locator(TOS_CHECKBOX_TOGGLE).click();
-      await page.locator(TOAST_MESSAGE).waitFor();
+      await Promise.all([
+        page.locator(TOAST_MESSAGE).waitFor(),
+        page.locator(TOS_CHECKBOX_TOGGLE).click(),
+      ]);
       await page.locator(TOAST_MESSAGE).waitFor({ state: 'hidden' });
     }
     if (state.enableSalesCloudForSlack !== config.enableSalesCloudForSlack) {
-      await page.locator(SALES_CLOUD_FOR_SLACK_CHECKBOX_TOGGLE).click();
-      await page.locator(TOAST_MESSAGE).waitFor();
+      await Promise.all([
+        page.locator(TOAST_MESSAGE).waitFor(),
+        page.locator(SALES_CLOUD_FOR_SLACK_CHECKBOX_TOGGLE).click(),
+      ]);
       await page.locator(TOAST_MESSAGE).waitFor({ state: 'hidden' });
     }
     await page.close();

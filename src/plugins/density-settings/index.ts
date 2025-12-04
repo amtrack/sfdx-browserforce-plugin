@@ -45,13 +45,13 @@ export class DensitySettings extends BrowserforcePlugin {
       );
     }
 
-    // Click the radio button with force to bypass label interception
-    const promise = Promise.race([
-      page.waitForResponse(/DensityUserSettings\.setDefaultDensitySetting=1/),
-      waitForPageErrors(page),
+    await Promise.all([
+      Promise.race([
+        page.waitForResponse(/DensityUserSettings\.setDefaultDensitySetting=1/),
+        waitForPageErrors(page),
+      ]),
+      radioButton.click(),
     ]);
-    await radioButton.click();
-    await promise;
     await page.close();
   }
 
