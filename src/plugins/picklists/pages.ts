@@ -155,10 +155,16 @@ export class DefaultPicklistAddPage {
   }
 
   async save(): Promise<void> {
-    const urlBefore = this.page.url();
     await this.page.locator(this.saveButton).click();
     await Promise.race([
-      this.page.waitForURL((url) => url.href !== urlBefore),
+      this.page.waitForURL(
+        (url) =>
+          url.pathname.startsWith('/00N') || // CustomField Definition
+          url.pathname.startsWith('/0Nt') || // SharedPicklistDefinition
+          url.pathname.startsWith(
+            '/_ui/common/config/field/StandardFieldAttributes'
+          )
+      ),
       waitForPageErrors(this.page),
     ]);
   }
@@ -253,15 +259,18 @@ export class PicklistReplaceAndDeletePage extends PicklistReplacePage {
   }
 
   async save(): Promise<void> {
-    await this.page.locator(this.saveButton).click({ timeout: 300_000 }); // 5 minutes
-    // NOTE: this might take really long
-    // await this.page.locator(this.saveButton).click({ noWaitAfter: true });
-    // /setup/ui/picklist_masterdelete.jsp?id=01JPw00000S7y4B&tid=a02&...
-    // ->
-    // /setup/ui/picklist_masterdelete.jsp
+    // NOTE: This sometimes takes really long
+    await this.page.locator(this.saveButton).click({ timeout: 300_000 });
     await Promise.race([
-      this.page.waitForURL((url) => !url.searchParams.has('id')),
-      waitForPageErrors(this.page),
+      this.page.waitForURL(
+        (url) =>
+          url.pathname.startsWith('/00N') || // CustomField Definition
+          url.pathname.startsWith('/0Nt') || // SharedPicklistDefinition
+          url.pathname.startsWith(
+            '/_ui/common/config/field/StandardFieldAttributes'
+          )
+      ),
+      waitForPageErrors(this.page, 120_000), // 2 minutes
     ]);
   }
 }
