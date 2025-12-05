@@ -36,10 +36,10 @@ export class RecordTypeDeletePage {
 
   async replace(newRecordTypeId?: string): Promise<void> {
     await this.throwOnMissingSaveButton();
-    const NEW_VALUE_SELECTOR = 'select#p2';
     if (newRecordTypeId) {
       await this.page
-        .locator(NEW_VALUE_SELECTOR)
+        .locator('select#p2')
+        .describe('new value')
         .selectOption(newRecordTypeId.slice(0, 15));
     }
     await this.save();

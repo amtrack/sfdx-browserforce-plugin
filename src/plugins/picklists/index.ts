@@ -27,7 +27,7 @@ type PicklistValuesConfig = {
   replaceAllBlankValues?: boolean;
   active?: boolean;
   absent?: boolean;
-  _newValueExists?: boolean;
+  _newValueId?: string;
 };
 
 export class Picklists extends BrowserforcePlugin {
@@ -54,14 +54,9 @@ export class Picklists extends BrowserforcePlugin {
           action.value !== undefined
             ? values.find((x) => x.value === action.value)
             : undefined;
-        const newValueMatch =
-          action.newValue !== undefined
-            ? values.find((x) => x.value === action.newValue)
-            : undefined;
         state.absent = !valueMatch;
         state.active = valueMatch?.active;
-        state._newValueExists =
-          Boolean(newValueMatch) || action.newValue === null;
+        state._newValueId = values.find((x) => x.value === action.newValue)?.id;
         result.picklistValues!.push(state);
         await page.close();
       }
@@ -88,12 +83,12 @@ export class Picklists extends BrowserforcePlugin {
         }
         // replacing a picklist value is not idempotent
         if (
-          source?._newValueExists &&
+          source?._newValueId &&
           (target.value !== undefined || target.replaceAllBlankValues)
         ) {
           return true;
         }
-        if (target.newValue && !source?._newValueExists) {
+        if (target.newValue && !source?._newValueId) {
           // New value doesn't exist in org yet
           return true;
         }
@@ -139,10 +134,14 @@ export class Picklists extends BrowserforcePlugin {
             );
           } else if (action.absent && action.value !== undefined) {
             // delete
+            const values = await picklistPage.getPicklistValues();
+            const newValueId = values.find(
+              (picklist) => picklist.value === action.newValue
+            )?.id;
             const replacePage = await picklistPage.clickDeleteActionForValue(
               action.value
             );
-            await replacePage.replaceAndDelete(action.newValue);
+            await replacePage.replaceAndDelete(newValueId);
             await replacePage.save();
           } else if (
             action.value === undefined &&
@@ -164,10 +163,21 @@ export class Picklists extends BrowserforcePlugin {
             action.newValue !== undefined
           ) {
             // replace
+            const values = await picklistPage.getPicklistValues();
+            const newValue = values.find(
+              (picklist) => picklist.value === action.newValue
+            );
+            let newValueLabel;
+            if (newValue?.label) {
+              newValueLabel = newValue.label;
+            }
+            if (newValue?.statusCategory !== undefined) {
+              newValueLabel += ` (${newValue.statusCategory})`;
+            }
             const replacePage = await picklistPage.clickReplaceActionButton();
             await replacePage.replace(
               action.value,
-              action.newValue,
+              newValueLabel,
               action.replaceAllBlankValues
             );
           } else {
