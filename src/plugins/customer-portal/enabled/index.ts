@@ -23,7 +23,7 @@ export class CustomerPortalEnable extends BrowserforcePlugin {
     await page.locator(ENABLE_CHECKBOX).setChecked(true);
     await page.locator(SAVE_BUTTON).first().click();
     await Promise.race([
-      page.waitForURL((url) => url.pathname !== `/${BASE_PATH}`),
+      page.waitForURL((url) => url.pathname === '/ui/setup/portal/RoleConversionWizardSplashPage' || url.pathname === '/_ui/core/portal/RoleInternalConvertWizard'),
       waitForPageErrors(page),
     ]);
   }

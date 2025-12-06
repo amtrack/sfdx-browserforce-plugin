@@ -2,7 +2,7 @@ import type { Record } from '@jsforce/jsforce-node';
 import { waitForPageErrors } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
 
-const BASE_PATH = 'setup/ui/assignhomelayoutedit.jsp';
+const BASE_PATH = `setup/ui/assignhomelayoutedit.jsp?retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`;
 
 const BASE_SELECTOR = 'table.detailList';
 const SAVE_BUTTON_SELECTOR = 'input[name="save"]';
@@ -115,7 +115,7 @@ export class HomePageLayouts extends BrowserforcePlugin {
 
     await page.locator(SAVE_BUTTON_SELECTOR).first().click();
     await Promise.race([
-      page.waitForURL((url) => url.pathname !== `/${BASE_PATH}`),
+      page.waitForURL((url) => url.pathname === '/setup/forcecomHomepage.apexp'),
       waitForPageErrors(page),
     ]);
   }

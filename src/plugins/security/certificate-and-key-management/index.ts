@@ -6,7 +6,7 @@ import { waitForPageErrors } from '../../../browserforce.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
 
 const CERT_PREFIX_PATH = '0P1';
-const KEYSTORE_IMPORT_PATH = '_ui/security/certificate/KeyStoreImportUi/e';
+const KEYSTORE_IMPORT_PATH = `_ui/security/certificate/KeyStoreImportUi/e?retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`;
 
 const FILE_UPLOAD_SELECTOR = 'input[type="file"]';
 const KEYSTORE_PASSWORD_SELECTOR = 'input#Password';
@@ -174,7 +174,7 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
         }
         await page.locator(SAVE_BUTTON_SELECTOR).first().click();
         await Promise.race([
-          page.waitForURL((url) => url.pathname !== `/${KEYSTORE_IMPORT_PATH}`),
+          page.waitForURL((url) => url.pathname === '/setup/forcecomHomepage.apexp'),
           (async () => {
             try {
               await waitForPageErrors(page);
@@ -198,12 +198,12 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
             );
           const importedCert = certsResponse.records[0];
           await using certPage = await this.browserforce.openPage(
-            `${importedCert.Id}/e?MasterLabel=${certificate.name}&DeveloperName=${certificate.name}`
+            `${importedCert.Id}/e?MasterLabel=${certificate.name}&DeveloperName=${certificate.name}&retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`
           );
           await certPage.locator(SAVE_BUTTON_SELECTOR).first().click();
           await Promise.race([
             await page.waitForURL(
-              (url) => url.pathname !== `/${importedCert.Id}/e`
+              (url) => url.pathname === '/setup/forcecomHomepage.apexp'
             ),
             waitForPageErrors(certPage),
           ]);

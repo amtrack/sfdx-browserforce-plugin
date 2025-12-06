@@ -212,12 +212,12 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
               portal._id
             }&setupid=CustomerSuccessPortalSettings&${queryString.stringify(
               membershipUrlAttributes
-            )}`
+            )}&retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`
           );
           await portalProfilePage.locator(SAVE_BUTTON_SELECTOR).first().click();
           await Promise.race([
             portalProfilePage.waitForURL(
-              (url) => url.pathname !== `/${PORTAL_PROFILE_MEMBERSHIP_PATH}`
+              (url) => url.pathname === '/setup/forcecomHomepage.apexp'
             ),
             waitForPageErrors(portalProfilePage),
           ]);

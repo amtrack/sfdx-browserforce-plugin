@@ -1,7 +1,7 @@
 import { waitForPageErrors } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
 
-const BASE_PATH = 'ui/setup/layout/FieldHistoryTracking?pEntity={APINAME}';
+const BASE_PATH = `ui/setup/layout/FieldHistoryTracking?pEntity={APINAME}&retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`;
 
 const ENABLE_HISTORY_SELECTOR = 'input[type="checkbox"][id="enable"]';
 const ENABLE_FIELD_HISTORY_SELECTOR = 'input[id="{APINAME}_fht"]';
@@ -183,7 +183,7 @@ export class HistoryTracking extends BrowserforcePlugin {
         .click();
       await Promise.race([
         page.waitForURL(
-          (url) => url.pathname !== `/ui/setup/layout/FieldHistoryTracking`
+          (url) => url.pathname.startsWith('/setup/forcecomHomepage.apexp')
         ),
         waitForPageErrors(page),
       ]);
