@@ -34,7 +34,7 @@ export class HistoryTracking extends BrowserforcePlugin {
       const historyTrackingResult = { ...historyTrackingConfig };
 
       // Open the object history tracking setup page
-      const page = await this.browserforce.openPage(
+      await using page = await this.browserforce.openPage(
         BASE_PATH.replace(
           '{APINAME}',
           tableEnumOrIdByObjectApiName.get(historyTrackingConfig.objectApiName)
@@ -103,8 +103,6 @@ export class HistoryTracking extends BrowserforcePlugin {
 
       historyTrackingResult.fieldHistoryTracking = fieldHistoryTrackingConfigs;
       historyTrackingConfigs.push(historyTrackingResult);
-
-      await page.close();
     }
 
     return historyTrackingConfigs;
@@ -119,7 +117,7 @@ export class HistoryTracking extends BrowserforcePlugin {
     // Now we can iterate over all history tracking configurations in the plan
     for (const historyTrackingConfig of plan) {
       // Open the object history tracking setup page
-      const page = await this.browserforce.openPage(
+      await using page = await this.browserforce.openPage(
         BASE_PATH.replace(
           '{APINAME}',
           tableEnumOrIdByObjectApiName.get(historyTrackingConfig.objectApiName)
@@ -189,9 +187,6 @@ export class HistoryTracking extends BrowserforcePlugin {
         ),
         waitForPageErrors(page),
       ]);
-
-      // Close the page
-      await page.close();
     }
   }
 

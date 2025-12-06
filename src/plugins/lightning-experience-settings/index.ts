@@ -20,20 +20,18 @@ type Theme = {
 
 export class LightningExperienceSettings extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
-    const page = await this.browserforce.openPage(BASE_PATH);
+    await using page = await this.browserforce.openPage(BASE_PATH);
     const themes = await this.getThemeData(page);
     const activeTheme = themes.find((theme) => theme.isActive);
     const response = {
       activeThemeName: activeTheme!.developerName,
     };
-    await page.close();
     return response;
   }
 
   public async apply(config: Config): Promise<void> {
-    const page = await this.browserforce.openPage(BASE_PATH);
+    await using page = await this.browserforce.openPage(BASE_PATH);
     await this.setActiveTheme(page, config.activeThemeName);
-    await page.close();
   }
 
   async getThemeData(page: Page): Promise<Theme[]> {
@@ -68,7 +66,6 @@ export class LightningExperienceSettings extends BrowserforcePlugin {
       (theme) => theme.developerName === themeDeveloperName
     );
     if (!theme) {
-      await page.close();
       throw new Error(
         `Could not find theme "${themeDeveloperName}" in list of themes: ${data.map(
           (d) => d.developerName

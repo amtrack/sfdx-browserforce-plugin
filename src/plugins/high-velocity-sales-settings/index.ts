@@ -35,10 +35,9 @@ export class HighVelocitySalesSettings extends BrowserforcePlugin {
 
   public async apply(config: Config): Promise<void> {
     if (config.setUpAndEnable) {
-      const page = new HighVelocitySalesSetupPage(
-        await this.browserforce.openPage(HighVelocitySalesSetupPage.getUrl())
-      );
-      await page.setUpAndEnable();
+      await using page = await this.browserforce.openPage(HighVelocitySalesSetupPage.getUrl());
+      const hvs = new HighVelocitySalesSetupPage(page);
+      await hvs.setUpAndEnable();
     } else {
       const conn = this.org.getConnection();
       await disableHighVelocitySalesUsingMetadata(conn);

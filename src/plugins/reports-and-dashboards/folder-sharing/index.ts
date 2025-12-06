@@ -15,7 +15,7 @@ export class FolderSharing extends BrowserforcePlugin {
     const response = {
       enableEnhancedFolderSharing: true,
     };
-    const page = await this.browserforce.openPage(BASE_PATH);
+    await using page = await this.browserforce.openPage(BASE_PATH);
 
     try {
       const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(
@@ -35,13 +35,10 @@ export class FolderSharing extends BrowserforcePlugin {
       }
     } catch (e) {
       if (e instanceof Error && e.message.match('Insufficient Privileges')) {
-        await page.close();
         return response;
       }
-      await page.close();
       throw e;
     }
-    await page.close();
     return response;
   }
 
@@ -51,7 +48,7 @@ export class FolderSharing extends BrowserforcePlugin {
         '`enableEnhancedFolderSharing` cannot be disabled once enabled'
       );
     }
-    const page = await this.browserforce.openPage(BASE_PATH);
+    await using page = await this.browserforce.openPage(BASE_PATH);
     await page
       .locator(ENABLE_CHECKBOX_SELECTOR)
       .setChecked(config.enableEnhancedFolderSharing);
@@ -59,6 +56,5 @@ export class FolderSharing extends BrowserforcePlugin {
       page.waitForEvent('load'),
       page.locator(SAVE_BUTTON_SELECTOR).click(),
     ]);
-    await page.close();
   }
 }

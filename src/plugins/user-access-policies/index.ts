@@ -156,7 +156,7 @@ export class UserAccessPolicies extends BrowserforcePlugin {
       return;
     }
 
-    const page = await this.browserforce.openPage(
+    await using page = await this.browserforce.openPage(
       UserAccessPoliciesPage.getPolicyUrl(policyId)
     );
     const policiesPage = new UserAccessPoliciesPage(page);
@@ -167,15 +167,13 @@ export class UserAccessPolicies extends BrowserforcePlugin {
 
       if (needsTriggerTypeChange) {
         await policiesPage.deactivatePolicy();
-        await page.close();
 
-        const newPage = await this.browserforce.openPage(
+        await using newPage = await this.browserforce.openPage(
           UserAccessPoliciesPage.getPolicyUrl(policyId)
         );
         const newPoliciesPage = new UserAccessPoliciesPage(newPage);
 
         await newPoliciesPage.activatePolicy(policy.on);
-        await newPage.close();
       } else {
         const triggerOn: PolicyTriggerType =
           policy.on ||
@@ -184,11 +182,9 @@ export class UserAccessPolicies extends BrowserforcePlugin {
             : DEFAULT_TRIGGER_TYPE);
 
         await policiesPage.activatePolicy(triggerOn);
-        await page.close();
       }
     } else {
       await policiesPage.deactivatePolicy();
-      await page.close();
     }
   }
 }

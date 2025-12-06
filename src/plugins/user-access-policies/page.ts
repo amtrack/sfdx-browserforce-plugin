@@ -29,7 +29,6 @@ export class UserAccessPoliciesPage {
 
       await this.handleActivationModal(triggerOn);
     } catch (error) {
-      await this.page.close();
       throw new Error(`Failed to activate policy: ${error.message}`);
     }
   }
@@ -48,7 +47,6 @@ export class UserAccessPoliciesPage {
 
       await this.handleConfirmationModal();
     } catch (error) {
-      await this.page.close();
       throw new Error(`Failed to deactivate policy: ${error.message}`);
     }
   }
@@ -70,7 +68,6 @@ export class UserAccessPoliciesPage {
     const radioCount = await radioButtons.count();
 
     if (radioCount < 3) {
-      await this.page.close();
       throw new Error('Modal did not load - radio buttons not found');
     }
 
@@ -85,7 +82,6 @@ export class UserAccessPoliciesPage {
     }
 
     if (!radioButton) {
-      await this.page.close();
       throw new Error(`Radio button with value "${triggerOn}" not found`);
     }
 
@@ -123,7 +119,6 @@ export class UserAccessPoliciesPage {
       // TODO: use a better indicator
       await this.page.waitForTimeout(1000);
     } catch (e) {
-      await this.page.close();
       throw new Error(
         `Failed to handle deactivation confirmation modal: ${e.message}`
       );
@@ -151,7 +146,6 @@ export class UserAccessPoliciesPage {
       await this.page.waitForTimeout(500);
     }
 
-    await this.page.close();
     throw new Error(`Button did not become enabled within ${timeout}ms`);
   }
 }

@@ -28,6 +28,5 @@ export class HighVelocitySalesSetupPage {
       this.page.locator(ENABLE_TOGGLE).waitFor({ timeout: 90_000 }),
       waitForPageErrors(this.page),
     ]);
-    await this.page.close();
   }
 }

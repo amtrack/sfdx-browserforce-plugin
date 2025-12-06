@@ -34,7 +34,7 @@ describe('Browserforce', function () {
   });
   describe('waitForSelectorInFrameOrPage()', () => {
     it('should query a selector in LEX and Classic UI', async () => {
-      const page: Page = await global.bf.openPage(
+      await using page: Page = await global.bf.openPage(
         'lightning/setup/ExternalStrings/home'
       );
       const frame = await global.bf.waitForSelectorInFrameOrPage(
@@ -46,7 +46,6 @@ describe('Browserforce', function () {
       // ->
       // lightning/setup/ExternalStrings/page?address=/101/e
       await page.waitForURL((url) => url.searchParams.has('address'));
-      await page.close();
     });
   });
   describe('openPage()', () => {
@@ -62,10 +61,9 @@ describe('Browserforce', function () {
       delete process.env.BROWSERFORCE_RETRY_MAX_RETRIES;
     });
     it('should not throw any error opening a page', async () => {
-      const page = await global.bf.openPage(
+      await using _page = await global.bf.openPage(
         '_ui/common/config/field/StandardFieldAttributes/d?type=Account&id=Name'
       );
-      await page.close();
     });
   });
 });

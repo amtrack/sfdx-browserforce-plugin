@@ -19,7 +19,7 @@ export type Config = any;
 export class SalesforceCpqConfig extends BrowserforcePlugin {
   private logger = this.browserforce.logger;
   public async retrieve(definition?: Config): Promise<Config> {
-    const page = await this.browserforce.openPage(BASE_PATH);
+    await using page = await this.browserforce.openPage(BASE_PATH);
     await Promise.all([
       page.waitForEvent('load'),
       page.locator(CONFIGURE_SELECTOR).click(),
@@ -74,12 +74,11 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
         }
       }
     }
-    await page.close();
     return response;
   }
 
   public async apply(config: Config): Promise<void> {
-    const page = await this.browserforce.openPage(BASE_PATH);
+    await using page = await this.browserforce.openPage(BASE_PATH);
     await Promise.all([
       page.waitForEvent('load'),
       page.locator(CONFIGURE_SELECTOR).click(),
@@ -161,7 +160,6 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
                   const availableOption = selectFieldOptions.map(
                     (option) => option.text
                   );
-                  await page.close();
                   throw new Error(
                     `Fail to set '${item.label}' with value '${
                       config[keyTab][keyItem]
@@ -232,7 +230,7 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
           .context()
           .waitForEvent('page', (newPage) => newPage.url().includes(AUTH_PATH));
         await page.locator(AUTHORIZE_NEW_CALCULATION_SERVICE_SELECTOR).click();
-        const newPage = await popupPromise;
+        await using newPage = await popupPromise;
 
         if (newPage) {
           // Click on 'Allow' button
@@ -242,7 +240,6 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
           ]);
 
           this.logger?.log('The main page has refreshed after allowing.');
-          await newPage.close();
         } else {
           this.logger?.warn('Failed to retrieve the new page from the popup.');
         }
@@ -280,7 +277,5 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
         throw e;
       }
     }
-
-    await page.close();
   }
 }

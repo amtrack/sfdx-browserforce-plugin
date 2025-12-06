@@ -16,7 +16,7 @@ const SAVE_BUTTON_SELECTOR = 'input[id$=":Save"]';
 
 export class AuthenticationConfiguration extends BrowserforcePlugin {
   public async retrieve(definition: Config): Promise<Config> {
-    const page = await this.browserforce.openPage(EDIT_VIEW_PATH);
+    await using page = await this.browserforce.openPage(EDIT_VIEW_PATH);
     const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(
       page,
       SETUP_FORM_SELECTOR
@@ -47,12 +47,11 @@ export class AuthenticationConfiguration extends BrowserforcePlugin {
         definition.services
       );
 
-    await page.close();
     return { services };
   }
 
   public async apply(plan: Config): Promise<void> {
-    const page = await this.browserforce.openPage(EDIT_VIEW_PATH);
+    await using page = await this.browserforce.openPage(EDIT_VIEW_PATH);
     const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(
       page,
       SETUP_FORM_SELECTOR
@@ -77,7 +76,6 @@ export class AuthenticationConfiguration extends BrowserforcePlugin {
         }, svc.label)) as string | null;
 
       if (!checkboxId) {
-        await page.close();
         throw new Error(`Authentication service "${svc.label}" not found`);
       }
 
@@ -95,7 +93,6 @@ export class AuthenticationConfiguration extends BrowserforcePlugin {
         (inputs as HTMLInputElement[]).some((cb) => cb.checked)
       );
     if (!anyChecked) {
-      await page.close();
       throw new Error(
         'Change failed: "You must select at least one authentication service."'
       );
@@ -107,6 +104,5 @@ export class AuthenticationConfiguration extends BrowserforcePlugin {
       ),
       frameOrPage.locator(SAVE_BUTTON_SELECTOR).first().click(),
     ]);
-    await page.close();
   }
 }

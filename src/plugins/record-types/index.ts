@@ -68,7 +68,7 @@ export class RecordTypes extends BrowserforcePlugin {
         recordTypeFileProperties,
         recordTypes
       );
-      const page = await this.browserforce.openPage(
+      await using page = await this.browserforce.openPage(
         `ui/setup/rectype/RecordTypes?type=${recordType.EntityDefinitionId}`
       );
       const recordTypePage = new RecordTypePage(page);
@@ -83,7 +83,6 @@ export class RecordTypes extends BrowserforcePlugin {
         newRecordTypeId = replacementRecordType.Id;
       }
       await deletePage.replace(newRecordTypeId);
-      await page.close();
     }
   }
 }

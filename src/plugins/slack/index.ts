@@ -18,14 +18,13 @@ export type Config = {
 
 export class Slack extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {
-    const page = await this.browserforce.openPage(BASE_PATH);
+    await using page = await this.browserforce.openPage(BASE_PATH);
     const response = {
       agreeToTermsAndConditions: await page.locator(TOS_CHECKBOX).isChecked(),
       enableSalesCloudForSlack: await page
         .locator(SALES_CLOUD_FOR_SLACK_CHECKBOX)
         .isChecked(),
     };
-    await page.close();
     return response;
   }
 
@@ -36,7 +35,7 @@ export class Slack extends BrowserforcePlugin {
       );
     }
     const state = await this.retrieve();
-    const page = await this.browserforce.openPage(BASE_PATH);
+    await using page = await this.browserforce.openPage(BASE_PATH);
     if (state.agreeToTermsAndConditions !== config.agreeToTermsAndConditions) {
       await Promise.all([
         page.waitForResponse(/handleSlackBetaTOSPref=1/),
@@ -49,6 +48,5 @@ export class Slack extends BrowserforcePlugin {
         page.locator(SALES_CLOUD_FOR_SLACK_CHECKBOX_TOGGLE).click(),
       ]);
     }
-    await page.close();
   }
 }

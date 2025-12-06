@@ -41,14 +41,13 @@ export class Capacity extends BrowserforcePlugin {
       );
 
     // Open the service channel setup page
-    const page = await this.browserforce.openPage(`${serviceChannel.Id}/e`);
+    await using page = await this.browserforce.openPage(`${serviceChannel.Id}/e`);
 
     // Retrieve the service channel config
     const capacityModelCount = await page
       .locator(CAPACITY_MODEL_SELECTOR)
       .count();
     if (capacityModelCount === 0) {
-      await page.close();
       return {};
     }
 
@@ -72,7 +71,6 @@ export class Capacity extends BrowserforcePlugin {
         .locator(OWNER_CHANGE_CAPACITY_SELECTOR)
         .isChecked();
 
-      await page.close();
       return {
         capacityModel,
         statusField,
@@ -82,7 +80,6 @@ export class Capacity extends BrowserforcePlugin {
       };
     }
 
-    await page.close();
     return { capacityModel };
   }
 
@@ -146,7 +143,7 @@ export class Capacity extends BrowserforcePlugin {
     );
 
     // Open the service channel setup page
-    const page = await this.browserforce.openPage(`${serviceChannel.Id}/e`);
+    await using page = await this.browserforce.openPage(`${serviceChannel.Id}/e`);
 
     // Update the service channel config
     const configCapacity = config.capacity;
@@ -216,7 +213,5 @@ export class Capacity extends BrowserforcePlugin {
       page.waitForURL((url) => !url.pathname.endsWith('/e')),
       waitForPageErrors(page),
     ]);
-    // Close the page
-    await page.close();
   }
 }

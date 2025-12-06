@@ -26,7 +26,7 @@ type HomePageLayoutAssignment = {
 
 export class HomePageLayouts extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
-    const page = await this.browserforce.openPage(BASE_PATH);
+    await using page = await this.browserforce.openPage(BASE_PATH);
     await page.locator(BASE_SELECTOR).waitFor();
 
     const profiles = (
@@ -45,7 +45,6 @@ export class HomePageLayouts extends BrowserforcePlugin {
         layout: layouts[i],
       })
     );
-    await page.close();
     return {
       homePageLayoutAssignments,
     };
@@ -84,7 +83,7 @@ export class HomePageLayouts extends BrowserforcePlugin {
         `SELECT Id, Name FROM HomePageLayout WHERE Name IN (${layoutsList})`
       );
 
-    const page = await this.browserforce.openPage(BASE_PATH);
+    await using page = await this.browserforce.openPage(BASE_PATH);
     await page.locator(BASE_SELECTOR).waitFor();
 
     for (const assignment of config.homePageLayoutAssignments) {
@@ -93,7 +92,6 @@ export class HomePageLayouts extends BrowserforcePlugin {
         (p) => p.Name === assignment.profile
       );
       if (!profile) {
-        await page.close();
         throw new Error(`could not find profile '${assignment.profile}'`);
       }
       let homePageLayout = homePageLayouts.records.find(
@@ -103,7 +101,6 @@ export class HomePageLayouts extends BrowserforcePlugin {
         homePageLayout = { Id: 'default', Name: 'default' };
       }
       if (homePageLayout === undefined) {
-        await page.close();
         throw new Error(
           `Could not find home page layout "${homePageLayoutName}" in list of home page layouts: ${homePageLayouts.records.map(
             (l) => l.Name
@@ -121,7 +118,6 @@ export class HomePageLayouts extends BrowserforcePlugin {
       page.waitForURL((url) => url.pathname !== `/${BASE_PATH}`),
       waitForPageErrors(page),
     ]);
-    await page.close();
   }
 }
 

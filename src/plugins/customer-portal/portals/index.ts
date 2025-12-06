@@ -32,7 +32,7 @@ type PortalProfileMembership = {
 
 export class CustomerPortalSetup extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
-    const page = await this.browserforce.openPage(LIST_VIEW_PATH);
+    await using page = await this.browserforce.openPage(LIST_VIEW_PATH);
     const portalLinksLocator = page.locator(
       'xpath=//div[contains(@class,"pbBody")]//th[contains(@class,"dataCell")]//a[starts-with(@href, "/060")]'
     );
@@ -49,7 +49,7 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
       }
     );
     for (const portal of response) {
-      const portalPage = await this.browserforce.openPage(`${portal._id}/e`);
+      await using portalPage = await this.browserforce.openPage(`${portal._id}/e`);
       portal.description = await portalPage
         .locator('input#Description')
         .inputValue();
@@ -66,9 +66,8 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
       portal.selfRegUserDefaultProfile = await portalPage
         .locator('select#SelfRegUserDefaultProfile option:checked')
         .textContent();
-      await portalPage.close();
       // portalProfileMemberships
-      const portalProfilePage = await this.browserforce.openPage(
+      await using portalProfilePage = await this.browserforce.openPage(
         `${PORTAL_PROFILE_MEMBERSHIP_PATH}?portalId=${portal._id}&setupid=CustomerSuccessPortalSettings`
       );
       const profilesLocator = portalProfilePage.locator('th.dataCell');
@@ -93,9 +92,7 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
         });
       }
       portal.portalProfileMemberships = portalProfileMemberships;
-      await portalProfilePage.close();
     }
-    await page.close();
     return response;
   }
 
@@ -180,7 +177,7 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
           urlAttributes['IsSelfRegistrationActivated'] =
             portal.isSelfRegistrationActivated ? 1 : 0;
         }
-        const page = await this.browserforce.openPage(
+        await using page = await this.browserforce.openPage(
           `${portal._id}/e?${queryString.stringify(urlAttributes)}`
         );
         await page.locator('input#Description').waitFor();
@@ -210,7 +207,7 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
           for (const member of portal.portalProfileMemberships) {
             membershipUrlAttributes[member._id!] = member.active ? 1 : 0;
           }
-          const portalProfilePage = await this.browserforce.openPage(
+          await using portalProfilePage = await this.browserforce.openPage(
             `${PORTAL_PROFILE_MEMBERSHIP_PATH}?portalId=${
               portal._id
             }&setupid=CustomerSuccessPortalSettings&${queryString.stringify(
@@ -224,9 +221,7 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
             ),
             waitForPageErrors(portalProfilePage),
           ]);
-          await portalProfilePage.close();
         }
-        await page.close();
       }
     }
   }

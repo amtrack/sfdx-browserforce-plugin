@@ -12,7 +12,7 @@ type Config = {
 
 export class OmniChannelSettings extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {
-    const page = await this.browserforce.openPage(BASE_PATH);
+    await using page = await this.browserforce.openPage(BASE_PATH);
     const enableStatusBasedCapacityModel = await page
       .locator(STATUS_CAPACITY_TOGGLE_SELECTOR)
       .isChecked();
@@ -20,7 +20,7 @@ export class OmniChannelSettings extends BrowserforcePlugin {
   }
 
   public async apply(config: Config): Promise<void> {
-    const page = await this.browserforce.openPage(BASE_PATH);
+    await using page = await this.browserforce.openPage(BASE_PATH);
     await page.locator(STATUS_CAPACITY_TOGGLE_SELECTOR).click();
     await page.locator(SAVE_BUTTON_SELECTOR).click();
     // omnichannel/settings.apexp
@@ -29,6 +29,5 @@ export class OmniChannelSettings extends BrowserforcePlugin {
     await page.waitForURL((url) =>
       url.searchParams.has('setupid', 'OmniChannelSettings')
     );
-    await page.close();
   }
 }

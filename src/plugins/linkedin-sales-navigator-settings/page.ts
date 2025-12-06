@@ -25,7 +25,6 @@ export class LinkedInSalesNavigatorPage {
 
   public async getStatus(): Promise<boolean> {
     const isEnabled = await this.page.locator(ENABLE_TOGGLE).isChecked();
-    await this.page.close();
     return isEnabled;
   }
 
@@ -45,6 +44,5 @@ export class LinkedInSalesNavigatorPage {
         }
       })(),
     ]);
-    await this.page.close();
   }
 }

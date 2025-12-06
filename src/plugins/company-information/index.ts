@@ -11,7 +11,7 @@ export type Config = {
 
 export class CompanyInformation extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
-    const page = await this.browserforce.openPage(getUrl(this.org.getOrgId()));
+    await using page = await this.browserforce.openPage(getUrl(this.org.getOrgId()));
 
     const response: Config = {
       defaultCurrencyIsoCode: '',
@@ -22,13 +22,12 @@ export class CompanyInformation extends BrowserforcePlugin {
     if (selectedOption) {
       response.defaultCurrencyIsoCode = selectedOption;
     }
-    await page.close();
     return response;
   }
 
   public async apply(config: Config): Promise<void> {
     if (config.defaultCurrencyIsoCode !== undefined) {
-      const page = await this.browserforce.openPage(
+      await using page = await this.browserforce.openPage(
         getUrl(this.org.getOrgId())
       );
 
@@ -37,7 +36,6 @@ export class CompanyInformation extends BrowserforcePlugin {
         .locator(`${CURRENCY_DROPDOWN_SELECTOR} > option`)
         .allTextContents();
       if (!availableCurrencies.includes(config.defaultCurrencyIsoCode)) {
-        await page.close();
         throw new Error(
           `Invalid currency provided. '${config.defaultCurrencyIsoCode}' is not a valid option available for currencies. Please use the exact name as it appears in the list.`
         );
@@ -54,7 +52,6 @@ export class CompanyInformation extends BrowserforcePlugin {
       // save
       await page.locator(SAVE_BUTTON_SELECTOR).click();
       await page.waitForURL((url) => !url.pathname.endsWith('/e'));
-      await page.close();
     }
   }
 }

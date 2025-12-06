@@ -86,6 +86,5 @@ export class NewFieldDependencyPage {
       this.page.waitForURL((url) => /\/01I\w{12}/.test(url.pathname)),
       waitForPageErrors(this.page),
     ]);
-    await this.page.close();
   }
 }

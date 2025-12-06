@@ -9,7 +9,7 @@ type Config = {
 
 export class SalesforceToSalesforce extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
-    const page = await this.browserforce.openPage(BASE_PATH);
+    await using page = await this.browserforce.openPage(BASE_PATH);
     const response = {
       enabled: true,
     };
@@ -21,7 +21,6 @@ export class SalesforceToSalesforce extends BrowserforcePlugin {
       response.enabled = false;
     }
 
-    await page.close();
     return response;
   }
 
@@ -32,15 +31,13 @@ export class SalesforceToSalesforce extends BrowserforcePlugin {
 
     // sometimes the setting is not being applied although no error is being displayed
     await pRetry(async () => {
-      const page = await this.browserforce.openPage(BASE_PATH);
+      await using page = await this.browserforce.openPage(BASE_PATH);
 
       await page.locator('#penabled').check();
       await page.getByRole('button', { name: 'save' }).first().click();
-      await page.close();
 
       const result = await this.retrieve();
       if (result.enabled !== config.enabled) {
-        await page.close();
         throw new Error('setting was not applied as expected');
       }
     });

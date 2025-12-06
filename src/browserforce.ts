@@ -44,13 +44,9 @@ export class Browserforce {
         sources: true,
       });
     }
-    const page = await this.getNewPage();
-    try {
-      const loginPage = new LoginPage(page);
-      await loginPage.login(this.org);
-    } finally {
-      await page.close();
-    }
+    await using page = await this.getNewPage();
+    const loginPage = new LoginPage(page);
+    await loginPage.login(this.org);
     return this;
   }
 
@@ -170,15 +166,11 @@ export class Browserforce {
    */
   public async getLightningSetupUrl(): Promise<string> {
     if (!this.lightningSetupUrl) {
-      const page = await this.getNewPage();
-      try {
-        const lightningResponse = await page.goto(
-          `${this.getInstanceUrl()}/lightning/setup/SetupOneHome/home`
-        );
-        this.lightningSetupUrl = new URL(lightningResponse.url()).origin;
-      } finally {
-        await page.close();
-      }
+      await using page = await this.getNewPage();
+      const lightningResponse = await page.goto(
+        `${this.getInstanceUrl()}/lightning/setup/SetupOneHome/home`
+      );
+      this.lightningSetupUrl = new URL(lightningResponse.url()).origin;
     }
     return this.lightningSetupUrl;
   }

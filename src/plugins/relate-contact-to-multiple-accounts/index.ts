@@ -10,18 +10,17 @@ type Config = {
 
 export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {
-    const page = await this.browserforce.openPage(BASE_PATH);
+    await using page = await this.browserforce.openPage(BASE_PATH);
     const response = {
       enabled: await page
         .locator('input[id$=":sharedContactsCheckBox"]')
         .isChecked(),
     };
-    await page.close();
     return response;
   }
 
   public async apply(config: Config): Promise<void> {
-    const page = await this.browserforce.openPage(BASE_PATH);
+    await using page = await this.browserforce.openPage(BASE_PATH);
     await this.waitForProcessFinished(page);
     // First we have to click the 'Edit' button, to make the checkbox editable
     await Promise.all([
@@ -44,8 +43,6 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
         page.locator('input#sharedContactsDisableConfirmButton').click(),
       ]);
     }
-
-    await page.close();
   }
 
   async waitForProcessFinished(page: Page): Promise<void> {

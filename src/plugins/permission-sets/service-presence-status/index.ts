@@ -23,7 +23,7 @@ export class ServicePresenceStatus extends BrowserforcePlugin {
       );
 
     // Open the permission set setup page
-    const page = await this.browserforce.openPage(
+    await using page = await this.browserforce.openPage(
       `${permissionSet.Id}/e?s=ServicePresenceStatusAccess`
     );
 
@@ -33,7 +33,6 @@ export class ServicePresenceStatus extends BrowserforcePlugin {
         return options.map((option) => option.title);
       });
 
-    await page.close();
     return enabledServicePresenceStatuses;
   }
 
@@ -46,7 +45,7 @@ export class ServicePresenceStatus extends BrowserforcePlugin {
         `SELECT Id FROM PermissionSet WHERE Name='${permissionSetName}'`
       );
 
-    const page = await this.browserforce.openPage(
+    await using page = await this.browserforce.openPage(
       `${permissionSet.Id}/e?s=ServicePresenceStatusAccess`
     );
 
@@ -89,8 +88,5 @@ export class ServicePresenceStatus extends BrowserforcePlugin {
       page.waitForURL((url) => !url.pathname.endsWith('/e')),
       waitForPageErrors(page),
     ]);
-
-    // Close the page
-    await page.close();
   }
 }

@@ -46,7 +46,7 @@ export class Picklists extends BrowserforcePlugin {
           action.metadataFullName,
           fileProperties
         );
-        const page = await this.browserforce.openPage(picklistUrl);
+        await using page = await this.browserforce.openPage(picklistUrl);
         const picklistPage = new PicklistPage(page);
         const values = await picklistPage.getPicklistValues();
         const state = { ...action };
@@ -58,7 +58,6 @@ export class Picklists extends BrowserforcePlugin {
         state.active = valueMatch?.active;
         state._newValueId = values.find((x) => x.value === action.newValue)?.id;
         result.picklistValues!.push(state);
-        await page.close();
       }
     }
     if (definition.fieldDependencies) {
@@ -124,7 +123,7 @@ export class Picklists extends BrowserforcePlugin {
             action.metadataFullName,
             fileProperties
           );
-          const page = await this.browserforce.openPage(picklistUrl);
+          await using page = await this.browserforce.openPage(picklistUrl);
           const picklistPage = new PicklistPage(page);
           if (action.active !== undefined && action.value !== undefined) {
             // activate/deactivate
@@ -181,12 +180,10 @@ export class Picklists extends BrowserforcePlugin {
               action.replaceAllBlankValues
             );
           } else {
-            await page.close();
             throw new Error(
               `Could not determine action for input: ${JSON.stringify(action)}`
             );
           }
-          await page.close();
         });
       }
     }

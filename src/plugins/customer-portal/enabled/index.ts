@@ -19,13 +19,12 @@ export class CustomerPortalEnable extends BrowserforcePlugin {
     if (plan === false) {
       throw new Error('`enabled` cannot be disabled once enabled');
     }
-    const page = await this.browserforce.openPage(BASE_PATH);
+    await using page = await this.browserforce.openPage(BASE_PATH);
     await page.locator(ENABLE_CHECKBOX).setChecked(true);
     await page.locator(SAVE_BUTTON).first().click();
     await Promise.race([
       page.waitForURL((url) => url.pathname !== `/${BASE_PATH}`),
       waitForPageErrors(page),
     ]);
-    await page.close();
   }
 }

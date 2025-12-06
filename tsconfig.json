@@ -4,7 +4,7 @@
     "outDir": "lib",
     "rootDir": "src",
     "skipLibCheck": true,
-    "lib": ["ES2023", "DOM"]
+    "lib": ["ESNext", "DOM"]
   },
   "include": ["./src/**/*.ts"]
 }

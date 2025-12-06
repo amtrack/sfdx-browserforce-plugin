@@ -142,13 +142,12 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
           if (certificate.exportable !== undefined) {
             urlAttributes['exp'] = certificate.exportable ? 1 : 0;
           }
-          const page = await this.browserforce.openPage(
+          await using page = await this.browserforce.openPage(
             `${CERT_PREFIX_PATH}/e?${queryString.stringify(urlAttributes)}`
           );
           await page.locator(SAVE_BUTTON_SELECTOR).first().click();
           // -> id (15 character Salesforce ID starting with 0P1)
           await page.waitForURL((url) => /\/0P1\w{12}/.test(url.pathname));
-          await page.close();
         }
       }
     }
@@ -164,7 +163,7 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
         if (!existsSync(filePath)) {
           throw new Error(`file does not exist: ${filePath}`);
         }
-        const page = await this.browserforce.openPage(
+        await using page = await this.browserforce.openPage(
           `${KEYSTORE_IMPORT_PATH}`
         );
         await page.locator(FILE_UPLOAD_SELECTOR).setInputFiles(filePath);
@@ -198,7 +197,7 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
               `SELECT Id FROM Certificate WHERE DeveloperName = '${certificate.name.toLowerCase()}'`
             );
           const importedCert = certsResponse.records[0];
-          const certPage = await this.browserforce.openPage(
+          await using certPage = await this.browserforce.openPage(
             `${importedCert.Id}/e?MasterLabel=${certificate.name}&DeveloperName=${certificate.name}`
           );
           await certPage.locator(SAVE_BUTTON_SELECTOR).first().click();
@@ -208,9 +207,7 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
             ),
             waitForPageErrors(certPage),
           ]);
-          await certPage.close();
         }
-        await page.close();
       }
     }
   }

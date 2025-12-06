@@ -41,7 +41,7 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
           record.NamespacePrefix = undefined;
         }
       }
-      const page = await this.browserforce.openPage('');
+      await using page = await this.browserforce.openPage('');
       // new URLs for LEX: https://help.salesforce.com/articleView?id=FAQ-for-the-New-URL-Format-for-Lightning-Experience-and-the-Salesforce-Mobile-App&type=1
       const isLEX =
         page.url().includes('/one/one.app') ||
@@ -70,7 +70,6 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
           );
         });
         if (!customObject) {
-          await page.close();
           throw new Error(
             `Could not find CustomObject: {DeveloperName: ${availableCustomObject.name}, NamespacePrefix: ${availableCustomObject.namespacePrefix}`
           );
@@ -81,7 +80,7 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
           namespacePrefix: customObject.NamespacePrefix,
         };
         const pageUrl = getObjectPageUrl(result, isLEX);
-        const editPage = await this.browserforce.openPage(pageUrl);
+        await using editPage = await this.browserforce.openPage(pageUrl);
         const frameOrPage =
           await this.browserforce.waitForSelectorInFrameOrPage(
             editPage,
@@ -93,9 +92,7 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
             .locator(CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL_SELECTOR)
             .isChecked(),
         });
-        await editPage.close();
       }
-      await page.close();
     }
     return response;
   }
@@ -132,7 +129,7 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
 
   public async apply(plan: Config): Promise<void> {
     if (plan && plan.length) {
-      const page = await this.browserforce.openPage('');
+      await using page = await this.browserforce.openPage('');
       // new URLs for LEX: https://help.salesforce.com/articleView?id=FAQ-for-the-New-URL-Format-for-Lightning-Experience-and-the-Salesforce-Mobile-App&type=1
       const isLEX =
         page.url().includes('/one/one.app') ||
@@ -157,7 +154,7 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
 
       for (const customObject of plan) {
         const pageUrl = getObjectPageUrl(customObject, isLEX);
-        const editPage = await this.browserforce.openPage(pageUrl);
+        await using editPage = await this.browserforce.openPage(pageUrl);
         const frameOrPage =
           await this.browserforce.waitForSelectorInFrameOrPage(
             editPage,
@@ -165,9 +162,7 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
           );
         await frameOrPage.locator(SAVE_BUTTON_SELECTOR).first().click();
         await editPage.getByRole('heading', { name: 'Details' }).waitFor();
-        await editPage.close();
       }
-      await page.close();
     }
   }
 }

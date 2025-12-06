@@ -13,13 +13,12 @@ type Config = {
 
 export class ActivitySettings extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
-    const page = await this.browserforce.openPage(BASE_PATH);
+    await using page = await this.browserforce.openPage(BASE_PATH);
     const response = {
       allowUsersToRelateMultipleContactsToTasksAndEvents: await page
         .locator(MANY_WHO_PREF_INPUT_SELECTOR)
         .isChecked(),
     };
-    await page.close();
     return response;
   }
 
@@ -29,7 +28,7 @@ export class ActivitySettings extends BrowserforcePlugin {
         '`allowUsersToRelateMultipleContactsToTasksAndEvents` can only be disabled with help of the salesforce.com Support team'
       );
     }
-    const page = await this.browserforce.openPage(BASE_PATH);
+    await using page = await this.browserforce.openPage(BASE_PATH);
     await page.locator(MANY_WHO_PREF_INPUT_SELECTOR).waitFor();
 
     await page
@@ -39,6 +38,5 @@ export class ActivitySettings extends BrowserforcePlugin {
     await page.locator(SUBMIT_BUTTON_SELECTOR).click();
     // ui/setup/Setup?setupid=Activity
     await page.waitForURL((url) => url.pathname !== `/${BASE_PATH}`);
-    await page.close();
   }
 }

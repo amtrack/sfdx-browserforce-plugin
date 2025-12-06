@@ -12,11 +12,10 @@ const availableOptions = ['Comfy', 'Compact'];
 
 export class DensitySettings extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
-    const page = await this.browserforce.openPage(BASE_PATH);
+    await using page = await this.browserforce.openPage(BASE_PATH);
     const density = (await page
       .locator('input[name="options"]:checked')
       .getAttribute('value')) as Density;
-    await page.close();
     return {
       density,
     };
@@ -30,7 +29,7 @@ export class DensitySettings extends BrowserforcePlugin {
         }". Available options: ${availableOptions.join(', ')}`
       );
     }
-    const page = await this.browserforce.openPage(BASE_PATH);
+    await using page = await this.browserforce.openPage(BASE_PATH);
     const densityPickerItem = page.locator(
       `one-density-visual-picker-item:has(input[name="options"][value="${config.density}"])`
     );
@@ -41,6 +40,5 @@ export class DensitySettings extends BrowserforcePlugin {
       ]),
       densityPickerItem.click(),
     ]);
-    await page.close();
   }
 }
