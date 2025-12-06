@@ -248,12 +248,14 @@ export class HistoryTracking extends BrowserforcePlugin {
     }
 
     if (personAccountFieldApiNames.length > 0) {
+      // NOTE: Unfortunately this includes deleted records
+      // WORKAROUND: ORDER BY CreatedDate
       const personAccountFieldsQuery = await this.org
         .getConnection()
         .tooling.query(
           `SELECT Id, DeveloperName FROM CustomField WHERE DeveloperName IN (${personAccountFieldApiNames.join(
             ','
-          )}) AND TableEnumOrId = 'Contact'`
+          )}) AND TableEnumOrId = 'Contact' ORDER By CreatedDate ASC`
         );
 
       for (const personAccountField of personAccountFieldsQuery.records) {
@@ -265,12 +267,14 @@ export class HistoryTracking extends BrowserforcePlugin {
     }
 
     if (customFieldApiNames.length > 0) {
+      // NOTE: Unfortunately this includes deleted records
+      // WORKAROUND: ORDER BY CreatedDate
       const customFieldsQuery = await this.org
         .getConnection()
         .tooling.query(
           `SELECT Id, DeveloperName FROM CustomField WHERE DeveloperName IN (${customFieldApiNames.join(
             ','
-          )}) AND TableEnumOrId = '${tableEnumOrId}'`
+          )}) AND TableEnumOrId = '${tableEnumOrId}' ORDER By CreatedDate ASC`
         );
 
       for (const customField of customFieldsQuery.records) {
@@ -311,12 +315,14 @@ export class HistoryTracking extends BrowserforcePlugin {
       return tableEnumOrIdByObjectApiName;
     }
 
+    // NOTE: Unfortunately this includes deleted records
+    // WORKAROUND: ORDER BY CreatedDate
     const customObjectsQuery = await this.org
       .getConnection()
       .tooling.query(
         `SELECT Id, DeveloperName FROM CustomObject WHERE DeveloperName IN (${customObjectApiNames.join(
           ','
-        )})`
+        )}) ORDER BY CreatedDate ASC`
       );
 
     for (const customObject of customObjectsQuery.records) {
