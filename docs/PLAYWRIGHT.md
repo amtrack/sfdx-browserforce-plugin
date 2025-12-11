@@ -1,154 +1,186 @@
-# Playwright Best Practices Guide
+# Best Practices: Using Playwright for Browserforce
 
-This guide provides best practices and patterns for writing Playwright-based plugins in the sfdx-browserforce-plugin project.
+> [!WARNING] This page is written for the upcoming `v6` which uses Playwright instead of Puppeteer
 
-## Table of Contents
-
-- [Core Principles](#core-principles)
-- [Page Interaction Patterns](#page-interaction-patterns)
-- [Waiting Strategies](#waiting-strategies)
-- [Modal Handling](#modal-handling)
-- [Error Handling](#error-handling)
-- [Common Patterns](#common-patterns)
-- [Anti-Patterns to Avoid](#anti-patterns-to-avoid)
-- [Debugging](#debugging)
+This guide provides best practices and patterns for writing Playwright-based plugins for the sfdx-browserforce-plugin project.
 
 ## Core Principles
 
-### 1. Always Wait for Elements Before Interacting
+### Automatically close pages with `await using`
+
+Modern JavaScript has a [using keyword](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/using) for declaring variable which automatically calls the `dispose()` or `asyncDispose()` symbol to free up resources.
+We can use it to automatically close pages:
 
 **✅ Good:**
-```typescript
-await page.locator(SELECTOR).waitFor();
-await page.locator(SELECTOR).click();
-```
 
-**❌ Bad:**
-```typescript
-await page.locator(SELECTOR).click(); // May fail if element not ready
-```
-
-### 2. Close Pages After Use
-
-Always close pages to prevent memory leaks and ensure clean state:
-
-**✅ Good:**
 ```typescript
 public async retrieve(): Promise<Config> {
-  const page = await this.browserforce.openPage(BASE_PATH);
-  try {
-    const result = await this.getData(page);
-    return result;
-  } finally {
-    await page.close();
-  }
+  await async page = await this.browserforce.openPage(BASE_PATH);
+  const result = await this.getData(page);
+  return result;
 }
 ```
 
 **❌ Bad:**
+
 ```typescript
 public async retrieve(): Promise<Config> {
   const page = await this.browserforce.openPage(BASE_PATH);
-  return await this.getData(page);
-  // Page never closed!
+  const result = await this.getData(page);
+  return result;
+  // Page is not closed
 }
 ```
 
-### 3. Use waitForIdle for State Persistence
+**❌ Bad:**
 
-After making changes, use `waitForIdle()` to ensure the page has finished processing:
+```typescript
+public async retrieve(): Promise<Config> {
+  const page = await this.browserforce.openPage(BASE_PATH);
+  const result = await this.getData(page);
+  await page.close();
+  return result;
+  // Page is not closed when errors are thrown
+}
+```
+
+### Prefer using the Locator API
+
+> Locators are the central piece of Playwright's auto-waiting and retry-ability. In a nutshell, locators represent a way to find element(s) on the page at any moment.
+>
+> https://playwright.dev/docs/locators
+
+Playwright Locators have a bunch of [methods](https://playwright.dev/docs/api/class-locator) to scrape and interact with the DOM.
+
+Examples:
+
+- `innerHTML()`, `innerText()`, `textContent()`
+- `count()`
+- `first()`, `nth(number)`, `last()`, `filter()`
+- `isEnabled()`, `isVisible()`, `isEditable()`
+- `click()`
+- `isChecked()`, `check()`, `uncheck()`, `setChecked(boolean)`
+- `selectOption()`
+- `fill(string)`
+
+### Use language-agnostic selectors if possible
+
+A save button rendered in English
+
+```html
+<input value=" Save " class="btn" name="save" title="Save" type="submit" />
+```
+
+The same save button rendered in German
+
+```html
+<input
+  value="Speichern"
+  class="btn"
+  name="save"
+  title="Speichern"
+  type="submit"
+/>
+```
 
 **✅ Good:**
+
 ```typescript
-await checkbox.click();
-await this.browserforce.waitForIdle(page);
-await page.close();
+const saveButton = page.locator('input[type="submit"][name="save"]');
 ```
 
 **❌ Bad:**
-```typescript
-await checkbox.click();
-await page.close(); // May close before changes are saved
-```
-
-## Page Interaction Patterns
-
-### Clicking Elements
-
-#### Standard Click
-```typescript
-const button = page.locator('button[name="save"]');
-await button.waitFor({ state: 'visible' });
-await button.click();
-```
-
-#### Force Click (when element is intercepted)
-```typescript
-// Use sparingly - only when standard click fails due to overlays
-await page.locator(SELECTOR).click({ force: true });
-```
-
-#### Evaluate Click (for stubborn elements)
-```typescript
-// When Playwright's click doesn't work due to framework interference
-await page.locator(SELECTOR).evaluate((el: HTMLElement) => el.click());
-```
-
-### Checkbox Interactions
-
-#### Reading Checkbox State
-```typescript
-const isChecked = await page.locator(CHECKBOX_SELECTOR).isChecked();
-```
-
-#### Setting Checkbox State
-```typescript
-// Standard approach: Use Playwright's check method
-await page.locator(CHECKBOX_SELECTOR).check();
-// or
-await page.locator(CHECKBOX_SELECTOR).uncheck();
-
-// Alternative: Use evaluate for reliable state changes
-await page.locator(CHECKBOX_SELECTOR).evaluate((el: HTMLInputElement) => {
-  el.checked = true;
-  el.dispatchEvent(new Event('change', { bubbles: true }));
-});
-```
-
-### Input Fields
 
 ```typescript
-// Clear and type
-await page.locator(INPUT_SELECTOR).fill('new value');
-
-// Or clear first, then type
-await page.locator(INPUT_SELECTOR).clear();
-await page.locator(INPUT_SELECTOR).type('new value');
+const saveButton = page.locator('input[type="submit"][title="Save"]');
 ```
 
-## Waiting Strategies
+### Avoid `waitForTimeout()` and `waitForLoadState()`
 
-### Wait for Element States
+There should always be a better indicator than those two.
+For example: There might be a specific network response, url or locator visible/hidden to indicate the page is ready or the action has been completed.
+
+> Never wait for timeout in production.
+>
+> --- [Playwright Docs](https://playwright.dev/docs/api/class-page#page-wait-for-timeout)
+
+and
+
+> Most of the time, this method is not needed because Playwright auto-waits before every action.
+>
+> --- [Playwright Docs](https://playwright.dev/docs/api/class-frame#frame-wait-for-load-state)
+
+### Avoid `evaluate()`
+
+Prefer using specific Locator methods over `evaluate()`.
+Please see the examples above.
+
+## Patterns
+
+### Saving Pages
+
+Browserforce is all about automating changes in the Setup.
+At the end, there is most likely a "Save" button to be clicked.
+
+While the following code might seem tempting, please don't do it.
+
+**❌ Bad:**
 
 ```typescript
-// Wait for element to be attached to DOM
-await page.locator(SELECTOR).waitFor({ state: 'attached' });
-
-// Wait for element to be visible
-await page.locator(SELECTOR).waitFor({ state: 'visible' });
-
-// Wait for element to be hidden
-await page.locator(SELECTOR).waitFor({ state: 'hidden' });
+await saveButton.click();
+if (await page.locator("#error").count()) {
+  throw new Error("failed");
+}
+await page.waitForLoadState("networkidle");
 ```
 
-### Wait for Network Idle
+Problems:
+
+- The element with the selector `#error` might show up delayed and the error might not be catched
+- If the page does not reload/redirect (in case of an uncaught error) `await page.waitForLoadState("networkidle")` is resolved although we expected a redirect and waiting for the new page to have loaded
+
+The most reliable way (although difficult to understand) is the following:
 
 ```typescript
-// After actions that trigger saves or API calls
-await this.browserforce.waitForIdle(page);
+await Promise.all([
+  Promise.race([waitForPageErrors(), page.waitForEvent("load")]),
+  saveButton.click(),
+]);
 ```
 
-### Wait for Custom Conditions
+This starts both promises to wait for the after-save indicators (success and failure) **before** clicking on the save button.
+The first of the two promises (success or failure) will be resolved/rejected.
+
+If the success indicator is not a time-critical one-off event but something that is persistent, it is easier:
+
+```typescript
+await saveButton.click();
+await Promise.race([
+  waitForPageErrors(),
+  page.waitForURL((url) => url.pathname === "/aftersaveurl"),
+]);
+```
+
+### Saving Pages in Salesforce Classic UI
+
+Most Salesforce Classic pages show error messages on the same page and perform a page redirect after a successful save.
+
+The most simple way is to wait for the success page URL as shown above.
+
+> ![TIP] If there is no deterministic after-save URL, it is sometimes possible to set it using the `retURL` url parameter.
+
+### Saving Pages in Salesforce Lightning Experience
+
+Many new Lightning-only Setup Pages are Single Page Applications (SPAs).
+
+- there is no page reload or redirect after save
+- it is difficult to determine a success or failure indicator
+
+> ![TIP] Please use the Developer Tools of your web browser to inspect network traffic.
+>
+> Sometimes it's possible to wait for responses like `page.waitForResponse(/LinkedInIntegrationSetup.updatePref=1/)`.
+
+### Waiting for Custom Conditions
 
 ```typescript
 // Wait for a specific condition to be true
@@ -157,222 +189,72 @@ await page.waitForFunction(
     const element = document.querySelector(selector);
     return element && element.textContent === expectedValue;
   },
-  { selector: MY_SELECTOR, expectedValue: 'Success' }
+  { selector: MY_SELECTOR, expectedValue: "Success" }
 );
 ```
 
-### ❌ Avoid waitForTimeout
+### Modal Handling
 
-**Don't use arbitrary timeouts:**
-```typescript
-// BAD - Flaky and slow
-await page.waitForTimeout(2000);
-await page.locator('button:has-text("Edit")').click();
-```
-
-**Instead, wait for specific conditions:**
-```typescript
-// GOOD - Fast and reliable
-await page.locator('button:has-text("Save")').click();
-await page.locator('button:has-text("Edit")').waitFor({ state: 'visible' });
-```
-
-## Modal Handling
-
-### Pattern 1: Wait for Modal, Interact, Wait for Close
+Wait for Modal, Interact, Wait for Close
 
 ```typescript
 // Click button that opens modal
 await page.locator(OPEN_MODAL_BUTTON).click();
-
 // Wait for modal to appear
-await page.locator('.slds-modal__container').waitFor({ state: 'visible' });
-
+await page.locator(".slds-modal__container").waitFor({ state: "visible" });
 // Interact with modal content
 await page.locator(MODAL_CHECKBOX).click();
 await page.locator(MODAL_CONFIRM_BUTTON).click();
-
 // Wait for modal to close
-await page.locator('.slds-modal__container').waitFor({ state: 'hidden' });
+await page.locator(".slds-modal__container").waitFor({ state: "hidden" });
 ```
 
-### Pattern 2: Conditional Modal Handling
+Conditional Modal Handling
 
 ```typescript
 // Check if modal appears (optional confirmation)
-const confirmButton = page.locator('lightning-modal lightning-button[variant="brand"]');
+const confirmButton = page.locator(
+  'lightning-modal lightning-button[variant="brand"]'
+);
 if (await confirmButton.isVisible()) {
-  await confirmButton.waitFor({ state: 'visible' });
+  await confirmButton.waitFor({ state: "visible" });
   await confirmButton.click();
 }
 ```
 
-### Pattern 3: Toast Messages
+### Toast Messages
 
 ```typescript
+const toastMessage = page.locator(TOAST_MESSAGE);
 // Wait for toast to appear
-await page.locator(TOAST_MESSAGE).waitFor({ state: 'visible' });
-
+await toastMessage.waitFor({ state: "visible" });
 // Wait for toast to disappear (indicates completion)
-await page.locator(TOAST_MESSAGE).waitFor({ state: 'hidden' });
+await toastMessage.waitFor({ state: "hidden" });
 ```
 
-## Error Handling
-
-### Always Check for Page Errors
-
-```typescript
-import { throwPageErrors } from '../../browserforce.js';
-
-public async apply(config: Config): Promise<void> {
-  const page = await this.browserforce.openPage(BASE_PATH);
-  try {
-    await this.makeChanges(page, config);
-    await throwPageErrors(page); // Check for Salesforce errors
-  } finally {
-    await page.close();
-  }
-}
-```
-
-### Validate Element Existence
-
-```typescript
-const element = await page.locator(SELECTOR);
-const count = await element.count();
-if (count === 0) {
-  throw new Error(`Element not found: ${SELECTOR}`);
-}
-```
-
-## Common Patterns
-
-### Pattern: Separate Page Object
-
-Create a separate page class for complex interactions:
-
-```typescript
-// page.ts
-export class MyFeaturePage {
-  private page: Page;
-  private browserforce: Browserforce;
-
-  constructor(page: Page, browserforce: Browserforce) {
-    this.page = page;
-    this.browserforce = browserforce;
-  }
-
-  public static getUrl(): string {
-    return 'lightning/setup/MyFeature/home';
-  }
-
-  public async getStatus(): Promise<boolean> {
-    await this.page.locator(TOGGLE_SELECTOR).waitFor();
-    const isEnabled = await this.page.locator(TOGGLE_SELECTOR).isChecked();
-    await this.page.close();
-    return isEnabled;
-  }
-
-  public async setStatus(enable: boolean): Promise<void> {
-    await this.page.locator(TOGGLE_SELECTOR).waitFor();
-    await this.page.locator(TOGGLE_SELECTOR).click();
-    await throwPageErrors(this.page);
-    await this.browserforce.waitForIdle(this.page);
-    await this.page.close();
-  }
-}
-
-// index.ts
-export class MyFeature extends BrowserforcePlugin {
-  public async retrieve(): Promise<Config> {
-    const page = new MyFeaturePage(
-      await this.browserforce.openPage(MyFeaturePage.getUrl()),
-      this.browserforce
-    );
-    return { enabled: await page.getStatus() };
-  }
-
-  public async apply(config: Config): Promise<void> {
-    const page = new MyFeaturePage(
-      await this.browserforce.openPage(MyFeaturePage.getUrl()),
-      this.browserforce
-    );
-    await page.setStatus(config.enabled);
-  }
-}
-```
-
-### Pattern: Parallel Waiting
-
-Use `Promise.all()` for operations that can happen simultaneously:
-
-```typescript
-// Wait for both the toast to appear AND the action to complete
-await Promise.all([
-  page.locator(TOAST_MESSAGE).waitFor({ state: 'visible' }),
-  page.locator(CHECKBOX).evaluate((el: HTMLInputElement) => el.click())
-]);
-
-// Then wait for toast to disappear
-await page.locator(TOAST_MESSAGE).waitFor({ state: 'hidden' });
-```
-
-### Pattern: Handling Dynamic Selectors
+### Handling Dynamic Selectors
 
 ```typescript
 // When selectors change between Salesforce versions
-const SELECTOR_V1 = 'lightning-datatable';
-const SELECTOR_V2 = 'one-theme-datatable';
+const SELECTOR_V1 = "lightning-datatable";
+const SELECTOR_V2 = "one-theme-datatable";
 
 // Try both selectors
 const element = await page.locator(`${SELECTOR_V1}, ${SELECTOR_V2}`).first();
 await element.waitFor();
 ```
 
-## Anti-Patterns to Avoid
+### Page Object Model (POM)
 
-### ❌ Don't Use Arbitrary Timeouts
+When things get more complex, like a wizard of multiple pages,
+create separate page classes and orchestrate them.
 
-```typescript
-// BAD
-await page.waitForTimeout(5000);
+Example:
 
-// GOOD
-await page.locator('.loading-spinner').waitFor({ state: 'hidden' });
-await this.browserforce.waitForIdle(page);
-```
-
-### ❌ Don't Forget to Close Pages
-
-```typescript
-// BAD
-public async retrieve(): Promise<Config> {
-  const page = await this.browserforce.openPage(BASE_PATH);
-  return { enabled: await page.locator(SELECTOR).isChecked() };
-}
-
-// GOOD
-public async retrieve(): Promise<Config> {
-  const page = await this.browserforce.openPage(BASE_PATH);
-  const enabled = await page.locator(SELECTOR).isChecked();
-  await page.close();
-  return { enabled };
-}
-```
-
-### ❌ Don't Ignore Errors
-
-```typescript
-// BAD
-await page.locator(BUTTON).click();
-await page.close();
-
-// GOOD
-await page.locator(BUTTON).click();
-await throwPageErrors(page);
-await this.browserforce.waitForIdle(page);
-await page.close();
-```
+- ![src/plugins/opportunity-splits/index.ts](../src/plugins/opportunity-splits/index.ts)
+- ![src/plugins/opportunity-splits/pages/overview.ts](../src/plugins/opportunity-splits/pages/overview.ts)
+- ![src/plugins/opportunity-splits/pages/setup.ts](../src/plugins/opportunity-splits/pages/setup.ts)
+- ![src/plugins/opportunity-splits/pages/layout-selection.ts](../src/plugins/opportunity-splits/pages/layout-selection.ts)
 
 ## Debugging
 
@@ -409,12 +291,14 @@ npx playwright show-trace trace-2025-11-23T19-00-00-000Z.zip
 ### Add Console Logging
 
 ```typescript
-console.log('Current URL:', page.url());
-console.log('Element count:', await page.locator(SELECTOR).count());
+console.log("URL before save:", page.url());
+await page.locator(SAVE_BUTTON).click();
+await page.waitForTimeout(3_000);
+console.log("URL after save:", page.url());
 ```
 
 ### Take Screenshots
 
 ```typescript
-await page.screenshot({ path: 'debug-screenshot.png' });
+await page.screenshot({ path: "debug-screenshot.png" });
 ```
