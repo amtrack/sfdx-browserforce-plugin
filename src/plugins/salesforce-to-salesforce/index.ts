@@ -1,7 +1,7 @@
 import pRetry from 'p-retry';
 import { BrowserforcePlugin } from '../../plugin.js';
 
-const BASE_PATH = '_ui/s2s/ui/PartnerNetworkEnable/e';
+const BASE_PATH = '/_ui/s2s/ui/PartnerNetworkEnable/e';
 
 type Config = {
   enabled: boolean;

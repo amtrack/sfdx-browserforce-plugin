@@ -1,6 +1,6 @@
 import { BrowserforcePlugin } from '../../plugin.js';
 
-const BASE_PATH = 'email-admin/editOrgEmailSettings.apexp';
+const BASE_PATH = '/email-admin/editOrgEmailSettings.apexp';
 
 const ACCESS_LEVEL_SELECTOR = 'select[id$=":sendEmailAccessControlSelect"]';
 const CONFIRM_MESSAGE_SELECTOR = 'span[id$=":successText"]';

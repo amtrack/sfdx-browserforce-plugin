@@ -8,7 +8,7 @@ export type Config = {
 };
 
 const EDIT_VIEW_PATH =
-  'lightning/setup/OrgDomain/page?address=%2Fdomainname%2FEditLogin.apexp';
+  '/lightning/setup/OrgDomain/page?address=%2Fdomainname%2FEditLogin.apexp';
 
 const SETUP_FORM_SELECTOR = 'form[id="BrandSetup:brandSetupForm"]';
 const SERVICE_CHECKBOX_SELECTOR = 'input.authOption[type="checkbox"]';

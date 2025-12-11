@@ -41,7 +41,7 @@ export class Capacity extends BrowserforcePlugin {
       );
 
     // Open the service channel setup page
-    await using page = await this.browserforce.openPage(`${serviceChannel.Id}/e`);
+    await using page = await this.browserforce.openPage(`/${serviceChannel.Id}/e`);
 
     // Retrieve the service channel config
     const capacityModelCount = await page
@@ -143,7 +143,7 @@ export class Capacity extends BrowserforcePlugin {
     );
 
     // Open the service channel setup page
-    await using page = await this.browserforce.openPage(`${serviceChannel.Id}/e`);
+    await using page = await this.browserforce.openPage(`/${serviceChannel.Id}/e`);
 
     // Update the service channel config
     const configCapacity = config.capacity;

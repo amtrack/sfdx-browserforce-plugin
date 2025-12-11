@@ -1,7 +1,7 @@
-import { waitForPageErrors } from '../../browserforce.js';
+import { type SalesforceUrlPath, waitForPageErrors } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
 
-const BASE_PATH = `ui/setup/layout/FieldHistoryTracking?pEntity={APINAME}&retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`;
+const BASE_PATH: SalesforceUrlPath = `/ui/setup/layout/FieldHistoryTracking?pEntity={APINAME}&retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`;
 
 const ENABLE_HISTORY_SELECTOR = 'input[type="checkbox"][id="enable"]';
 const ENABLE_FIELD_HISTORY_SELECTOR = 'input[id="{APINAME}_fht"]';
@@ -38,7 +38,7 @@ export class HistoryTracking extends BrowserforcePlugin {
         BASE_PATH.replace(
           '{APINAME}',
           tableEnumOrIdByObjectApiName.get(historyTrackingConfig.objectApiName)
-        )
+        ) as SalesforceUrlPath
       );
 
       // Retrieve the object history tracking
@@ -121,7 +121,7 @@ export class HistoryTracking extends BrowserforcePlugin {
         BASE_PATH.replace(
           '{APINAME}',
           tableEnumOrIdByObjectApiName.get(historyTrackingConfig.objectApiName)
-        )
+        ) as SalesforceUrlPath
       );
 
       // Retrieve the object history tracking

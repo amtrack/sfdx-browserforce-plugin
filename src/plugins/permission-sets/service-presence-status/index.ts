@@ -24,7 +24,7 @@ export class ServicePresenceStatus extends BrowserforcePlugin {
 
     // Open the permission set setup page
     await using page = await this.browserforce.openPage(
-      `${permissionSet.Id}/e?s=ServicePresenceStatusAccess`
+      `/${permissionSet.Id}/e?s=ServicePresenceStatusAccess`
     );
 
     const enabledServicePresenceStatuses = await page
@@ -46,7 +46,7 @@ export class ServicePresenceStatus extends BrowserforcePlugin {
       );
 
     await using page = await this.browserforce.openPage(
-      `${permissionSet.Id}/e?s=ServicePresenceStatusAccess`
+      `/${permissionSet.Id}/e?s=ServicePresenceStatusAccess`
     );
 
     if (config?.servicePresenceStatuses) {

@@ -2,11 +2,11 @@ import type { Record } from '@jsforce/jsforce-node';
 import { existsSync } from 'fs';
 import * as path from 'path';
 import * as queryString from 'querystring';
-import { waitForPageErrors } from '../../../browserforce.js';
+import { type SalesforceUrlPath, waitForPageErrors } from '../../../browserforce.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
 
-const CERT_PREFIX_PATH = '0P1';
-const KEYSTORE_IMPORT_PATH = `_ui/security/certificate/KeyStoreImportUi/e?retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`;
+const CERT_PREFIX_PATH = '/0P1';
+const KEYSTORE_IMPORT_PATH: SalesforceUrlPath = `/_ui/security/certificate/KeyStoreImportUi/e?retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`;
 
 const FILE_UPLOAD_SELECTOR = 'input[type="file"]';
 const KEYSTORE_PASSWORD_SELECTOR = 'input#Password';
@@ -163,9 +163,7 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
         if (!existsSync(filePath)) {
           throw new Error(`file does not exist: ${filePath}`);
         }
-        await using page = await this.browserforce.openPage(
-          `${KEYSTORE_IMPORT_PATH}`
-        );
+        await using page = await this.browserforce.openPage(KEYSTORE_IMPORT_PATH);
         await page.locator(FILE_UPLOAD_SELECTOR).setInputFiles(filePath);
         if (certificate.password) {
           await page
@@ -198,7 +196,7 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
             );
           const importedCert = certsResponse.records[0];
           await using certPage = await this.browserforce.openPage(
-            `${importedCert.Id}/e?MasterLabel=${certificate.name}&DeveloperName=${certificate.name}&retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`
+            `/${importedCert.Id}/e?MasterLabel=${certificate.name}&DeveloperName=${certificate.name}&retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`
           );
           await certPage.locator(SAVE_BUTTON_SELECTOR).first().click();
           await Promise.race([

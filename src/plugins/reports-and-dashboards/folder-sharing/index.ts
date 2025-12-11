@@ -1,6 +1,6 @@
 import { BrowserforcePlugin } from '../../../plugin.js';
 
-const BASE_PATH = 'ui/rpt/AnalyticsSharingSettingsPage/e';
+const BASE_PATH = '/ui/rpt/AnalyticsSharingSettingsPage/e';
 
 const BASE_SELECTOR = 'div.pbBody';
 const ENABLE_CHECKBOX_SELECTOR = 'input[id="0"]';

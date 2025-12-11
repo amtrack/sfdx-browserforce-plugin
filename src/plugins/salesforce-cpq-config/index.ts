@@ -2,8 +2,8 @@ import { BrowserforcePlugin } from '../../plugin.js';
 import { formConfig } from './formConfig.js';
 
 const BASE_PATH =
-  '0A3?setupid=ImportedPackage&retURL=%2Fui%2Fsetup%2FSetup%3Fsetupid%3DStudio';
-const AUTH_PATH = 'setup/secur/RemoteAccessAuthorizationPage.apexp';
+  '/0A3?setupid=ImportedPackage&retURL=%2Fui%2Fsetup%2FSetup%3Fsetupid%3DStudio';
+const AUTH_PATH = '/setup/secur/RemoteAccessAuthorizationPage.apexp';
 
 const CONFIGURE_SELECTOR =
   '.actionLink[title*="Configure"][title*="Salesforce CPQ"]';

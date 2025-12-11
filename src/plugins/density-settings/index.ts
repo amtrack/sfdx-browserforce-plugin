@@ -1,7 +1,7 @@
 import { waitForPageErrors } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
 
-const BASE_PATH = 'lightning/setup/DensitySetup/home';
+const BASE_PATH = '/lightning/setup/DensitySetup/home';
 
 type Density = 'Comfy' | 'Compact';
 type Config = {

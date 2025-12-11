@@ -1,6 +1,6 @@
 import { BrowserforcePlugin } from '../../plugin.js';
 
-const BASE_PATH = 'setup/activitiesSetupPage.apexp';
+const BASE_PATH = '/setup/activitiesSetupPage.apexp';
 
 const MANY_WHO_PREF_INPUT_SELECTOR =
   'input[id="thePage:theForm:theBlock:manyWhoPref"]';

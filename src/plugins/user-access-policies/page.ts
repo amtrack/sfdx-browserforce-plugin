@@ -1,4 +1,5 @@
 import type { Page } from 'playwright';
+import type { SalesforceUrlPath } from '../../browserforce.js';
 
 export class UserAccessPoliciesPage {
   private page: Page;
@@ -7,8 +8,8 @@ export class UserAccessPoliciesPage {
     this.page = page;
   }
 
-  public static getPolicyUrl(policyId: string): string {
-    return `lightning/setup/UserAccessPolicies/${policyId}/view`;
+  public static getPolicyUrl(policyId: string): SalesforceUrlPath {
+    return `/lightning/setup/UserAccessPolicies/${policyId}/view`;
   }
 
   /**

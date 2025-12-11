@@ -1,6 +1,6 @@
 import { BrowserforcePlugin } from '../../plugin.js';
 
-const BASE_PATH = 'lightning/setup/SlackSetupAssistant/home';
+const BASE_PATH = '/lightning/setup/SlackSetupAssistant/home';
 
 const TOS_CHECKBOX =
   'setup_service-slack-agree-to-terms input[type="checkbox"]';

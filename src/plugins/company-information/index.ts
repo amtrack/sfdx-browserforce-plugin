@@ -1,6 +1,7 @@
+import type { SalesforceUrlPath } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
 
-const getUrl = (orgId: string) => `/${orgId}/e`;
+const getUrl = (orgId: string): SalesforceUrlPath => `/${orgId}/e`;
 
 const CURRENCY_DROPDOWN_SELECTOR = '#DefaultCurrencyIsoCode';
 const SAVE_BUTTON_SELECTOR = 'input[class="btn"][type="submit"][name="save"]';

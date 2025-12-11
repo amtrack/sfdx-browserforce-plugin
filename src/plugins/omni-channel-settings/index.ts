@@ -1,6 +1,6 @@
 import { BrowserforcePlugin } from '../../plugin.js';
 
-const BASE_PATH = 'omnichannel/settings.apexp';
+const BASE_PATH = '/omnichannel/settings.apexp';
 
 const SAVE_BUTTON_SELECTOR = 'input[id$=":save"]';
 const STATUS_CAPACITY_TOGGLE_SELECTOR =

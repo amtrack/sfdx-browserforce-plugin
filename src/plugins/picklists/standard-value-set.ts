@@ -1,9 +1,9 @@
 import { MAPPING as STANDARDVALUESET_MAPPING } from '@mdapi-issues/listmetadata-standardvalueset';
 
 const editUrl = (id: string, type: string) =>
-  `_ui/common/config/field/StandardFieldAttributes/d?id=${id}&type=${type}`;
+  `/_ui/common/config/field/StandardFieldAttributes/d?id=${id}&type=${type}`;
 const editUrlMasterDetail = (tid: string, pt: string) =>
-  `setup/ui/picklist_masterdetail.jsp?tid=${tid}&pt=${pt}`;
+  `/setup/ui/picklist_masterdetail.jsp?tid=${tid}&pt=${pt}`;
 
 const mapping = {
   AccountContactMultiRoles: editUrl('Roles', 'AccountContactRelation'),

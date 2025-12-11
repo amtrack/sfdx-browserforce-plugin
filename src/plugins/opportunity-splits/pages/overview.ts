@@ -1,4 +1,5 @@
 import type { Page } from 'playwright';
+import type { SalesforceUrlPath } from '../../../browserforce.js';
 
 const IN_PROGRESS = '#enablingInProgress, #disablingInProgress';
 const COMPLETED = '#prefSettingSucceeded';
@@ -8,8 +9,8 @@ const DISABLE_CONFIRM_BUTTON =
   'input#splitsDisableConfirmDialog_overlayConfirmButton';
 
 export class OverviewPage {
-  static PATH =
-    'opp/opportunitySplitSetupOverview.apexp?setupid=OpportunitySplitSetup';
+  static PATH: SalesforceUrlPath =
+    '/opp/opportunitySplitSetupOverview.apexp?setupid=OpportunitySplitSetup';
   private page: Page;
 
   constructor(page: Page) {

@@ -1,8 +1,8 @@
 import type { Record } from '@jsforce/jsforce-node';
-import { waitForPageErrors } from '../../browserforce.js';
+import { type SalesforceUrlPath, waitForPageErrors } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
 
-const BASE_PATH = `setup/ui/assignhomelayoutedit.jsp?retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`;
+const BASE_PATH: SalesforceUrlPath = `/setup/ui/assignhomelayoutedit.jsp?retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`;
 
 const BASE_SELECTOR = 'table.detailList';
 const SAVE_BUTTON_SELECTOR = 'input[name="save"]';

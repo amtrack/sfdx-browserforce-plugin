@@ -1,5 +1,8 @@
 import type { Page } from 'playwright';
-import { waitForPageErrors } from '../../browserforce.js';
+import {
+  type SalesforceUrlPath,
+  waitForPageErrors,
+} from '../../browserforce.js';
 
 const SET_UP_AND_ENABLE_HVS_BUTTON = 'button.setupAndEnableButton';
 const ENABLE_TOGGLE = '#toggleHighVelocitySalesPref';
@@ -13,8 +16,8 @@ export class HighVelocitySalesSetupPage {
     this.page = page;
   }
 
-  public static getUrl(): string {
-    return 'lightning/setup/SalesEngagement/home';
+  public static getUrl(): SalesforceUrlPath {
+    return '/lightning/setup/SalesEngagement/home';
   }
 
   public async setUpAndEnable(): Promise<void> {

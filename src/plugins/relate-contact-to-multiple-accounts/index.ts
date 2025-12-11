@@ -2,7 +2,7 @@ import type { Page } from 'playwright';
 import { retry } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
 
-const BASE_PATH = 'accounts/accountSetup.apexp';
+const BASE_PATH = '/accounts/accountSetup.apexp';
 
 type Config = {
   enabled: boolean;

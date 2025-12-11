@@ -1,5 +1,8 @@
 import type { Page } from 'playwright';
-import { waitForPageErrors } from '../../../browserforce.js';
+import {
+  type SalesforceUrlPath,
+  waitForPageErrors,
+} from '../../../browserforce.js';
 
 export class FieldDependencyPage {
   private page: Page;
@@ -8,8 +11,8 @@ export class FieldDependencyPage {
     this.page = page;
   }
 
-  public static getUrl(customObjectId: string): string {
-    return `setup/ui/dependencyList.jsp?tableEnumOrId=${customObjectId.substring(
+  public static getUrl(customObjectId: string): SalesforceUrlPath {
+    return `/setup/ui/dependencyList.jsp?tableEnumOrId=${customObjectId.substring(
       0,
       15
     )}&setupid=CustomObjects`;
@@ -55,8 +58,8 @@ export class NewFieldDependencyPage {
     customObjectId: string,
     dependentFieldId: string,
     controllingFieldId: string
-  ): string {
-    return `p/dependency/NewDependencyUI/e?tableEnumOrId=${customObjectId.substring(
+  ): SalesforceUrlPath {
+    return `/p/dependency/NewDependencyUI/e?tableEnumOrId=${customObjectId.substring(
       0,
       15
     )}&setupid=CustomObjects&controller=${controllingFieldId.substring(

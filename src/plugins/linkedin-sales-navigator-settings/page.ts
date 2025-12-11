@@ -1,5 +1,8 @@
 import type { Page } from 'playwright';
-import { waitForPageErrors } from '../../browserforce.js';
+import {
+  type SalesforceUrlPath,
+  waitForPageErrors,
+} from '../../browserforce.js';
 
 const ENABLE_TOGGLE =
   'div[data-aura-class="setup_sales_linkedinLinkedInSetupRow"] input[type="checkbox"]:not(:disabled)';
@@ -19,8 +22,8 @@ export class LinkedInSalesNavigatorPage {
     this.page = page;
   }
 
-  public static getUrl(): string {
-    return 'lightning/setup/LinkedInSalesNavigatorPage/home';
+  public static getUrl(): SalesforceUrlPath {
+    return '/lightning/setup/LinkedInSalesNavigatorPage/home';
   }
 
   public async getStatus(): Promise<boolean> {

@@ -69,7 +69,7 @@ export class RecordTypes extends BrowserforcePlugin {
         recordTypes
       );
       await using page = await this.browserforce.openPage(
-        `ui/setup/rectype/RecordTypes?type=${recordType.EntityDefinitionId}`
+        `/ui/setup/rectype/RecordTypes?type=${recordType.EntityDefinitionId}`
       );
       const recordTypePage = new RecordTypePage(page);
       const deletePage = await recordTypePage.clickDeleteAction(recordType.Id);

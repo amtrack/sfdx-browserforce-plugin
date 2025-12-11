@@ -1,7 +1,7 @@
 import { waitForPageErrors } from '../../../browserforce.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
 
-const BASE_PATH = '_ui/core/portal/CustomerSuccessPortalSetup/e';
+const BASE_PATH = '/_ui/core/portal/CustomerSuccessPortalSetup/e';
 
 const SAVE_BUTTON = 'input[name="save"]';
 const ENABLE_CHECKBOX = 'input[type="checkbox"][id="penabled"]';

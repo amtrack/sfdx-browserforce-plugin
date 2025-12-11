@@ -4,7 +4,7 @@ sh: "npx prettier --write 'src/plugins/<%= h.changeCase.paramCase(name) %>/*' 's
 ---
 import { BrowserforcePlugin } from '../../plugin.js';
 
-const BASE_PATH = 'partnerbt/loginAccessPolicies.apexp';
+const BASE_PATH = '/partnerbt/loginAccessPolicies.apexp';
 
 const ENABLED_SELECTOR = 'input[id$="adminsCanLogInAsAny"]';
 const CONFIRM_MESSAGE_SELECTOR = '.message.confirmM3';

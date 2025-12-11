@@ -3,9 +3,9 @@ import { waitForPageErrors } from '../../../browserforce.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
 import { semanticallyCleanObject } from '../../utils.js';
 
-const LIST_VIEW_PATH = '_ui/core/portal/CustomerSuccessPortalSetup/d';
+const LIST_VIEW_PATH = '/_ui/core/portal/CustomerSuccessPortalSetup/d';
 const PORTAL_PROFILE_MEMBERSHIP_PATH =
-  '_ui/core/portal/PortalProfileMembershipPage/e';
+  '/_ui/core/portal/PortalProfileMembershipPage/e';
 
 const SAVE_BUTTON_SELECTOR = 'input[name="save"]';
 
@@ -49,7 +49,7 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
       }
     );
     for (const portal of response) {
-      await using portalPage = await this.browserforce.openPage(`${portal._id}/e`);
+      await using portalPage = await this.browserforce.openPage(`/${portal._id}/e`);
       portal.description = await portalPage
         .locator('input#Description')
         .inputValue();
@@ -178,7 +178,7 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
             portal.isSelfRegistrationActivated ? 1 : 0;
         }
         await using page = await this.browserforce.openPage(
-          `${portal._id}/e?${queryString.stringify(urlAttributes)}`
+          `/${portal._id}/e?${queryString.stringify(urlAttributes)}`
         );
         await page.locator('input#Description').waitFor();
         if (portal.selfRegUserDefaultLicense) {

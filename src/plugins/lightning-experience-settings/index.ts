@@ -1,7 +1,7 @@
 import type { Locator, Page } from 'playwright';
 import { BrowserforcePlugin } from '../../plugin.js';
 
-const BASE_PATH = 'lightning/setup/ThemingAndBranding/home';
+const BASE_PATH = '/lightning/setup/ThemingAndBranding/home';
 
 // Spring 25 changed "lightning-datatable" to "one-theme-datatable"
 const THEME_ROW_SELECTOR = '#setupComponent table > tbody > tr';

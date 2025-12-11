@@ -1,5 +1,5 @@
 import type { FileProperties } from '@jsforce/jsforce-node/lib/api/metadata.js';
-import { retry } from '../../browserforce.js';
+import { retry, type SalesforceUrlPath } from '../../browserforce.js';
 import { ensureArray } from '../../jsforce-utils.js';
 import { BrowserforcePlugin } from '../../plugin.js';
 import {
@@ -199,7 +199,7 @@ function getPicklistUrl(
   type: string,
   fullName: string,
   fileProperties?: FileProperties[]
-): string {
+): SalesforceUrlPath {
   let picklistUrl;
   if (type === 'StandardValueSet') {
     picklistUrl = determineStandardValueSetEditUrl(fullName);
@@ -208,7 +208,7 @@ function getPicklistUrl(
       (x) => x.type === type && x.fullName === fullName
     );
     if (fileProperty) {
-      picklistUrl = `${fileProperty.id}`;
+      picklistUrl = `/${fileProperty.id}`;
     }
   }
   return picklistUrl;

@@ -12,6 +12,8 @@ import { LoginPage } from './pages/login.js';
 
 const VF_IFRAME_SELECTOR = 'force-aloha-page iframe[name^=vfFrameId]';
 
+export type SalesforceUrlPath = `/${string}`;
+
 export class Browserforce {
   public org: Org;
   public logger?: Ux;
@@ -74,15 +76,15 @@ export class Browserforce {
   }
 
   // path instead of url
-  public async openPage(urlPath: string): Promise<Page> {
+  public async openPage(urlPath: SalesforceUrlPath): Promise<Page> {
     let page: Page;
     const result = await pRetry(
       async () => {
         page = await this.getNewPage();
-        const setupUrl = urlPath.startsWith('lightning')
+        const setupUrl = urlPath.startsWith('/lightning')
           ? await this.getLightningSetupUrl()
           : this.getInstanceUrl();
-        const url = `${setupUrl}/${urlPath}`;
+        const url = `${setupUrl}${urlPath}`;
         const response = await page.goto(url);
         if (response && !response.ok()) {
           await Promise.race([

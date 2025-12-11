@@ -1,4 +1,5 @@
 import type { Record } from '@jsforce/jsforce-node';
+import type { SalesforceUrlPath } from '../../../browserforce.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
 import { semanticallyCleanObject } from '../../utils.js';
 
@@ -41,7 +42,7 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
           record.NamespacePrefix = undefined;
         }
       }
-      await using page = await this.browserforce.openPage('');
+      await using page = await this.browserforce.openPage('/');
       // new URLs for LEX: https://help.salesforce.com/articleView?id=FAQ-for-the-New-URL-Format-for-Lightning-Experience-and-the-Salesforce-Mobile-App&type=1
       const isLEX =
         page.url().includes('/one/one.app') ||
@@ -49,14 +50,12 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
       const getObjectPageUrl = function (
         customObject: { _id: string },
         isLexUi = true
-      ) {
-        const classicUiPath = `${customObject._id}/e`;
+      ): SalesforceUrlPath {
+        const classicUiPath: SalesforceUrlPath = `/${customObject._id}/e`;
         if (isLexUi) {
-          return `lightning/setup/ObjectManager/${
+          return `/lightning/setup/ObjectManager/${
             customObject._id
-          }/edit?nodeId=ObjectManager&address=${encodeURIComponent(
-            `/${classicUiPath}`
-          )}`;
+          }/edit?nodeId=ObjectManager&address=${encodeURIComponent(classicUiPath)}`;
         } else {
           return classicUiPath;
         }
@@ -129,7 +128,7 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
 
   public async apply(plan: Config): Promise<void> {
     if (plan && plan.length) {
-      await using page = await this.browserforce.openPage('');
+      await using page = await this.browserforce.openPage('/');
       // new URLs for LEX: https://help.salesforce.com/articleView?id=FAQ-for-the-New-URL-Format-for-Lightning-Experience-and-the-Salesforce-Mobile-App&type=1
       const isLEX =
         page.url().includes('/one/one.app') ||
@@ -137,16 +136,14 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
       const getObjectPageUrl = function (
         customObject: { _id?: string; available: boolean },
         isLexUi = true
-      ) {
-        const classicUiPath = `${customObject._id}/e?options_9=${
+      ): SalesforceUrlPath {
+        const classicUiPath: SalesforceUrlPath = `/${customObject._id}/e?options_9=${
           customObject.available ? 1 : 0
         }&retURL=/${customObject._id}`;
         if (isLexUi) {
-          return `lightning/setup/ObjectManager/${
+          return `/lightning/setup/ObjectManager/${
             customObject._id
-          }/edit?nodeId=ObjectManager&address=${encodeURIComponent(
-            `/${classicUiPath}`
-          )}`;
+          }/edit?nodeId=ObjectManager&address=${encodeURIComponent(classicUiPath)}`;
         } else {
           return classicUiPath;
         }
