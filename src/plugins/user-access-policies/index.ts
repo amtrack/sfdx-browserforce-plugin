@@ -23,7 +23,7 @@ export class UserAccessPolicies extends BrowserforcePlugin {
   }> {
     const quotedNames = policyApiNames.map((name) => `'${name}'`);
     const query = `SELECT Id, DeveloperName, Status, TriggerType FROM UserAccessPolicy WHERE DeveloperName IN (${quotedNames.join(
-      ','
+      ',',
     )})`;
 
     const queryResult = await this.org.getConnection().tooling.query(query);
@@ -55,12 +55,8 @@ export class UserAccessPolicies extends BrowserforcePlugin {
       return response;
     }
 
-    const policyApiNames = definition.accessPolicies.map(
-      (policy) => policy.apiName
-    );
-    const { policyStateMap, policyTriggerTypeMap } = await this.queryPolicies(
-      policyApiNames
-    );
+    const policyApiNames = definition.accessPolicies.map((policy) => policy.apiName);
+    const { policyStateMap, policyTriggerTypeMap } = await this.queryPolicies(policyApiNames);
 
     for (const policy of definition.accessPolicies) {
       const isActive = policyStateMap.get(policy.apiName) ?? false;
@@ -88,11 +84,8 @@ export class UserAccessPolicies extends BrowserforcePlugin {
       return;
     }
 
-    const policyApiNames = config.accessPolicies.map(
-      (policy) => policy.apiName
-    );
-    const { policyStateMap, policyIdMap, policyTriggerTypeMap } =
-      await this.queryPolicies(policyApiNames);
+    const policyApiNames = config.accessPolicies.map((policy) => policy.apiName);
+    const { policyStateMap, policyIdMap, policyTriggerTypeMap } = await this.queryPolicies(policyApiNames);
 
     for (const policy of config.accessPolicies) {
       const currentState = policyStateMap.get(policy.apiName) ?? false;
@@ -103,27 +96,18 @@ export class UserAccessPolicies extends BrowserforcePlugin {
         throw new Error(`User Access Policy "${policy.apiName}" not found`);
       }
 
-      await this.applyPolicyChange(
-        policy,
-        policyId,
-        currentState,
-        currentTriggerType
-      );
+      await this.applyPolicyChange(policy, policyId, currentState, currentTriggerType);
     }
   }
 
-  private isValidTriggerType(
-    value: string | null | undefined
-  ): value is PolicyTriggerType {
-    return (
-      value === 'Create' || value === 'Update' || value === 'CreateAndUpdate'
-    );
+  private isValidTriggerType(value: string | null | undefined): value is PolicyTriggerType {
+    return value === 'Create' || value === 'Update' || value === 'CreateAndUpdate';
   }
 
   private needsPolicyChange(
     policy: AccessPolicy,
     currentState: boolean,
-    currentTriggerType: string | null | undefined
+    currentTriggerType: string | null | undefined,
   ): boolean {
     if (currentState !== policy.active) {
       return true;
@@ -144,42 +128,30 @@ export class UserAccessPolicies extends BrowserforcePlugin {
     policy: AccessPolicy,
     policyId: string,
     currentState: boolean,
-    currentTriggerType: string | null | undefined
+    currentTriggerType: string | null | undefined,
   ): Promise<void> {
-    const needsChange = this.needsPolicyChange(
-      policy,
-      currentState,
-      currentTriggerType
-    );
+    const needsChange = this.needsPolicyChange(policy, currentState, currentTriggerType);
 
     if (!needsChange) {
       return;
     }
 
-    await using page = await this.browserforce.openPage(
-      UserAccessPoliciesPage.getPolicyUrl(policyId)
-    );
+    await using page = await this.browserforce.openPage(UserAccessPoliciesPage.getPolicyUrl(policyId));
     const policiesPage = new UserAccessPoliciesPage(page);
 
     if (policy.active) {
-      const needsTriggerTypeChange =
-        currentState && policy.on && currentTriggerType !== policy.on;
+      const needsTriggerTypeChange = currentState && policy.on && currentTriggerType !== policy.on;
 
       if (needsTriggerTypeChange) {
         await policiesPage.deactivatePolicy();
 
-        await using newPage = await this.browserforce.openPage(
-          UserAccessPoliciesPage.getPolicyUrl(policyId)
-        );
+        await using newPage = await this.browserforce.openPage(UserAccessPoliciesPage.getPolicyUrl(policyId));
         const newPoliciesPage = new UserAccessPoliciesPage(newPage);
 
         await newPoliciesPage.activatePolicy(policy.on);
       } else {
         const triggerOn: PolicyTriggerType =
-          policy.on ||
-          (this.isValidTriggerType(currentTriggerType)
-            ? currentTriggerType
-            : DEFAULT_TRIGGER_TYPE);
+          policy.on || (this.isValidTriggerType(currentTriggerType) ? currentTriggerType : DEFAULT_TRIGGER_TYPE);
 
         await policiesPage.activatePolicy(triggerOn);
       }

@@ -14,9 +14,7 @@ export class SalesforceToSalesforce extends BrowserforcePlugin {
       enabled: true,
     };
 
-    const checkedImageCount = await page
-      .getByRole('img', { name: 'Checked' })
-      .count();
+    const checkedImageCount = await page.getByRole('img', { name: 'Checked' }).count();
     if (checkedImageCount === 0) {
       response.enabled = false;
     }

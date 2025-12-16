@@ -15,9 +15,7 @@ export class BrowserforcePlaywrightCommand extends SfCommand<string> {
   public async run(): Promise<string> {
     const { argv } = await this.parse(BrowserforcePlaywrightCommand);
     const args = argv as string[];
-    const isTest =
-      process.env.NODE_ENV === 'test' ||
-      process.env.npm_lifecycle_event === 'test';
+    const isTest = process.env.NODE_ENV === 'test' || process.env.npm_lifecycle_event === 'test';
     const child = spawn('npx', ['playwright', ...args], {
       stdio: 'pipe',
     });

@@ -22,8 +22,7 @@ describe(CertificateAndKeyManagement.name, function () {
   const configImportFromKeystore = {
     importFromKeystore: [
       {
-        filePath:
-          './src/plugins/security/certificate-and-key-management/Dummy.jks',
+        filePath: './src/plugins/security/certificate-and-key-management/Dummy.jks',
         name: 'Dummy',
       },
     ],
@@ -32,19 +31,8 @@ describe(CertificateAndKeyManagement.name, function () {
     // https://salesforce.stackexchange.com/questions/61618/import-keystore-in-certificate-and-key-management
     const __dirname = fileURLToPath(new URL('.', import.meta.url));
     const dir = resolve(join(__dirname, 'sfdx-source', 'identity-provider'));
-    const sourceDeployCmd = spawnSync('sf', [
-      'project',
-      'deploy',
-      'start',
-      '-d',
-      dir,
-      '--json',
-    ]);
-    assert.deepStrictEqual(
-      sourceDeployCmd.status,
-      0,
-      sourceDeployCmd.output.toString()
-    );
+    const sourceDeployCmd = spawnSync('sf', ['project', 'deploy', 'start', '-d', dir, '--json']);
+    assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
   });
   it('should create a self-signed certificate', async () => {
     await pluginCertificateManagement.apply(configCreatedCert);
@@ -63,30 +51,13 @@ describe(CertificateAndKeyManagement.name, function () {
   });
   it('should disable Identity Provider', async () => {
     const __dirname = fileURLToPath(new URL('.', import.meta.url));
-    const dir = resolve(
-      join(__dirname, 'sfdx-source', 'disable-identity-provider')
-    );
-    const sourceDeployCmd = spawnSync('sf', [
-      'project',
-      'deploy',
-      'start',
-      '-d',
-      dir,
-      '--json',
-    ]);
-    assert.deepStrictEqual(
-      sourceDeployCmd.status,
-      0,
-      sourceDeployCmd.output.toString()
-    );
+    const dir = resolve(join(__dirname, 'sfdx-source', 'disable-identity-provider'));
+    const sourceDeployCmd = spawnSync('sf', ['project', 'deploy', 'start', '-d', dir, '--json']);
+    assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
   });
   it('should delete certificates using Metadata API', async () => {
     const org = await Org.create({});
     const conn = org.getConnection();
-    await conn.metadata.delete('Certificate', [
-      'identity_provider',
-      'foo',
-      'Dummy',
-    ]);
+    await conn.metadata.delete('Certificate', ['identity_provider', 'foo', 'Dummy']);
   });
 });

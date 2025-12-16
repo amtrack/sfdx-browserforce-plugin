@@ -7,9 +7,7 @@ type ServiceChannel = {
 };
 
 export class ServiceChannels extends BrowserforcePlugin {
-  public async retrieve(
-    definition?: ServiceChannel[]
-  ): Promise<ServiceChannel[]> {
+  public async retrieve(definition?: ServiceChannel[]): Promise<ServiceChannel[]> {
     const pluginCapacity = new Capacity(this.browserforce);
 
     const serviceChannels: ServiceChannel[] = [];
@@ -24,10 +22,7 @@ export class ServiceChannels extends BrowserforcePlugin {
     return serviceChannels;
   }
 
-  public diff(
-    state: ServiceChannel[],
-    definition: ServiceChannel[]
-  ): ServiceChannel[] | undefined {
+  public diff(state: ServiceChannel[], definition: ServiceChannel[]): ServiceChannel[] | undefined {
     const pluginCapacity = new Capacity(this.browserforce);
 
     const serviceChannels: ServiceChannel[] = [];
@@ -35,19 +30,14 @@ export class ServiceChannels extends BrowserforcePlugin {
     for (const serviceChannelDefinition of definition) {
       const serviceChannelState = state.find(
         (serviceChannelState) =>
-          serviceChannelState.serviceChannelDeveloperName ===
-          serviceChannelDefinition.serviceChannelDeveloperName
+          serviceChannelState.serviceChannelDeveloperName === serviceChannelDefinition.serviceChannelDeveloperName,
       );
 
-      const capacity = pluginCapacity.diff(
-        serviceChannelState.capacity,
-        serviceChannelDefinition.capacity
-      );
+      const capacity = pluginCapacity.diff(serviceChannelState.capacity, serviceChannelDefinition.capacity);
 
       if (capacity !== undefined) {
         serviceChannels.push({
-          serviceChannelDeveloperName:
-            serviceChannelDefinition.serviceChannelDeveloperName,
+          serviceChannelDeveloperName: serviceChannelDefinition.serviceChannelDeveloperName,
           capacity,
         });
       }

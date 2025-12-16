@@ -1,13 +1,9 @@
 import type { Page } from 'playwright';
-import {
-  type SalesforceUrlPath,
-  waitForPageErrors,
-} from '../../browserforce.js';
+import { type SalesforceUrlPath, waitForPageErrors } from '../../browserforce.js';
 
 const SET_UP_AND_ENABLE_HVS_BUTTON = 'button.setupAndEnableButton';
 const ENABLE_TOGGLE = '#toggleHighVelocitySalesPref';
-const AUTOMATION_TAB_ITEM =
-  'lightning-tab-bar li[data-tab-value="automationTab"]';
+const AUTOMATION_TAB_ITEM = 'lightning-tab-bar li[data-tab-value="automationTab"]';
 
 export class HighVelocitySalesSetupPage {
   private page: Page;
@@ -27,9 +23,6 @@ export class HighVelocitySalesSetupPage {
       await this.page.locator(AUTOMATION_TAB_ITEM).click();
     }
     await this.page.locator(SET_UP_AND_ENABLE_HVS_BUTTON).click();
-    await Promise.race([
-      this.page.locator(ENABLE_TOGGLE).waitFor({ timeout: 90_000 }),
-      waitForPageErrors(this.page),
-    ]);
+    await Promise.race([this.page.locator(ENABLE_TOGGLE).waitFor({ timeout: 90_000 }), waitForPageErrors(this.page)]);
   }
 }

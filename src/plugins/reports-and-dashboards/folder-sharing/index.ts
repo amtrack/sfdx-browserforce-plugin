@@ -18,17 +18,10 @@ export class FolderSharing extends BrowserforcePlugin {
     await using page = await this.browserforce.openPage(BASE_PATH);
 
     try {
-      const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(
-        page,
-        BASE_SELECTOR
-      );
-      const inputEnable = await frameOrPage
-        .locator(ENABLE_CHECKBOX_SELECTOR)
-        .count();
+      const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(page, BASE_SELECTOR);
+      const inputEnable = await frameOrPage.locator(ENABLE_CHECKBOX_SELECTOR).count();
       if (inputEnable > 0) {
-        response.enableEnhancedFolderSharing = await frameOrPage
-          .locator(ENABLE_CHECKBOX_SELECTOR)
-          .isChecked();
+        response.enableEnhancedFolderSharing = await frameOrPage.locator(ENABLE_CHECKBOX_SELECTOR).isChecked();
       } else {
         // already enabled
         response.enableEnhancedFolderSharing = true;
@@ -44,17 +37,10 @@ export class FolderSharing extends BrowserforcePlugin {
 
   public async apply(config: Config): Promise<void> {
     if (config.enableEnhancedFolderSharing === false) {
-      throw new Error(
-        '`enableEnhancedFolderSharing` cannot be disabled once enabled'
-      );
+      throw new Error('`enableEnhancedFolderSharing` cannot be disabled once enabled');
     }
     await using page = await this.browserforce.openPage(BASE_PATH);
-    await page
-      .locator(ENABLE_CHECKBOX_SELECTOR)
-      .setChecked(config.enableEnhancedFolderSharing);
-    await Promise.all([
-      page.waitForEvent('load'),
-      page.locator(SAVE_BUTTON_SELECTOR).click(),
-    ]);
+    await page.locator(ENABLE_CHECKBOX_SELECTOR).setChecked(config.enableEnhancedFolderSharing);
+    await Promise.all([page.waitForEvent('load'), page.locator(SAVE_BUTTON_SELECTOR).click()]);
   }
 }

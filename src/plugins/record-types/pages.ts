@@ -8,18 +8,11 @@ export class RecordTypePage {
     this.page = page;
   }
 
-  public async clickDeleteAction(
-    recordTypeId: string
-  ): Promise<RecordTypeDeletePage> {
-    const xpath = `//a[contains(@href, "setup/ui/recordtypedelete.jsp?id=${recordTypeId.slice(
-      0,
-      15
-    )}")]`;
+  public async clickDeleteAction(recordTypeId: string): Promise<RecordTypeDeletePage> {
+    const xpath = `//a[contains(@href, "setup/ui/recordtypedelete.jsp?id=${recordTypeId.slice(0, 15)}")]`;
     await this.page.locator(`xpath=${xpath}`).first().click();
     await Promise.race([
-      this.page.waitForURL(
-        (url) => url.pathname === '/setup/ui/recordtypedelete.jsp'
-      ),
+      this.page.waitForURL((url) => url.pathname === '/setup/ui/recordtypedelete.jsp'),
       waitForPageErrors(this.page),
     ]);
     return new RecordTypeDeletePage(this.page);
@@ -37,10 +30,7 @@ export class RecordTypeDeletePage {
   async replace(newRecordTypeId?: string): Promise<void> {
     await this.throwOnMissingSaveButton();
     if (newRecordTypeId) {
-      await this.page
-        .locator('select#p2')
-        .describe('new value')
-        .selectOption(newRecordTypeId.slice(0, 15));
+      await this.page.locator('select#p2').describe('new value').selectOption(newRecordTypeId.slice(0, 15));
     }
     await this.save();
   }
@@ -48,9 +38,7 @@ export class RecordTypeDeletePage {
   async save(): Promise<void> {
     await this.page.locator(this.saveButton).click();
     await Promise.race([
-      this.page.waitForURL(
-        (url) => url.pathname === '/ui/setup/rectype/RecordTypes'
-      ),
+      this.page.waitForURL((url) => url.pathname === '/ui/setup/rectype/RecordTypes'),
       waitForPageErrors(this.page),
     ]);
   }

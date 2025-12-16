@@ -33,7 +33,7 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
         .getConnection()
         .tooling.query<CustomObjectRecord>(
           `SELECT Id, DeveloperName, NamespacePrefix FROM CustomObject WHERE DeveloperName IN (${availableCustomObjectList}) ORDER BY CreatedDate DESC`,
-          { scanAll: false }
+          { scanAll: false },
         );
       // Note: Unfortunately scanAll=false has no impact and returns deleted CustomObjects.
       // Workaround: Order by CreatedDate DESC to get the latest CustomObject first.
@@ -44,13 +44,8 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
       }
       await using page = await this.browserforce.openPage('/');
       // new URLs for LEX: https://help.salesforce.com/articleView?id=FAQ-for-the-New-URL-Format-for-Lightning-Experience-and-the-Salesforce-Mobile-App&type=1
-      const isLEX =
-        page.url().includes('/one/one.app') ||
-        page.url().includes('/lightning/');
-      const getObjectPageUrl = function (
-        customObject: { _id: string },
-        isLexUi = true
-      ): SalesforceUrlPath {
+      const isLEX = page.url().includes('/one/one.app') || page.url().includes('/lightning/');
+      const getObjectPageUrl = function (customObject: { _id: string }, isLexUi = true): SalesforceUrlPath {
         const classicUiPath: SalesforceUrlPath = `/${customObject._id}/e`;
         if (isLexUi) {
           return `/lightning/setup/ObjectManager/${
@@ -70,7 +65,7 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
         });
         if (!customObject) {
           throw new Error(
-            `Could not find CustomObject: {DeveloperName: ${availableCustomObject.name}, NamespacePrefix: ${availableCustomObject.namespacePrefix}`
+            `Could not find CustomObject: {DeveloperName: ${availableCustomObject.name}, NamespacePrefix: ${availableCustomObject.namespacePrefix}`,
           );
         }
         const result = {
@@ -80,16 +75,13 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
         };
         const pageUrl = getObjectPageUrl(result, isLEX);
         await using editPage = await this.browserforce.openPage(pageUrl);
-        const frameOrPage =
-          await this.browserforce.waitForSelectorInFrameOrPage(
-            editPage,
-            CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL_SELECTOR
-          );
+        const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(
+          editPage,
+          CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL_SELECTOR,
+        );
         response.push({
           ...result,
-          available: await frameOrPage
-            .locator(CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL_SELECTOR)
-            .isChecked(),
+          available: await frameOrPage.locator(CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL_SELECTOR).isChecked(),
         });
       }
     }
@@ -103,21 +95,17 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
         const oldCustomObject = state.find((customObject) => {
           return (
             customObject.name === availableCustomObject.name &&
-            customObject.namespacePrefix ===
-              availableCustomObject.namespacePrefix
+            customObject.namespacePrefix === availableCustomObject.namespacePrefix
           );
         });
         if (!oldCustomObject) {
-          throw new Error(
-            `Could not find CustomObject "${availableCustomObject.name}"`
-          );
+          throw new Error(`Could not find CustomObject "${availableCustomObject.name}"`);
         }
         // copy id of existing object to new object to be retained and used
         availableCustomObject._id = oldCustomObject._id;
-        const diff = semanticallyCleanObject(
-          super.diff(oldCustomObject, availableCustomObject),
-          '_id'
-        ) as AvailableCustomObjectConfig | undefined;
+        const diff = semanticallyCleanObject(super.diff(oldCustomObject, availableCustomObject), '_id') as
+          | AvailableCustomObjectConfig
+          | undefined;
         if (diff?.available !== undefined) {
           response.push(diff);
         }
@@ -130,12 +118,10 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
     if (plan && plan.length) {
       await using page = await this.browserforce.openPage('/');
       // new URLs for LEX: https://help.salesforce.com/articleView?id=FAQ-for-the-New-URL-Format-for-Lightning-Experience-and-the-Salesforce-Mobile-App&type=1
-      const isLEX =
-        page.url().includes('/one/one.app') ||
-        page.url().includes('/lightning/');
+      const isLEX = page.url().includes('/one/one.app') || page.url().includes('/lightning/');
       const getObjectPageUrl = function (
         customObject: { _id?: string; available: boolean },
-        isLexUi = true
+        isLexUi = true,
       ): SalesforceUrlPath {
         const classicUiPath: SalesforceUrlPath = `/${customObject._id}/e?options_9=${
           customObject.available ? 1 : 0
@@ -152,11 +138,7 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
       for (const customObject of plan) {
         const pageUrl = getObjectPageUrl(customObject, isLEX);
         await using editPage = await this.browserforce.openPage(pageUrl);
-        const frameOrPage =
-          await this.browserforce.waitForSelectorInFrameOrPage(
-            editPage,
-            SAVE_BUTTON_SELECTOR
-          );
+        const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(editPage, SAVE_BUTTON_SELECTOR);
         await frameOrPage.locator(SAVE_BUTTON_SELECTOR).first().click();
         await editPage.getByRole('heading', { name: 'Details' }).waitFor();
       }

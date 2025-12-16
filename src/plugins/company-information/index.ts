@@ -17,9 +17,7 @@ export class CompanyInformation extends BrowserforcePlugin {
     const response: Config = {
       defaultCurrencyIsoCode: '',
     };
-    const selectedOption = await page
-      .locator(`${CURRENCY_DROPDOWN_SELECTOR} > option[selected]`)
-      .textContent();
+    const selectedOption = await page.locator(`${CURRENCY_DROPDOWN_SELECTOR} > option[selected]`).textContent();
     if (selectedOption) {
       response.defaultCurrencyIsoCode = selectedOption;
     }
@@ -28,22 +26,16 @@ export class CompanyInformation extends BrowserforcePlugin {
 
   public async apply(config: Config): Promise<void> {
     if (config.defaultCurrencyIsoCode !== undefined) {
-      await using page = await this.browserforce.openPage(
-        getUrl(this.org.getOrgId())
-      );
+      await using page = await this.browserforce.openPage(getUrl(this.org.getOrgId()));
 
       await page.locator(CURRENCY_DROPDOWN_SELECTOR).waitFor();
-      const availableCurrencies = await page
-        .locator(`${CURRENCY_DROPDOWN_SELECTOR} > option`)
-        .allTextContents();
+      const availableCurrencies = await page.locator(`${CURRENCY_DROPDOWN_SELECTOR} > option`).allTextContents();
       if (!availableCurrencies.includes(config.defaultCurrencyIsoCode)) {
         throw new Error(
-          `Invalid currency provided. '${config.defaultCurrencyIsoCode}' is not a valid option available for currencies. Please use the exact name as it appears in the list.`
+          `Invalid currency provided. '${config.defaultCurrencyIsoCode}' is not a valid option available for currencies. Please use the exact name as it appears in the list.`,
         );
       }
-      await page
-        .locator(CURRENCY_DROPDOWN_SELECTOR)
-        .selectOption({ label: config.defaultCurrencyIsoCode });
+      await page.locator(CURRENCY_DROPDOWN_SELECTOR).selectOption({ label: config.defaultCurrencyIsoCode });
 
       // auto accept the dialog when it appears
       page.on('dialog', (dialog) => {

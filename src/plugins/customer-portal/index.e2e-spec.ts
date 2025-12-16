@@ -86,15 +86,8 @@ describe('CustomerPortal', () => {
       } catch (e) {
         err = e;
       }
-      const errors =
-        err instanceof AggregateError ? [err, ...err.errors] : [err];
-      assert(
-        errors.find((e) =>
-          /This user has insufficient permissions to be a portal administrator/.test(
-            e
-          )
-        )
-      );
+      const errors = err instanceof AggregateError ? [err, ...err.errors] : [err];
+      assert(errors.find((e) => /This user has insufficient permissions to be a portal administrator/.test(e)));
     });
     it('should set up user for portal', async () => {
       const sourceDeployCmd = child.spawnSync('sf', [
@@ -105,23 +98,9 @@ describe('CustomerPortal', () => {
         path.join(dir, 'sfdx-source'),
         '--json',
       ]);
-      assert.deepStrictEqual(
-        sourceDeployCmd.status,
-        0,
-        sourceDeployCmd.output.toString()
-      );
-      const permSetAssignCmd = child.spawnSync('sf', [
-        'org',
-        'assign',
-        'permset',
-        '-n',
-        'Customer_Portal_Admin',
-      ]);
-      assert.deepStrictEqual(
-        permSetAssignCmd.status,
-        0,
-        permSetAssignCmd.output.toString()
-      );
+      assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
+      const permSetAssignCmd = child.spawnSync('sf', ['org', 'assign', 'permset', '-n', 'Customer_Portal_Admin']);
+      assert.deepStrictEqual(permSetAssignCmd.status, 0, permSetAssignCmd.output.toString());
     });
     it('should set up portal', async () => {
       await plugin.run(configSetupPortal);
@@ -141,12 +120,12 @@ describe('CustomerPortal', () => {
       const conn = global.bf.org.getConnection();
       await conn.metadata.delete('Profile', ['Dummy']);
       const result = await conn.query(
-        "SELECT Id FROM PermissionSetAssignment WHERE PermissionSet.Name='Customer_Portal_Admin'"
+        "SELECT Id FROM PermissionSetAssignment WHERE PermissionSet.Name='Customer_Portal_Admin'",
       );
       if (result.records.length) {
         await conn.delete(
           'PermissionSetAssignment',
-          result.records.map((rec) => rec.Id)
+          result.records.map((rec) => rec.Id),
         );
       }
       await conn.metadata.delete('PermissionSet', ['Customer_Portal_Admin']);
@@ -199,11 +178,7 @@ describe('CustomerPortal', () => {
         path.join(dir, 'sfdx-source'),
         '--json',
       ]);
-      assert.deepStrictEqual(
-        sourceDeployCmd.status,
-        0,
-        sourceDeployCmd.output.toString()
-      );
+      assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
     });
     it('should make custom objects available for customer portal', async () => {
       await plugin.run(configAvailableCustomObjects);

@@ -1,8 +1,5 @@
 import type { Page } from 'playwright';
-import {
-  type SalesforceUrlPath,
-  waitForPageErrors,
-} from '../../../browserforce.js';
+import { type SalesforceUrlPath, waitForPageErrors } from '../../../browserforce.js';
 
 export class FieldDependencyPage {
   private page: Page;
@@ -12,22 +9,15 @@ export class FieldDependencyPage {
   }
 
   public static getUrl(customObjectId: string): SalesforceUrlPath {
-    return `/setup/ui/dependencyList.jsp?tableEnumOrId=${customObjectId.substring(
-      0,
-      15
-    )}&setupid=CustomObjects`;
+    return `/setup/ui/dependencyList.jsp?tableEnumOrId=${customObjectId.substring(0, 15)}&setupid=CustomObjects`;
   }
 
-  public async clickDeleteDependencyActionForField(
-    customFieldId: string
-  ): Promise<FieldDependencyPage> {
+  public async clickDeleteDependencyActionForField(customFieldId: string): Promise<FieldDependencyPage> {
     // wait for "new" button in field dependencies releated list header
-    await this.page
-      .locator('div.listRelatedObject div.pbHeader input[name="new"]')
-      .waitFor();
+    await this.page.locator('div.listRelatedObject div.pbHeader input[name="new"]').waitFor();
     const xpath = `//a[contains(@href, "/p/dependency/NewDependencyUI/e") and contains(@href, "delID=${customFieldId.substring(
       0,
-      15
+      15,
     )}")]`;
     const actionLinks = await this.page.locator(`xpath=${xpath}`).all();
     if (actionLinks.length > 0) {
@@ -35,10 +25,7 @@ export class FieldDependencyPage {
         await dialog.accept();
       });
       await Promise.all([
-        Promise.race([
-          this.page.waitForResponse(/setup\/ui\/dependencyList.jsp/),
-          waitForPageErrors(this.page),
-        ]),
+        Promise.race([this.page.waitForResponse(/setup\/ui\/dependencyList.jsp/), waitForPageErrors(this.page)]),
         actionLinks[0].click(),
       ]);
     }
@@ -57,26 +44,21 @@ export class NewFieldDependencyPage {
   public static getUrl(
     customObjectId: string,
     dependentFieldId: string,
-    controllingFieldId: string
+    controllingFieldId: string,
   ): SalesforceUrlPath {
     return `/p/dependency/NewDependencyUI/e?tableEnumOrId=${customObjectId.substring(
       0,
-      15
-    )}&setupid=CustomObjects&controller=${controllingFieldId.substring(
+      15,
+    )}&setupid=CustomObjects&controller=${controllingFieldId.substring(0, 15)}&dependent=${dependentFieldId.substring(
       0,
-      15
-    )}&dependent=${dependentFieldId.substring(
-      0,
-      15
+      15,
     )}&retURL=/${customObjectId.substring(0, 15)}`;
   }
 
   async save(): Promise<void> {
     await this.page.locator(this.saveButton).first().click();
     await Promise.race([
-      this.page.waitForURL(
-        (url) => url.pathname === '/p/dependency/EditDependencyUI/e'
-      ),
+      this.page.waitForURL((url) => url.pathname === '/p/dependency/EditDependencyUI/e'),
       waitForPageErrors(this.page),
     ]);
 
@@ -85,9 +67,6 @@ export class NewFieldDependencyPage {
       await dialog.accept();
     });
     await this.page.locator(this.saveButton).first().click();
-    await Promise.race([
-      this.page.waitForURL((url) => /\/01I\w{12}/.test(url.pathname)),
-      waitForPageErrors(this.page),
-    ]);
+    await Promise.race([this.page.waitForURL((url) => /\/01I\w{12}/.test(url.pathname)), waitForPageErrors(this.page)]);
   }
 }

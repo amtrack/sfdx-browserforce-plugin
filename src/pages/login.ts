@@ -22,12 +22,9 @@ export class LoginPage {
     await this.page.goto(
       `${conn.instanceUrl.replace(/\/$/, '')}${FRONT_DOOR_PATH}?sid=${
         conn.accessToken
-      }&retURL=${encodeURIComponent(POST_LOGIN_PATH)}`
+      }&retURL=${encodeURIComponent(POST_LOGIN_PATH)}`,
     );
-    await Promise.race([
-      this.page.waitForURL((url) => url.pathname === POST_LOGIN_PATH),
-      waitForPageErrors(this.page),
-    ]);
+    await Promise.race([this.page.waitForURL((url) => url.pathname === POST_LOGIN_PATH), waitForPageErrors(this.page)]);
     return this;
   }
 }

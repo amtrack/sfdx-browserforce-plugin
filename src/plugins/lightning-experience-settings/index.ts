@@ -62,39 +62,25 @@ export class LightningExperienceSettings extends BrowserforcePlugin {
 
   async setActiveTheme(page: Page, themeDeveloperName: string): Promise<void> {
     const data = await this.getThemeData(page);
-    const theme = data.find(
-      (theme) => theme.developerName === themeDeveloperName
-    );
+    const theme = data.find((theme) => theme.developerName === themeDeveloperName);
     if (!theme) {
       throw new Error(
-        `Could not find theme "${themeDeveloperName}" in list of themes: ${data.map(
-          (d) => d.developerName
-        )}`
+        `Could not find theme "${themeDeveloperName}" in list of themes: ${data.map((d) => d.developerName)}`,
       );
     }
 
     const newActiveThemeRowLocator = theme.rowLocator;
-    await page
-      .locator(`${THEME_ROW_SELECTOR} lightning-button-menu`)
-      .first()
-      .waitFor();
+    await page.locator(`${THEME_ROW_SELECTOR} lightning-button-menu`).first().waitFor();
 
     const menuButton = newActiveThemeRowLocator.locator(
-      'td lightning-primitive-cell-factory lightning-primitive-cell-actions lightning-button-menu'
+      'td lightning-primitive-cell-factory lightning-primitive-cell-actions lightning-button-menu',
     );
     await menuButton.click();
 
-    await page
-      .locator(
-        `${THEME_ROW_SELECTOR} lightning-button-menu slot lightning-menu-item`
-      )
-      .first()
-      .waitFor();
+    await page.locator(`${THEME_ROW_SELECTOR} lightning-button-menu slot lightning-menu-item`).first().waitFor();
 
     // second last item: [show, activate, preview]
-    const activateMenuItem = menuButton
-      .locator('slot lightning-menu-item')
-      .nth(-2);
+    const activateMenuItem = menuButton.locator('slot lightning-menu-item').nth(-2);
 
     await Promise.all([
       Promise.race([
@@ -106,9 +92,7 @@ export class LightningExperienceSettings extends BrowserforcePlugin {
           // This theme uses SLDS 1. When you activate this theme, you also disable SLDS 2.
           // - Never Mind
           // - Activate <--
-          page
-            .locator('lightning-modal lightning-button[variant="brand"]')
-            .click(),
+          page.locator('lightning-modal lightning-button[variant="brand"]').click(),
         ]),
       ]),
       activateMenuItem.click(),

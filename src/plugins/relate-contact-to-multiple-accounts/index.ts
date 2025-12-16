@@ -12,9 +12,7 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {
     await using page = await this.browserforce.openPage(BASE_PATH);
     const response = {
-      enabled: await page
-        .locator('input[id$=":sharedContactsCheckBox"]')
-        .isChecked(),
+      enabled: await page.locator('input[id$=":sharedContactsCheckBox"]').isChecked(),
     };
     return response;
   }
@@ -23,14 +21,9 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
     await using page = await this.browserforce.openPage(BASE_PATH);
     await this.waitForProcessFinished(page);
     // First we have to click the 'Edit' button, to make the checkbox editable
-    await Promise.all([
-      page.waitForEvent('load'),
-      page.locator('input[id$=":edit"]').first().click(),
-    ]);
+    await Promise.all([page.waitForEvent('load'), page.locator('input[id$=":edit"]').first().click()]);
     // Change the value of the checkbox
-    await page
-      .locator('input[id$=":sharedContactsCheckBox"]')
-      .setChecked(config.enabled);
+    await page.locator('input[id$=":sharedContactsCheckBox"]').setChecked(config.enabled);
 
     const saveButton = page.locator('input[id$=":save"]').first();
     if (config.enabled) {
@@ -38,10 +31,7 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
     } else {
       await saveButton.click();
       await page.locator('input#disable_confirm').click();
-      await Promise.all([
-        page.waitForEvent('load'),
-        page.locator('input#sharedContactsDisableConfirmButton').click(),
-      ]);
+      await Promise.all([page.waitForEvent('load'), page.locator('input#sharedContactsDisableConfirmButton').click()]);
     }
   }
 

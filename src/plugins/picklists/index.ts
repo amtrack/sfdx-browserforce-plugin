@@ -2,15 +2,8 @@ import type { FileProperties } from '@jsforce/jsforce-node/lib/api/metadata.js';
 import { retry, type SalesforceUrlPath } from '../../browserforce.js';
 import { ensureArray } from '../../jsforce-utils.js';
 import { BrowserforcePlugin } from '../../plugin.js';
-import {
-  FieldDependencies,
-  Config as FieldDependenciesConfig,
-} from './field-dependencies/index.js';
-import {
-  DefaultPicklistAddPage,
-  PicklistPage,
-  StatusPicklistAddPage,
-} from './pages.js';
+import { FieldDependencies, Config as FieldDependenciesConfig } from './field-dependencies/index.js';
+import { DefaultPicklistAddPage, PicklistPage, StatusPicklistAddPage } from './pages.js';
 import { determineStandardValueSetEditUrl } from './standard-value-set.js';
 
 type Config = {
@@ -37,23 +30,16 @@ export class Picklists extends BrowserforcePlugin {
     if (definition.picklistValues) {
       const fileProperties = await listMetadata(
         conn,
-        definition.picklistValues.map((x) => x.metadataType)
+        definition.picklistValues.map((x) => x.metadataType),
       );
       for (const action of definition.picklistValues) {
         // check if given picklist values exist
-        const picklistUrl = getPicklistUrl(
-          action.metadataType,
-          action.metadataFullName,
-          fileProperties
-        );
+        const picklistUrl = getPicklistUrl(action.metadataType, action.metadataFullName, fileProperties);
         await using page = await this.browserforce.openPage(picklistUrl);
         const picklistPage = new PicklistPage(page);
         const values = await picklistPage.getPicklistValues();
         const state = { ...action };
-        const valueMatch =
-          action.value !== undefined
-            ? values.find((x) => x.value === action.value)
-            : undefined;
+        const valueMatch = action.value !== undefined ? values.find((x) => x.value === action.value) : undefined;
         state.absent = !valueMatch;
         state.active = valueMatch?.active;
         state._newValueId = values.find((x) => x.value === action.newValue)?.id;
@@ -61,9 +47,7 @@ export class Picklists extends BrowserforcePlugin {
       }
     }
     if (definition.fieldDependencies) {
-      const deps = await new FieldDependencies(this.browserforce).retrieve(
-        definition.fieldDependencies
-      );
+      const deps = await new FieldDependencies(this.browserforce).retrieve(definition.fieldDependencies);
       result.fieldDependencies!.push(...deps);
     }
     return result;
@@ -81,10 +65,7 @@ export class Picklists extends BrowserforcePlugin {
           return target.active !== source?.active;
         }
         // replacing a picklist value is not idempotent
-        if (
-          source?._newValueId &&
-          (target.value !== undefined || target.replaceAllBlankValues)
-        ) {
+        if (source?._newValueId && (target.value !== undefined || target.replaceAllBlankValues)) {
           return true;
         }
         if (target.newValue && !source?._newValueId) {
@@ -100,7 +81,7 @@ export class Picklists extends BrowserforcePlugin {
     if (definition.fieldDependencies) {
       const fieldDependencies = new FieldDependencies(this.browserforce).diff(
         state.fieldDependencies,
-        definition.fieldDependencies
+        definition.fieldDependencies,
       ) as FieldDependenciesConfig;
       if (fieldDependencies !== undefined) {
         changes.fieldDependencies = fieldDependencies;
@@ -114,32 +95,21 @@ export class Picklists extends BrowserforcePlugin {
     if (config.picklistValues) {
       const fileProperties = await listMetadata(
         conn,
-        config.picklistValues.map((x) => x.metadataType)
+        config.picklistValues.map((x) => x.metadataType),
       );
       for (const action of config.picklistValues) {
         await retry(async () => {
-          const picklistUrl = getPicklistUrl(
-            action.metadataType,
-            action.metadataFullName,
-            fileProperties
-          );
+          const picklistUrl = getPicklistUrl(action.metadataType, action.metadataFullName, fileProperties);
           await using page = await this.browserforce.openPage(picklistUrl);
           const picklistPage = new PicklistPage(page);
           if (action.active !== undefined && action.value !== undefined) {
             // activate/deactivate
-            await picklistPage.clickActivateDeactivateActionForValue(
-              action.value,
-              action.active
-            );
+            await picklistPage.clickActivateDeactivateActionForValue(action.value, action.active);
           } else if (action.absent && action.value !== undefined) {
             // delete
             const values = await picklistPage.getPicklistValues();
-            const newValueId = values.find(
-              (picklist) => picklist.value === action.newValue
-            )?.id;
-            const replacePage = await picklistPage.clickDeleteActionForValue(
-              action.value
-            );
+            const newValueId = values.find((picklist) => picklist.value === action.newValue)?.id;
+            const replacePage = await picklistPage.clickDeleteActionForValue(action.value);
             await replacePage.replaceAndDelete(newValueId);
             await replacePage.save();
           } else if (
@@ -150,22 +120,14 @@ export class Picklists extends BrowserforcePlugin {
             // create
             await picklistPage.clickNewActionButton();
             if (action.statusCategory) {
-              await new StatusPicklistAddPage(page).add(
-                action.newValue,
-                action.statusCategory
-              );
+              await new StatusPicklistAddPage(page).add(action.newValue, action.statusCategory);
             } else {
               await new DefaultPicklistAddPage(page).add(action.newValue);
             }
-          } else if (
-            action.value !== undefined &&
-            action.newValue !== undefined
-          ) {
+          } else if (action.value !== undefined && action.newValue !== undefined) {
             // replace
             const values = await picklistPage.getPicklistValues();
-            const newValue = values.find(
-              (picklist) => picklist.value === action.newValue
-            );
+            const newValue = values.find((picklist) => picklist.value === action.newValue);
             let newValueLabel;
             if (newValue?.label) {
               newValueLabel = newValue.label;
@@ -174,39 +136,25 @@ export class Picklists extends BrowserforcePlugin {
               newValueLabel += ` (${newValue.statusCategory})`;
             }
             const replacePage = await picklistPage.clickReplaceActionButton();
-            await replacePage.replace(
-              action.value,
-              newValueLabel,
-              action.replaceAllBlankValues
-            );
+            await replacePage.replace(action.value, newValueLabel, action.replaceAllBlankValues);
           } else {
-            throw new Error(
-              `Could not determine action for input: ${JSON.stringify(action)}`
-            );
+            throw new Error(`Could not determine action for input: ${JSON.stringify(action)}`);
           }
         });
       }
     }
     if (config.fieldDependencies) {
-      await new FieldDependencies(this.browserforce).apply(
-        config.fieldDependencies
-      );
+      await new FieldDependencies(this.browserforce).apply(config.fieldDependencies);
     }
   }
 }
 
-function getPicklistUrl(
-  type: string,
-  fullName: string,
-  fileProperties?: FileProperties[]
-): SalesforceUrlPath {
+function getPicklistUrl(type: string, fullName: string, fileProperties?: FileProperties[]): SalesforceUrlPath {
   let picklistUrl;
   if (type === 'StandardValueSet') {
     picklistUrl = determineStandardValueSetEditUrl(fullName);
   } else {
-    const fileProperty = fileProperties?.find(
-      (x) => x.type === type && x.fullName === fullName
-    );
+    const fileProperty = fileProperties?.find((x) => x.type === type && x.fullName === fullName);
     if (fileProperty) {
       picklistUrl = `/${fileProperty.id}`;
     }
@@ -217,9 +165,7 @@ function getPicklistUrl(
 async function listMetadata(conn, sobjectTypes): Promise<FileProperties[]> {
   let uniqueSobjectTypes = [...new Set<string>(sobjectTypes)];
   // don't list StandardValueSet as the FileProperties are broken
-  uniqueSobjectTypes = uniqueSobjectTypes.filter(
-    (x) => x !== 'StandardValueSet'
-  );
+  uniqueSobjectTypes = uniqueSobjectTypes.filter((x) => x !== 'StandardValueSet');
   const queries = uniqueSobjectTypes.map((type) => {
     return {
       type,

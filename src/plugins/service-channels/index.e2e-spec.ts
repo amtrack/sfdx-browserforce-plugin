@@ -50,11 +50,7 @@ describe(ServiceChannels.name, function () {
       path.join(__dirname, 'sfdx-source'),
       '--json',
     ]);
-    assert.deepStrictEqual(
-      sourceDeployCmd.status,
-      0,
-      sourceDeployCmd.output.toString()
-    );
+    assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
   });
 
   it('should enable status based capacity model as a prerequisite', async () => {
@@ -70,13 +66,11 @@ describe(ServiceChannels.name, function () {
 
   it('should delete Service Channels', async () => {
     const conn = global.bf.org.getConnection();
-    const result = await conn.query(
-      "SELECT Id FROM ServiceChannel WHERE DeveloperName IN ('CaseTest', 'LeadTest')"
-    );
+    const result = await conn.query("SELECT Id FROM ServiceChannel WHERE DeveloperName IN ('CaseTest', 'LeadTest')");
     if (result.records?.length) {
       await conn.delete(
         'ServiceChannel',
-        result.records.map((r) => r.Id)
+        result.records.map((r) => r.Id),
       );
     }
   });

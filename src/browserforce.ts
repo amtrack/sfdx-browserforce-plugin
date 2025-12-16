@@ -1,13 +1,7 @@
 import { Org } from '@salesforce/core';
 import { type Ux } from '@salesforce/sf-plugins-core';
 import pRetry from 'p-retry';
-import {
-  chromium,
-  type Browser,
-  type BrowserContext,
-  type Page,
-  type FrameLocator,
-} from 'playwright';
+import { chromium, type Browser, type BrowserContext, type Page, type FrameLocator } from 'playwright';
 import { LoginPage } from './pages/login.js';
 
 const VF_IFRAME_SELECTOR = 'force-aloha-page iframe[name^=vfFrameId]';
@@ -69,9 +63,7 @@ export class Browserforce {
 
   public async getNewPage(): Promise<Page> {
     const page = await this.context.newPage();
-    page.setDefaultNavigationTimeout(
-      parseInt(process.env.BROWSERFORCE_NAVIGATION_TIMEOUT_MS ?? '90000', 10)
-    );
+    page.setDefaultNavigationTimeout(parseInt(process.env.BROWSERFORCE_NAVIGATION_TIMEOUT_MS ?? '90000', 10));
     return page;
   }
 
@@ -81,9 +73,7 @@ export class Browserforce {
     const result = await pRetry(
       async () => {
         page = await this.getNewPage();
-        const setupUrl = urlPath.startsWith('/lightning')
-          ? await this.getLightningSetupUrl()
-          : this.getInstanceUrl();
+        const setupUrl = urlPath.startsWith('/lightning') ? await this.getLightningSetupUrl() : this.getInstanceUrl();
         const url = `${setupUrl}${urlPath}`;
         const response = await page.goto(url);
         if (response && !response.ok()) {
@@ -100,9 +90,7 @@ export class Browserforce {
       {
         onFailedAttempt: async (context) => {
           if (this.logger) {
-            this.logger.warn(
-              `retrying ${context.retriesLeft} more time(s) because of "${context.error}"`
-            );
+            this.logger.warn(`retrying ${context.retriesLeft} more time(s) because of "${context.error}"`);
           }
           if (page) {
             try {
@@ -112,15 +100,9 @@ export class Browserforce {
             }
           }
         },
-        retries: parseInt(
-          process.env.BROWSERFORCE_RETRY_MAX_RETRIES ?? '4',
-          10
-        ),
-        minTimeout: parseInt(
-          process.env.BROWSERFORCE_RETRY_TIMEOUT_MS ?? '4000',
-          10
-        ),
-      }
+        retries: parseInt(process.env.BROWSERFORCE_RETRY_MAX_RETRIES ?? '4', 10),
+        minTimeout: parseInt(process.env.BROWSERFORCE_RETRY_TIMEOUT_MS ?? '4000', 10),
+      },
     );
     return result;
   }
@@ -128,10 +110,7 @@ export class Browserforce {
   // If LEX is enabled, the classic url will be opened in an iframe.
   // Wait for either the selector in the page or in the iframe.
   // returns the page or the frame locator
-  public async waitForSelectorInFrameOrPage(
-    page: Page,
-    selector: string
-  ): Promise<Page | FrameLocator> {
+  public async waitForSelectorInFrameOrPage(page: Page, selector: string): Promise<Page | FrameLocator> {
     await page.locator(`${selector}, ${VF_IFRAME_SELECTOR}`).first().waitFor();
 
     const iframeCount = await page.locator(VF_IFRAME_SELECTOR).count();
@@ -168,26 +147,17 @@ export class Browserforce {
   public async getLightningSetupUrl(): Promise<string> {
     if (!this.lightningSetupUrl) {
       await using page = await this.getNewPage();
-      const lightningResponse = await page.goto(
-        `${this.getInstanceUrl()}/lightning/setup/SetupOneHome/home`
-      );
+      const lightningResponse = await page.goto(`${this.getInstanceUrl()}/lightning/setup/SetupOneHome/home`);
       this.lightningSetupUrl = new URL(lightningResponse.url()).origin;
     }
     return this.lightningSetupUrl;
   }
 }
 
-export async function waitForPageErrors(
-  page: Page,
-  timeout = 90_000
-): Promise<void> {
-  const anyErrorsLocator = page.locator(
-    `#error, #errorTitle, #errorDesc, #validationError, div.errorMsg`
-  );
+export async function waitForPageErrors(page: Page, timeout = 90_000): Promise<void> {
+  const anyErrorsLocator = page.locator(`#error, #errorTitle, #errorDesc, #validationError, div.errorMsg`);
   await anyErrorsLocator.first().waitFor({ state: 'attached', timeout });
-  const errorMessages = (await anyErrorsLocator.allInnerTexts())
-    .map((t) => t.trim())
-    .filter(Boolean);
+  const errorMessages = (await anyErrorsLocator.allInnerTexts()).map((t) => t.trim()).filter(Boolean);
   if (errorMessages.length === 1) {
     throw new Error(errorMessages[0]);
   } else if (errorMessages.length > 1) {
@@ -195,20 +165,13 @@ export async function waitForPageErrors(
   }
 }
 
-export async function retry<T>(
-  input: (attemptCount: number) => PromiseLike<T> | T
-): Promise<T> {
+export async function retry<T>(input: (attemptCount: number) => PromiseLike<T> | T): Promise<T> {
   const res = await pRetry(input, {
     onFailedAttempt: (context) => {
-      console.warn(
-        `retrying ${context.retriesLeft} more time(s) because of "${context.error}"`
-      );
+      console.warn(`retrying ${context.retriesLeft} more time(s) because of "${context.error}"`);
     },
     retries: parseInt(process.env.BROWSERFORCE_RETRY_MAX_RETRIES ?? '6', 10),
-    minTimeout: parseInt(
-      process.env.BROWSERFORCE_RETRY_TIMEOUT_MS ?? '4000',
-      10
-    ),
+    minTimeout: parseInt(process.env.BROWSERFORCE_RETRY_TIMEOUT_MS ?? '4000', 10),
   });
   return res;
 }

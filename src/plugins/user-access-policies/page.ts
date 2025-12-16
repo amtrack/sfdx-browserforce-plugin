@@ -16,9 +16,7 @@ export class UserAccessPoliciesPage {
    * Activate a policy from its detail page
    * @param triggerOn - When to trigger the policy: 'Create', 'Update', or 'CreateAndUpdate' (default)
    */
-  public async activatePolicy(
-    triggerOn: 'Create' | 'Update' | 'CreateAndUpdate' = 'CreateAndUpdate'
-  ): Promise<void> {
+  public async activatePolicy(triggerOn: 'Create' | 'Update' | 'CreateAndUpdate' = 'CreateAndUpdate'): Promise<void> {
     try {
       const automateButton = this.page.getByRole('button', {
         name: 'Automate Policy',
@@ -55,12 +53,8 @@ export class UserAccessPoliciesPage {
   /**
    * Handle the activation modal (select trigger option and click Activate)
    */
-  private async handleActivationModal(
-    triggerOn: 'Create' | 'Update' | 'CreateAndUpdate'
-  ): Promise<void> {
-    const modalHeader = this.page.locator(
-      'lightning-modal-header.automate_policy_modal'
-    );
+  private async handleActivationModal(triggerOn: 'Create' | 'Update' | 'CreateAndUpdate'): Promise<void> {
+    const modalHeader = this.page.locator('lightning-modal-header.automate_policy_modal');
     await modalHeader.waitFor({ timeout: 10000 });
 
     await this.page.waitForTimeout(500);
@@ -111,18 +105,14 @@ export class UserAccessPoliciesPage {
     try {
       await this.page.waitForTimeout(500);
 
-      const deactivateButton = this.page.locator(
-        'lightning-modal-footer button:has-text("Deactivate")'
-      );
+      const deactivateButton = this.page.locator('lightning-modal-footer button:has-text("Deactivate")');
       await deactivateButton.waitFor({ timeout: 5000 });
       await deactivateButton.click();
 
       // TODO: use a better indicator
       await this.page.waitForTimeout(1000);
     } catch (e) {
-      throw new Error(
-        `Failed to handle deactivation confirmation modal: ${e.message}`
-      );
+      throw new Error(`Failed to handle deactivation confirmation modal: ${e.message}`);
     }
   }
 
@@ -131,10 +121,7 @@ export class UserAccessPoliciesPage {
    * @param button - The button locator to wait for
    * @param timeout - Maximum time to wait in milliseconds (default: 10000)
    */
-  private async waitForButtonEnabled(
-    button: any,
-    timeout: number = 10000
-  ): Promise<void> {
+  private async waitForButtonEnabled(button: any, timeout: number = 10000): Promise<void> {
     const startTime = Date.now();
 
     while (Date.now() - startTime < timeout) {

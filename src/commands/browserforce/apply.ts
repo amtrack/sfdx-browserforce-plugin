@@ -18,11 +18,7 @@ export class BrowserforceApply extends BrowserforceCommand<BrowserforceApplyResp
 
   public async run(): Promise<BrowserforceApplyResponse> {
     const { flags } = await this.parse(BrowserforceApply);
-    this.log(
-      `Applying definition file ${flags.definitionfile} to org ${flags[
-        'target-org'
-      ].getUsername()}`
-    );
+    this.log(`Applying definition file ${flags.definitionfile} to org ${flags['target-org'].getUsername()}`);
     for (const setting of this.settings) {
       const driver = setting.Driver;
       const instance = new driver(this.bf);
@@ -42,7 +38,7 @@ export class BrowserforceApply extends BrowserforceCommand<BrowserforceApplyResp
             .map((key) => {
               return `changing '${key}' to '${JSON.stringify(diff[key])}'`;
             })
-            .join('\n')}`
+            .join('\n')}`,
         );
         try {
           await instance.apply(diff);

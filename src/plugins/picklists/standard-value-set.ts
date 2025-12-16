@@ -2,8 +2,7 @@ import { MAPPING as STANDARDVALUESET_MAPPING } from '@mdapi-issues/listmetadata-
 
 const editUrl = (id: string, type: string) =>
   `/_ui/common/config/field/StandardFieldAttributes/d?id=${id}&type=${type}`;
-const editUrlMasterDetail = (tid: string, pt: string) =>
-  `/setup/ui/picklist_masterdetail.jsp?tid=${tid}&pt=${pt}`;
+const editUrlMasterDetail = (tid: string, pt: string) => `/setup/ui/picklist_masterdetail.jsp?tid=${tid}&pt=${pt}`;
 
 const mapping = {
   AccountContactMultiRoles: editUrl('Roles', 'AccountContactRelation'),
@@ -70,19 +69,15 @@ const mapping = {
   WorkTypeGroupAddInfo: '',
 };
 
-export function determineStandardValueSetEditUrl(
-  standardValueSet: string
-): string {
+export function determineStandardValueSetEditUrl(standardValueSet: string): string {
   if (mapping[standardValueSet] !== '') {
     return mapping[standardValueSet];
   } else {
     const standardField = Object.keys(STANDARDVALUESET_MAPPING).find(
-      (key) => STANDARDVALUESET_MAPPING[key] === standardValueSet
+      (key) => STANDARDVALUESET_MAPPING[key] === standardValueSet,
     );
     if (!standardField) {
-      throw new Error(
-        `Could not determine Edit URL for StandardValueSet:${standardValueSet}`
-      );
+      throw new Error(`Could not determine Edit URL for StandardValueSet:${standardValueSet}`);
     }
     return editUrl(standardValueSet, standardField.split('.')[0]);
   }

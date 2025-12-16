@@ -2,10 +2,8 @@ import { BrowserforcePlugin } from '../../plugin.js';
 
 const BASE_PATH = '/setup/activitiesSetupPage.apexp';
 
-const MANY_WHO_PREF_INPUT_SELECTOR =
-  'input[id="thePage:theForm:theBlock:manyWhoPref"]';
-const SUBMIT_BUTTON_SELECTOR =
-  'input[id="thePage:theForm:theBlock:buttons:submit"]';
+const MANY_WHO_PREF_INPUT_SELECTOR = 'input[id="thePage:theForm:theBlock:manyWhoPref"]';
+const SUBMIT_BUTTON_SELECTOR = 'input[id="thePage:theForm:theBlock:buttons:submit"]';
 
 type Config = {
   allowUsersToRelateMultipleContactsToTasksAndEvents: boolean;
@@ -15,9 +13,7 @@ export class ActivitySettings extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
     await using page = await this.browserforce.openPage(BASE_PATH);
     const response = {
-      allowUsersToRelateMultipleContactsToTasksAndEvents: await page
-        .locator(MANY_WHO_PREF_INPUT_SELECTOR)
-        .isChecked(),
+      allowUsersToRelateMultipleContactsToTasksAndEvents: await page.locator(MANY_WHO_PREF_INPUT_SELECTOR).isChecked(),
     };
     return response;
   }
@@ -25,7 +21,7 @@ export class ActivitySettings extends BrowserforcePlugin {
   public async apply(config: Config): Promise<void> {
     if (config.allowUsersToRelateMultipleContactsToTasksAndEvents === false) {
       throw new Error(
-        '`allowUsersToRelateMultipleContactsToTasksAndEvents` can only be disabled with help of the salesforce.com Support team'
+        '`allowUsersToRelateMultipleContactsToTasksAndEvents` can only be disabled with help of the salesforce.com Support team',
       );
     }
     await using page = await this.browserforce.openPage(BASE_PATH);

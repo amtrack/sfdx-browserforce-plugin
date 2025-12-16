@@ -36,10 +36,7 @@ export abstract class BrowserforceCommand<T> extends SfCommand<T> {
     });
     let definition;
     if (flags.definitionfile) {
-      const definitionFileData = await promises.readFile(
-        path.resolve(flags.definitionfile),
-        'utf8'
-      );
+      const definitionFileData = await promises.readFile(path.resolve(flags.definitionfile), 'utf8');
       try {
         definition = JSON.parse(definitionFileData);
       } catch (err) {
@@ -49,10 +46,7 @@ export abstract class BrowserforceCommand<T> extends SfCommand<T> {
     handleDeprecations(definition);
     // TODO: use require.resolve to dynamically load plugins from npm packages
     this.settings = ConfigParser.parse(DRIVERS, definition);
-    this.bf = new Browserforce(
-      flags['target-org'],
-      new Ux({ jsonEnabled: this.jsonEnabled() })
-    );
+    this.bf = new Browserforce(flags['target-org'], new Ux({ jsonEnabled: this.jsonEnabled() }));
     this.spinner.start('logging in');
     await this.bf.login();
     this.spinner.stop();

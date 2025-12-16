@@ -4,8 +4,7 @@ import { BrowserforcePlugin } from '../../../plugin.js';
 import { semanticallyCleanObject } from '../../utils.js';
 
 const LIST_VIEW_PATH = '/_ui/core/portal/CustomerSuccessPortalSetup/d';
-const PORTAL_PROFILE_MEMBERSHIP_PATH =
-  '/_ui/core/portal/PortalProfileMembershipPage/e';
+const PORTAL_PROFILE_MEMBERSHIP_PATH = '/_ui/core/portal/PortalProfileMembershipPage/e';
 
 const SAVE_BUTTON_SELECTOR = 'input[name="save"]';
 
@@ -34,29 +33,23 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
     await using page = await this.browserforce.openPage(LIST_VIEW_PATH);
     const portalLinksLocator = page.locator(
-      'xpath=//div[contains(@class,"pbBody")]//th[contains(@class,"dataCell")]//a[starts-with(@href, "/060")]'
+      'xpath=//div[contains(@class,"pbBody")]//th[contains(@class,"dataCell")]//a[starts-with(@href, "/060")]',
     );
     await portalLinksLocator.first().waitFor();
-    const response: Config = await portalLinksLocator.evaluateAll(
-      (links: HTMLAnchorElement[]) => {
-        return links.map((a) => {
-          return {
-            _id: a.pathname.split('/')[1],
-            name: a.text,
-            portalProfileMemberships: [],
-          };
-        });
-      }
-    );
+    const response: Config = await portalLinksLocator.evaluateAll((links: HTMLAnchorElement[]) => {
+      return links.map((a) => {
+        return {
+          _id: a.pathname.split('/')[1],
+          name: a.text,
+          portalProfileMemberships: [],
+        };
+      });
+    });
     for (const portal of response) {
       await using portalPage = await this.browserforce.openPage(`/${portal._id}/e`);
-      portal.description = await portalPage
-        .locator('input#Description')
-        .inputValue();
+      portal.description = await portalPage.locator('input#Description').inputValue();
       portal.adminUser = await portalPage.locator('input#Admin').inputValue();
-      portal.isSelfRegistrationActivated = await portalPage
-        .locator('input#IsSelfRegistrationActivated')
-        .isChecked();
+      portal.isSelfRegistrationActivated = await portalPage.locator('input#IsSelfRegistrationActivated').isChecked();
       portal.selfRegUserDefaultLicense = await portalPage
         .locator('select#SelfRegUserDefaultLicense option:checked')
         .textContent();
@@ -68,7 +61,7 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
         .textContent();
       // portalProfileMemberships
       await using portalProfilePage = await this.browserforce.openPage(
-        `${PORTAL_PROFILE_MEMBERSHIP_PATH}?portalId=${portal._id}&setupid=CustomerSuccessPortalSettings`
+        `${PORTAL_PROFILE_MEMBERSHIP_PATH}?portalId=${portal._id}&setupid=CustomerSuccessPortalSettings`,
       );
       const profilesLocator = portalProfilePage.locator('th.dataCell');
       await profilesLocator.first().waitFor();
@@ -108,7 +101,7 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
         }
         if (!sourcePortal) {
           throw new Error(
-            `Portal with name '${portal.name} (oldName: ${portal.oldName})' not found. Setting up new Portals is not yet supported.`
+            `Portal with name '${portal.name} (oldName: ${portal.oldName})' not found. Setting up new Portals is not yet supported.`,
           );
         }
         delete portal.oldName;
@@ -116,27 +109,19 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
           // copy id of existing portal to new portal to be retained and used
           portal._id = sourcePortal._id;
         }
-        if (
-          sourcePortal.portalProfileMemberships &&
-          portal.portalProfileMemberships
-        ) {
+        if (sourcePortal.portalProfileMemberships && portal.portalProfileMemberships) {
           const membershipResponse: PortalProfileMembership[] = [];
           for (const member of portal.portalProfileMemberships) {
             // copy id of existing member to new member to be retained and used
-            const sourceMember = sourcePortal.portalProfileMemberships.find(
-              (m) => m.name === member.name
-            );
+            const sourceMember = sourcePortal.portalProfileMemberships.find((m) => m.name === member.name);
             if (sourceMember) {
               member._id = sourceMember._id;
             } else {
-              throw new Error(
-                `Could not find portal profile membership for '${member.name}'`
-              );
+              throw new Error(`Could not find portal profile membership for '${member.name}'`);
             }
-            const membershipDiff = semanticallyCleanObject(
-              super.diff(sourceMember, member),
-              '_id'
-            ) as PortalProfileMembership | undefined;
+            const membershipDiff = semanticallyCleanObject(super.diff(sourceMember, member), '_id') as
+              | PortalProfileMembership
+              | undefined;
             if (membershipDiff) {
               membershipResponse.push(membershipDiff);
             }
@@ -147,10 +132,7 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
             portal.portalProfileMemberships = membershipResponse;
           }
         }
-        const diff = semanticallyCleanObject(
-          super.diff(sourcePortal, portal),
-          '_id'
-        ) as PortalConfig | undefined;
+        const diff = semanticallyCleanObject(super.diff(sourcePortal, portal), '_id') as PortalConfig | undefined;
         if (diff !== undefined) {
           response.push(diff);
         }
@@ -174,12 +156,9 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
           urlAttributes['Admin'] = portal.adminUser;
         }
         if (portal.isSelfRegistrationActivated !== undefined) {
-          urlAttributes['IsSelfRegistrationActivated'] =
-            portal.isSelfRegistrationActivated ? 1 : 0;
+          urlAttributes['IsSelfRegistrationActivated'] = portal.isSelfRegistrationActivated ? 1 : 0;
         }
-        await using page = await this.browserforce.openPage(
-          `/${portal._id}/e?${queryString.stringify(urlAttributes)}`
-        );
+        await using page = await this.browserforce.openPage(`/${portal._id}/e?${queryString.stringify(urlAttributes)}`);
         await page.locator('input#Description').waitFor();
         if (portal.selfRegUserDefaultLicense) {
           await page
@@ -187,9 +166,7 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
             .selectOption({ label: portal.selfRegUserDefaultLicense });
         }
         if (portal.selfRegUserDefaultRole) {
-          await page
-            .locator('select#SelfRegUserDefaultRole')
-            .selectOption({ label: portal.selfRegUserDefaultRole });
+          await page.locator('select#SelfRegUserDefaultRole').selectOption({ label: portal.selfRegUserDefaultRole });
         }
         if (portal.selfRegUserDefaultProfile) {
           await page
@@ -197,10 +174,7 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
             .selectOption({ label: portal.selfRegUserDefaultProfile });
         }
         await page.locator(SAVE_BUTTON_SELECTOR).first().click();
-        await Promise.race([
-          page.waitForURL((url) => !url.pathname.includes(portal._id)),
-          waitForPageErrors(page),
-        ]);
+        await Promise.race([page.waitForURL((url) => !url.pathname.includes(portal._id)), waitForPageErrors(page)]);
         // portalProfileMemberships
         if (portal.portalProfileMemberships) {
           const membershipUrlAttributes: { [key: string]: number } = {};
@@ -211,14 +185,12 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
             `${PORTAL_PROFILE_MEMBERSHIP_PATH}?portalId=${
               portal._id
             }&setupid=CustomerSuccessPortalSettings&${queryString.stringify(
-              membershipUrlAttributes
-            )}&retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`
+              membershipUrlAttributes,
+            )}&retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`,
           );
           await portalProfilePage.locator(SAVE_BUTTON_SELECTOR).first().click();
           await Promise.race([
-            portalProfilePage.waitForURL(
-              (url) => url.pathname === '/setup/forcecomHomepage.apexp'
-            ),
+            portalProfilePage.waitForURL((url) => url.pathname === '/setup/forcecomHomepage.apexp'),
             waitForPageErrors(portalProfilePage),
           ]);
         }

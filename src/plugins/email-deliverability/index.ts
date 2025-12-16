@@ -19,9 +19,7 @@ type Config = {
 export class EmailDeliverability extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {
     await using page = await this.browserforce.openPage(BASE_PATH);
-    const selectedOption = await page
-      .locator(`${ACCESS_LEVEL_SELECTOR} > option[selected]`)
-      .textContent();
+    const selectedOption = await page.locator(`${ACCESS_LEVEL_SELECTOR} > option[selected]`).textContent();
     if (!selectedOption) {
       throw new Error('Selected access level not found...');
     }

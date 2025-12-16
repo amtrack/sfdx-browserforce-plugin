@@ -24,12 +24,8 @@ export class PicklistPage {
 
   public async getPicklistValues(): Promise<PicklistValue[]> {
     // wait for New button for picklist values specifically
-    await this.page
-      .locator('input[name="new"][onclick*="picklist_masteredit"]')
-      .waitFor();
-    const rows = await this.page
-      .locator('div.bRelatedList tr:has(td.actionColumn):has(a)')
-      .all();
+    await this.page.locator('input[name="new"][onclick*="picklist_masteredit"]').waitFor();
+    const rows = await this.page.locator('div.bRelatedList tr:has(td.actionColumn):has(a)').all();
     const picklists = await Promise.all(
       rows.map((row) =>
         (async () => {
@@ -45,29 +41,21 @@ export class PicklistPage {
             value: await row.locator('td').nth(1).textContent(),
             label: await row.locator('th').first().textContent(),
             active:
-              (await row
-                .locator(
-                  'xpath=//td[1]//a[contains(@href, "/setup/ui/picklist_masteredit")]'
-                )
-                .count()) === 1,
+              (await row.locator('xpath=//td[1]//a[contains(@href, "/setup/ui/picklist_masteredit")]').count()) === 1,
             ...(statusCategory?.length ? { statusCategory } : {}),
           };
-        })()
-      )
+        })(),
+      ),
     );
     return picklists;
   }
   public async clickNewActionButton(): Promise<void> {
     await this.page
-      .locator(
-        'xpath=//tr[td[2]]//input[contains(@onclick, "/setup/ui/picklist_masteredit")][@value=" New "]'
-      )
+      .locator('xpath=//tr[td[2]]//input[contains(@onclick, "/setup/ui/picklist_masteredit")][@value=" New "]')
       .first()
       .click();
     await Promise.race([
-      this.page.waitForURL(
-        (url) => url.pathname === '/setup/ui/picklist_masteredit.jsp'
-      ),
+      this.page.waitForURL((url) => url.pathname === '/setup/ui/picklist_masteredit.jsp'),
       waitForPageErrors(this.page),
     ]);
   }
@@ -75,19 +63,15 @@ export class PicklistPage {
   public async clickReplaceActionButton(): Promise<PicklistReplacePage> {
     await this.page.locator('input[name="replace"][type="button"]').click();
     await Promise.race([
-      this.page.waitForURL(
-        (url) => url.pathname === '/setup/ui/replacePickList.jsp'
-      ),
+      this.page.waitForURL((url) => url.pathname === '/setup/ui/replacePickList.jsp'),
       waitForPageErrors(this.page),
     ]);
     return new PicklistReplacePage(this.page);
   }
 
-  public async getPicklistIdForApiName(
-    picklistValueApiName: string
-  ): Promise<string> {
+  public async getPicklistIdForApiName(picklistValueApiName: string): Promise<string> {
     const link = this.page.locator(
-      `//tr[td[2][text() = "${picklistValueApiName}"]]//td[1]//a[contains(@href, "/setup/ui/picklist_masteredit.jsp")]`
+      `//tr[td[2][text() = "${picklistValueApiName}"]]//td[1]//a[contains(@href, "/setup/ui/picklist_masteredit.jsp")]`,
     );
     const urlPath = await link.getAttribute('href');
     const url = new URL(`http://localhost${urlPath}`);
@@ -95,9 +79,7 @@ export class PicklistPage {
     return picklistId;
   }
 
-  public async clickDeleteActionForValue(
-    picklistValueApiName: string
-  ): Promise<PicklistReplaceAndDeletePage> {
+  public async clickDeleteActionForValue(picklistValueApiName: string): Promise<PicklistReplaceAndDeletePage> {
     // deactivate: deleteType=1
     // delete: deleteType=0 or no deleteType=1
     const xpath = `//tr[td[2][text() = "${picklistValueApiName}"]]//td[1]//a[contains(@href, "/setup/ui/picklist_masterdelete.jsp") and not(contains(@href, "deleteType=1"))]`;
@@ -106,9 +88,7 @@ export class PicklistPage {
     });
     await this.page.locator(`xpath=${xpath}`).first().click();
     await Promise.race([
-      this.page.waitForURL(
-        (url) => url.pathname === '/setup/ui/picklist_masterdelete.jsp'
-      ),
+      this.page.waitForURL((url) => url.pathname === '/setup/ui/picklist_masterdelete.jsp'),
       waitForPageErrors(this.page),
     ]);
     return new PicklistReplaceAndDeletePage(this.page);
@@ -116,7 +96,7 @@ export class PicklistPage {
 
   public async clickActivateDeactivateActionForValue(
     picklistValueApiName: string,
-    active: boolean
+    active: boolean,
   ): Promise<PicklistPage> {
     let xpath;
     if (active) {
@@ -161,9 +141,7 @@ export class DefaultPicklistAddPage {
         (url) =>
           url.pathname.startsWith('/00N') || // CustomField Definition
           url.pathname.startsWith('/0Nt') || // SharedPicklistDefinition
-          url.pathname.startsWith(
-            '/_ui/common/config/field/StandardFieldAttributes'
-          )
+          url.pathname.startsWith('/_ui/common/config/field/StandardFieldAttributes'),
       ),
       waitForPageErrors(this.page),
     ]);
@@ -182,9 +160,7 @@ export class StatusPicklistAddPage {
     if (newValue !== undefined && newValue !== null) {
       await this.page.locator('input#p1').describe('label').fill(newValue);
       await this.page.locator('input#p3').describe('api name').fill(newValue);
-      await this.page
-        .locator('select#p5')
-        .selectOption({ label: statusCategory });
+      await this.page.locator('select#p5').selectOption({ label: statusCategory });
     }
     await this.save();
   }
@@ -192,10 +168,7 @@ export class StatusPicklistAddPage {
   async save(): Promise<void> {
     await this.page.locator(this.saveButton).click();
     await Promise.race([
-      this.page.waitForURL(
-        (url) =>
-          url.pathname === '/_ui/common/config/field/StandardFieldAttributes/d'
-      ),
+      this.page.waitForURL((url) => url.pathname === '/_ui/common/config/field/StandardFieldAttributes/d'),
       waitForPageErrors(this.page),
     ]);
   }
@@ -209,35 +182,22 @@ export class PicklistReplacePage {
     this.page = page;
   }
 
-  async replace(
-    value: string,
-    newValueLabel: string,
-    replaceAllBlankValues?: boolean
-  ): Promise<void> {
+  async replace(value: string, newValueLabel: string, replaceAllBlankValues?: boolean): Promise<void> {
     if (value !== undefined && value !== null) {
       await this.page.locator('input#nf').describe('old value').fill(value);
     }
     if (newValueLabel !== undefined && newValueLabel !== null) {
-      await this.page
-        .locator('select#nv')
-        .describe('new value')
-        .selectOption({ label: newValueLabel });
+      await this.page.locator('select#nv').describe('new value').selectOption({ label: newValueLabel });
     }
     if (replaceAllBlankValues) {
-      await this.page
-        .locator('input#fnv')
-        .describe('replace all blank values')
-        .check();
+      await this.page.locator('input#fnv').describe('replace all blank values').check();
     }
     await this.save();
   }
 
   async save(): Promise<void> {
     await this.page.locator(this.saveButton).click();
-    await Promise.race([
-      this.page.waitForURL((url) => url.searchParams.has('msg')),
-      waitForPageErrors(this.page),
-    ]);
+    await Promise.race([this.page.waitForURL((url) => url.searchParams.has('msg')), waitForPageErrors(this.page)]);
   }
 }
 
@@ -249,10 +209,7 @@ export class PicklistReplaceAndDeletePage extends PicklistReplacePage {
 
   async replaceAndDelete(newValueId?: string): Promise<void> {
     if (newValueId !== undefined && newValueId !== null) {
-      await this.page
-        .locator('select#p13')
-        .describe('new value')
-        .selectOption(newValueId);
+      await this.page.locator('select#p13').describe('new value').selectOption(newValueId);
     } else {
       await this.page.locator('input#ReplaceValueWithNullValue').check();
     }
@@ -266,9 +223,7 @@ export class PicklistReplaceAndDeletePage extends PicklistReplacePage {
         (url) =>
           url.pathname.startsWith('/00N') || // CustomField Definition
           url.pathname.startsWith('/0Nt') || // SharedPicklistDefinition
-          url.pathname.startsWith(
-            '/_ui/common/config/field/StandardFieldAttributes'
-          )
+          url.pathname.startsWith('/_ui/common/config/field/StandardFieldAttributes'),
       ),
       waitForPageErrors(this.page, 120_000), // 2 minutes
     ]);

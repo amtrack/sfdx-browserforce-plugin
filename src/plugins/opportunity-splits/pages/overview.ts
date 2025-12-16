@@ -5,12 +5,10 @@ const IN_PROGRESS = '#enablingInProgress, #disablingInProgress';
 const COMPLETED = '#prefSettingSucceeded';
 const DISABLE_LINK = 'div[id*=":disable_form:"] a';
 const DISABLE_CONFIRM_CHECKBOX = 'input#dis_confirm';
-const DISABLE_CONFIRM_BUTTON =
-  'input#splitsDisableConfirmDialog_overlayConfirmButton';
+const DISABLE_CONFIRM_BUTTON = 'input#splitsDisableConfirmDialog_overlayConfirmButton';
 
 export class OverviewPage {
-  static PATH: SalesforceUrlPath =
-    '/opp/opportunitySplitSetupOverview.apexp?setupid=OpportunitySplitSetup';
+  static PATH: SalesforceUrlPath = '/opp/opportunitySplitSetupOverview.apexp?setupid=OpportunitySplitSetup';
   private page: Page;
 
   constructor(page: Page) {
@@ -19,10 +17,7 @@ export class OverviewPage {
 
   public async isEnabled(): Promise<boolean> {
     await this.waitUntilCompleted();
-    return (
-      this.page.url().includes(OverviewPage.PATH) &&
-      (await this.page.locator(DISABLE_LINK).count()) > 0
-    );
+    return this.page.url().includes(OverviewPage.PATH) && (await this.page.locator(DISABLE_LINK).count()) > 0;
   }
 
   public async waitUntilCompleted(): Promise<void> {
@@ -39,9 +34,7 @@ export class OverviewPage {
     await this.page.locator(DISABLE_LINK).click();
     await this.page.locator(DISABLE_CONFIRM_CHECKBOX).click();
     await this.page.locator(DISABLE_CONFIRM_BUTTON).click();
-    await this.page.waitForURL(
-      (url) => url.pathname === '/opp/opportunitySplitSetupLanding.apexp'
-    );
+    await this.page.waitForURL((url) => url.pathname === '/opp/opportunitySplitSetupLanding.apexp');
     return this;
   }
 }

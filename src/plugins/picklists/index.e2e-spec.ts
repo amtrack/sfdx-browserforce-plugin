@@ -26,13 +26,10 @@ describe(Picklists.name, function () {
 
   const configNew = readJsonFile('./new.json').settings.picklists;
   const configReplace = readJsonFile('./replace.json').settings.picklists;
-  const configReplaceAndDelete = readJsonFile('./replace-and-delete.json')
-    .settings.picklists;
+  const configReplaceAndDelete = readJsonFile('./replace-and-delete.json').settings.picklists;
   const configDeactivate = readJsonFile('./deactivate.json').settings.picklists;
   const configActivate = readJsonFile('./activate.json').settings.picklists;
-  const configReplaceAndDeactivate = readJsonFile(
-    './replace-and-deactivate.json'
-  ).settings.picklists;
+  const configReplaceAndDeactivate = readJsonFile('./replace-and-deactivate.json').settings.picklists;
 
   it('should deploy a CustomObject for testing', () => {
     const sourceDeployCmd = child.spawnSync('sf', [
@@ -43,11 +40,7 @@ describe(Picklists.name, function () {
       path.join(__dirname, 'sfdx-source'),
       '--json',
     ]);
-    assert.deepStrictEqual(
-      sourceDeployCmd.status,
-      0,
-      sourceDeployCmd.output.toString()
-    );
+    assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
   });
   it('should add a new picklist value when it does not exist', async () => {
     await plugin.run(configNew);
@@ -86,12 +79,9 @@ describe(Picklists.name, function () {
       plugin = new FieldDependencies(global.bf);
     });
 
-    const configSet = readJsonFile('./field-dependencies/set.json').settings
-      .picklists.fieldDependencies;
-    const configUnset = readJsonFile('./field-dependencies/unset.json').settings
-      .picklists.fieldDependencies;
-    const configChange = readJsonFile('./field-dependencies/change.json')
-      .settings.picklists.fieldDependencies;
+    const configSet = readJsonFile('./field-dependencies/set.json').settings.picklists.fieldDependencies;
+    const configUnset = readJsonFile('./field-dependencies/unset.json').settings.picklists.fieldDependencies;
+    const configChange = readJsonFile('./field-dependencies/change.json').settings.picklists.fieldDependencies;
 
     it('should not do anything when the dependency is already set', async () => {
       const res = await plugin.run(configSet);

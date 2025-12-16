@@ -13,21 +13,13 @@ class DummyPlugin extends BrowserforcePlugin {
 describe('BrowserforcePlugin', () => {
   describe('#diff()', async () => {
     const plugin = new DummyPlugin(global.bf);
-    const tests: [
-      description: string,
-      input: [state: unknown, definition: unknown],
-      expected: unknown
-    ][] = [
+    const tests: [description: string, input: [state: unknown, definition: unknown], expected: unknown][] = [
       ['should return target for simple value', [false, true], true],
       ['should return target for simple string', [undefined, ''], ''],
       ['should return target number vs undefined', [1, undefined], undefined],
       ['should return target for simple string', [null, ''], ''],
       ['should return target keys only', [{ a: 1 }, { a: 2 }], { a: 2 }],
-      [
-        'should only keep the object keys of the target',
-        [{ a: 1, b: 1 }, { a: 2 }],
-        { a: 2 },
-      ],
+      ['should only keep the object keys of the target', [{ a: 1, b: 1 }, { a: 2 }], { a: 2 }],
       ['should recursively compare', [{ a: 1, b: 1 }, { a: 1 }], undefined],
       [
         'should allow unsetting via undefined/null/ or empty string',
@@ -39,17 +31,10 @@ describe('BrowserforcePlugin', () => {
       ],
       [
         'should allow unsetting via undefined/null/ or empty string in an array',
-        [
-          [{ a: 1, n: 1, u: 1, s: 'foo' }],
-          [{ a: 2, n: null, u: undefined, s: '' }],
-        ],
+        [[{ a: 1, n: 1, u: 1, s: 'foo' }], [{ a: 2, n: null, u: undefined, s: '' }]],
         [{ a: 2, n: null, u: undefined, s: '' }],
       ],
-      [
-        'should allow unsetting via null in an array',
-        [[{ a: 1, n: 1 }], [{ a: 1, n: null }]],
-        [{ a: 1, n: null }],
-      ],
+      ['should allow unsetting via null in an array', [[{ a: 1, n: 1 }], [{ a: 1, n: null }]], [{ a: 1, n: null }]],
       [
         'generates a diff for a deep object',
         [

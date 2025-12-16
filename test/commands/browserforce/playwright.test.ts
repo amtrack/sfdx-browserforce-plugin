@@ -8,10 +8,7 @@ describe(BrowserforcePlaywrightCommand.name, () => {
   });
   it('should print the playwright CLIs help text', async () => {
     const output = await BrowserforcePlaywrightCommand.run(['--', '--help']);
-    assert.match(
-      output,
-      /ensure browsers necessary for this version of Playwright are installed/
-    );
+    assert.match(output, /ensure browsers necessary for this version of Playwright are installed/);
   }).slow(1_000);
   it('should print the playwright CLIs version', async () => {
     const output = await BrowserforcePlaywrightCommand.run(['--', '--version']);

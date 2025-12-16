@@ -18,14 +18,10 @@ export class ServicePresenceStatus extends BrowserforcePlugin {
     const permissionSetName = definition.permissionSetName;
     const permissionSet = await this.org
       .getConnection()
-      .singleRecordQuery(
-        `SELECT Id FROM PermissionSet WHERE Name='${permissionSetName}'`
-      );
+      .singleRecordQuery(`SELECT Id FROM PermissionSet WHERE Name='${permissionSetName}'`);
 
     // Open the permission set setup page
-    await using page = await this.browserforce.openPage(
-      `/${permissionSet.Id}/e?s=ServicePresenceStatusAccess`
-    );
+    await using page = await this.browserforce.openPage(`/${permissionSet.Id}/e?s=ServicePresenceStatusAccess`);
 
     const enabledServicePresenceStatuses = await page
       .locator(`${VALUES_ENABLED_SELECTOR} > option:not(:disabled)`)
@@ -41,13 +37,9 @@ export class ServicePresenceStatus extends BrowserforcePlugin {
     const permissionSetName = config.permissionSetName;
     const permissionSet = await this.org
       .getConnection()
-      .singleRecordQuery(
-        `SELECT Id FROM PermissionSet WHERE Name='${permissionSetName}'`
-      );
+      .singleRecordQuery(`SELECT Id FROM PermissionSet WHERE Name='${permissionSetName}'`);
 
-    await using page = await this.browserforce.openPage(
-      `/${permissionSet.Id}/e?s=ServicePresenceStatusAccess`
-    );
+    await using page = await this.browserforce.openPage(`/${permissionSet.Id}/e?s=ServicePresenceStatusAccess`);
 
     if (config?.servicePresenceStatuses) {
       const availableOptions = await page
@@ -64,9 +56,7 @@ export class ServicePresenceStatus extends BrowserforcePlugin {
 
       for (const optionTitle of availableOptions) {
         if (config.servicePresenceStatuses.includes(optionTitle)) {
-          await page
-            .getByRole('option', { name: optionTitle, exact: true })
-            .click();
+          await page.getByRole('option', { name: optionTitle, exact: true }).click();
           await page.locator(ADD_BUTTON_SELECTOR).click();
         }
       }
@@ -74,9 +64,7 @@ export class ServicePresenceStatus extends BrowserforcePlugin {
       // Find first option that needs to be removed
       for (const optionTitle of enabledOptions) {
         if (!config.servicePresenceStatuses.includes(optionTitle)) {
-          await page
-            .getByRole('option', { name: optionTitle, exact: true })
-            .click();
+          await page.getByRole('option', { name: optionTitle, exact: true }).click();
           await page.locator(REMOVE_BUTTON_SELECTOR).click();
         }
       }
@@ -84,9 +72,6 @@ export class ServicePresenceStatus extends BrowserforcePlugin {
 
     // Save the settings and wait for page refresh
     await page.locator(SAVE_BUTTON_SELECTOR).click();
-    await Promise.race([
-      page.waitForURL((url) => !url.pathname.endsWith('/e')),
-      waitForPageErrors(page),
-    ]);
+    await Promise.race([page.waitForURL((url) => !url.pathname.endsWith('/e')), waitForPageErrors(page)]);
   }
 }

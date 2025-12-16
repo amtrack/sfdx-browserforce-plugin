@@ -29,22 +29,18 @@ export class HomePageLayouts extends BrowserforcePlugin {
     await using page = await this.browserforce.openPage(BASE_PATH);
     await page.locator(BASE_SELECTOR).waitFor();
 
-    const profiles = (
-      await page.locator('table.detailList tbody tr td label').allTextContents()
-    ).map((label) => label.replace(/^\*/, '')); // removing * from assistiveText
+    const profiles = (await page.locator('table.detailList tbody tr td label').allTextContents()).map((label) =>
+      label.replace(/^\*/, ''),
+    ); // removing * from assistiveText
 
-    const layouts = (
-      await page
-        .locator('table.detailList tbody tr td select option:checked')
-        .allTextContents()
-    ).map((layout) => (layout === 'Home Page Default' ? '' : layout)); // value is "default" instead of an id
+    const layouts = (await page.locator('table.detailList tbody tr td select option:checked').allTextContents()).map(
+      (layout) => (layout === 'Home Page Default' ? '' : layout),
+    ); // value is "default" instead of an id
 
-    const homePageLayoutAssignments: HomePageLayoutAssignment[] = profiles.map(
-      (profile, i) => ({
-        profile,
-        layout: layouts[i],
-      })
-    );
+    const homePageLayoutAssignments: HomePageLayoutAssignment[] = profiles.map((profile, i) => ({
+      profile,
+      layout: layouts[i],
+    }));
     return {
       homePageLayoutAssignments,
     };
@@ -52,9 +48,7 @@ export class HomePageLayouts extends BrowserforcePlugin {
 
   public diff(source: Config, target: Config): Config | undefined {
     target.homePageLayoutAssignments.sort(compareAssignment);
-    const profileNames = target.homePageLayoutAssignments.map(
-      (assignment) => assignment.profile
-    );
+    const profileNames = target.homePageLayoutAssignments.map((assignment) => assignment.profile);
     source.homePageLayoutAssignments = source.homePageLayoutAssignments
       .filter((assignment) => profileNames.includes(assignment.profile))
       .sort(compareAssignment);
@@ -74,43 +68,33 @@ export class HomePageLayouts extends BrowserforcePlugin {
       .join(',');
     const profiles = await this.org
       .getConnection()
-      .tooling.query<ProfileRecord>(
-        `SELECT Id, Name FROM Profile WHERE Name IN (${profilesList})`
-      );
+      .tooling.query<ProfileRecord>(`SELECT Id, Name FROM Profile WHERE Name IN (${profilesList})`);
     const homePageLayouts = await this.org
       .getConnection()
-      .tooling.query<HomePageLayoutRecord>(
-        `SELECT Id, Name FROM HomePageLayout WHERE Name IN (${layoutsList})`
-      );
+      .tooling.query<HomePageLayoutRecord>(`SELECT Id, Name FROM HomePageLayout WHERE Name IN (${layoutsList})`);
 
     await using page = await this.browserforce.openPage(BASE_PATH);
     await page.locator(BASE_SELECTOR).waitFor();
 
     for (const assignment of config.homePageLayoutAssignments) {
       const homePageLayoutName = assignment.layout;
-      const profile = profiles.records.find(
-        (p) => p.Name === assignment.profile
-      );
+      const profile = profiles.records.find((p) => p.Name === assignment.profile);
       if (!profile) {
         throw new Error(`could not find profile '${assignment.profile}'`);
       }
-      let homePageLayout = homePageLayouts.records.find(
-        (l) => l.Name === homePageLayoutName
-      );
+      let homePageLayout = homePageLayouts.records.find((l) => l.Name === homePageLayoutName);
       if (homePageLayoutName === '') {
         homePageLayout = { Id: 'default', Name: 'default' };
       }
       if (homePageLayout === undefined) {
         throw new Error(
           `Could not find home page layout "${homePageLayoutName}" in list of home page layouts: ${homePageLayouts.records.map(
-            (l) => l.Name
-          )}`
+            (l) => l.Name,
+          )}`,
         );
       }
       const profileSelector = `select[id='${profile.Id!.substring(0, 15)}']`;
-      await page
-        .locator(profileSelector)
-        .selectOption(homePageLayout.Id!.substring(0, 15));
+      await page.locator(profileSelector).selectOption(homePageLayout.Id!.substring(0, 15));
     }
 
     await page.locator(SAVE_BUTTON_SELECTOR).first().click();
@@ -121,13 +105,6 @@ export class HomePageLayouts extends BrowserforcePlugin {
   }
 }
 
-function compareAssignment(
-  a: HomePageLayoutAssignment,
-  b: HomePageLayoutAssignment
-): number {
-  return `${a.profile}:${a.layout}`.localeCompare(
-    `${b.profile}:${b.layout}`,
-    'en',
-    { numeric: true }
-  );
+function compareAssignment(a: HomePageLayoutAssignment, b: HomePageLayoutAssignment): number {
+  return `${a.profile}:${a.layout}`.localeCompare(`${b.profile}:${b.layout}`, 'en', { numeric: true });
 }

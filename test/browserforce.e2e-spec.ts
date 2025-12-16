@@ -34,13 +34,8 @@ describe('Browserforce', function () {
   });
   describe('waitForSelectorInFrameOrPage()', () => {
     it('should query a selector in LEX and Classic UI', async () => {
-      await using page: Page = await global.bf.openPage(
-        '/lightning/setup/ExternalStrings/home'
-      );
-      const frame = await global.bf.waitForSelectorInFrameOrPage(
-        page,
-        'input[name="edit"]'
-      );
+      await using page: Page = await global.bf.openPage('/lightning/setup/ExternalStrings/home');
+      const frame = await global.bf.waitForSelectorInFrameOrPage(page, 'input[name="edit"]');
       await frame.locator('input[name="edit"]').click();
       // lightning/setup/ExternalStrings/home
       // ->
@@ -53,16 +48,14 @@ describe('Browserforce', function () {
       process.env.BROWSERFORCE_RETRY_TIMEOUT_MS = '0';
       process.env.BROWSERFORCE_RETRY_MAX_RETRIES = '0';
       await assert.rejects(async () => {
-        await global.bf.openPage(
-          '/_ui/common/config/field/StandardFieldAttributes/d?type=Account&id=INVALID_Name'
-        );
+        await global.bf.openPage('/_ui/common/config/field/StandardFieldAttributes/d?type=Account&id=INVALID_Name');
       }, /Insufficient Privileges/);
       delete process.env.BROWSERFORCE_RETRY_TIMEOUT_MS;
       delete process.env.BROWSERFORCE_RETRY_MAX_RETRIES;
     });
     it('should not throw any error opening a page', async () => {
       await using _page = await global.bf.openPage(
-        '/_ui/common/config/field/StandardFieldAttributes/d?type=Account&id=Name'
+        '/_ui/common/config/field/StandardFieldAttributes/d?type=Account&id=Name',
       );
     });
   });

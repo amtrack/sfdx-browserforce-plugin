@@ -3,8 +3,7 @@ import { BrowserforcePlugin } from '../../plugin.js';
 const BASE_PATH = '/omnichannel/settings.apexp';
 
 const SAVE_BUTTON_SELECTOR = 'input[id$=":save"]';
-const STATUS_CAPACITY_TOGGLE_SELECTOR =
-  'input[id$=":toggleOmniStatusCapModelPref"]';
+const STATUS_CAPACITY_TOGGLE_SELECTOR = 'input[id$=":toggleOmniStatusCapModelPref"]';
 
 type Config = {
   enableStatusBasedCapacityModel?: boolean;
@@ -13,9 +12,7 @@ type Config = {
 export class OmniChannelSettings extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {
     await using page = await this.browserforce.openPage(BASE_PATH);
-    const enableStatusBasedCapacityModel = await page
-      .locator(STATUS_CAPACITY_TOGGLE_SELECTOR)
-      .isChecked();
+    const enableStatusBasedCapacityModel = await page.locator(STATUS_CAPACITY_TOGGLE_SELECTOR).isChecked();
     return { enableStatusBasedCapacityModel };
   }
 
@@ -26,8 +23,6 @@ export class OmniChannelSettings extends BrowserforcePlugin {
     // omnichannel/settings.apexp
     // ->
     // omnichannel/settings.apexp?setupid=OmniChannelSettings
-    await page.waitForURL((url) =>
-      url.searchParams.has('setupid', 'OmniChannelSettings')
-    );
+    await page.waitForURL((url) => url.searchParams.has('setupid', 'OmniChannelSettings'));
   }
 }
