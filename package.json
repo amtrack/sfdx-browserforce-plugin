@@ -15,7 +15,8 @@
   },
   "devDependencies": {
     "@salesforce/dev-scripts": "11.0.4",
-    "oclif": "4.22.27"
+    "oclif": "4.22.27",
+    "prettier": "3.7.4"
   },
   "files": [
     "/bin",
