@@ -16,9 +16,9 @@
 
 2. Install dependencies
 
-> Note: Make sure to run these commands in your `sfdx-browserforce-plugin` directory.
+> [!NOTE] Make sure to run these commands in your `sfdx-browserforce-plugin` directory.
 
-```console
+```shell
 npm ci
 ```
 
@@ -29,44 +29,59 @@ Please note that this is only an example. In fact this is supported in the Metad
 
 You can scaffold a new plugin by running:
 
-```console
+```shell
 npm run generate:plugin --name AdminsCanLogInAsAnyUser
 ```
 
-Run `git status` afterwards to see what files have been generated.
-
-Want to see it in action?
+Bravo 👏, you have just generated a working browserforce plugin!
 
 ## Building
 
 TypeScript code needs to be transpiled to JavaScript.
 To do this, run the following command:
 
-```console
+```shell
 npm run build
 ```
 
-Bravo 👏, you have just generated a working browserforce plugin!
+Want to see it in action?
 
-Create a scratch org and try it yourself:
+Let's create a Scratch Org
 
-```console
-sf org create scratch -f config/project-scratch-def.json -a browserforce-dev -d
-BROWSER_DEBUG=true ./bin/run browserforce apply -f src/plugins/admins-can-log-in-as-any-user/enable.json -o browserforce-dev
-BROWSER_DEBUG=true ./bin/run browserforce apply -f src/plugins/admins-can-log-in-as-any-user/disable.json -o browserforce-dev
+```shell
+npm run develop
 ```
 
-Now it's your turn!
+and now we can run it:
+
+```shell
+BROWSER_DEBUG=true ./bin/run browserforce apply -f src/plugins/admins-can-log-in-as-any-user/enable.json
+BROWSER_DEBUG=true ./bin/run browserforce apply -f src/plugins/admins-can-log-in-as-any-user/disable.json
+```
+
+> [!TIP]
+>
+> Instead of manually running these commands while developing, we will run the E2E tests instead:
+
+```shell
+npm run test:e2e -- -g "AdminsCanLogInAsAnyUser"
+  AdminsCanLogInAsAnyUser
+    ✔ should enable
+    ✔ should already be enabled
+    ✔ should disable
+    ✔ should already be disabled
+  4 passing (6s)
+```
 
 ## Developing plugins
 
 For the following, we assume that your scaffolded plugin lives in `src/plugins/admins-can-log-in-as-any-user`.
 
-```console
+```shell
 $ tree src/plugins/admins-can-log-in-as-any-user
 src/plugins/admins-can-log-in-as-any-user
-├── disable.json        <-- example config file for e2e test
-├── enable.json         <-- example config file for e2e test
+├── disable.json        <-- example config file for manual testing
+├── enable.json         <-- example config file for manual testing
 ├── index.e2e-spec.ts   <-- end-to-end test
 ├── index.ts            <-- implementation
 └── schema.json         <-- schema for configuration
@@ -149,6 +164,32 @@ The execution will apply as few changes as necessary and so you will be able to 
 Both the result of the `retrieve` function and the argument of the `apply` function are objects in the format defined in your `schema.json`.
 In this example, you would return `{enabled: boolean}` as part of `retrieve`, and expect `{enabled: boolean}` as argument in `apply`.
 
+## Testing
+
+To run **unit tests**:
+
+> [!NOTE] Make sure to run these commands in your sfdx-browserforce-plugin directory.
+
+```shell
+npm run test
+```
+
+To run **end to end tests**:
+
+> [!CAUTION] Your default scratch org will be used in the E2E tests!
+
+```shell
+npm run test:e2e -- -g "AdminsCanLogInAsAnyUser" # will only run tests matching `AdminsCanLogInAsAnyUser`
+```
+
+> [!IMPORTANT] E2E tests should be implemented to be **re-runnable**.
+>
+> Please run the test at least 7 times to reduce the risk of a flaky implementation:
+
+```shell
+for i in {1..7}; do npm run test:e2e -- -g "AdminsCanLogInAsAnyUser"; done
+```
+
 ## Debugging
 
 The [Salesforce CLI Plug-In Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_plugins.meta/sfdx_cli_plugins/cli_plugins_debug.htm) describes debugging sfdx plugins using VS Code very well.
@@ -190,26 +231,3 @@ npx playwright show-trace trace-2025-11-23T19-00-00-000Z.zip
 ```
 
 This opens an interactive viewer in your browser where you can step through each action, view screenshots and DOM snapshots, inspect network requests, and review console logs.
-
-## Testing
-
-To run **unit tests**:
-
-> Note: Make sure to run these commands in your sfdx-browserforce-plugin directory.
-
-```console
-npm run test
-```
-
-To run the **end to end tests**, you might want to create a new **default scratch org** first.
-
-> Note: Your default scratch org will be used in the tests!
-
-```console
-sf org create scratch -f config/project-scratch-def.json -d
-```
-
-```console
-npm run test:e2e
-npm run test:e2e -- -g "AdminsCanLogInAsAnyUser" # will only run tests matching `AdminsCanLogInAsAnyUser`
-```

@@ -54,7 +54,7 @@
     "build": "rm -rf lib && tsc -p . && oclif manifest",
     "develop": "bash scripts/develop.sh",
     "format": "npx prettier --write \"+(src|test)/**/*.+(ts|js|json)\"",
-    "generate:plugin": "npx hygen plugin new",
+    "generate:plugin": "npx --yes hygen plugin new",
     "prepack": "npm run build",
     "prepare": "npm run build",
     "test": "tsc -p test && nyc --reporter=lcov --reporter=text mocha \"test/**/*.test.ts\" \"src/**/*.test.ts\"",
