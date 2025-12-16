@@ -1,6 +1,7 @@
 # Best Practices: Using Playwright for Browserforce
 
-> [!WARNING] This page is written for the upcoming `v6` which uses Playwright instead of Puppeteer
+> [!WARNING]
+> This page is written for the upcoming `v6` which uses Playwright instead of Puppeteer
 
 This guide provides best practices and patterns for writing Playwright-based plugins for the sfdx-browserforce-plugin project.
 
@@ -74,13 +75,7 @@ A save button rendered in English
 The same save button rendered in German
 
 ```html
-<input
-  value="Speichern"
-  class="btn"
-  name="save"
-  title="Speichern"
-  type="submit"
-/>
+<input value="Speichern" class="btn" name="save" title="Speichern" type="submit" />
 ```
 
 **✅ Good:**
@@ -128,10 +123,10 @@ While the following code might seem tempting, please don't do it.
 
 ```typescript
 await saveButton.click();
-if (await page.locator("#error").count()) {
-  throw new Error("failed");
+if (await page.locator('#error').count()) {
+  throw new Error('failed');
 }
-await page.waitForLoadState("networkidle");
+await page.waitForLoadState('networkidle');
 ```
 
 Problems:
@@ -142,10 +137,7 @@ Problems:
 The most reliable way (although difficult to understand) is the following:
 
 ```typescript
-await Promise.all([
-  Promise.race([waitForPageErrors(), page.waitForEvent("load")]),
-  saveButton.click(),
-]);
+await Promise.all([Promise.race([waitForPageErrors(), page.waitForEvent('load')]), saveButton.click()]);
 ```
 
 This starts both promises to wait for the after-save indicators (success and failure) **before** clicking on the save button.
@@ -155,10 +147,7 @@ If the success indicator is not a time-critical one-off event but something that
 
 ```typescript
 await saveButton.click();
-await Promise.race([
-  waitForPageErrors(),
-  page.waitForURL((url) => url.pathname === "/aftersaveurl"),
-]);
+await Promise.race([waitForPageErrors(), page.waitForURL((url) => url.pathname === '/aftersaveurl')]);
 ```
 
 ### Saving Pages in Salesforce Classic UI
@@ -189,7 +178,7 @@ await page.waitForFunction(
     const element = document.querySelector(selector);
     return element && element.textContent === expectedValue;
   },
-  { selector: MY_SELECTOR, expectedValue: "Success" }
+  { selector: MY_SELECTOR, expectedValue: 'Success' },
 );
 ```
 
@@ -201,23 +190,21 @@ Wait for Modal, Interact, Wait for Close
 // Click button that opens modal
 await page.locator(OPEN_MODAL_BUTTON).click();
 // Wait for modal to appear
-await page.locator(".slds-modal__container").waitFor({ state: "visible" });
+await page.locator('.slds-modal__container').waitFor({ state: 'visible' });
 // Interact with modal content
 await page.locator(MODAL_CHECKBOX).click();
 await page.locator(MODAL_CONFIRM_BUTTON).click();
 // Wait for modal to close
-await page.locator(".slds-modal__container").waitFor({ state: "hidden" });
+await page.locator('.slds-modal__container').waitFor({ state: 'hidden' });
 ```
 
 Conditional Modal Handling
 
 ```typescript
 // Check if modal appears (optional confirmation)
-const confirmButton = page.locator(
-  'lightning-modal lightning-button[variant="brand"]'
-);
+const confirmButton = page.locator('lightning-modal lightning-button[variant="brand"]');
 if (await confirmButton.isVisible()) {
-  await confirmButton.waitFor({ state: "visible" });
+  await confirmButton.waitFor({ state: 'visible' });
   await confirmButton.click();
 }
 ```
@@ -227,17 +214,17 @@ if (await confirmButton.isVisible()) {
 ```typescript
 const toastMessage = page.locator(TOAST_MESSAGE);
 // Wait for toast to appear
-await toastMessage.waitFor({ state: "visible" });
+await toastMessage.waitFor({ state: 'visible' });
 // Wait for toast to disappear (indicates completion)
-await toastMessage.waitFor({ state: "hidden" });
+await toastMessage.waitFor({ state: 'hidden' });
 ```
 
 ### Handling Dynamic Selectors
 
 ```typescript
 // When selectors change between Salesforce versions
-const SELECTOR_V1 = "lightning-datatable";
-const SELECTOR_V2 = "one-theme-datatable";
+const SELECTOR_V1 = 'lightning-datatable';
+const SELECTOR_V2 = 'one-theme-datatable';
 
 // Try both selectors
 const element = await page.locator(`${SELECTOR_V1}, ${SELECTOR_V2}`).first();
@@ -291,14 +278,14 @@ npx playwright show-trace trace-2025-11-23T19-00-00-000Z.zip
 ### Add Console Logging
 
 ```typescript
-console.log("URL before save:", page.url());
+console.log('URL before save:', page.url());
 await page.locator(SAVE_BUTTON).click();
 await page.waitForTimeout(3_000);
-console.log("URL after save:", page.url());
+console.log('URL after save:', page.url());
 ```
 
 ### Take Screenshots
 
 ```typescript
-await page.screenshot({ path: "debug-screenshot.png" });
+await page.screenshot({ path: 'debug-screenshot.png' });
 ```

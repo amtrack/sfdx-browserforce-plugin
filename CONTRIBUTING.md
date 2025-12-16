@@ -16,7 +16,8 @@
 
 2. Install dependencies
 
-> [!NOTE] Make sure to run these commands in your `sfdx-browserforce-plugin` directory.
+> [!NOTE]
+> Make sure to run these commands in your `sfdx-browserforce-plugin` directory.
 
 ```shell
 npm ci
@@ -60,7 +61,6 @@ BROWSER_DEBUG=true ./bin/run browserforce apply -f src/plugins/admins-can-log-in
 ```
 
 > [!TIP]
->
 > Instead of manually running these commands while developing, we will run the E2E tests instead:
 
 ```shell
@@ -168,7 +168,8 @@ In this example, you would return `{enabled: boolean}` as part of `retrieve`, an
 
 To run **unit tests**:
 
-> [!NOTE] Make sure to run these commands in your sfdx-browserforce-plugin directory.
+> [!NOTE]
+> Make sure to run these commands in your sfdx-browserforce-plugin directory.
 
 ```shell
 npm run test
@@ -176,13 +177,15 @@ npm run test
 
 To run **end to end tests**:
 
-> [!CAUTION] Your default scratch org will be used in the E2E tests!
+> [!CAUTION]
+> Your default scratch org will be used in the E2E tests!
 
 ```shell
 npm run test:e2e -- -g "AdminsCanLogInAsAnyUser" # will only run tests matching `AdminsCanLogInAsAnyUser`
 ```
 
-> [!IMPORTANT] E2E tests should be implemented to be **re-runnable**.
+> [!IMPORTANT]
+> E2E tests should be implemented to be **re-runnable**.
 >
 > Please run the test at least 7 times to reduce the risk of a flaky implementation:
 
