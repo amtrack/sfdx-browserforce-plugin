@@ -32,6 +32,8 @@ jobs:
           npx puppeteer browsers install chrome
       - name: Run unit tests
         run: npm run test
+      - name: Check formatting
+        run: npm run test:format
       - name: Authenticate DevHub and create scratch org
         env:
           SFDX_AUTH_URL_DEVHUB: ${{ secrets.SFDX_AUTH_URL_DEVHUB }}

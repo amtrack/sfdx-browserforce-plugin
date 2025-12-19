@@ -57,6 +57,7 @@
     "prepack": "npm run build",
     "prepare": "npm run build",
     "test": "tsc -p test && nyc --reporter=lcov --reporter=text mocha \"test/**/*.test.ts\" \"src/**/*.test.ts\"",
-    "test:e2e": "tsc -p test && mocha --slow 30s --timeout 2m --file test/e2e-setup.ts \"test/**/*.e2e-spec.ts\" \"src/**/*.e2e-spec.ts\""
+    "test:e2e": "tsc -p test && mocha --slow 30s --timeout 2m --file test/e2e-setup.ts \"test/**/*.e2e-spec.ts\" \"src/**/*.e2e-spec.ts\"",
+    "test:format": "npx prettier --check \"+(src|test)/**/*.+(ts|js|json)\""
   }
 }
