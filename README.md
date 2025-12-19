@@ -79,7 +79,7 @@ But there's more:
 
 There are several different methods to install `sfdx-browserforce-plugin`:
 
-```console
+```shell
 # as an sf plugin globally
 sf plugins install sfdx-browserforce-plugin
 
@@ -94,7 +94,7 @@ npm install --save-dev sfdx-browserforce-plugin
 
 Depending on your choice of installation, you can find the `browserforce` namespace:
 
-```console
+```shell
 # globally in the sf cli
 sf browserforce
 

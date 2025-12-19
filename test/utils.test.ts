@@ -15,7 +15,10 @@ describe('semanticallyCleanObject', () => {
     });
   });
   it('should return object as is with custom id', async () => {
-    assert.deepStrictEqual(semanticallyCleanObject({ myid: 'a2', a: 'hi' }, 'myid'), { myid: 'a2', a: 'hi' });
+    assert.deepStrictEqual(semanticallyCleanObject({ myid: 'a2', a: 'hi' }, 'myid'), {
+      myid: 'a2',
+      a: 'hi',
+    });
   });
 });
 
