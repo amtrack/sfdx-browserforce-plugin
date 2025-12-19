@@ -1,7 +1,6 @@
 import { Org } from '@salesforce/core';
 import { Ux } from '@salesforce/sf-plugins-core';
 import assert from 'assert';
-import type { Page } from 'playwright';
 import { Browserforce } from '../src/browserforce.js';
 
 describe('Browserforce', function () {
@@ -34,7 +33,7 @@ describe('Browserforce', function () {
   });
   describe('waitForSelectorInFrameOrPage()', () => {
     it('should query a selector in LEX and Classic UI', async () => {
-      await using page: Page = await global.bf.openPage('/lightning/setup/ExternalStrings/home');
+      await using page = await global.bf.openPage('/lightning/setup/ExternalStrings/home');
       const frame = await global.bf.waitForSelectorInFrameOrPage(page, 'input[name="edit"]');
       await frame.locator('input[name="edit"]').click();
       // lightning/setup/ExternalStrings/home
