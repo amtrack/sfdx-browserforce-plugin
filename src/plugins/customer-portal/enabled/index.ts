@@ -23,10 +23,7 @@ export class CustomerPortalEnable extends BrowserforcePlugin {
       .locator(ENABLE_CHECKBOX)
       .map((checkbox) => (checkbox.checked = true))
       .wait();
-    await Promise.all([
-      page.waitForNavigation(),
-      page.locator(SAVE_BUTTON).click(),
-    ]);
+    await Promise.all([page.waitForNavigation(), page.locator(SAVE_BUTTON).click()]);
     await page.close();
   }
 }

@@ -1,8 +1,5 @@
 import { BrowserforcePlugin } from '../../plugin.js';
-import {
-  FolderSharing,
-  Config as FolderSharingConfig,
-} from './folder-sharing/index.js';
+import { FolderSharing, Config as FolderSharingConfig } from './folder-sharing/index.js';
 
 type Config = {
   folderSharing?: FolderSharingConfig;
@@ -14,9 +11,7 @@ export class ReportsAndDashboards extends BrowserforcePlugin {
     if (definition) {
       if (definition.folderSharing) {
         const pluginFolderSharing = new FolderSharing(this.browserforce);
-        response.folderSharing = await pluginFolderSharing.retrieve(
-          definition.folderSharing
-        );
+        response.folderSharing = await pluginFolderSharing.retrieve(definition.folderSharing);
       }
     }
     return response;
@@ -24,10 +19,9 @@ export class ReportsAndDashboards extends BrowserforcePlugin {
 
   public diff(state: Config, definition: Config): Config | undefined {
     const response: Config = {};
-    const folderSharing = new FolderSharing(this.browserforce).diff(
-      state.folderSharing,
-      definition.folderSharing
-    ) as FolderSharingConfig | undefined;
+    const folderSharing = new FolderSharing(this.browserforce).diff(state.folderSharing, definition.folderSharing) as
+      | FolderSharingConfig
+      | undefined;
     if (folderSharing !== undefined) {
       response.folderSharing = folderSharing;
     }

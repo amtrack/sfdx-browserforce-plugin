@@ -16,9 +16,7 @@ export class UserAccessPoliciesPage {
    * Activate a policy from its detail page
    * @param triggerOn - When to trigger the policy: 'Create', 'Update', or 'CreateAndUpdate' (default)
    */
-  public async activatePolicy(
-    triggerOn: 'Create' | 'Update' | 'CreateAndUpdate' = 'CreateAndUpdate'
-  ): Promise<void> {
+  public async activatePolicy(triggerOn: 'Create' | 'Update' | 'CreateAndUpdate' = 'CreateAndUpdate'): Promise<void> {
     try {
       const xpath = '//button[contains(., "Automate Policy")]';
 
@@ -81,11 +79,8 @@ export class UserAccessPoliciesPage {
   /**
    * Handle the activation modal (select trigger option and click Activate)
    */
-  private async handleActivationModal(
-    triggerOn: 'Create' | 'Update' | 'CreateAndUpdate'
-  ): Promise<void> {
-    const modalHeaderXpath =
-      '//lightning-modal-header[contains(@class, "automate_policy_modal")]';
+  private async handleActivationModal(triggerOn: 'Create' | 'Update' | 'CreateAndUpdate'): Promise<void> {
+    const modalHeaderXpath = '//lightning-modal-header[contains(@class, "automate_policy_modal")]';
     await this.page.waitForSelector(`::-p-xpath(${modalHeaderXpath})`, {
       timeout: 10000,
     });
@@ -119,8 +114,7 @@ export class UserAccessPoliciesPage {
       await label.click();
     }
 
-    const xpath =
-      '//button[text()="Activate"] | //button[contains(text(), "Activate")]';
+    const xpath = '//button[text()="Activate"] | //button[contains(text(), "Activate")]';
     await this.page.waitForSelector(`::-p-xpath(${xpath})`, { timeout: 5000 });
     const buttons = await this.page.$$(`xpath/.${xpath}`);
 
@@ -154,9 +148,7 @@ export class UserAccessPoliciesPage {
 
       await new Promise((resolve) => setTimeout(resolve, 1000));
     } catch (e) {
-      throw new Error(
-        `Failed to handle deactivation confirmation modal: ${e.message}`
-      );
+      throw new Error(`Failed to handle deactivation confirmation modal: ${e.message}`);
     }
   }
 
@@ -165,10 +157,7 @@ export class UserAccessPoliciesPage {
    * @param button - The button element to wait for
    * @param timeout - Maximum time to wait in milliseconds (default: 10000)
    */
-  private async waitForButtonEnabled(
-    button: any,
-    timeout: number = 10000
-  ): Promise<void> {
+  private async waitForButtonEnabled(button: any, timeout: number = 10000): Promise<void> {
     const startTime = Date.now();
 
     while (Date.now() - startTime < timeout) {

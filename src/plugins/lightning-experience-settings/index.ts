@@ -19,20 +19,13 @@ type Theme = {
 };
 
 export class LightningExperienceSettings extends BrowserforcePlugin {
-  async setupDOMObserver(
-    page: Page,
-    elementName: string,
-    callbackName: string
-  ): Promise<void> {
+  async setupDOMObserver(page: Page, elementName: string, callbackName: string): Promise<void> {
     await page.evaluate(
       (elementName: string, callbackName: string) => {
         const observer = new MutationObserver((mutations) => {
           for (const mutation of mutations) {
             for (const node of Array.from(mutation.addedNodes)) {
-              if (
-                node instanceof Element &&
-                node.tagName.toLowerCase() === elementName
-              ) {
+              if (node instanceof Element && node.tagName.toLowerCase() === elementName) {
                 observer.disconnect();
                 // Call the exposed function to handle the element
                 (window as any)[callbackName]();
@@ -48,11 +41,11 @@ export class LightningExperienceSettings extends BrowserforcePlugin {
           () => {
             observer.disconnect();
           },
-          { once: true }
+          { once: true },
         );
       },
       elementName,
-      callbackName
+      callbackName,
     );
   }
 
@@ -77,15 +70,11 @@ export class LightningExperienceSettings extends BrowserforcePlugin {
     await page.waitForSelector(THEME_ROW_SELECTOR);
     const rowElementHandles = await page.$$(THEME_ROW_SELECTOR);
     await page.waitForSelector(DEVELOPER_NAMES_SELECTOR);
-    const developerNames = await page.$$eval(
-      DEVELOPER_NAMES_SELECTOR,
-      (cells) => cells.map((cell: HTMLTableCellElement) => cell.innerText)
+    const developerNames = await page.$$eval(DEVELOPER_NAMES_SELECTOR, (cells) =>
+      cells.map((cell: HTMLTableCellElement) => cell.innerText),
     );
     const states = await page.$$eval(STATES_SELECTOR, (cells) =>
-      cells.map(
-        (cell) =>
-          cell.shadowRoot?.querySelector('lightning-primitive-icon') !== null
-      )
+      cells.map((cell) => cell.shadowRoot?.querySelector('lightning-primitive-icon') !== null),
     );
     return developerNames.map((developerName, i) => {
       return {
@@ -98,14 +87,10 @@ export class LightningExperienceSettings extends BrowserforcePlugin {
 
   async setActiveTheme(page: Page, themeDeveloperName: string): Promise<void> {
     const data = await this.getThemeData(page);
-    const theme = data.find(
-      (theme) => theme.developerName === themeDeveloperName
-    );
+    const theme = data.find((theme) => theme.developerName === themeDeveloperName);
     if (!theme) {
       throw new Error(
-        `Could not find theme "${themeDeveloperName}" in list of themes: ${data.map(
-          (d) => d.developerName
-        )}`
+        `Could not find theme "${themeDeveloperName}" in list of themes: ${data.map((d) => d.developerName)}`,
       );
     }
     // When switching from a SDLS2 to a SLDS1 theme, the following modal appears:
@@ -114,40 +99,29 @@ export class LightningExperienceSettings extends BrowserforcePlugin {
     // - Never Mind
     // - Activate
     await page.exposeFunction('onModalAppeared', async () => {
-      const confirmButtonSelector =
-        'lightning-modal lightning-button[variant="brand"]';
+      const confirmButtonSelector = 'lightning-modal lightning-button[variant="brand"]';
       await page.waitForSelector(confirmButtonSelector, { visible: true });
       const confirmButton = await page.$(confirmButtonSelector);
       if (confirmButton) {
         await page.evaluate((e: HTMLElement) => e.click(), confirmButton);
       }
     });
-    await this.setupDOMObserver(
-      page,
-      'lightning-overlay-container',
-      'onModalAppeared'
-    );
+    await this.setupDOMObserver(page, 'lightning-overlay-container', 'onModalAppeared');
 
     const newActiveThemeRowElementHandle = theme.rowElementHandle;
     await page.waitForSelector(`${THEME_ROW_SELECTOR} lightning-button-menu`, {
       visible: true,
     });
     const menuButton = await newActiveThemeRowElementHandle.$(
-      'td lightning-primitive-cell-factory lightning-primitive-cell-actions lightning-button-menu'
+      'td lightning-primitive-cell-factory lightning-primitive-cell-actions lightning-button-menu',
     );
     await page.evaluate((e: HTMLElement) => e.click(), menuButton);
-    await page.waitForSelector(
-      `${THEME_ROW_SELECTOR} lightning-button-menu slot lightning-menu-item`,
-      {
-        visible: true,
-      }
-    );
+    await page.waitForSelector(`${THEME_ROW_SELECTOR} lightning-button-menu slot lightning-menu-item`, {
+      visible: true,
+    });
     const menuItems = await menuButton!.$$('slot lightning-menu-item');
     // second last item: [show, activate, preview]
     const activateMenuItem = menuItems[menuItems.length - 2];
-    await Promise.all([
-      page.waitForNavigation(),
-      page.evaluate((e: HTMLElement) => e.click(), activateMenuItem),
-    ]);
+    await Promise.all([page.waitForNavigation(), page.evaluate((e: HTMLElement) => e.click(), activateMenuItem)]);
   }
 }

@@ -20,9 +20,8 @@ export class EmailDeliverability extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {
     const page = await this.browserforce.openPage(BASE_PATH);
     await page.waitForSelector(ACCESS_LEVEL_SELECTOR);
-    const selectedOptions = await page.$$eval(
-      `${ACCESS_LEVEL_SELECTOR} > option[selected]`,
-      (options) => options.map((option) => option.textContent ?? '')
+    const selectedOptions = await page.$$eval(`${ACCESS_LEVEL_SELECTOR} > option[selected]`, (options) =>
+      options.map((option) => option.textContent ?? ''),
     );
     await page.close();
     if (!selectedOptions) {
@@ -41,10 +40,7 @@ export class EmailDeliverability extends BrowserforcePlugin {
     const page = await this.browserforce.openPage(BASE_PATH);
     await page.waitForSelector(ACCESS_LEVEL_SELECTOR);
     await page.select(ACCESS_LEVEL_SELECTOR, accessLevelNumber);
-    await Promise.all([
-      page.waitForSelector(CONFIRM_MESSAGE_SELECTOR),
-      page.click(SAVE_BUTTON_SELECTOR),
-    ]);
+    await Promise.all([page.waitForSelector(CONFIRM_MESSAGE_SELECTOR), page.click(SAVE_BUTTON_SELECTOR)]);
     await page.close();
   }
 }

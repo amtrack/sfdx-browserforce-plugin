@@ -45,27 +45,21 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
       importFromKeystore: [],
     };
     let existingCertificates: CertificateRecord[] = [];
-    if (
-      definition?.certificates?.length ||
-      definition?.importFromKeystore?.length
-    ) {
-      existingCertificates =
-        // Note: Unfortunately scanAll=false has no impact and returns deleted records.
+    if (definition?.certificates?.length || definition?.importFromKeystore?.length) {
+      existingCertificates = // Note: Unfortunately scanAll=false has no impact and returns deleted records.
         // Workaround: Order by CreatedDate DESC to get the latest record first.
         (
           await this.org
             .getConnection()
             .tooling.query<CertificateRecord>(
               `SELECT Id, DeveloperName, MasterLabel, OptionsIsPrivateKeyExportable, KeySize FROM Certificate ORDER BY CreatedDate DESC`,
-              { scanAll: false }
+              { scanAll: false },
             )
         )?.records;
     }
     if (definition?.certificates?.length) {
       for (const cert of definition.certificates) {
-        const existingCert = existingCertificates.find(
-          (co) => co.DeveloperName === cert.name
-        );
+        const existingCert = existingCertificates.find((co) => co.DeveloperName === cert.name);
         if (existingCert) {
           response.certificates!.push({
             _id: existingCert.Id,
@@ -79,9 +73,7 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
     }
     if (definition?.importFromKeystore?.length) {
       for (const cert of definition.importFromKeystore) {
-        const existingCert = existingCertificates.find(
-          (co) => co.DeveloperName === cert.name
-        );
+        const existingCert = existingCertificates.find((co) => co.DeveloperName === cert.name);
         if (existingCert) {
           response.importFromKeystore!.push({
             name: existingCert.DeveloperName,
@@ -96,16 +88,12 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
     const response: Config = {};
     if (state && definition && state.certificates && definition.certificates) {
       for (const cert of definition.certificates) {
-        const existingCert = state.certificates.find(
-          (c) => c.name === cert.name
-        );
+        const existingCert = state.certificates.find((c) => c.name === cert.name);
         if (existingCert) {
           // copy id from state to definition to be retained and used
           cert._id = existingCert._id;
         }
-        const certDiff = super.diff(existingCert, cert) as
-          | Certificate
-          | undefined;
+        const certDiff = super.diff(existingCert, cert) as Certificate | undefined;
         if (certDiff !== undefined) {
           if (!response.certificates) {
             response.certificates = [];
@@ -116,7 +104,7 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
     }
     if (definition?.importFromKeystore?.length) {
       const importFromKeystore = definition?.importFromKeystore?.filter(
-        (cert) => !state?.importFromKeystore?.find((c) => c.name === cert.name)
+        (cert) => !state?.importFromKeystore?.find((c) => c.name === cert.name),
       );
       if (importFromKeystore.length) {
         response.importFromKeystore = importFromKeystore;
@@ -143,31 +131,22 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
             urlAttributes['exp'] = certificate.exportable ? 1 : 0;
           }
           const page = await this.browserforce.openPage(
-            `${CERT_PREFIX_PATH}/e?${queryString.stringify(urlAttributes)}`
+            `${CERT_PREFIX_PATH}/e?${queryString.stringify(urlAttributes)}`,
           );
           await page.waitForSelector(SAVE_BUTTON_SELECTOR);
-          await Promise.all([
-            page.waitForNavigation(),
-            page.click(SAVE_BUTTON_SELECTOR),
-          ]);
+          await Promise.all([page.waitForNavigation(), page.click(SAVE_BUTTON_SELECTOR)]);
           await page.close();
         }
       }
     }
     if (plan.importFromKeystore) {
       for (const certificate of plan.importFromKeystore) {
-        const page = await this.browserforce.openPage(
-          `${KEYSTORE_IMPORT_PATH}`
-        );
+        const page = await this.browserforce.openPage(`${KEYSTORE_IMPORT_PATH}`);
         await page.waitForSelector(FILE_UPLOAD_SELECTOR);
-        const elementHandle = (await page.$(
-          FILE_UPLOAD_SELECTOR
-        )) as ElementHandle<HTMLInputElement>;
+        const elementHandle = (await page.$(FILE_UPLOAD_SELECTOR)) as ElementHandle<HTMLInputElement>;
         // TODO: make relative to this.command.flags.definitionfile
         if (!certificate.filePath) {
-          throw new Error(
-            `To import a certificate, the filePath is mandatory.`
-          );
+          throw new Error(`To import a certificate, the filePath is mandatory.`);
         }
         const filePath = path.resolve(certificate.filePath);
         if (!existsSync(filePath)) {
@@ -179,16 +158,13 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
           await page.type(KEYSTORE_PASSWORD_SELECTOR, certificate.password);
         }
         await page.waitForSelector(SAVE_BUTTON_SELECTOR);
-        await Promise.all([
-          page.waitForNavigation(),
-          page.click(SAVE_BUTTON_SELECTOR),
-        ]);
+        await Promise.all([page.waitForNavigation(), page.click(SAVE_BUTTON_SELECTOR)]);
         try {
           await this.browserforce.throwPageErrors(page);
         } catch (e) {
           if (e.message === 'Data Not Available') {
             throw new Error(
-              'Failed to import certificate from Keystore. Please enable Identity Provider first. https://salesforce.stackexchange.com/questions/61618/import-keystore-in-certificate-and-key-management'
+              'Failed to import certificate from Keystore. Please enable Identity Provider first. https://salesforce.stackexchange.com/questions/61618/import-keystore-in-certificate-and-key-management',
             );
           }
           throw e;
@@ -199,17 +175,14 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
           const certsResponse = await this.org
             .getConnection()
             .tooling.query<CertificateRecord>(
-              `SELECT Id FROM Certificate WHERE DeveloperName = '${certificate.name.toLowerCase()}'`
+              `SELECT Id FROM Certificate WHERE DeveloperName = '${certificate.name.toLowerCase()}'`,
             );
           const importedCert = certsResponse.records[0];
           const certPage = await this.browserforce.openPage(
-            `${importedCert.Id}/e?MasterLabel=${certificate.name}&DeveloperName=${certificate.name}`
+            `${importedCert.Id}/e?MasterLabel=${certificate.name}&DeveloperName=${certificate.name}`,
           );
           await certPage.waitForSelector(SAVE_BUTTON_SELECTOR);
-          await Promise.all([
-            certPage.waitForNavigation(),
-            certPage.click(SAVE_BUTTON_SELECTOR),
-          ]);
+          await Promise.all([certPage.waitForNavigation(), certPage.click(SAVE_BUTTON_SELECTOR)]);
           await this.browserforce.throwPageErrors(certPage);
           await certPage.close();
         }

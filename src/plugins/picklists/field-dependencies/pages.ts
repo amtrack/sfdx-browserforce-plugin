@@ -9,22 +9,15 @@ export class FieldDependencyPage {
   }
 
   public static getUrl(customObjectId: string): string {
-    return `setup/ui/dependencyList.jsp?tableEnumOrId=${customObjectId.substring(
-      0,
-      15
-    )}&setupid=CustomObjects`;
+    return `setup/ui/dependencyList.jsp?tableEnumOrId=${customObjectId.substring(0, 15)}&setupid=CustomObjects`;
   }
 
-  public async clickDeleteDependencyActionForField(
-    customFieldId: string
-  ): Promise<FieldDependencyPage> {
+  public async clickDeleteDependencyActionForField(customFieldId: string): Promise<FieldDependencyPage> {
     // wait for "new" button in field dependencies releated list header
-    await this.page.waitForSelector(
-      'div.listRelatedObject div.pbHeader input[name="new"]'
-    );
+    await this.page.waitForSelector('div.listRelatedObject div.pbHeader input[name="new"]');
     const xpath = `//a[contains(@href, "/p/dependency/NewDependencyUI/e") and contains(@href, "delID=${customFieldId.substring(
       0,
-      15
+      15,
     )}")]`;
     const actionLinkHandles = await this.page.$$(`xpath/.${xpath}`);
     if (actionLinkHandles.length) {
@@ -33,10 +26,7 @@ export class FieldDependencyPage {
       });
       await Promise.all([
         this.page.waitForNavigation(),
-        this.page.evaluate(
-          (e: HTMLAnchorElement) => e.click(),
-          actionLinkHandles[0]
-        ),
+        this.page.evaluate((e: HTMLAnchorElement) => e.click(), actionLinkHandles[0]),
       ]);
       await throwPageErrors(this.page);
     }
@@ -52,39 +42,26 @@ export class NewFieldDependencyPage {
     this.page = page;
   }
 
-  public static getUrl(
-    customObjectId: string,
-    dependentFieldId: string,
-    controllingFieldId: string
-  ): string {
+  public static getUrl(customObjectId: string, dependentFieldId: string, controllingFieldId: string): string {
     return `p/dependency/NewDependencyUI/e?tableEnumOrId=${customObjectId.substring(
       0,
-      15
-    )}&setupid=CustomObjects&controller=${controllingFieldId.substring(
+      15,
+    )}&setupid=CustomObjects&controller=${controllingFieldId.substring(0, 15)}&dependent=${dependentFieldId.substring(
       0,
-      15
-    )}&dependent=${dependentFieldId.substring(
-      0,
-      15
+      15,
     )}&retURL=/${customObjectId.substring(0, 15)}`;
   }
 
   async save(): Promise<void> {
     await this.page.waitForSelector(this.saveButton);
-    await Promise.all([
-      this.page.waitForNavigation(),
-      this.page.click(this.saveButton),
-    ]);
+    await Promise.all([this.page.waitForNavigation(), this.page.click(this.saveButton)]);
     await throwPageErrors(this.page);
     // second step in wizard
     this.page.on('dialog', async (dialog) => {
       await dialog.accept();
     });
     await this.page.waitForSelector(this.saveButton);
-    await Promise.all([
-      this.page.waitForNavigation(),
-      this.page.click(this.saveButton),
-    ]);
+    await Promise.all([this.page.waitForNavigation(), this.page.click(this.saveButton)]);
     await throwPageErrors(this.page);
     await this.page.close();
   }

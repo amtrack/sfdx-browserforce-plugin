@@ -2,10 +2,8 @@ import { BrowserforcePlugin } from '../../plugin.js';
 
 const BASE_PATH = 'lightning/setup/SlackSetupAssistant/home';
 
-const TOS_CHECKBOX =
-  'setup_service-slack-agree-to-terms input[type="checkbox"]';
-const SALES_CLOUD_FOR_SLACK_CHECKBOX =
-  'input[type="checkbox"][name="SlkSetupStepSalesCloudForSlack"]';
+const TOS_CHECKBOX = 'setup_service-slack-agree-to-terms input[type="checkbox"]';
+const SALES_CLOUD_FOR_SLACK_CHECKBOX = 'input[type="checkbox"][name="SlkSetupStepSalesCloudForSlack"]';
 const TOAST_MESSAGE = 'div[id^="toastDescription"]';
 
 export type Config = {
@@ -32,9 +30,7 @@ export class Slack extends BrowserforcePlugin {
 
   public async apply(config: Config): Promise<void> {
     if (config.agreeToTermsAndConditions === false) {
-      throw new Error(
-        'terms and conditions cannot be unaccepted once accepted'
-      );
+      throw new Error('terms and conditions cannot be unaccepted once accepted');
     }
     const state = await this.retrieve();
     const page = await this.browserforce.openPage(BASE_PATH);
@@ -42,9 +38,7 @@ export class Slack extends BrowserforcePlugin {
       await Promise.all([
         page.locator(TOAST_MESSAGE).wait(),
         // NOTE: Unfortunately a simple click() on the locator does not work here
-        (
-          await page.locator(TOS_CHECKBOX).waitHandle()
-        ).evaluate((checkbox) => checkbox.click()),
+        (await page.locator(TOS_CHECKBOX).waitHandle()).evaluate((checkbox) => checkbox.click()),
       ]);
       await page.waitForSelector(TOAST_MESSAGE, { hidden: true });
     }
@@ -52,9 +46,7 @@ export class Slack extends BrowserforcePlugin {
       await Promise.all([
         page.locator(TOAST_MESSAGE).wait(),
         // NOTE: Unfortunately a simple click() on the locator does not work here
-        (
-          await page.locator(SALES_CLOUD_FOR_SLACK_CHECKBOX).waitHandle()
-        ).evaluate((checkbox) => checkbox.click()),
+        (await page.locator(SALES_CLOUD_FOR_SLACK_CHECKBOX).waitHandle()).evaluate((checkbox) => checkbox.click()),
       ]);
       await page.waitForSelector(TOAST_MESSAGE, { hidden: true });
     }

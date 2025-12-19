@@ -2,9 +2,7 @@ import assert from 'assert';
 import { readFileSync } from 'node:fs';
 import { SalesforceCpqConfig } from './index.js';
 
-const defaultConfig = JSON.parse(
-  readFileSync(new URL('./default.json', import.meta.url), 'utf8')
-);
+const defaultConfig = JSON.parse(readFileSync(new URL('./default.json', import.meta.url), 'utf8'));
 
 const describeOrSkip = process.env['CPQ'] === 'true' ? describe : describe.skip;
 describeOrSkip(SalesforceCpqConfig.name, function () {

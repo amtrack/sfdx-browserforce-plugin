@@ -30,17 +30,11 @@ export class LinkedInSalesNavigatorPage {
 
   public async setStatus(enable: boolean): Promise<void> {
     // NOTE: Unfortunately a simple click() on the locator does not work here
-    await (
-      await this.page.locator(ENABLE_TOGGLE).waitHandle()
-    ).evaluate((checkbox) => checkbox.click());
+    await (await this.page.locator(ENABLE_TOGGLE).waitHandle()).evaluate((checkbox) => checkbox.click());
 
     if (enable) {
-      await (
-        await this.page.locator(CONFIRM_CHECKBOX).waitHandle()
-      ).evaluate((checkbox) => checkbox.click());
-      await (
-        await this.page.locator(ACCEPT_BUTTON).waitHandle()
-      ).evaluate((button) => button.click());
+      await (await this.page.locator(CONFIRM_CHECKBOX).waitHandle()).evaluate((checkbox) => checkbox.click());
+      await (await this.page.locator(ACCEPT_BUTTON).waitHandle()).evaluate((button) => button.click());
     }
 
     await throwPageErrors(this.page);

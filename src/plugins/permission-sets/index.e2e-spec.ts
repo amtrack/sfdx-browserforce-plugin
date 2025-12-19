@@ -29,11 +29,7 @@ describe(PermissionSets.name, function () {
       path.join(__dirname, 'sfdx-source'),
       '--json',
     ]);
-    assert.deepStrictEqual(
-      sourceDeployCmd.status,
-      0,
-      sourceDeployCmd.output.toString()
-    );
+    assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
   });
 
   it('should configure permission set presence status', async () => {

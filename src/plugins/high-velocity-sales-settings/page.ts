@@ -3,8 +3,7 @@ import { throwPageErrors } from '../../browserforce.js';
 
 const SET_UP_AND_ENABLE_HVS_BUTTON = 'button.setupAndEnableButton';
 const ENABLE_TOGGLE = '#toggleHighVelocitySalesPref';
-const AUTOMATION_TAB_ITEM =
-  'lightning-tab-bar li[data-tab-value="automationTab"]';
+const AUTOMATION_TAB_ITEM = 'lightning-tab-bar li[data-tab-value="automationTab"]';
 
 export class HighVelocitySalesSetupPage {
   private page: Page;

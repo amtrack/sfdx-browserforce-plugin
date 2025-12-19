@@ -31,8 +31,7 @@ const tests = [
     ],
   },
   {
-    description:
-      'should only return portal and portalProfileMemberships fields',
+    description: 'should only return portal and portalProfileMemberships fields',
     source: [
       {
         name: 'Customer Portal',

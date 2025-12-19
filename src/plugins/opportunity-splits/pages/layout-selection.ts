@@ -4,8 +4,7 @@ import { OverviewPage } from './overview.js';
 const SAVE_BUTTON = 'input[id$=":save"]';
 
 export class LayoutSelectionPage {
-  static PATH =
-    'opp/opportunitySplitSetupLayout.apexp?setupid=OpportunitySplitSetup';
+  static PATH = 'opp/opportunitySplitSetupLayout.apexp?setupid=OpportunitySplitSetup';
   private page: Page;
 
   constructor(page: Page) {
@@ -13,10 +12,7 @@ export class LayoutSelectionPage {
   }
 
   public async choose(): Promise<OverviewPage> {
-    await Promise.all([
-      this.page.waitForNavigation(),
-      this.page.locator(SAVE_BUTTON).click(),
-    ]);
+    await Promise.all([this.page.waitForNavigation(), this.page.locator(SAVE_BUTTON).click()]);
     return new OverviewPage(this.page);
   }
 }

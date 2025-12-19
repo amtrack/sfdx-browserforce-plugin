@@ -14,17 +14,10 @@ export class HighVelocitySalesSettings extends BrowserforcePlugin {
     const conn = this.org.getConnection();
     const result = { setUpAndEnable: false };
     try {
-      const settings = await conn.metadata.read(
-        'HighVelocitySalesSettings',
-        'HighVelocitySales'
-      );
+      const settings = await conn.metadata.read('HighVelocitySalesSettings', 'HighVelocitySales');
       result.setUpAndEnable = settings['enableHighVelocitySalesSetup'] === true;
     } catch (e) {
-      if (
-        /INVALID_TYPE: This type of metadata is not available for this organization/.test(
-          e
-        )
-      ) {
+      if (/INVALID_TYPE: This type of metadata is not available for this organization/.test(e)) {
         throw new Error(MSG_NOT_AVAILABLE);
       } else {
         throw e;
@@ -36,7 +29,7 @@ export class HighVelocitySalesSettings extends BrowserforcePlugin {
   public async apply(config: Config): Promise<void> {
     if (config.setUpAndEnable) {
       const page = new HighVelocitySalesSetupPage(
-        await this.browserforce.openPage(HighVelocitySalesSetupPage.getUrl())
+        await this.browserforce.openPage(HighVelocitySalesSetupPage.getUrl()),
       );
       await page.setUpAndEnable();
     } else {
@@ -46,9 +39,7 @@ export class HighVelocitySalesSettings extends BrowserforcePlugin {
   }
 }
 
-export async function disableHighVelocitySalesUsingMetadata(
-  conn: Connection
-): Promise<void> {
+export async function disableHighVelocitySalesUsingMetadata(conn: Connection): Promise<void> {
   const settings = {
     fullName: 'HighVelocitySales',
     enableHighVelocitySalesSetup: false,

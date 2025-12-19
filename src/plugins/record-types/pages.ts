@@ -7,13 +7,8 @@ export class RecordTypePage {
     this.page = page;
   }
 
-  public async clickDeleteAction(
-    recordTypeId: string
-  ): Promise<RecordTypeDeletePage> {
-    const xpath = `//a[contains(@href, "setup/ui/recordtypedelete.jsp?id=${recordTypeId.slice(
-      0,
-      15
-    )}")]`;
+  public async clickDeleteAction(recordTypeId: string): Promise<RecordTypeDeletePage> {
+    const xpath = `//a[contains(@href, "setup/ui/recordtypedelete.jsp?id=${recordTypeId.slice(0, 15)}")]`;
     await this.page.waitForSelector(`::-p-xpath(${xpath})`);
     const deleteLink = (await this.page.$$(`xpath/.${xpath}`))[0];
     await Promise.all([
@@ -44,10 +39,7 @@ export class RecordTypeDeletePage {
 
   async save(): Promise<void> {
     await this.page.waitForSelector(this.saveButton);
-    await Promise.all([
-      this.page.waitForNavigation(),
-      this.page.click(this.saveButton),
-    ]);
+    await Promise.all([this.page.waitForNavigation(), this.page.click(this.saveButton)]);
     await this.throwPageErrors();
   }
 
@@ -56,10 +48,7 @@ export class RecordTypeDeletePage {
     if (!saveButton) {
       const bodyHandle = await this.page.$('div.pbBody');
       if (bodyHandle) {
-        const errorMsg = await this.page.evaluate(
-          (div: HTMLDivElement) => div.textContent,
-          bodyHandle
-        );
+        const errorMsg = await this.page.evaluate((div: HTMLDivElement) => div.textContent, bodyHandle);
         await bodyHandle.dispose();
         if (errorMsg?.trim()) {
           throw new Error(errorMsg.trim());
@@ -69,14 +58,9 @@ export class RecordTypeDeletePage {
   }
 
   async throwPageErrors(): Promise<void> {
-    const errorHandle = await this.page.$(
-      'div#validationError div.messageText'
-    );
+    const errorHandle = await this.page.$('div#validationError div.messageText');
     if (errorHandle) {
-      const errorMsg = await this.page.evaluate(
-        (div: HTMLDivElement) => div.innerText,
-        errorHandle
-      );
+      const errorMsg = await this.page.evaluate((div: HTMLDivElement) => div.innerText, errorHandle);
       await errorHandle.dispose();
       if (errorMsg?.trim()) {
         throw new Error(errorMsg.trim());

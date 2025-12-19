@@ -19,32 +19,25 @@ export class Security extends BrowserforcePlugin {
     if (definition) {
       if (definition.certificateAndKeyManagement) {
         const pluginCKM = new CertificateAndKeyManagement(this.browserforce);
-        response.certificateAndKeyManagement = await pluginCKM.retrieve(
-          definition.certificateAndKeyManagement
-        );
+        response.certificateAndKeyManagement = await pluginCKM.retrieve(definition.certificateAndKeyManagement);
       }
       if (definition.authenticationConfiguration) {
-        response.authenticationConfiguration =
-          await new AuthenticationConfiguration(this.browserforce).retrieve(
-            definition.authenticationConfiguration
-          );
+        response.authenticationConfiguration = await new AuthenticationConfiguration(this.browserforce).retrieve(
+          definition.authenticationConfiguration,
+        );
       }
     }
     return response;
   }
 
   public diff(state: Config, definition: Config): Config | undefined {
-    const certificateAndKeyManagement = new CertificateAndKeyManagement(
-      this.browserforce
-    ).diff(
+    const certificateAndKeyManagement = new CertificateAndKeyManagement(this.browserforce).diff(
       state.certificateAndKeyManagement,
-      definition.certificateAndKeyManagement
+      definition.certificateAndKeyManagement,
     );
-    const authenticationConfiguration = new AuthenticationConfiguration(
-      this.browserforce
-    ).diff(
+    const authenticationConfiguration = new AuthenticationConfiguration(this.browserforce).diff(
       state.authenticationConfiguration,
-      definition.authenticationConfiguration
+      definition.authenticationConfiguration,
     ) as AuthenticationConfigurationConfig | undefined;
     const response: Config = {};
     if (certificateAndKeyManagement !== undefined) {
@@ -62,9 +55,7 @@ export class Security extends BrowserforcePlugin {
       await pluginCKM.apply(plan.certificateAndKeyManagement);
     }
     if (plan.authenticationConfiguration) {
-      const pluginAuthConfig = new AuthenticationConfiguration(
-        this.browserforce
-      );
+      const pluginAuthConfig = new AuthenticationConfiguration(this.browserforce);
       await pluginAuthConfig.apply(plan.authenticationConfiguration);
     }
   }
