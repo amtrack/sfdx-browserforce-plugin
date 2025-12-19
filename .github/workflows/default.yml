@@ -19,10 +19,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v6
         with:
           node-version-file: .node-version
       - name: Install dependencies
@@ -31,6 +31,8 @@ jobs:
           npm install --ignore-scripts --global @salesforce/cli@${SF_CLI_VERSION:-"latest"}
       - name: Run unit tests
         run: npm run test
+      - name: Check formatting
+        run: npm run test:format
       - name: Authenticate DevHub and create scratch org
         env:
           SFDX_AUTH_URL_DEVHUB: ${{ secrets.SFDX_AUTH_URL_DEVHUB }}
@@ -53,13 +55,16 @@ jobs:
       pull-requests: write
       id-token: write
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version-file: .node-version
       - name: Install dependencies
         run: npm ci --ignore-scripts
+      - name: Build
+        run: npm run build
       - name: Release package
         run: npx -y semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          npm_config_ignore_scripts: true
