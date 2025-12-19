@@ -120,16 +120,15 @@ describe('CustomerPortal', () => {
     it('should cleanup', async () => {
       const conn = global.bf.org.getConnection();
       await conn.metadata.delete('Profile', ['Dummy']);
-      const permSetUnassignCmd = child.spawnSync('sf', [
-        'data',
-        'delete',
-        'record',
-        '-s',
-        'PermissionSetAssignment',
-        '-w',
-        'PermissionSet.Name=Customer_Portal_Admin',
-      ]);
-      assert.deepStrictEqual(permSetUnassignCmd.status, 0, permSetUnassignCmd.output.toString());
+      const result = await conn.query(
+        "SELECT Id FROM PermissionSetAssignment WHERE PermissionSet.Name='Customer_Portal_Admin'",
+      );
+      if (result.records.length) {
+        await conn.delete(
+          'PermissionSetAssignment',
+          result.records.map((rec) => rec.Id),
+        );
+      }
       await conn.metadata.delete('PermissionSet', ['Customer_Portal_Admin']);
     });
   });

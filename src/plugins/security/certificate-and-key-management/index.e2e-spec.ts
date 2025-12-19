@@ -11,11 +11,11 @@ describe(CertificateAndKeyManagement.name, function () {
     pluginCertificateManagement = new CertificateAndKeyManagement(global.bf);
   });
 
-  const configGeneratedCert = {
+  const configCreatedCert = {
     certificates: [
       {
-        name: 'identity_provider',
-        label: 'identity_provider',
+        name: 'foo',
+        label: 'foo',
       },
     ],
   };
@@ -35,11 +35,11 @@ describe(CertificateAndKeyManagement.name, function () {
     assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
   });
   it('should create a self-signed certificate', async () => {
-    await pluginCertificateManagement.apply(configGeneratedCert);
+    await pluginCertificateManagement.apply(configCreatedCert);
   });
   it('should not do anything if self-signed certificate is already available', async () => {
     // explictly pass definition to retrieve
-    const res = await pluginCertificateManagement.run(configGeneratedCert);
+    const res = await pluginCertificateManagement.run(configCreatedCert);
     assert.deepStrictEqual(res, { message: 'no action necessary' });
   });
   it('should import a cert from a keystore', async () => {
@@ -49,9 +49,15 @@ describe(CertificateAndKeyManagement.name, function () {
     const res = await pluginCertificateManagement.run(configImportFromKeystore);
     assert.deepStrictEqual(res, { message: 'no action necessary' });
   });
+  it('should disable Identity Provider', async () => {
+    const __dirname = fileURLToPath(new URL('.', import.meta.url));
+    const dir = resolve(join(__dirname, 'sfdx-source', 'disable-identity-provider'));
+    const sourceDeployCmd = spawnSync('sf', ['project', 'deploy', 'start', '-d', dir, '--json']);
+    assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
+  });
   it('should delete certificates using Metadata API', async () => {
     const org = await Org.create({});
     const conn = org.getConnection();
-    await conn.metadata.delete('Certificate', ['identity_provider', 'Dummy']);
+    await conn.metadata.delete('Certificate', ['identity_provider', 'foo', 'Dummy']);
   });
 });
