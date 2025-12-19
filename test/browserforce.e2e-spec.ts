@@ -36,10 +36,7 @@ describe('Browserforce', function () {
       await using page = await global.bf.openPage('/lightning/setup/ExternalStrings/home');
       const frame = await global.bf.waitForSelectorInFrameOrPage(page, 'input[name="edit"]');
       await frame.locator('input[name="edit"]').click();
-      // lightning/setup/ExternalStrings/home
-      // ->
-      // lightning/setup/ExternalStrings/page?address=/101/e
-      await page.waitForURL((url) => url.searchParams.has('address'));
+      await page.waitForURL((url) => url.pathname === '/lightning/setup/ExternalStrings/page');
     });
   });
   describe('openPage()', () => {
