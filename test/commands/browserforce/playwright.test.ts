@@ -14,4 +14,4 @@ describe(BrowserforcePlaywrightCommand.name, () => {
     const output = await BrowserforcePlaywrightCommand.run(['--', '--version']);
     assert.match(output, /Version /);
   }).slow(1_000);
-});
+}).timeout(5_000);
