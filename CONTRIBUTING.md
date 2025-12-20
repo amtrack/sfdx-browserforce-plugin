@@ -21,6 +21,7 @@
 
 ```shell
 npm ci
+npx playwright install chromium
 ```
 
 ## Scaffolding a new plugin
@@ -134,7 +135,7 @@ This allows to run multiple actions (from multiple plugins) using a single confi
 Plugins are written in [Typescript](https://www.typescriptlang.org), just like `sf` and most of the available sf plugins.
 
 [Playwright](https://playwright.dev) is being used as a library for browser automation.
-If you need more inspiration regarding Playwright, checkout the [official documentation](https://playwright.dev/docs/intro) and [best practices guide](docs/PLAYWRIGHT.md).
+If you need more inspiration regarding Playwright, checkout the [official documentation](https://playwright.dev/docs/intro) and our [best practices guide](./docs/PLAYWRIGHT.md).
 
 The simplified browserforce plugin lifecycle can be described as follows
 

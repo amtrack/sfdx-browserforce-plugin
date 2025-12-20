@@ -37,7 +37,7 @@
     "commands": "./lib/commands",
     "topics": {
       "browserforce": {
-        "description": "browser automation"
+        "description": "browser automation for Salesforce setup pages"
       }
     },
     "additionalHelpFlags": [

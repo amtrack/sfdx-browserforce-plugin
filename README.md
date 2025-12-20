@@ -4,6 +4,9 @@
 
 [![Actions Status](https://github.com/amtrack/sfdx-browserforce-plugin/actions/workflows/default.yml/badge.svg?branch=main)](https://github.com/amtrack/sfdx-browserforce-plugin/actions?query=branch:main)
 
+> [!NOTE]
+> Since v6 we're using Playwright instead of Puppeteer. Please see the [MIGRATION](./docs/MIGRATION.md) guide.
+
 ✅ Most settings in the Salesforce Setup Menu are represented as [Settings](https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_settings.htm) in the Metadata API.
 
 For example, the highlighted checkbox "Show View Hierarchy link on account pages" in Account Settings is indeed represented in the Metadata `AccountSettings` as `showViewHierarchyLink`.
@@ -24,7 +27,7 @@ For example, the Currency Locale in `Setup -> Company Settings -> Company Inform
 
 👉 This is where Browserforce (sfdx-browserforce-plugin) comes to the rescue. It fills this gap by applying these unsupported settings through browser automation!
 
-# Example
+## Example
 
 To change the Currency Locale, the Browserforce config file (here: `./config/currency.json`) looks like this:
 
@@ -50,13 +53,13 @@ $ sf browserforce apply -f ./config/currency.json --target-org myOrg@example.com
   logging out... done
 ```
 
-# Key Concepts
+## Key Concepts
 
 - 🔧 configuration using JSON Schema (similar to the [Scratch Org Definition Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_scratch_orgs_def_file.htm))
 - 🧠 idempotency of the `apply` command only applies what's necessary and allows re-execution (concept similar to [terraform](https://www.terraform.io/docs/commands/apply.html))
 - 🏎️ browser automation powered by Playwright, [learn more about Playwright and Browserforce](#playwright)
 
-# Supported Browserforce Settings
+## Supported Browserforce Settings
 
 Top settings:
 
@@ -75,7 +78,7 @@ But there's more:
 - Please see the [Browserforce Settings](https://github.com/amtrack/sfdx-browserforce-plugin/wiki/Browserforce-Settings) wiki page with screenshots.
 - Explore the JSON schema powered configuration using a [full-blown example](https://github.dev/amtrack/sfdx-browserforce-plugin/blob/main/examples/full.json) or start with an [empty configuration](https://github.dev/amtrack/sfdx-browserforce-plugin/blob/main/examples/empty.json).
 
-# Installation
+## Installation
 
 There are several different methods to install `sfdx-browserforce-plugin`:
 
@@ -90,7 +93,31 @@ npm install --global sfdx-browserforce-plugin
 npm install --save-dev sfdx-browserforce-plugin
 ```
 
-# Usage
+> [!IMPORTANT]
+> Playwright does not come with a browser automatically.
+
+You need to install a browser explicitly:
+
+```shell
+sf browserforce playwright -- install chromium
+# or
+sf browserforce playwright -- install chrome
+```
+
+or configure Browserforce to use an existing browser with one of the following environment variables:
+
+```shell
+PLAYWRIGHT_BROWSER_CHANNEL="chrome"
+PLAYWRIGHT_BROWSER_CHANNEL="chromium"
+# or
+PLAYWRIGHT_EXECUTABLE_PATH="/usr/bin/google-chrome"
+CHROME_BIN="/usr/bin/google-chrome"
+```
+
+> [!TIP]
+> If you're running browserforce on GitHub Actions with ubuntu-latest (24), we can use the preinstalled Google Chrome automatically. No further configuration and installation needed.
+
+## Usage
 
 Depending on your choice of installation, you can find the `browserforce` namespace:
 
@@ -113,91 +140,45 @@ USAGE
   $ sfdx-browserforce-plugin browserforce COMMAND
 
 COMMANDS
-  browserforce apply  apply a plan from a definition file
-  browserforce plan   retrieve state and generate plan file
+  browserforce apply        apply a plan from a definition file
+  browserforce plan         retrieve state and generate plan file
+  browserforce playwright   access the Playwright CLI
 ```
 
 Both the `browserforce apply` and `browserforce plan` commands expect a config file and a target username or alias for the org.
 
-# Environment Variables
+## Environment Variables
 
-- `BROWSER_DEBUG` run in non-headless mode (default: `false`)
+- `PLAYWRIGHT_BROWSER_CHANNEL`: let Playwright figure out the path to a browser (`chromium` or `chrome`)
+- `PLAYWRIGHT_EXECUTABLE_PATH` or `CHROME_BIN`: point Playwright to a specific browser executable (e.g. `/usr/bin/google-chrome`)
+- `BROWSER_DEBUG`: run in non-headless mode (default: `false`)
 - `BROWSERFORCE_NAVIGATION_TIMEOUT_MS`: adjustable for slow internet connections (default: `90000`)
 - `BROWSERFORCE_RETRY_MAX_RETRIES`: number of retries on failures opening a page (default: `4`)
 - `BROWSERFORCE_RETRY_TIMEOUT_MS`: initial time between retries in exponential mode (default: `4000`)
 
-# Migration to Playwright
+## Playwright
 
-**Important Notice for Next Version Release:**
+We use [Playwright](https://playwright.dev/) for browser automation.
 
-This project is transitioning from Puppeteer to Playwright for browser automation. The migration is planned for the next major version release.
+For more information on browser automation best practices, see the [Playwright documentation](./docs/PLAYWRIGHT.md).
 
-## What This Means for Users
+## Troubleshooting
 
-### Current Version (Puppeteer-based)
-- Continues to work as expected
-- No action required from users
-- Maintained for stability
+If no browser is installed or launching fails, you'll get an error message from Playwright with a suggestion.
 
-### Next Version (Playwright-based)
-The upcoming release will include:
+Typically this will guide you to install a browser with `npx playwright install chromium`.
+If you've installed sfdx-browserforce-plugin using `sf`, you can replace
+`npx playwright install chromium` with `sf browserforce playwright -- install chromium`.
 
-1. **Improved Reliability**: Playwright offers better auto-waiting and more robust element interaction
-2. **Better Frame Support**: Native iframe handling without workarounds
-3. **Enhanced Debugging**: Built-in trace viewer and inspector tools
-4. **Modern API**: More intuitive locator-based API
-
-### Migration Actions Required
-
-**For Plugin Developers:**
-If you've created custom plugins or extended this project:
-
-1. **Update Browser Automation Code**:
-   - Replace `page.$()` with `page.locator()`
-   - Replace `page.$$()` with `page.locator().all()`
-   - Update `ElementHandle` references to `Locator`
-   - Review frame handling code (Playwright has better native support)
-
-2. **Update Dependencies**:
-   - Remove `puppeteer` dependency
-   - Add `playwright` or `@playwright/test` dependency
-
-3. **Review Documentation**:
-   - See [`docs/PLAYWRIGHT.md`](docs/PLAYWRIGHT.md) for best practices
-
-**For End Users:**
-- No configuration changes required
-- Browser download process remains similar
-- Environment variables remain compatible
-- All existing configuration files will continue to work
-
-# Playwright
-
-We use [Playwright](https://playwright.dev/) for browser automation which comes with its own Chromium browser.
-
-The Playwright [installation guide](https://playwright.dev/docs/intro) describes how this works:
-
-> Playwright comes with bundled browser binaries for Chromium, Firefox, and WebKit. When you install Playwright, it automatically downloads the Chromium browser to ensure consistent automation across different environments. The browser is downloaded to the OS-specific cache directory.
-
-In most cases this just works! If you want to skip the download and use another browser installation, you can do this as follows:
-
-
-For more information on browser automation best practices, see the [Playwright documentation](docs/PLAYWRIGHT.md).
-
-Troubleshooting:
-
-- The installation is triggered via the `postinstall` hook of npm/yarn. If you've disabled running scripts with npm (`--ignore-scripts` or via config file), it will not download the browser.
-- If you encounter issues with browser downloads, you can manually install browsers with: `npx playwright install chromium`
-
-# Contributing
+## Contributing
 
 Please see [CONTRIBUTING.md](CONTRIBUTING.md) for getting started.
 
-# Sponsors
+## Sponsors
 
 - [PARX](https://www.parx.com)
 - [IPfolio](https://www.ipfolio.com)
 
-# License
+## License
 
 MIT © [Matthias Rolke](mailto:mr.amtrack@gmail.com)

@@ -1,8 +1,5 @@
 # Best Practices: Using Playwright for Browserforce
 
-> [!WARNING]
-> This page is written for the upcoming `v6` which uses Playwright instead of Puppeteer
-
 This guide provides best practices and patterns for writing Playwright-based plugins for the sfdx-browserforce-plugin project.
 
 ## Core Principles
@@ -93,7 +90,7 @@ const saveButton = page.locator('input[type="submit"][title="Save"]');
 ### Avoid `waitForTimeout()` and `waitForLoadState()`
 
 There should always be a better indicator than those two.
-For example: There might be a specific network response, url or locator visible/hidden to indicate the page is ready or the action has been completed.
+For example: There might be a specific network response, URL or locator visible/hidden to indicate the page is ready or the action has been completed.
 
 > Never wait for timeout in production.
 >
@@ -109,6 +106,14 @@ and
 
 Prefer using specific Locator methods over `evaluate()`.
 Please see the examples above.
+
+## Types of Salesforce Setup Pages
+
+There are three different kinds of setup pages in Salesforce:
+
+- **Classic UI**: simple to implement
+- **Lightning Experience with a Classic UI page in an `<iframe>`**: annoying
+- **Lightning Experience only setup pages**: SPA - difficult with certain Lightning Components
 
 ## Patterns
 
@@ -152,11 +157,14 @@ await Promise.race([waitForPageErrors(), page.waitForURL((url) => url.pathname =
 
 ### Saving Pages in Salesforce Classic UI
 
-Most Salesforce Classic pages show error messages on the same page and perform a page redirect after a successful save.
+Most Salesforce Classic pages show error messages on the same page and perform a page redirect to another Classic UI page after a successful save.
 
 The most simple way is to wait for the success page URL as shown above.
 
-> ![TIP] If there is no deterministic after-save URL, it is sometimes possible to set it using the `retURL` url parameter.
+However, if there is no specific success page, the page might eventually open the Lightning Experience setup home page with multiple redirects on the way.
+This is suboptimal for our scenario.
+
+> ![TIP] If there is no deterministic after-save URL, it is sometimes possible to set it using the `retURL` URL parameter.
 
 ### Saving Pages in Salesforce Lightning Experience
 
@@ -245,37 +253,8 @@ Example:
 
 ## Debugging
 
-### Enable Browser Debug Mode
-
-See the browser while tests run:
-
-```bash
-BROWSER_DEBUG=true npm run test:e2e -- --grep "YourPlugin"
-```
-
-### Slow Down Execution
-
-Add delays between actions for observation:
-
-```bash
-BROWSER_SLOWMO=1000 npm run test:e2e -- --grep "YourPlugin"
-```
-
-### Enable Playwright Tracing
-
-Capture detailed execution traces:
-
-```bash
-PLAYWRIGHT_TRACE=true npm run test:e2e -- --grep "YourPlugin"
-```
-
-Then view the trace:
-
-```bash
-npx playwright show-trace trace-2025-11-23T19-00-00-000Z.zip
-```
-
-### Add Console Logging
+For general debugging and tracing documentation, please see the [CONTRIBUTING](../CONTRIBUTING.md) guide.
+Programmatically you can either add console logging
 
 ```typescript
 console.log('URL before save:', page.url());
@@ -284,7 +263,7 @@ await page.waitForTimeout(3_000);
 console.log('URL after save:', page.url());
 ```
 
-### Take Screenshots
+or take screenhots
 
 ```typescript
 await page.screenshot({ path: 'debug-screenshot.png' });

@@ -22,9 +22,15 @@ export class Browserforce {
 
   public async login(): Promise<Browserforce> {
     this.browser = await chromium.launch({
-      // on GitHub Actions with ubuntu-latest, this is set to /usr/bin/google-chrome
+      ...(process.env.PLAYWRIGHT_BROWSER_CHANNEL
+        ? {
+            // chrome|chromium: let Playwright figure out the path to the browser binary
+            channel: process.env.PLAYWRIGHT_BROWSER_CHANNEL,
+          }
+        : {}),
       ...(process.env.CHROME_BIN
         ? {
+            // on GitHub Actions with ubuntu-latest, this is set to /usr/bin/google-chrome
             executablePath: process.env.CHROME_BIN,
           }
         : {}),
