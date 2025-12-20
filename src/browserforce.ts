@@ -22,7 +22,17 @@ export class Browserforce {
 
   public async login(): Promise<Browserforce> {
     this.browser = await chromium.launch({
-      channel: process.env.CI ? 'chrome' : undefined,
+      // on GitHub Actions with ubuntu-latest, this is set to /usr/bin/google-chrome
+      ...(process.env.CHROME_BIN
+        ? {
+            executablePath: process.env.CHROME_BIN,
+          }
+        : {}),
+      ...(process.env.PLAYWRIGHT_EXECUTABLE_PATH
+        ? {
+            executablePath: process.env.PLAYWRIGHT_EXECUTABLE_PATH,
+          }
+        : {}),
       headless: !(process.env.BROWSER_DEBUG === 'true'),
       slowMo: parseInt(process.env.BROWSER_SLOWMO, 10) ?? 0,
     });
