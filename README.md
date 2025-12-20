@@ -94,17 +94,34 @@ npm install --save-dev sfdx-browserforce-plugin
 ```
 
 > [!IMPORTANT]
-> Playwright does not come with a browser automatically.
+> Playwright does not come with a browser automatically
 
-You need to install a browser explicitly:
+You might need to install a browser explicitly or configure Browserforce to use an existing browser.
+
+### Option 1: Zero Config
+
+> [!TIP]
+> If you're running browserforce on GitHub Actions with the `ubuntu-latest` (v24) Docker image, we can use the preinstalled Google Chrome automatically.
+> No further configuration and installation needed, because the `CHROME_BIN` environment variable is already set.
+
+### Option 2: Install a browser using the Playwright CLI
+
+```shell
+npx playwright install chromium
+```
+
+If you've installed sfdx-browserforce-plugin using `sf`, you can use our wrapper command:
 
 ```shell
 sf browserforce playwright -- install chromium
-# or
-sf browserforce playwright -- install chrome
 ```
 
-or configure Browserforce to use an existing browser with one of the following environment variables:
+> [!IMPORTANT]
+> The two hyphens `--` are intentionally and separate the sf command from the args to be passed to the playwright command.
+
+### Option 3: Configure Browserforce to use an existing browser
+
+You can use one of the following environment variables:
 
 ```shell
 PLAYWRIGHT_BROWSER_CHANNEL="chrome"
@@ -113,9 +130,6 @@ PLAYWRIGHT_BROWSER_CHANNEL="chromium"
 PLAYWRIGHT_EXECUTABLE_PATH="/usr/bin/google-chrome"
 CHROME_BIN="/usr/bin/google-chrome"
 ```
-
-> [!TIP]
-> If you're running browserforce on GitHub Actions with ubuntu-latest (24), we can use the preinstalled Google Chrome automatically. No further configuration and installation needed.
 
 ## Usage
 
@@ -166,9 +180,11 @@ For more information on browser automation best practices, see the [Playwright d
 
 If no browser is installed or launching fails, you'll get an error message from Playwright with a suggestion.
 
-Typically this will guide you to install a browser with `npx playwright install chromium`.
+Typically this will guide you to install a browser.
 If you've installed sfdx-browserforce-plugin using `sf`, you can replace
-`npx playwright install chromium` with `sf browserforce playwright -- install chromium`.
+
+- `npx playwright install chromium` with
+- `sf browserforce playwright -- install chromium`
 
 ## Contributing
 
