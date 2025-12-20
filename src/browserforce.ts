@@ -23,7 +23,6 @@ export class Browserforce {
   public async login(): Promise<Browserforce> {
     this.browser = await chromium.launch({
       channel: process.env.CI ? 'chrome' : undefined,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
       headless: !(process.env.BROWSER_DEBUG === 'true'),
       slowMo: parseInt(process.env.BROWSER_SLOWMO, 10) ?? 0,
     });
