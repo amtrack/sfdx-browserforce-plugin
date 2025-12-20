@@ -112,7 +112,7 @@ Please see the examples above.
 There are three different kinds of setup pages in Salesforce:
 
 - **Classic UI**: simple to implement
-- **Lightning Experience with a Classic UI page in an `<iframe>`**: annoying
+- **Lightning Experience with a Classic UI page in an `<iframe>`**: annoying - please see our helper `waitForSelectorInFrameOrPage()`
 - **Lightning Experience only setup pages**: SPA - difficult with certain Lightning Components
 
 ## Patterns
