@@ -11,7 +11,7 @@
     "@mdapi-issues/listmetadata-standardvalueset": "3.1.0",
     "@salesforce/sf-plugins-core": "12.2.6",
     "p-retry": "7.1.1",
-    "puppeteer": "24.34.0"
+    "playwright": "1.57.0"
   },
   "devDependencies": {
     "@salesforce/dev-scripts": "11.0.4",
@@ -37,7 +37,7 @@
     "commands": "./lib/commands",
     "topics": {
       "browserforce": {
-        "description": "browser automation"
+        "description": "browser automation for Salesforce setup pages"
       }
     },
     "additionalHelpFlags": [
@@ -54,7 +54,7 @@
     "build": "rm -rf lib && tsc -p . && oclif manifest",
     "develop": "bash scripts/develop.sh",
     "format": "npx prettier --write \"+(src|test)/**/*.+(ts|js|json)\"",
-    "generate:plugin": "npx hygen plugin new",
+    "generate:plugin": "npx --yes hygen plugin new",
     "prepack": "npm run build",
     "prepare": "npm run build",
     "test": "tsc -p test && nyc --reporter=lcov --reporter=text mocha \"test/**/*.test.ts\" \"src/**/*.test.ts\"",

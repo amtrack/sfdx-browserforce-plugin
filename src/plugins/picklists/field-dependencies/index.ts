@@ -49,10 +49,11 @@ export class FieldDependencies extends BrowserforcePlugin {
           throw new Error(`Could not find dependent field "${dep.object}.${dep.dependentField}"`);
         }
         // always try deleting an existing dependency first
-        const fieldDependenciesPage = new FieldDependencyPage(
-          await this.browserforce.openPage(FieldDependencyPage.getUrl(customObject.id)),
-        );
-        await fieldDependenciesPage.clickDeleteDependencyActionForField(dependentField.id);
+        {
+          await using page = await this.browserforce.openPage(FieldDependencyPage.getUrl(customObject.id));
+          const fieldDependenciesPage = new FieldDependencyPage(page);
+          await fieldDependenciesPage.clickDeleteDependencyActionForField(dependentField.id);
+        }
         if (dep.controllingField) {
           const controllingField = fileProperties.find(
             (x) => x.type === 'CustomField' && x.fullName === `${dep.object}.${dep.controllingField}`,
@@ -60,12 +61,13 @@ export class FieldDependencies extends BrowserforcePlugin {
           if (!controllingField) {
             throw new Error(`Could not find controlling field "${dep.object}.${dep.controllingField}"`);
           }
-          const newFieldDependencyPage = new NewFieldDependencyPage(
-            await this.browserforce.openPage(
+          {
+            await using page = await this.browserforce.openPage(
               NewFieldDependencyPage.getUrl(customObject.id, dependentField.id, controllingField.id),
-            ),
-          );
-          await newFieldDependencyPage.save();
+            );
+            const newFieldDependencyPage = new NewFieldDependencyPage(page);
+            await newFieldDependencyPage.save();
+          }
         }
       });
     }

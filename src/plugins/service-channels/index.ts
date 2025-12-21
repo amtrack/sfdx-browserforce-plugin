@@ -12,7 +12,7 @@ export class ServiceChannels extends BrowserforcePlugin {
 
     const serviceChannels: ServiceChannel[] = [];
 
-    for await (const serviceChannel of definition) {
+    for (const serviceChannel of definition) {
       serviceChannels.push({
         serviceChannelDeveloperName: serviceChannel.serviceChannelDeveloperName,
         capacity: await pluginCapacity.retrieve(serviceChannel),
@@ -49,7 +49,7 @@ export class ServiceChannels extends BrowserforcePlugin {
   public async apply(plan: ServiceChannel[]): Promise<void> {
     const pluginCapacity = new Capacity(this.browserforce);
 
-    for await (const serviceChannel of plan) {
+    for (const serviceChannel of plan) {
       await pluginCapacity.apply(serviceChannel);
     }
   }

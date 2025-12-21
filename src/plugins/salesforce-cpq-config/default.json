@@ -16,12 +16,13 @@
       },
       "lineEditor": {
         "hideRenewedAssetsWhenEditing": false,
-        "visualizeProductHierarchy": false,
+        "visualizeProductHierarchy": true,
         "preserveBundleStructure": true,
         "keepBundleTogether": true,
+        "enableLargeQuoteExperience": true,
         "totalsField": "Default",
         "lineSubtotalsTotalField": "Default",
-        "defaultBundleSetting": "Expanded",
+        "enableExpandCollapseBundles": true,
         "actionsColumnPlacement": "Right",
         "enableMultiLineDelete": false,
         "productConfigurationInitializer": "",
@@ -30,8 +31,8 @@
         "wrapButtons": false,
         "validateLargeQuotes": false,
         "enableCompactMode": true,
-        "enableLargeQuoteExperience": false,
-        "enableColumnResizing": false
+        "enableColumnResizing": false,
+        "defaultBundleSetting": "Expanded"
       },
       "plugins": {
         "legacyPageSecurityPlugin": "",

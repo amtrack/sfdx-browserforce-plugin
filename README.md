@@ -4,6 +4,9 @@
 
 [![Actions Status](https://github.com/amtrack/sfdx-browserforce-plugin/actions/workflows/default.yml/badge.svg?branch=main)](https://github.com/amtrack/sfdx-browserforce-plugin/actions?query=branch:main)
 
+> [!NOTE]
+> Since v6 we're using Playwright instead of Puppeteer. Please see the [MIGRATION](./docs/MIGRATION.md) guide.
+
 ✅ Most settings in the Salesforce Setup Menu are represented as [Settings](https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_settings.htm) in the Metadata API.
 
 For example, the highlighted checkbox "Show View Hierarchy link on account pages" in Account Settings is indeed represented in the Metadata `AccountSettings` as `showViewHierarchyLink`.
@@ -54,7 +57,7 @@ $ sf browserforce apply -f ./config/currency.json --target-org myOrg@example.com
 
 - 🔧 configuration using JSON Schema (similar to the [Scratch Org Definition Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_scratch_orgs_def_file.htm))
 - 🧠 idempotency of the `apply` command only applies what's necessary and allows re-execution (concept similar to [terraform](https://www.terraform.io/docs/commands/apply.html))
-- 🏎️ browser automation powered by Puppeteer and "Chrome for Testing", [learn more about Puppeteer and Browserforce](#puppeteer)
+- 🏎️ browser automation powered by Playwright, [learn more about Playwright and Browserforce](#playwright)
 
 ## Supported Browserforce Settings
 
@@ -90,6 +93,44 @@ npm install --global sfdx-browserforce-plugin
 npm install --save-dev sfdx-browserforce-plugin
 ```
 
+> [!IMPORTANT]
+> Playwright does not come with a browser automatically
+
+You might need to install a browser explicitly or configure Browserforce to use an existing browser.
+
+### Option 1: Zero Config
+
+> [!TIP]
+> If you're running browserforce on GitHub Actions with the `ubuntu-latest` (v24) Docker image, we can use the preinstalled Google Chrome automatically.
+> No further configuration and installation needed, because the `CHROME_BIN` environment variable is already set.
+
+### Option 2: Install a browser using the Playwright CLI
+
+```shell
+npx playwright install chromium
+```
+
+If you've installed sfdx-browserforce-plugin using `sf`, you can use our wrapper command:
+
+```shell
+sf browserforce playwright -- install chromium
+```
+
+> [!IMPORTANT]
+> The two hyphens `--` are intentionally and separate the sf command from the args to be passed to the playwright command.
+
+### Option 3: Configure Browserforce to use an existing browser
+
+You can use one of the following environment variables:
+
+```shell
+PLAYWRIGHT_BROWSER_CHANNEL="chrome"
+PLAYWRIGHT_BROWSER_CHANNEL="chromium"
+# or
+PLAYWRIGHT_EXECUTABLE_PATH="/usr/bin/google-chrome"
+CHROME_BIN="/usr/bin/google-chrome"
+```
+
 ## Usage
 
 Depending on your choice of installation, you can find the `browserforce` namespace:
@@ -113,43 +154,37 @@ USAGE
   $ sfdx-browserforce-plugin browserforce COMMAND
 
 COMMANDS
-  browserforce apply  apply a plan from a definition file
-  browserforce plan   retrieve state and generate plan file
+  browserforce apply        apply a plan from a definition file
+  browserforce plan         retrieve state and generate plan file
+  browserforce playwright   access the Playwright CLI
 ```
 
 Both the `browserforce apply` and `browserforce plan` commands expect a config file and a target username or alias for the org.
 
 ## Environment Variables
 
-- `BROWSER_DEBUG` run in non-headless mode (default: `false`)
+- `PLAYWRIGHT_BROWSER_CHANNEL`: let Playwright figure out the path to a browser (`chromium` or `chrome`)
+- `PLAYWRIGHT_EXECUTABLE_PATH` or `CHROME_BIN`: point Playwright to a specific browser executable (e.g. `/usr/bin/google-chrome`)
+- `BROWSER_DEBUG`: run in non-headless mode (default: `false`)
 - `BROWSERFORCE_NAVIGATION_TIMEOUT_MS`: adjustable for slow internet connections (default: `90000`)
 - `BROWSERFORCE_RETRY_MAX_RETRIES`: number of retries on failures opening a page (default: `4`)
 - `BROWSERFORCE_RETRY_TIMEOUT_MS`: initial time between retries in exponential mode (default: `4000`)
 
-## Puppeteer
+## Playwright
 
-We use [Puppeteer](https://github.com/puppeteer/puppeteer) for browser automation which comes with its own "Chrome for Testing" browser.
+We use [Playwright](https://playwright.dev/) for browser automation.
 
-The puppeteer [installation doc](https://github.com/puppeteer/puppeteer#installation) describes how this works:
-
-> When you install Puppeteer, it automatically downloads a recent version of
-> [Chrome for Testing](https://goo.gle/chrome-for-testing) (~170MB macOS, ~282MB Linux, ~280MB Windows) that is [guaranteed to
-> work](https://pptr.dev/faq#q-why-doesnt-puppeteer-vxxx-work-with-chromium-vyyy)
-> with Puppeteer. The browser is downloaded to the `$HOME/.cache/puppeteer` folder
-> by default (starting with Puppeteer v19.0.0).
-
-In most of the cases this just works! If you still want to skip the download and use another browser installation, you can do this as follows:
-
-```console
-export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-sf plugins install sfdx-browserforce-plugin
-export PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
-sf browserforce:apply ...
-```
+For more information on browser automation best practices, see the [Playwright documentation](./docs/PLAYWRIGHT.md).
 
 ## Troubleshooting
 
-- The installation is triggered via the `postinstall` hook of npm/yarn. If you've disabled running scripts with npm (`--ignore-scripts` or via config file), it will not download the browser.
+If no browser is installed or launching fails, you'll get an error message from Playwright with a suggestion.
+
+Typically this will guide you to install a browser.
+If you've installed sfdx-browserforce-plugin using `sf`, you can replace
+
+- `npx playwright install chromium` with
+- `sf browserforce playwright -- install chromium`
 
 ## Contributing
 

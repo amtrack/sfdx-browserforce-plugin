@@ -52,8 +52,8 @@ export class RecordTypes extends BrowserforcePlugin {
 
     for (const deletion of config.deletions) {
       const recordType = getRecordType(deletion.fullName, recordTypeFileProperties, recordTypes);
-      const page = await this.browserforce.openPage(
-        `ui/setup/rectype/RecordTypes?type=${recordType.EntityDefinitionId}`,
+      await using page = await this.browserforce.openPage(
+        `/ui/setup/rectype/RecordTypes?type=${recordType.EntityDefinitionId}`,
       );
       const recordTypePage = new RecordTypePage(page);
       const deletePage = await recordTypePage.clickDeleteAction(recordType.Id);
@@ -63,7 +63,6 @@ export class RecordTypes extends BrowserforcePlugin {
         newRecordTypeId = replacementRecordType.Id;
       }
       await deletePage.replace(newRecordTypeId);
-      await page.close();
     }
   }
 }

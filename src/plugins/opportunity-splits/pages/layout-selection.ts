@@ -1,4 +1,4 @@
-import { Page } from 'puppeteer';
+import type { Page } from 'playwright';
 import { OverviewPage } from './overview.js';
 
 const SAVE_BUTTON = 'input[id$=":save"]';
@@ -12,7 +12,8 @@ export class LayoutSelectionPage {
   }
 
   public async choose(): Promise<OverviewPage> {
-    await Promise.all([this.page.waitForNavigation(), this.page.locator(SAVE_BUTTON).click()]);
+    await this.page.locator(SAVE_BUTTON).click();
+    await this.page.waitForURL((url) => url.pathname === '/opp/opportunitySplitSetupOverview.apexp');
     return new OverviewPage(this.page);
   }
 }
