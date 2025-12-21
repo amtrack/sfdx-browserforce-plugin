@@ -16,9 +16,10 @@
 
 2. Install dependencies
 
-> Note: Make sure to run these commands in your `sfdx-browserforce-plugin` directory.
+> [!NOTE]
+> Make sure to run these commands in your `sfdx-browserforce-plugin` directory.
 
-```console
+```shell
 npm ci
 ```
 
@@ -29,44 +30,58 @@ Please note that this is only an example. In fact this is supported in the Metad
 
 You can scaffold a new plugin by running:
 
-```console
+```shell
 npm run generate:plugin --name AdminsCanLogInAsAnyUser
 ```
 
-Run `git status` afterwards to see what files have been generated.
-
-Want to see it in action?
+Bravo 👏, you have just generated a working browserforce plugin!
 
 ## Building
 
 TypeScript code needs to be transpiled to JavaScript.
 To do this, run the following command:
 
-```console
+```shell
 npm run build
 ```
 
-Bravo 👏, you have just generated a working browserforce plugin!
+Want to see it in action?
 
-Create a scratch org and try it yourself:
+Let's create a Scratch Org
 
-```console
-sf org create scratch -f config/project-scratch-def.json -a browserforce-dev -d
-BROWSER_DEBUG=true ./bin/run browserforce apply -f src/plugins/admins-can-log-in-as-any-user/enable.json -o browserforce-dev
-BROWSER_DEBUG=true ./bin/run browserforce apply -f src/plugins/admins-can-log-in-as-any-user/disable.json -o browserforce-dev
+```shell
+npm run develop
 ```
 
-Now it's your turn!
+and now we can run it:
+
+```shell
+BROWSER_DEBUG=true ./bin/run browserforce apply -f src/plugins/admins-can-log-in-as-any-user/enable.json
+BROWSER_DEBUG=true ./bin/run browserforce apply -f src/plugins/admins-can-log-in-as-any-user/disable.json
+```
+
+> [!TIP]
+> Instead of manually running these commands while developing, we will run the E2E tests instead:
+
+```shell
+npm run test:e2e -- -g "AdminsCanLogInAsAnyUser"
+  AdminsCanLogInAsAnyUser
+    ✔ should enable
+    ✔ should already be enabled
+    ✔ should disable
+    ✔ should already be disabled
+  4 passing (6s)
+```
 
 ## Developing plugins
 
 For the following, we assume that your scaffolded plugin lives in `src/plugins/admins-can-log-in-as-any-user`.
 
-```console
+```shell
 $ tree src/plugins/admins-can-log-in-as-any-user
 src/plugins/admins-can-log-in-as-any-user
-├── disable.json        <-- example config file for e2e test
-├── enable.json         <-- example config file for e2e test
+├── disable.json        <-- example config file for manual testing
+├── enable.json         <-- example config file for manual testing
 ├── index.e2e-spec.ts   <-- end-to-end test
 ├── index.ts            <-- implementation
 └── schema.json         <-- schema for configuration
@@ -149,32 +164,35 @@ The execution will apply as few changes as necessary and so you will be able to 
 Both the result of the `retrieve` function and the argument of the `apply` function are objects in the format defined in your `schema.json`.
 In this example, you would return `{enabled: boolean}` as part of `retrieve`, and expect `{enabled: boolean}` as argument in `apply`.
 
-## Debugging
-
-The [Salesforce CLI Plug-In Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_plugins.meta/sfdx_cli_plugins/cli_plugins_debug.htm) describes debugging sfdx plugins using VS Code very well.
-
 ## Testing
 
 To run **unit tests**:
 
-> Note: Make sure to run these commands in your sfdx-browserforce-plugin directory.
+> [!NOTE]
+> Make sure to run these commands in your sfdx-browserforce-plugin directory.
 
-```console
+```shell
 npm run test
 ```
 
-To run the **end to end tests**, you might want to create a new **default scratch org** first.
+To run **end to end tests**:
 
-> Note: Your default scratch org will be used in the tests!
+> [!CAUTION]
+> Your default scratch org will be used in the E2E tests!
 
-```console
-sf org create scratch -f config/project-scratch-def.json -d
-```
-
-```console
-npm run test:e2e
+```shell
 npm run test:e2e -- -g "AdminsCanLogInAsAnyUser" # will only run tests matching `AdminsCanLogInAsAnyUser`
 ```
 
-> Note: You can run the e2e tests in non-headless mode (opening a browser) by setting the environment variable `BROWSER_DEBUG=true`.
-> Note: You can also slow down the e2e test in non-headless mode by setting the environmnet variable, where the number is milliseconds of delay `BROWSER_SLOWMO=250`.
+> [!IMPORTANT]
+> E2E tests should be implemented to be **re-runnable**.
+>
+> Please run the test at least 7 times to reduce the risk of a flaky implementation:
+
+```shell
+for i in {1..7}; do npm run test:e2e -- -g "AdminsCanLogInAsAnyUser"; done
+```
+
+## Debugging
+
+The [Salesforce CLI Plug-In Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_plugins.meta/sfdx_cli_plugins/cli_plugins_debug.htm) describes debugging sfdx plugins using VS Code very well.

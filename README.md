@@ -24,7 +24,7 @@ For example, the Currency Locale in `Setup -> Company Settings -> Company Inform
 
 👉 This is where Browserforce (sfdx-browserforce-plugin) comes to the rescue. It fills this gap by applying these unsupported settings through browser automation!
 
-# Example
+## Example
 
 To change the Currency Locale, the Browserforce config file (here: `./config/currency.json`) looks like this:
 
@@ -50,13 +50,13 @@ $ sf browserforce apply -f ./config/currency.json --target-org myOrg@example.com
   logging out... done
 ```
 
-# Key Concepts
+## Key Concepts
 
 - 🔧 configuration using JSON Schema (similar to the [Scratch Org Definition Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_scratch_orgs_def_file.htm))
 - 🧠 idempotency of the `apply` command only applies what's necessary and allows re-execution (concept similar to [terraform](https://www.terraform.io/docs/commands/apply.html))
 - 🏎️ browser automation powered by Puppeteer and "Chrome for Testing", [learn more about Puppeteer and Browserforce](#puppeteer)
 
-# Supported Browserforce Settings
+## Supported Browserforce Settings
 
 Top settings:
 
@@ -75,11 +75,11 @@ But there's more:
 - Please see the [Browserforce Settings](https://github.com/amtrack/sfdx-browserforce-plugin/wiki/Browserforce-Settings) wiki page with screenshots.
 - Explore the JSON schema powered configuration using a [full-blown example](https://github.dev/amtrack/sfdx-browserforce-plugin/blob/main/examples/full.json) or start with an [empty configuration](https://github.dev/amtrack/sfdx-browserforce-plugin/blob/main/examples/empty.json).
 
-# Installation
+## Installation
 
 There are several different methods to install `sfdx-browserforce-plugin`:
 
-```console
+```shell
 # as an sf plugin globally
 sf plugins install sfdx-browserforce-plugin
 
@@ -90,11 +90,11 @@ npm install --global sfdx-browserforce-plugin
 npm install --save-dev sfdx-browserforce-plugin
 ```
 
-# Usage
+## Usage
 
 Depending on your choice of installation, you can find the `browserforce` namespace:
 
-```console
+```shell
 # globally in the sf cli
 sf browserforce
 
@@ -119,14 +119,14 @@ COMMANDS
 
 Both the `browserforce apply` and `browserforce plan` commands expect a config file and a target username or alias for the org.
 
-# Environment Variables
+## Environment Variables
 
 - `BROWSER_DEBUG` run in non-headless mode (default: `false`)
 - `BROWSERFORCE_NAVIGATION_TIMEOUT_MS`: adjustable for slow internet connections (default: `90000`)
 - `BROWSERFORCE_RETRY_MAX_RETRIES`: number of retries on failures opening a page (default: `4`)
 - `BROWSERFORCE_RETRY_TIMEOUT_MS`: initial time between retries in exponential mode (default: `4000`)
 
-# Puppeteer
+## Puppeteer
 
 We use [Puppeteer](https://github.com/puppeteer/puppeteer) for browser automation which comes with its own "Chrome for Testing" browser.
 
@@ -147,19 +147,19 @@ export PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 sf browserforce:apply ...
 ```
 
-Troubleshooting:
+## Troubleshooting
 
 - The installation is triggered via the `postinstall` hook of npm/yarn. If you've disabled running scripts with npm (`--ignore-scripts` or via config file), it will not download the browser.
 
-# Contributing
+## Contributing
 
 Please see [CONTRIBUTING.md](CONTRIBUTING.md) for getting started.
 
-# Sponsors
+## Sponsors
 
 - [PARX](https://www.parx.com)
 - [IPfolio](https://www.ipfolio.com)
 
-# License
+## License
 
 MIT © [Matthias Rolke](mailto:mr.amtrack@gmail.com)
