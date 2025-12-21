@@ -12,7 +12,7 @@ const readJsonFile = function (u: string) {
 };
 
 describe(Picklists.name, function () {
-  this.timeout('15m');
+  this.timeout('10m');
   let plugin: Picklists;
   before(() => {
     plugin = new Picklists(global.bf);
