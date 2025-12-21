@@ -107,16 +107,13 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
               } else if (item.component === 'input' && item.type === 'string') {
                 await page.locator(`input[name="${item.name}"]`).fill(config[keyTab][keyItem]);
               } else if (item.component === 'select') {
-                const selectFieldOptions = await page
-                  .locator(`select[name="${item.name}"] option`)
-                  .evaluateAll((options: HTMLOptionElement[]) => {
-                    return options.map((option) => {
-                      return {
-                        text: option.text,
-                        value: option.value,
-                      };
-                    });
-                  });
+                const optionLocators = await page.locator(`select[name="${item.name}"] option`).all();
+                const selectFieldOptions = await Promise.all(
+                  optionLocators.map(async (option) => ({
+                    text: await option.textContent(),
+                    value: await option.getAttribute('value'),
+                  })),
+                );
                 const chooseFieldOption = selectFieldOptions.find((x) => x.text === config[keyTab][keyItem]);
                 if (!chooseFieldOption) {
                   const availableOption = selectFieldOptions.map((option) => option.text);

@@ -23,11 +23,10 @@ export class ServicePresenceStatus extends BrowserforcePlugin {
     // Open the permission set setup page
     await using page = await this.browserforce.openPage(`/${permissionSet.Id}/e?s=ServicePresenceStatusAccess`);
 
-    const enabledServicePresenceStatuses = await page
-      .locator(`${VALUES_ENABLED_SELECTOR} > option:not(:disabled)`)
-      .evaluateAll((options: HTMLOptionElement[]) => {
-        return options.map((option) => option.title);
-      });
+    const enabledOptions = await page.locator(`${VALUES_ENABLED_SELECTOR} > option:not(:disabled)`).all();
+    const enabledServicePresenceStatuses = await Promise.all(
+      enabledOptions.map((option) => option.getAttribute('title')),
+    );
 
     return enabledServicePresenceStatuses;
   }
@@ -42,17 +41,11 @@ export class ServicePresenceStatus extends BrowserforcePlugin {
     await using page = await this.browserforce.openPage(`/${permissionSet.Id}/e?s=ServicePresenceStatusAccess`);
 
     if (config?.servicePresenceStatuses) {
-      const availableOptions = await page
-        .locator(`${VALUES_AVAILABLE_SELECTOR} > option:not(:disabled)`)
-        .evaluateAll((options: HTMLOptionElement[]) => {
-          return options.map((option) => option.title);
-        });
+      const availableOptionLocators = await page.locator(`${VALUES_AVAILABLE_SELECTOR} > option:not(:disabled)`).all();
+      const availableOptions = await Promise.all(availableOptionLocators.map((option) => option.getAttribute('title')));
 
-      const enabledOptions = await page
-        .locator(`${VALUES_ENABLED_SELECTOR} > option:not(:disabled)`)
-        .evaluateAll((options: HTMLOptionElement[]) => {
-          return options.map((option) => option.title);
-        });
+      const enabledOptionLocators = await page.locator(`${VALUES_ENABLED_SELECTOR} > option:not(:disabled)`).all();
+      const enabledOptions = await Promise.all(enabledOptionLocators.map((option) => option.getAttribute('title')));
 
       for (const optionTitle of availableOptions) {
         if (config.servicePresenceStatuses.includes(optionTitle)) {

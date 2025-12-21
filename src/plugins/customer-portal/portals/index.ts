@@ -36,15 +36,14 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
       'xpath=//div[contains(@class,"pbBody")]//th[contains(@class,"dataCell")]//a[starts-with(@href, "/060")]',
     );
     await portalLinksLocator.first().waitFor();
-    const response: Config = await portalLinksLocator.evaluateAll((links: HTMLAnchorElement[]) => {
-      return links.map((a) => {
-        return {
-          _id: a.pathname.split('/')[1],
-          name: a.text,
-          portalProfileMemberships: [],
-        };
-      });
-    });
+    const linkLocators = await portalLinksLocator.all();
+    const response: Config = await Promise.all(
+      linkLocators.map(async (link) => ({
+        _id: (await link.getAttribute('href'))!.split('/')[1],
+        name: await link.textContent(),
+        portalProfileMemberships: [],
+      })),
+    );
     for (const portal of response) {
       await using portalPage = await this.browserforce.openPage(`/${portal._id}/e`);
       portal.description = await portalPage.locator('input#Description').inputValue();
@@ -66,16 +65,13 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
       const profilesLocator = portalProfilePage.locator('th.dataCell');
       await profilesLocator.first().waitFor();
       const profiles = await profilesLocator.allTextContents();
-      const checkboxes = await portalProfilePage
-        .locator('td.dataCell input')
-        .evaluateAll((inputs: HTMLInputElement[]) => {
-          return inputs.map((input) => {
-            return {
-              active: input.checked,
-              _id: input.id,
-            };
-          });
-        });
+      const inputLocators = await portalProfilePage.locator('td.dataCell input').all();
+      const checkboxes = await Promise.all(
+        inputLocators.map(async (input) => ({
+          active: await input.isChecked(),
+          _id: await input.getAttribute('id'),
+        })),
+      );
       const portalProfileMemberships: PortalProfileMembership[] = [];
       for (let i = 0; i < profiles.length; i++) {
         portalProfileMemberships.push({

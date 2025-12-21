@@ -45,11 +45,10 @@ export class Capacity extends BrowserforcePlugin {
 
     if (capacityModel === 'StatusBased') {
       const statusField = await page.locator(`${STATUS_FIELD_SELECTOR}`).inputValue();
-      const valuesForInProgress = await page
-        .locator(`${VALUES_IN_PROGRESS_SELECTOR} > option:not(:disabled)`)
-        .evaluateAll((options: HTMLOptionElement[]) => {
-          return options.map((option) => option.title);
-        });
+      const inProgressOptionsLocator = page.locator(VALUES_IN_PROGRESS_SELECTOR).locator('option:not(:disabled)');
+      const valuesForInProgress = await Promise.all(
+        (await inProgressOptionsLocator.all()).map((option) => option.getAttribute('title')),
+      );
       const checkAgentCapacityOnReopenedWorkItems = await page.locator(STATUS_CHANGE_CAPACITY_SELECTOR).isChecked();
       const checkAgentCapacityOnReassignedWorkItems = await page.locator(OWNER_CHANGE_CAPACITY_SELECTOR).isChecked();
 
@@ -128,17 +127,15 @@ export class Capacity extends BrowserforcePlugin {
     await page.waitForLoadState('networkidle');
 
     if (configCapacity?.valuesForInProgress) {
-      const completedOptions = await page
-        .locator(`${VALUES_COMPLETED_SELECTOR} > option:not(:disabled)`)
-        .evaluateAll((options: HTMLOptionElement[]) => {
-          return options.map((option) => option.title);
-        });
+      const completedOptionsLocator = page.locator(VALUES_COMPLETED_SELECTOR).locator('option:not(:disabled)');
+      const completedOptions = await Promise.all(
+        (await completedOptionsLocator.all()).map((option) => option.getAttribute('title')),
+      );
 
-      const inProgressOptions = await page
-        .locator(`${VALUES_IN_PROGRESS_SELECTOR} > option:not(:disabled)`)
-        .evaluateAll((options: HTMLOptionElement[]) => {
-          return options.map((option) => option.title);
-        });
+      const inProgressOptionsLocator = page.locator(VALUES_IN_PROGRESS_SELECTOR).locator('option:not(:disabled)');
+      const inProgressOptions = await Promise.all(
+        (await inProgressOptionsLocator.all()).map((option) => option.getAttribute('title')),
+      );
 
       for (const optionTitle of completedOptions) {
         if (configCapacity.valuesForInProgress.includes(optionTitle)) {
