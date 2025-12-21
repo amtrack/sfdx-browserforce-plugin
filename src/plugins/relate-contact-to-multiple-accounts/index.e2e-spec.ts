@@ -2,7 +2,7 @@ import assert from 'assert';
 import { RelateContactToMultipleAccounts } from './index.js';
 
 describe(RelateContactToMultipleAccounts.name, function () {
-  this.timeout('10m');
+  this.timeout('5m');
   let plugin: RelateContactToMultipleAccounts;
   before(() => {
     plugin = new RelateContactToMultipleAccounts(global.bf);
