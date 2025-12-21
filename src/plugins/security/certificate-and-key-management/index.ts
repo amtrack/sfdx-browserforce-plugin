@@ -46,16 +46,16 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
     };
     let existingCertificates: CertificateRecord[] = [];
     if (definition?.certificates?.length || definition?.importFromKeystore?.length) {
-      // Note: Unfortunately scanAll=false has no impact and returns deleted records.
-      // Workaround: Order by CreatedDate DESC to get the latest record first.
-      existingCertificates = (
-        await this.org
-          .getConnection()
-          .tooling.query<CertificateRecord>(
-            `SELECT Id, DeveloperName, MasterLabel, OptionsIsPrivateKeyExportable, KeySize FROM Certificate ORDER BY CreatedDate DESC`,
-            { scanAll: false },
-          )
-      )?.records;
+      existingCertificates = // Note: Unfortunately scanAll=false has no impact and returns deleted records.
+        // Workaround: Order by CreatedDate DESC to get the latest record first.
+        (
+          await this.org
+            .getConnection()
+            .tooling.query<CertificateRecord>(
+              `SELECT Id, DeveloperName, MasterLabel, OptionsIsPrivateKeyExportable, KeySize FROM Certificate ORDER BY CreatedDate DESC`,
+              { scanAll: false },
+            )
+        )?.records;
     }
     if (definition?.certificates?.length) {
       for (const cert of definition.certificates) {
