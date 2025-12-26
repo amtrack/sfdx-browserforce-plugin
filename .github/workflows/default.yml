@@ -62,10 +62,9 @@ jobs:
           node-version-file: .node-version
       - name: Install dependencies
         run: npm ci --ignore-scripts
-      - name: Build
-        run: npm run build
       - name: Release package
-        run: npx -y semantic-release
+        run: |
+          npm install --ignore-scripts --global semantic-release
+          semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          npm_config_ignore_scripts: true
