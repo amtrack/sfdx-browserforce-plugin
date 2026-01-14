@@ -10,7 +10,7 @@ describe(RecordTypes.name, function () {
   this.timeout('10m');
   let plugin: RecordTypes;
   before(() => {
-    plugin = new RecordTypes(global.bf);
+    plugin = new RecordTypes(global.browserforce);
   });
 
   const configDelete = {
@@ -73,7 +73,6 @@ describe(RecordTypes.name, function () {
     assert.deepStrictEqual(res, { message: 'no action necessary' });
   });
   it('should remove the CustomObject', async () => {
-    const conn = global.bf.org.getConnection();
-    await conn.metadata.delete('CustomObject', ['Vehicle__c']);
+    await global.browserforce.connection.metadata.delete('CustomObject', ['Vehicle__c']);
   });
 });

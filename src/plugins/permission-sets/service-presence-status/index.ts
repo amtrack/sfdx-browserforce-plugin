@@ -16,9 +16,9 @@ export class ServicePresenceStatus extends BrowserforcePlugin {
   public async retrieve(definition: PermissionSet): Promise<string[]> {
     // Query for the permission set
     const permissionSetName = definition.permissionSetName;
-    const permissionSet = await this.org
-      .getConnection()
-      .singleRecordQuery(`SELECT Id FROM PermissionSet WHERE Name='${permissionSetName}'`);
+    const permissionSet = await this.browserforce.connection.singleRecordQuery(
+      `SELECT Id FROM PermissionSet WHERE Name='${permissionSetName}'`,
+    );
 
     // Open the permission set setup page
     await using page = await this.browserforce.openPage(`/${permissionSet.Id}/e?s=ServicePresenceStatusAccess`);
@@ -34,9 +34,9 @@ export class ServicePresenceStatus extends BrowserforcePlugin {
   public async apply(config: PermissionSet): Promise<void> {
     // Query for the permission set
     const permissionSetName = config.permissionSetName;
-    const permissionSet = await this.org
-      .getConnection()
-      .singleRecordQuery(`SELECT Id FROM PermissionSet WHERE Name='${permissionSetName}'`);
+    const permissionSet = await this.browserforce.connection.singleRecordQuery(
+      `SELECT Id FROM PermissionSet WHERE Name='${permissionSetName}'`,
+    );
 
     await using page = await this.browserforce.openPage(`/${permissionSet.Id}/e?s=ServicePresenceStatusAccess`);
 

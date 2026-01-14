@@ -1,5 +1,4 @@
 import type { Page } from 'playwright';
-import { retry } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
 
 const BASE_PATH = '/accounts/accountSetup.apexp';
@@ -36,7 +35,7 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
   }
 
   async waitForProcessFinished(page: Page): Promise<void> {
-    await retry(async () => {
+    await this.browserforce.retry(async () => {
       const enabling = page.locator('#enablingInProgress');
       if ((await enabling.count()) > 0) {
         // Error: In progress: We're enabling Contacts to Multiple Accounts for your organization. This process can take several hours. We'll send you an email when it's done.

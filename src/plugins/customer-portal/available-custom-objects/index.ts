@@ -29,12 +29,10 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
           return `'${customObject.name}'`;
         })
         .join(',');
-      const customObjects = await this.org
-        .getConnection()
-        .tooling.query<CustomObjectRecord>(
-          `SELECT Id, DeveloperName, NamespacePrefix FROM CustomObject WHERE DeveloperName IN (${availableCustomObjectList}) ORDER BY CreatedDate DESC`,
-          { scanAll: false },
-        );
+      const customObjects = await this.browserforce.connection.tooling.query<CustomObjectRecord>(
+        `SELECT Id, DeveloperName, NamespacePrefix FROM CustomObject WHERE DeveloperName IN (${availableCustomObjectList}) ORDER BY CreatedDate DESC`,
+        { scanAll: false },
+      );
       // Note: Unfortunately scanAll=false has no impact and returns deleted CustomObjects.
       // Workaround: Order by CreatedDate DESC to get the latest CustomObject first.
       for (const record of customObjects?.records) {

@@ -55,7 +55,7 @@ const tests: T[] = [
 
 describe('FieldDependencies', () => {
   describe('diff()', () => {
-    // const p = new FieldDependencies(global.bf);
+    // const p = new FieldDependencies(global.browserforce);
     // for (const t of tests) {
     //   it(t.description, () => {
     //     const actual = p.diff(t.source, t.target);

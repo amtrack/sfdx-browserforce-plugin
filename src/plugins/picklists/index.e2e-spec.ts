@@ -15,13 +15,12 @@ describe(Picklists.name, function () {
   this.timeout('10m');
   let plugin: Picklists;
   before(() => {
-    plugin = new Picklists(global.bf);
+    plugin = new Picklists(global.browserforce);
   });
   after(() => {
     it('should remove the CustomObject', async () => {
-      const conn = global.bf.org.getConnection();
-      await conn.metadata.delete('CustomObject', ['Vehicle__c']);
-      await conn.metadata.delete('GlobalValueSet', ['VehicleGears', 'VehicleTransmission']);
+      await global.browserforce.connection.metadata.delete('CustomObject', ['Vehicle__c']);
+      await global.browserforce.connection.metadata.delete('GlobalValueSet', ['VehicleGears', 'VehicleTransmission']);
     });
   });
 
@@ -103,7 +102,7 @@ describe(Picklists.name, function () {
     this.timeout('10m');
     let plugin: FieldDependencies;
     before(() => {
-      plugin = new FieldDependencies(global.bf);
+      plugin = new FieldDependencies(global.browserforce);
     });
 
     const configSet = readJsonFile('./field-dependencies/set.json').settings.picklists.fieldDependencies;

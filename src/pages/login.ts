@@ -1,4 +1,4 @@
-import { type Org } from '@salesforce/core';
+import { type Connection } from '@salesforce/core';
 import { type Page } from 'playwright';
 import { waitForPageErrors } from '../browserforce.js';
 
@@ -12,16 +12,10 @@ export class LoginPage {
     this.page = page;
   }
 
-  async login(org: Org) {
-    try {
-      await org.refreshAuth();
-    } catch (_) {
-      throw new Error('login failed');
-    }
-    const conn = org.getConnection();
+  async login(connection: Connection) {
     await this.page.goto(
-      `${conn.instanceUrl.replace(/\/$/, '')}${FRONT_DOOR_PATH}?sid=${
-        conn.accessToken
+      `${connection.instanceUrl.replace(/\/$/, '')}${FRONT_DOOR_PATH}?sid=${
+        connection.accessToken
       }&retURL=${encodeURIComponent(POST_LOGIN_PATH)}`,
     );
     await Promise.race([this.page.waitForURL((url) => url.pathname === POST_LOGIN_PATH), waitForPageErrors(this.page)]);

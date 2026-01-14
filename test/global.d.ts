@@ -1,7 +1,7 @@
 import type { Browserforce } from '../src/browserforce.js';
 
 declare global {
-  var bf: Browserforce;
+  var browserforce: Browserforce;
 }
 
 export {};

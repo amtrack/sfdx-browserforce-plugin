@@ -12,7 +12,7 @@ class DummyPlugin extends BrowserforcePlugin {
 
 describe('BrowserforcePlugin', () => {
   describe('#diff()', async () => {
-    const plugin = new DummyPlugin(global.bf);
+    const plugin = new DummyPlugin(global.browserforce);
     const tests: [description: string, input: [state: unknown, definition: unknown], expected: unknown][] = [
       ['should return target for simple value', [false, true], true],
       ['should return target for simple string', [undefined, ''], ''],

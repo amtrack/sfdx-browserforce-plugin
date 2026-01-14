@@ -47,7 +47,7 @@ Apply the config:
 ```console
 $ sf browserforce apply -f ./config/currency.json --target-org myOrg@example.com
   logging in... done
-  Applying definition file ./config/currency.json to org myOrg@example.com
+  Applying config file ./config/currency.json to org myOrg@example.com
   [CompanyInformation] retrieving state... done
   [CompanyInformation] changing 'defaultCurrencyIsoCode' to '"English (South Africa) - ZAR"'... done
   logging out... done
@@ -124,8 +124,7 @@ USAGE
   $ sf browserforce COMMAND
 
 COMMANDS
-  browserforce apply        apply a plan from a definition file
-  browserforce plan         retrieve state and generate plan file
+  browserforce apply        apply a plan from a config file
   browserforce playwright   access the Playwright CLI
 ```
 
@@ -135,7 +134,7 @@ Both the `apply` and `plan` commands expect a config file and a target username 
 
 - `PLAYWRIGHT_BROWSER_CHANNEL`: let Playwright figure out the path to a browser (`chromium` or `chrome`)
 - `PLAYWRIGHT_EXECUTABLE_PATH` or `CHROME_BIN`: point Playwright to a specific browser executable (e.g. `/usr/bin/google-chrome`)
-- `BROWSER_DEBUG`: run in non-headless mode (default: `false`)
+- `BROWSERFORCE_HEADLESS`: run in headless mode (default: `true`)
 - `BROWSERFORCE_NAVIGATION_TIMEOUT_MS`: adjustable for slow internet connections (default: `90000`)
 - `BROWSERFORCE_RETRY_MAX_RETRIES`: number of retries on failures opening a page (default: `4`)
 - `BROWSERFORCE_RETRY_TIMEOUT_MS`: initial time between retries in exponential mode (default: `4000`)

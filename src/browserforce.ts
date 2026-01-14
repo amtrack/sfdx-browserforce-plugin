@@ -1,124 +1,65 @@
-import { Org } from '@salesforce/core';
+import { type Connection } from '@salesforce/core';
 import { type Ux } from '@salesforce/sf-plugins-core';
-import pRetry from 'p-retry';
-import { chromium, type Browser, type BrowserContext, type Page, type FrameLocator } from 'playwright';
+import pRetry, { Options as RetryOptions } from 'p-retry';
+import { type BrowserContext, type FrameLocator, type Page } from 'playwright';
 import { LoginPage } from './pages/login.js';
 
 const VF_IFRAME_SELECTOR = 'force-aloha-page iframe[name^=vfFrameId]';
 
 export type SalesforceUrlPath = `/${string}`;
 
-export class Browserforce {
-  public org: Org;
-  public logger?: Ux;
-  public browser: Browser;
-  public context: BrowserContext;
-  public lightningSetupUrl: string;
+export type BrowserforceOptions = {
+  logger?: Ux;
+  retry?: RetryOptions;
+};
 
-  constructor(org: Org, logger?: Ux) {
-    this.org = org;
-    this.logger = logger;
+export class Browserforce {
+  public connection: Connection;
+  public browserContext: BrowserContext;
+  public logger?: Ux;
+  private lightningSetupUrl: string;
+  private retryConfig?: RetryOptions;
+
+  constructor(connection: Connection, browserContext: BrowserContext, options?: BrowserforceOptions) {
+    this.connection = connection;
+    this.browserContext = browserContext;
+    this.logger = options?.logger;
+    this.retryConfig = options?.retry ?? {
+      retries: 0,
+    };
   }
 
   public async login(): Promise<Browserforce> {
-    this.browser = await chromium.launch({
-      ...(process.env.PLAYWRIGHT_BROWSER_CHANNEL
-        ? {
-            // chrome|chromium: let Playwright figure out the path to the browser binary
-            channel: process.env.PLAYWRIGHT_BROWSER_CHANNEL,
-          }
-        : {}),
-      ...(process.env.CHROME_BIN
-        ? {
-            // on GitHub Actions with ubuntu-latest, this is set to /usr/bin/google-chrome
-            executablePath: process.env.CHROME_BIN,
-          }
-        : {}),
-      ...(process.env.PLAYWRIGHT_EXECUTABLE_PATH
-        ? {
-            executablePath: process.env.PLAYWRIGHT_EXECUTABLE_PATH,
-          }
-        : {}),
-      headless: !(process.env.BROWSER_DEBUG === 'true'),
-      slowMo: parseInt(process.env.BROWSER_SLOWMO, 10) ?? 0,
-    });
-    this.context = await this.browser.newContext({
-      viewport: { width: 1280, height: 1536 },
-    });
-
-    // Start tracing if PLAYWRIGHT_TRACE is set
-    if (process.env.PLAYWRIGHT_TRACE === 'true') {
-      await this.context.tracing.start({
-        screenshots: true,
-        snapshots: true,
-        sources: true,
-      });
+    try {
+      await this.connection.refreshAuth();
+    } catch (e) {
+      throw new Error('login failed', { cause: e });
     }
-    await using page = await this.getNewPage();
+    await using page = await this.browserContext.newPage();
     const loginPage = new LoginPage(page);
-    await loginPage.login(this.org);
+    await loginPage.login(this.connection);
     return this;
-  }
-
-  public async logout(): Promise<Browserforce> {
-    if (this.browser) {
-      // Stop tracing and save if it was started
-      if (process.env.PLAYWRIGHT_TRACE === 'true') {
-        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-        const tracePath = `trace-${timestamp}.zip`;
-        await this.context.tracing.stop({ path: tracePath });
-        if (this.logger) {
-          this.logger.log(`Playwright trace saved to: ${tracePath}`);
-        }
-      }
-      await this.browser.close();
-    }
-    return this;
-  }
-
-  public async getNewPage(): Promise<Page> {
-    const page = await this.context.newPage();
-    page.setDefaultNavigationTimeout(parseInt(process.env.BROWSERFORCE_NAVIGATION_TIMEOUT_MS ?? '90000', 10));
-    return page;
   }
 
   // path instead of url
   public async openPage(urlPath: SalesforceUrlPath): Promise<Page> {
     let page: Page;
-    const result = await pRetry(
-      async () => {
-        page = await this.getNewPage();
-        const setupUrl = urlPath.startsWith('/lightning') ? await this.getLightningSetupUrl() : this.getInstanceUrl();
-        const url = `${setupUrl}${urlPath}`;
-        const response = await page.goto(url);
-        if (response && !response.ok()) {
-          await Promise.race([
-            (async () => {
-              await page.waitForTimeout(5_000);
-              throw new Error(`${response.status()}: ${response.url()}`);
-            })(),
-            waitForPageErrors(page, 6_000),
-          ]);
-        }
-        return page;
-      },
-      {
-        onFailedAttempt: async (context) => {
-          if (this.logger) {
-            this.logger.warn(`retrying ${context.retriesLeft} more time(s) because of "${context.error}"`);
-          }
-          if (page) {
-            try {
-              await page.close();
-            } catch (e) {
-              // not handled
-            }
-          }
-        },
-        retries: parseInt(process.env.BROWSERFORCE_RETRY_MAX_RETRIES ?? '4', 10),
-        minTimeout: parseInt(process.env.BROWSERFORCE_RETRY_TIMEOUT_MS ?? '4000', 10),
-      },
-    );
+    const result = await this.retry(async () => {
+      page = await this.browserContext.newPage();
+      const setupUrl = urlPath.startsWith('/lightning') ? await this.getLightningSetupUrl() : this.getInstanceUrl();
+      const url = `${setupUrl}${urlPath}`;
+      const response = await page.goto(url);
+      if (response && !response.ok()) {
+        await Promise.race([
+          (async () => {
+            await page.waitForTimeout(5_000);
+            throw new Error(`${response.status()}: ${response.url()}`);
+          })(),
+          waitForPageErrors(page, 6_000),
+        ]);
+      }
+      return page;
+    });
     return result;
   }
 
@@ -153,7 +94,7 @@ export class Browserforce {
 
   public getInstanceUrl(): string {
     // sometimes the instanceUrl includes a trailing slash
-    return this.org.getConnection().instanceUrl?.replace(/\/$/, '');
+    return this.connection.instanceUrl?.replace(/\/$/, '');
   }
 
   /**
@@ -161,11 +102,21 @@ export class Browserforce {
    */
   public async getLightningSetupUrl(): Promise<string> {
     if (!this.lightningSetupUrl) {
-      await using page = await this.getNewPage();
+      await using page = await this.browserContext.newPage();
       const lightningResponse = await page.goto(`${this.getInstanceUrl()}/lightning/setup/SetupOneHome/home`);
       this.lightningSetupUrl = new URL(lightningResponse.url()).origin;
     }
     return this.lightningSetupUrl;
+  }
+
+  public async retry<T>(input: (attemptCount: number) => PromiseLike<T> | T): Promise<T> {
+    const res = await pRetry(input, {
+      ...this.retryConfig,
+      onFailedAttempt: (context) => {
+        this.logger?.warn(`retrying ${context.retriesLeft} more time(s) because of "${context.error}"`);
+      },
+    });
+    return res;
   }
 }
 
@@ -178,15 +129,4 @@ export async function waitForPageErrors(page: Page, timeout = 90_000): Promise<v
   } else if (errorMessages.length > 1) {
     throw new Error(errorMessages.join('\n'));
   }
-}
-
-export async function retry<T>(input: (attemptCount: number) => PromiseLike<T> | T): Promise<T> {
-  const res = await pRetry(input, {
-    onFailedAttempt: (context) => {
-      console.warn(`retrying ${context.retriesLeft} more time(s) because of "${context.error}"`);
-    },
-    retries: parseInt(process.env.BROWSERFORCE_RETRY_MAX_RETRIES ?? '6', 10),
-    minTimeout: parseInt(process.env.BROWSERFORCE_RETRY_TIMEOUT_MS ?? '4000', 10),
-  });
-  return res;
 }

@@ -66,12 +66,12 @@ export class HomePageLayouts extends BrowserforcePlugin {
         return `'${assignment.layout}'`;
       })
       .join(',');
-    const profiles = await this.org
-      .getConnection()
-      .tooling.query<ProfileRecord>(`SELECT Id, Name FROM Profile WHERE Name IN (${profilesList})`);
-    const homePageLayouts = await this.org
-      .getConnection()
-      .tooling.query<HomePageLayoutRecord>(`SELECT Id, Name FROM HomePageLayout WHERE Name IN (${layoutsList})`);
+    const profiles = await this.browserforce.connection.tooling.query<ProfileRecord>(
+      `SELECT Id, Name FROM Profile WHERE Name IN (${profilesList})`,
+    );
+    const homePageLayouts = await this.browserforce.connection.tooling.query<HomePageLayoutRecord>(
+      `SELECT Id, Name FROM HomePageLayout WHERE Name IN (${layoutsList})`,
+    );
 
     await using page = await this.browserforce.openPage(BASE_PATH);
     await page.locator(BASE_SELECTOR).waitFor();

@@ -4,7 +4,7 @@ import { EmailDeliverability } from './index.js';
 describe(EmailDeliverability.name, function () {
   let plugin: EmailDeliverability;
   before(() => {
-    plugin = new EmailDeliverability(global.bf);
+    plugin = new EmailDeliverability(global.browserforce);
   });
   const configNone = {
     accessLevel: 'No access',

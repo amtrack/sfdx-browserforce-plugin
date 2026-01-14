@@ -1,4 +1,3 @@
-import pRetry from 'p-retry';
 import { BrowserforcePlugin } from '../../plugin.js';
 
 const BASE_PATH = '/_ui/s2s/ui/PartnerNetworkEnable/e';
@@ -28,7 +27,7 @@ export class SalesforceToSalesforce extends BrowserforcePlugin {
     }
 
     // sometimes the setting is not being applied although no error is being displayed
-    await pRetry(async () => {
+    await this.browserforce.retry(async () => {
       await using page = await this.browserforce.openPage(BASE_PATH);
 
       await page.locator('#penabled').check();

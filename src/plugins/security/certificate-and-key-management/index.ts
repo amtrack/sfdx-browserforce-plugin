@@ -49,12 +49,10 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
       existingCertificates = // Note: Unfortunately scanAll=false has no impact and returns deleted records.
         // Workaround: Order by CreatedDate DESC to get the latest record first.
         (
-          await this.org
-            .getConnection()
-            .tooling.query<CertificateRecord>(
-              `SELECT Id, DeveloperName, MasterLabel, OptionsIsPrivateKeyExportable, KeySize FROM Certificate ORDER BY CreatedDate DESC`,
-              { scanAll: false },
-            )
+          await this.browserforce.connection.tooling.query<CertificateRecord>(
+            `SELECT Id, DeveloperName, MasterLabel, OptionsIsPrivateKeyExportable, KeySize FROM Certificate ORDER BY CreatedDate DESC`,
+            { scanAll: false },
+          )
         )?.records;
     }
     if (definition?.certificates?.length) {
@@ -172,11 +170,9 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
         if (certificate.name) {
           // rename cert as it has the wrong name
           //  JKS aliases are case-insensitive (and so lowercase)
-          const certsResponse = await this.org
-            .getConnection()
-            .tooling.query<CertificateRecord>(
-              `SELECT Id FROM Certificate WHERE DeveloperName = '${certificate.name.toLowerCase()}'`,
-            );
+          const certsResponse = await this.browserforce.connection.tooling.query<CertificateRecord>(
+            `SELECT Id FROM Certificate WHERE DeveloperName = '${certificate.name.toLowerCase()}'`,
+          );
           const importedCert = certsResponse.records[0];
           await using certPage = await this.browserforce.openPage(
             `/${importedCert.Id}/e?MasterLabel=${certificate.name}&DeveloperName=${certificate.name}&retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`,

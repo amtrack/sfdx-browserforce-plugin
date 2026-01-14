@@ -4,7 +4,7 @@ import { HomePageLayouts } from './index.js';
 describe(HomePageLayouts.name, function () {
   let plugin: HomePageLayouts;
   before(() => {
-    plugin = new HomePageLayouts(global.bf);
+    plugin = new HomePageLayouts(global.browserforce);
   });
 
   const configPageDefault = {

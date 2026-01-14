@@ -4,7 +4,7 @@ import { type Config, Slack } from './index.js';
 describe(Slack.name, function () {
   let plugin: Slack;
   before(() => {
-    plugin = new Slack(global.bf);
+    plugin = new Slack(global.browserforce);
   });
 
   const configEnable: Config = {

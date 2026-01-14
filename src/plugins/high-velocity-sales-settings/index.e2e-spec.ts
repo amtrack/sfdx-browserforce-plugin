@@ -4,7 +4,7 @@ import { Config, HighVelocitySalesSettings } from './index.js';
 describe(HighVelocitySalesSettings.name, function () {
   let plugin: HighVelocitySalesSettings;
   before(() => {
-    plugin = new HighVelocitySalesSettings(global.bf);
+    plugin = new HighVelocitySalesSettings(global.browserforce);
   });
 
   const configEnabled: Config = {

@@ -1,4 +1,3 @@
-import { Org } from '@salesforce/core';
 import assert from 'assert';
 import { spawnSync } from 'node:child_process';
 import { join, resolve } from 'node:path';
@@ -8,7 +7,7 @@ import { CertificateAndKeyManagement } from './index.js';
 describe(CertificateAndKeyManagement.name, function () {
   let pluginCertificateManagement: CertificateAndKeyManagement;
   before(() => {
-    pluginCertificateManagement = new CertificateAndKeyManagement(global.bf);
+    pluginCertificateManagement = new CertificateAndKeyManagement(global.browserforce);
   });
 
   const configCreatedCert = {
@@ -56,8 +55,6 @@ describe(CertificateAndKeyManagement.name, function () {
     assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
   });
   it('should delete certificates using Metadata API', async () => {
-    const org = await Org.create({});
-    const conn = org.getConnection();
-    await conn.metadata.delete('Certificate', ['identity_provider', 'foo', 'Dummy']);
+    await global.browserforce.connection.metadata.delete('Certificate', ['identity_provider', 'foo', 'Dummy']);
   });
 });

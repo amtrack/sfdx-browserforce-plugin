@@ -10,8 +10,7 @@ export type Config = boolean | undefined;
 
 export class CustomerPortalEnable extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
-    const conn = await this.browserforce.org.getConnection();
-    const orgSettings = await conn.metadata.read('OrgSettings', 'Org');
+    const orgSettings = await this.browserforce.connection.metadata.read('OrgSettings', 'Org');
     return orgSettings.enableCustomerSuccessPortal ?? false;
   }
 

@@ -11,7 +11,7 @@ describe(OpportunitySplits.name, function () {
   this.slow('1m');
   let plugin: OpportunitySplits;
   before(() => {
-    plugin = new OpportunitySplits(global.bf);
+    plugin = new OpportunitySplits(global.browserforce);
   });
 
   const configEnabled = {

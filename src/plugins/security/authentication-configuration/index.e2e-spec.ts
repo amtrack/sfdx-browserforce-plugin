@@ -10,7 +10,7 @@ describe(AuthenticationConfiguration.name, function () {
   let plugin: AuthenticationConfiguration;
 
   before(() => {
-    plugin = new AuthenticationConfiguration(global.bf);
+    plugin = new AuthenticationConfiguration(global.browserforce);
   });
 
   describe('authentication configuration', () => {
@@ -95,8 +95,7 @@ describe(AuthenticationConfiguration.name, function () {
     });
 
     it('should remove the testing AuthProvider', async () => {
-      const conn = global.bf.org.getConnection();
-      await conn.metadata.delete('AuthProvider', ['TestAuthMethod']);
+      await global.browserforce.connection.metadata.delete('AuthProvider', ['TestAuthMethod']);
     });
   });
 });

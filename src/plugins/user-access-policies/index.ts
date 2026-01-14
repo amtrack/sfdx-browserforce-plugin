@@ -26,7 +26,7 @@ export class UserAccessPolicies extends BrowserforcePlugin {
       ',',
     )})`;
 
-    const queryResult = await this.org.getConnection().tooling.query(query);
+    const queryResult = await this.browserforce.connection.tooling.query(query);
 
     const policyStateMap = new Map<string, boolean>();
     const policyIdMap = new Map<string, string>();

@@ -6,7 +6,7 @@ describe(LightningExperienceSettings.name, function () {
     let plugin: LightningExperienceSettings;
     let configOriginal;
     before(async () => {
-      plugin = new LightningExperienceSettings(global.bf);
+      plugin = new LightningExperienceSettings(global.browserforce);
       configOriginal = await plugin.retrieve();
     });
 

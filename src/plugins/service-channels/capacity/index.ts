@@ -28,9 +28,9 @@ export class Capacity extends BrowserforcePlugin {
   public async retrieve(definition: ServiceChannel): Promise<CapacityConfig> {
     // Query for the service channel
     const serviceChannelDeveloperName = definition.serviceChannelDeveloperName;
-    const serviceChannel = await this.org
-      .getConnection()
-      .singleRecordQuery(`SELECT Id FROM ServiceChannel WHERE DeveloperName='${serviceChannelDeveloperName}'`);
+    const serviceChannel = await this.browserforce.connection.singleRecordQuery(
+      `SELECT Id FROM ServiceChannel WHERE DeveloperName='${serviceChannelDeveloperName}'`,
+    );
 
     // Open the service channel setup page
     await using page = await this.browserforce.openPage(`/${serviceChannel.Id}/e`);
@@ -101,11 +101,9 @@ export class Capacity extends BrowserforcePlugin {
   }
 
   public async apply(config: ServiceChannel): Promise<void> {
-    const conn = this.org.getConnection();
-
     // Query for the service channel
     const serviceChannelDeveloperName = config.serviceChannelDeveloperName;
-    const serviceChannel = await conn.singleRecordQuery(
+    const serviceChannel = await this.browserforce.connection.singleRecordQuery(
       `SELECT Id FROM ServiceChannel WHERE DeveloperName='${serviceChannelDeveloperName}'`,
     );
 

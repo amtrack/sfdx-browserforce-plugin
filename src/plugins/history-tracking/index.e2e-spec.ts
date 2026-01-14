@@ -9,7 +9,7 @@ const __dirname = fileURLToPath(new URL('.', import.meta.url));
 describe(HistoryTracking.name, function () {
   let plugin: HistoryTracking;
   before(() => {
-    plugin = new HistoryTracking(global.bf);
+    plugin = new HistoryTracking(global.browserforce);
   });
 
   const enableHistoryTracking = [
@@ -110,8 +110,7 @@ describe(HistoryTracking.name, function () {
     assert.deepStrictEqual(res, disableHistoryTracking);
   });
   it('should remove the CustomObject and field', async () => {
-    const conn = global.bf.org.getConnection();
-    await conn.metadata.delete('CustomObject', ['Test__c']);
-    await conn.metadata.delete('CustomField', ['Contact.Test__c']);
+    await global.browserforce.connection.metadata.delete('CustomObject', ['Test__c']);
+    await global.browserforce.connection.metadata.delete('CustomField', ['Contact.Test__c']);
   });
 });

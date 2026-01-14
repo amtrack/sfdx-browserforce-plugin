@@ -12,7 +12,8 @@ export type Config = {
 
 export class CompanyInformation extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
-    await using page = await this.browserforce.openPage(getUrl(this.org.getOrgId()));
+    const orgId = this.browserforce.connection.getAuthInfoFields().orgId;
+    await using page = await this.browserforce.openPage(getUrl(orgId));
 
     const response: Config = {
       defaultCurrencyIsoCode: '',
@@ -26,7 +27,8 @@ export class CompanyInformation extends BrowserforcePlugin {
 
   public async apply(config: Config): Promise<void> {
     if (config.defaultCurrencyIsoCode !== undefined) {
-      await using page = await this.browserforce.openPage(getUrl(this.org.getOrgId()));
+      const orgId = this.browserforce.connection.getAuthInfoFields().orgId;
+      await using page = await this.browserforce.openPage(getUrl(orgId));
 
       await page.locator(CURRENCY_DROPDOWN_SELECTOR).waitFor();
       const availableCurrencies = await page.locator(`${CURRENCY_DROPDOWN_SELECTOR} > option`).allTextContents();

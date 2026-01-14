@@ -10,7 +10,7 @@ describe(PermissionSets.name, function () {
   this.timeout('10m');
   let plugin: PermissionSets;
   before(() => {
-    plugin = new PermissionSets(global.bf);
+    plugin = new PermissionSets(global.browserforce);
   });
 
   const addConfigurePermissionSet = [

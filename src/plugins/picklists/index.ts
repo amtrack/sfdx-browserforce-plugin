@@ -1,5 +1,5 @@
 import type { FileProperties } from '@jsforce/jsforce-node/lib/api/metadata.js';
-import { retry, type SalesforceUrlPath } from '../../browserforce.js';
+import { type SalesforceUrlPath } from '../../browserforce.js';
 import { ensureArray } from '../../jsforce-utils.js';
 import { BrowserforcePlugin } from '../../plugin.js';
 import { FieldDependencies, Config as FieldDependenciesConfig } from './field-dependencies/index.js';
@@ -25,11 +25,10 @@ type PicklistValuesConfig = {
 
 export class Picklists extends BrowserforcePlugin {
   public async retrieve(definition: Config): Promise<Config> {
-    const conn = this.org.getConnection();
     const result: Config = { picklistValues: [], fieldDependencies: [] };
     if (definition.picklistValues) {
       const fileProperties = await listMetadata(
-        conn,
+        this.browserforce.connection,
         definition.picklistValues.map((x) => x.metadataType),
       );
       for (const action of definition.picklistValues) {
@@ -91,16 +90,15 @@ export class Picklists extends BrowserforcePlugin {
   }
 
   public async apply(config: Config): Promise<void> {
-    const conn = this.org.getConnection();
     if (config.picklistValues) {
       const fileProperties = await listMetadata(
-        conn,
+        this.browserforce.connection,
         config.picklistValues.map((x) => x.metadataType),
       );
       for (const action of config.picklistValues) {
         // Error: There's another picklist operation in progress for this object. Try your change again later.
         // Error: Someone else is editing this picklist or its values. Try again later."
-        await retry(async () => {
+        await this.browserforce.retry(async () => {
           const picklistUrl = getPicklistUrl(action.metadataType, action.metadataFullName, fileProperties);
           await using page = await this.browserforce.openPage(picklistUrl);
           const picklistPage = new PicklistPage(page);
@@ -164,7 +162,7 @@ function getPicklistUrl(type: string, fullName: string, fileProperties?: FilePro
   return picklistUrl;
 }
 
-async function listMetadata(conn, sobjectTypes): Promise<FileProperties[]> {
+async function listMetadata(connection, sobjectTypes): Promise<FileProperties[]> {
   let uniqueSobjectTypes = [...new Set<string>(sobjectTypes)];
   // don't list StandardValueSet as the FileProperties are broken
   uniqueSobjectTypes = uniqueSobjectTypes.filter((x) => x !== 'StandardValueSet');
@@ -174,7 +172,7 @@ async function listMetadata(conn, sobjectTypes): Promise<FileProperties[]> {
     };
   });
   if (queries.length) {
-    const fileProperties = await conn.metadata.list(queries);
+    const fileProperties = await connection.metadata.list(queries);
     return ensureArray(fileProperties);
   } else {
     return [];

@@ -1,5 +1,4 @@
-import { Org } from '@salesforce/core';
-import { Ux } from '@salesforce/sf-plugins-core';
+import { AuthInfo, Connection } from '@salesforce/core';
 import assert from 'assert';
 import { Browserforce } from '../src/browserforce.js';
 
@@ -7,55 +6,47 @@ describe('Browserforce', function () {
   this.slow('30s');
   this.timeout('2m');
   describe('login()', () => {
-    it('should successfully login with valid credentials', async () => {
-      // handled by e2e-setup.ts
-      assert.ok(true);
-    });
     it('should fail login with invalid credentials', async () => {
-      const org = await Org.create({});
-      const conn = org.getConnection();
-      conn.logout();
-      conn.accessToken = 'invalid';
-      conn.refreshToken = 'invalid';
-      const ux = new Ux();
-      const bf = new Browserforce(org, ux);
-      await assert.rejects(async () => {
-        await bf.login();
+      const invalidConnection = new Connection({
+        authInfo: new AuthInfo({}),
       });
-      await bf.logout();
+      await using extraBrowserContext = await global.browserforce.browserContext.browser().newContext();
+      const browserforce = new Browserforce(invalidConnection, extraBrowserContext);
+      await assert.rejects(async () => {
+        await browserforce.login();
+      });
     });
   });
   describe('getMyDomain()', () => {
     it('should determine a my domain for a scratch org', async () => {
-      const myDomain = global.bf.getMyDomain();
+      const myDomain = global.browserforce.getMyDomain();
       assert.notDeepStrictEqual(myDomain, null);
     });
   });
   describe('waitForSelectorInFrameOrPage()', () => {
     it('should query a selector in LEX and Classic UI', async () => {
-      await using page = await global.bf.openPage('/lightning/setup/ExternalStrings/home');
-      const frame = await global.bf.waitForSelectorInFrameOrPage(page, 'input[name="edit"]');
+      await using page = await global.browserforce.openPage('/lightning/setup/ExternalStrings/home');
+      const frame = await global.browserforce.waitForSelectorInFrameOrPage(page, 'input[name="edit"]');
       await frame.locator('input[name="edit"]').click();
       await page.waitForURL((url) => url.pathname === '/lightning/setup/ExternalStrings/page');
     });
   });
   describe('openPage()', () => {
     it('should throw the page error on internal errors', async () => {
-      process.env.BROWSERFORCE_RETRY_TIMEOUT_MS = '0';
-      process.env.BROWSERFORCE_RETRY_MAX_RETRIES = '0';
+      const browserforce = new Browserforce(global.browserforce.connection, global.browserforce.browserContext);
       await assert.rejects(async () => {
-        await global.bf.openPage('/_ui/common/config/field/StandardFieldAttributes/d?type=Account&id=INVALID_Name');
+        await browserforce.openPage('/_ui/common/config/field/StandardFieldAttributes/d?type=Account&id=INVALID_Name');
       }, /Insufficient Privileges/);
-      delete process.env.BROWSERFORCE_RETRY_TIMEOUT_MS;
-      delete process.env.BROWSERFORCE_RETRY_MAX_RETRIES;
     });
     it('should throw when the page does not exist', async () => {
+      const browserforce = new Browserforce(global.browserforce.connection, global.browserforce.browserContext);
       await assert.rejects(async () => {
-        await global.browserforce.openPage('/thispagedoesnotexist');
+        await browserforce.openPage('/thispagedoesnotexist');
       }, /404.*thispagedoesnotexist/);
     });
     it('should not throw any error opening a page', async () => {
-      await using _page = await global.bf.openPage(
+      const browserforce = new Browserforce(global.browserforce.connection, global.browserforce.browserContext);
+      await using _page = await browserforce.openPage(
         '/_ui/common/config/field/StandardFieldAttributes/d?type=Account&id=Name',
       );
     });

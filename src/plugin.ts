@@ -6,7 +6,6 @@ export abstract class BrowserforcePlugin {
 
   public constructor(browserforce: Browserforce) {
     this.browserforce = browserforce;
-    this.org = browserforce?.org;
   }
   public abstract retrieve(definition?: unknown): Promise<unknown>;
   /**

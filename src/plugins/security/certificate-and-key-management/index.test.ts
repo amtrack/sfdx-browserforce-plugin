@@ -58,7 +58,7 @@ const tests: T[] = [
 
 describe('CertificateAndKeyManagement', () => {
   describe('diff()', () => {
-    const p = new CertificateAndKeyManagement(global.bf);
+    const p = new CertificateAndKeyManagement(global.browserforce);
     for (const t of tests) {
       it(t.description, () => {
         const actual = p.diff(t.source, t.target);

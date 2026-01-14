@@ -57,8 +57,8 @@ npm run develop
 and now we can run it:
 
 ```shell
-BROWSER_DEBUG=true ./bin/run browserforce apply -f src/plugins/admins-can-log-in-as-any-user/enable.json
-BROWSER_DEBUG=true ./bin/run browserforce apply -f src/plugins/admins-can-log-in-as-any-user/disable.json
+BROWSERFORCE_HEADLESS=false ./bin/run browserforce apply -f src/plugins/admins-can-log-in-as-any-user/enable.json
+BROWSERFORCE_HEADLESS=false ./bin/run browserforce apply -f src/plugins/admins-can-log-in-as-any-user/disable.json
 ```
 
 > [!TIP]
@@ -207,13 +207,13 @@ When developing or debugging Playwright-based plugins, you have several tools at
 To see the browser while tests run:
 
 ```bash
-BROWSER_DEBUG=true npm run test:e2e -- --grep "YourPlugin"
+BROWSERFORCE_HEADLESS=false npm run test:e2e -- --grep "YourPlugin"
 ```
 
 To slow down execution for better observation (value in milliseconds):
 
 ```bash
-BROWSER_SLOWMO=1000 npm run test:e2e -- --grep "YourPlugin"
+BROWSERFORCE_SLOWMO=1000 npm run test:e2e -- --grep "YourPlugin"
 ```
 
 #### Playwright Tracing

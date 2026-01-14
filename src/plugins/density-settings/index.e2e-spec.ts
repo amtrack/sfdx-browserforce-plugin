@@ -6,7 +6,7 @@ type Config = Awaited<ReturnType<DensitySettings['retrieve']>>;
 describe(DensitySettings.name, function () {
   let plugin: DensitySettings;
   before(() => {
-    plugin = new DensitySettings(global.bf);
+    plugin = new DensitySettings(global.browserforce);
   });
 
   const configComfy: Config = {

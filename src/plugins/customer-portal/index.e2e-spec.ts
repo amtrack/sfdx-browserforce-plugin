@@ -12,7 +12,7 @@ describe('CustomerPortal', () => {
   describe(CustomerPortalEnable.name, function () {
     let plugin: CustomerPortalEnable;
     before(() => {
-      plugin = new CustomerPortalEnable(global.bf);
+      plugin = new CustomerPortalEnable(global.browserforce);
     });
 
     it('should enable', async () => {
@@ -38,7 +38,7 @@ describe('CustomerPortal', () => {
   describe(CustomerPortalSetup.name, function () {
     let plugin: CustomerPortalSetup;
     before(() => {
-      plugin = new CustomerPortalSetup(global.bf);
+      plugin = new CustomerPortalSetup(global.browserforce);
     });
 
     const configSetPortalAdmin = [
@@ -118,25 +118,24 @@ describe('CustomerPortal', () => {
       assert.deepStrictEqual(res, { message: 'no action necessary' });
     });
     it('should cleanup', async () => {
-      const conn = global.bf.org.getConnection();
-      await conn.metadata.delete('Profile', ['Dummy']);
-      const result = await conn.query(
+      await global.browserforce.connection.metadata.delete('Profile', ['Dummy']);
+      const result = await global.browserforce.connection.query(
         "SELECT Id FROM PermissionSetAssignment WHERE PermissionSet.Name='Customer_Portal_Admin'",
       );
       if (result.records.length) {
-        await conn.delete(
+        await global.browserforce.connection.delete(
           'PermissionSetAssignment',
           result.records.map((rec) => rec.Id),
         );
       }
-      await conn.metadata.delete('PermissionSet', ['Customer_Portal_Admin']);
+      await global.browserforce.connection.metadata.delete('PermissionSet', ['Customer_Portal_Admin']);
     });
   });
 
   describe(CustomerPortalAvailableCustomObjects.name, function () {
     let plugin: CustomerPortalAvailableCustomObjects;
     before(() => {
-      plugin = new CustomerPortalAvailableCustomObjects(global.bf);
+      plugin = new CustomerPortalAvailableCustomObjects(global.browserforce);
     });
 
     const configAvailableCustomObjects = [
@@ -192,8 +191,7 @@ describe('CustomerPortal', () => {
       await plugin.run(configUnavailableCustomObjects);
     });
     it('should remove the CustomObject', async () => {
-      const conn = global.bf.org.getConnection();
-      await conn.metadata.delete('CustomObject', ['Dummy__c']);
+      await global.browserforce.connection.metadata.delete('CustomObject', ['Dummy__c']);
     });
   });
 });
