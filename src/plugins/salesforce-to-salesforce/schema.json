@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/packages/salesforce-to-salesforce/schema.json",
+  "$id": "./salesforce-to-salesforce/schema.json",
   "title": "Salesforce to Salesforce Settings",
   "type": "object",
   "properties": {

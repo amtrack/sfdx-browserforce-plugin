@@ -33,7 +33,7 @@ _help() {
 _main() {
   alias="${alias:-${DEFAULT_ALIAS}}"
   # shellcheck disable=SC2068
-  sf org create scratch -f config/project-scratch-def.json \
+  sf org create scratch -f scripts/project-scratch-def.json \
     --alias "$alias" \
     --set-default \
     ${POSITIONAL_ARGS[@]}

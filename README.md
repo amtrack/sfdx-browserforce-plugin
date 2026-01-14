@@ -30,7 +30,7 @@ To change the Currency Locale, the Browserforce config file (here: `./config/cur
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+  "$schema": "./src/plugins/schema.json",
   "settings": {
     "companyInformation": {
       "defaultCurrencyIsoCode": "English (South Africa) - ZAR"
@@ -72,8 +72,8 @@ Top settings:
 
 But there's more:
 
-- Please see the [Browserforce Settings](https://github.com/amtrack/sfdx-browserforce-plugin/wiki/Browserforce-Settings) wiki page with screenshots.
-- Explore the JSON schema powered configuration using a [full-blown example](https://github.dev/amtrack/sfdx-browserforce-plugin/blob/main/examples/full.json) or start with an [empty configuration](https://github.dev/amtrack/sfdx-browserforce-plugin/blob/main/examples/empty.json).
+- Please see the [plugin documentation](./wiki/Browserforce-Settings) for all available settings and screenshots. 
+- Explore the JSON schema powered configuration using the [full-blown example](./examples/full.json) or start with an [empty configuration](./examples/empty.json).
 
 ## Installation
 

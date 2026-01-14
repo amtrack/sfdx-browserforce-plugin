@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/user-access-policies/schema.json",
+  "$id": "./user-access-policies/schema.json",
   "title": "User Access Policies",
   "type": "object",
   "properties": {

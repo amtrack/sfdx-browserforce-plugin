@@ -23,7 +23,7 @@ export abstract class BrowserforceCommand<T> extends SfCommand<T> {
       char: 's',
       name: 'state',
       description:
-        'path to a browserforce definition file\nThe schema is similar to the scratch org definition file.\nSee https://github.com/amtrack/sfdx-browserforce-plugin#supported-org-preferences for supported values.',
+        'path to a browserforce definition file\nThe schema is similar to the scratch org definition file.\nSee the plugin documentation for supported values.',
     }),
   };
   protected bf: Browserforce;

@@ -11,6 +11,17 @@ coverage/
 .yarn/
 .yarnrc.yml
 
-.vscode/settings.json
+# IDE
+.vscode/*
+!.vscode/settings.json.example
+.idea/
+*.swp
+*.swo
+*~
 
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
 /oclif.manifest.json

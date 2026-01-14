@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/opportunity-splits/schema.json",
+  "$id": "./opportunity-splits/schema.json",
   "title": "OpportunitySplits Settings",
   "type": "object",
   "properties": {

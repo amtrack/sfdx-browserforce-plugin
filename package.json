@@ -49,14 +49,25 @@
     "no-warnings": "ExperimentalWarning",
     "enable-source-maps": true
   },
-  "repository": "amtrack/sfdx-browserforce-plugin",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/amtrack/sfdx-browserforce-plugin"
+  },
+  "homepage": "https://github.com/amtrack/sfdx-browserforce-plugin/wiki",
+  "bugs": {
+    "url": "https://github.com/amtrack/sfdx-browserforce-plugin/issues"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "build": "rm -rf lib && tsc -p . && oclif manifest",
     "develop": "bash scripts/develop.sh",
     "format": "npx prettier --write \"+(src|test)/**/*.+(ts|js|json)\"",
     "generate:plugin": "npx hygen plugin new",
-    "prepack": "npm run build",
-    "prepare": "npm run build",
+    "update:repo-urls": "node scripts/update-repo-urls.js",
+    "prepack": "npm run update:repo-urls && npm run build",
+    "prepare": "npm run update:repo-urls && npm run build",
     "test": "tsc -p test && nyc --reporter=lcov --reporter=text mocha \"test/**/*.test.ts\" \"src/**/*.test.ts\"",
     "test:e2e": "tsc -p test && mocha --slow 30s --timeout 2m --file test/e2e-setup.ts \"test/**/*.e2e-spec.ts\" \"src/**/*.e2e-spec.ts\"",
     "test:format": "npx prettier --check \"+(src|test)/**/*.+(ts|js|json)\""

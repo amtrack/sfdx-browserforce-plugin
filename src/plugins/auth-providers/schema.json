@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "./auth-providers/schema.json",
+  "title": "Auth Providers",
+  "description": "Configuration for updating Auth Provider Consumer Key and Consumer Secret",
+  "type": "object",
+  "patternProperties": {
+    "^[a-zA-Z0-9_]+$": {
+      "type": "object",
+      "properties": {
+        "consumerSecret": {
+          "title": "Consumer Secret",
+          "description": "The Consumer Secret value for the Auth Provider",
+          "type": "string",
+          "x-password": true
+        },
+        "consumerKey": {
+          "title": "Consumer Key",
+          "description": "The Consumer Key value for the Auth Provider",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

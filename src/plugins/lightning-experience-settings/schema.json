@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/lightning-experience-theme/schema.json",
+  "$id": "./lightning-experience-settings/schema.json",
   "title": "LightningExperienceSettings",
   "description": "Although the Metadata API has a field activeThemeName in LightningExperienceSettings it's not possible to activate any of the standard themes like Lightning and LightningLite or SalesforceCosmos.",
   "type": "object",

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/picklists/controlling-field/schema.json",
+  "$id": "./picklists/field-dependencies/schema.json",
   "title": "Field Dependencies",
   "description": "Manage (create/modify/delete) Field Dependencies on CustomFields.\nIf a Field Dependency already exists for the dependent field, it will be deleted.",
   "type": "array",

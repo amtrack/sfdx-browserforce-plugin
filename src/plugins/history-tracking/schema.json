@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/history-tracking/schema.json",
+  "$id": "./history-tracking/schema.json",
   "title": "History Tracking",
   "description": "This feature specifically closes a gap where you cannot enable field history tracking for custom Person Account fields via the Metadata API.",
   "type": "array",

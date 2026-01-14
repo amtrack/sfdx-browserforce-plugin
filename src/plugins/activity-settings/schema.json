@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/activity-settings/schema.json",
+  "$id": "./activity-settings/schema.json",
   "title": "Activity Settings",
   "type": "object",
   "properties": {

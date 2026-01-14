@@ -1,0 +1,48 @@
+# Development files and directories
+_templates/
+scripts/
+test/
+examples/
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Documentation (keep README and LICENSE)
+CONTRIBUTING.md
+SECURITY_COMPLIANCE_REPORT.md
+CHANGES_SUMMARY.md
+
+# Development configuration
+sfdx-project.json
+.nycrc
+.prettierrc*
+.editorconfig
+.gitattributes
+
+# Test fixtures (not needed in published package)
+**/sfdx-source/
+**/*.e2e-spec.ts
+**/*.test.ts
+
+# Build and development artifacts
+lib/
+dist/
+coverage/
+.nyc_output/
+*.log
+*.tgz
+
+# Git
+.git/
+.gitignore
+
+# CI/CD
+.github/
+
+# IDE
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db

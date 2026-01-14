@@ -100,7 +100,7 @@ Example: Given you have defined the property `enabled` in your `schema.json` for
 ```json
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/packages/admins-can-log-in-as-any-user/schema.json",
+  "$id": "./admins-can-log-in-as-any-user/schema.json",
   "title": "Administrators Can Log in as Any User Settings",
   "type": "object",
   "properties": {

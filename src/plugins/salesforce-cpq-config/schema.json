@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
-  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/salesforce-cpq-config/schema.json",
+  "$id": "./salesforce-cpq-config/schema.json",
   "title": "SalesforceCpqConfig Settings",
   "type": "object",
   "properties": {
