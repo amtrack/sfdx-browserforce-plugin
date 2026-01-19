@@ -1,5 +1,6 @@
 import { SfCommand } from '@salesforce/sf-plugins-core';
 import { spawn } from 'child_process';
+import { existsSync } from 'fs';
 
 export class BrowserforcePlaywrightCommand extends SfCommand<string> {
   public static description = 'access the Playwright CLI';
@@ -17,6 +18,15 @@ export class BrowserforcePlaywrightCommand extends SfCommand<string> {
     const args = argv as string[];
     const isTest = process.env.NODE_ENV === 'test' || process.env.npm_lifecycle_event === 'test';
     const child = spawn('npx', ['playwright', ...args], {
+      // Run this command in $HOME/.local/share/sf
+      // This is the folder where the sf plugins are installed and where playwright is available in node_modules
+      // When running npx playwright install in another folder, it needs to be downloaded first
+      // AND it could resolve to another playwright version not compatible with sfdx-browserforce-plugin.
+      ...(existsSync(this.config.dataDir)
+        ? {
+            cwd: this.config.dataDir,
+          }
+        : {}),
       stdio: 'pipe',
     });
 
