@@ -8,7 +8,7 @@ export class BrowserforcePlaywrightCommand extends SfCommand<string> {
     `$ <%= config.bin %> <%= command.id %> -- --help`,
     `$ <%= config.bin %> <%= command.id %> -- --version`,
     `$ <%= config.bin %> <%= command.id %> -- install --list`,
-    `$ <%= config.bin %> <%= command.id %> -- install chrome`,
+    `$ <%= config.bin %> <%= command.id %> -- install chromium`,
   ];
 
   public static strict = false;
