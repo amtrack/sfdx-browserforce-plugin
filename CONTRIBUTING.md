@@ -32,7 +32,7 @@ Please note that this is only an example. In fact this is supported in the Metad
 You can scaffold a new plugin by running:
 
 ```shell
-npm run generate:plugin --name AdminsCanLogInAsAnyUser
+npm run generate:plugin -- --name AdminsCanLogInAsAnyUser
 ```
 
 Bravo 👏, you have just generated a working browserforce plugin!
