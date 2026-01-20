@@ -148,20 +148,13 @@ For more information on browser automation best practices, see the [Playwright d
 
 ## Alternative Installation
 
-You can also install the `sfdx-browserforce-plugin` NPM package
+You can also install the `sfdx-browserforce-plugin` NPM package without `sf`. The package exports a `sfdx-browserforce-plugin` executable:
 
-- locally as a dependency in your Node.js project:
+Example:
 
 ```shell
 npm install --save-dev sfdx-browserforce-plugin
 npx sfdx-browserforce-plugin browserforce -h
-```
-
-- or globally
-
-```shell
-npm install --global sfdx-browserforce-plugin
-sfdx-browserforce-plugin browserforce -h
 ```
 
 ## Troubleshooting
