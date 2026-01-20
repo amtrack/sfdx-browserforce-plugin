@@ -1,6 +1,6 @@
 # sfdx-browserforce-plugin
 
-> sfdx plugin to apply settings in the Salesforce Setup Menu using browser automation
+> sf plugin to apply settings in the Salesforce Setup Menu using browser automation
 
 [![Actions Status](https://github.com/amtrack/sfdx-browserforce-plugin/actions/workflows/default.yml/badge.svg?branch=main)](https://github.com/amtrack/sfdx-browserforce-plugin/actions?query=branch:main)
 
@@ -80,17 +80,8 @@ But there's more:
 
 ## Installation
 
-There are several different methods to install `sfdx-browserforce-plugin`:
-
 ```shell
-# as an sf plugin globally
 sf plugins install sfdx-browserforce-plugin
-
-# or standalone globally
-npm install --global sfdx-browserforce-plugin
-
-# or standalone locally (as a dependency in your Node.js project)
-npm install --save-dev sfdx-browserforce-plugin
 ```
 
 > [!IMPORTANT]
@@ -98,28 +89,20 @@ npm install --save-dev sfdx-browserforce-plugin
 
 You might need to install a browser explicitly or configure Browserforce to use an existing browser.
 
-### Option 1: Zero Config
-
 > [!TIP]
-> If you're running browserforce on GitHub Actions with the `ubuntu-latest` (v24) Docker image, we can use the preinstalled Google Chrome automatically.
+> If you're using Browserforce on GitHub Actions with the `ubuntu-latest` (v24) Docker image, we can use the preinstalled Google Chrome automatically.
 > No further configuration and installation needed, because the `CHROME_BIN` environment variable is already set.
 
-### Option 2: Install a browser using the Playwright CLI
-
-```shell
-npx playwright install chromium
-```
-
-If you've installed sfdx-browserforce-plugin using `sf`, you can use our wrapper command:
+### Option 1: Install a browser using our Playwright wrapper command
 
 ```shell
 sf browserforce playwright -- install chromium
 ```
 
 > [!IMPORTANT]
-> The two hyphens `--` are intentionally and separate the sf command from the args to be passed to the playwright command.
+> The two hyphens `--` are intentionally and separate the sf command from the args to be passed to the playwright executable.
 
-### Option 3: Configure Browserforce to use an existing browser
+### Option 2: Configure Browserforce to use an existing browser
 
 You can use one of the following environment variables:
 
@@ -133,25 +116,12 @@ CHROME_BIN="/usr/bin/google-chrome"
 
 ## Usage
 
-Depending on your choice of installation, you can find the `browserforce` namespace:
-
-```shell
-# globally in the sf cli
-sf browserforce
-
-# globally in the sfdx-browserforce-plugin executable
-sfdx-browserforce-plugin browserforce
-
-# locally in the sfdx-browserforce-plugin executable (npx is awesome!)
-npx sfdx-browserforce-plugin browserforce
-```
-
 ```console
-$ sfdx-browserforce browserforce -h
-browser automation
+$ sf browserforce -h
+browser automation for Salesforce setup pages
 
 USAGE
-  $ sfdx-browserforce-plugin browserforce COMMAND
+  $ sf browserforce COMMAND
 
 COMMANDS
   browserforce apply        apply a plan from a definition file
@@ -159,7 +129,7 @@ COMMANDS
   browserforce playwright   access the Playwright CLI
 ```
 
-Both the `browserforce apply` and `browserforce plan` commands expect a config file and a target username or alias for the org.
+Both the `apply` and `plan` commands expect a config file and a target username or alias for the org.
 
 ## Environment Variables
 
@@ -176,15 +146,35 @@ We use [Playwright](https://playwright.dev/) for browser automation.
 
 For more information on browser automation best practices, see the [Playwright documentation](./docs/PLAYWRIGHT.md).
 
+## Alternative Installation
+
+You can also install the `sfdx-browserforce-plugin` NPM package
+
+- locally as a dependency in your Node.js project:
+
+```shell
+npm install --save-dev sfdx-browserforce-plugin
+npx sfdx-browserforce-plugin browserforce -h
+```
+
+- or globally
+
+```shell
+npm install --global sfdx-browserforce-plugin
+sfdx-browserforce-plugin browserforce -h
+```
+
 ## Troubleshooting
 
 If no browser is installed or launching fails, you'll get an error message from Playwright with a suggestion.
 
 Typically this will guide you to install a browser.
-If you've installed sfdx-browserforce-plugin using `sf`, you can replace
+If you've installed sfdx-browserforce-plugin using `sf`, you can replace the following:
 
-- `npx playwright install chromium` with
-- `sf browserforce playwright -- install chromium`
+```diff
+- npx playwright install chromium
++ sf browserforce playwright -- install chromium
+```
 
 ## Contributing
 
