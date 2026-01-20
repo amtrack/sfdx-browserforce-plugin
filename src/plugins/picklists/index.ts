@@ -6,7 +6,7 @@ import { FieldDependencies, Config as FieldDependenciesConfig } from './field-de
 import { DefaultPicklistAddPage, PicklistPage, StatusPicklistAddPage } from './pages.js';
 import { determineStandardValueSetEditUrl } from './standard-value-set.js';
 
-type Config = {
+export type Config = {
   picklistValues?: PicklistValuesConfig[];
   fieldDependencies?: FieldDependenciesConfig;
 };

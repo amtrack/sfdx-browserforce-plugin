@@ -3,8 +3,8 @@ import * as child from 'child_process';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import * as path from 'path';
-import { Picklists } from './index.js';
 import { FieldDependencies } from './field-dependencies/index.js';
+import { Config, Picklists } from './index.js';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const readJsonFile = function (u: string) {
@@ -21,6 +21,7 @@ describe(Picklists.name, function () {
     it('should remove the CustomObject', async () => {
       const conn = global.bf.org.getConnection();
       await conn.metadata.delete('CustomObject', ['Vehicle__c']);
+      await conn.metadata.delete('GlobalValueSet', ['VehicleGears', 'VehicleTransmission']);
     });
   });
 
@@ -29,6 +30,26 @@ describe(Picklists.name, function () {
   const configReplaceAndDelete = readJsonFile('./replace-and-delete.json').settings.picklists;
   const configDeactivate = readJsonFile('./deactivate.json').settings.picklists;
   const configActivate = readJsonFile('./activate.json').settings.picklists;
+  const configDeactivateWithDep: Config = {
+    picklistValues: [
+      {
+        metadataType: 'CustomField',
+        metadataFullName: 'Vehicle__c.Type__c',
+        value: 'A',
+        active: false,
+      },
+    ],
+  };
+  const configActivateWithDep: Config = {
+    picklistValues: [
+      {
+        metadataType: 'CustomField',
+        metadataFullName: 'Vehicle__c.Type__c',
+        value: 'A',
+        active: true,
+      },
+    ],
+  };
   const configReplaceAndDeactivate = readJsonFile('./replace-and-deactivate.json').settings.picklists;
 
   it('should deploy a CustomObject for testing', () => {
@@ -64,6 +85,12 @@ describe(Picklists.name, function () {
   });
   it('should activate picklist value', async () => {
     await plugin.run(configActivate);
+  });
+  it('should deactivate picklist value having a dependency', async () => {
+    await plugin.run(configDeactivateWithDep);
+  });
+  it('should activate picklist value having a dependency', async () => {
+    await plugin.run(configActivateWithDep);
   });
   it('should not do anything when the picklist values already exist', async () => {
     const res = await plugin.run(configActivate);

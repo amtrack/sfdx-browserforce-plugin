@@ -25,7 +25,12 @@ export class PicklistPage {
   public async getPicklistValues(): Promise<PicklistValue[]> {
     // wait for New button for picklist values specifically
     await this.page.locator('input[name="new"][onclick*="picklist_masteredit"]').waitFor();
-    const rows = await this.page.locator('div.bRelatedList tr:has(td.actionColumn):has(a)').all();
+    // The sections unfortunately don't all have ids
+    // - Field Dependencies
+    // - Validation Rules #ValidationFormulaList
+    // - Values <-- rows with a href matching picklist
+    // - Inactive Values <-- rows a href matching picklist
+    const rows = await this.page.locator('div.bRelatedList tr:has(td.actionColumn):has(a[href*="picklist"])').all();
     const picklists = await Promise.all(
       rows.map((row) =>
         (async () => {
