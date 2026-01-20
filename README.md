@@ -100,7 +100,7 @@ sf browserforce playwright -- install chromium
 ```
 
 > [!IMPORTANT]
-> The two hyphens `--` are intentionally and separate the sf command from the args to be passed to the playwright executable.
+> The two hyphens `--` are intentional and separate the sf command from the arguments to be passed to the playwright executable.
 
 ### Option 2: Configure Browserforce to use an existing browser
 
