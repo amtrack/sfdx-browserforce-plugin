@@ -39,6 +39,7 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
     await retry(async () => {
       const enabling = page.locator('#enablingInProgress');
       if ((await enabling.count()) > 0) {
+        // Error: In progress: We're enabling Contacts to Multiple Accounts for your organization. This process can take several hours. We'll send you an email when it's done.
         const message = await enabling.innerText();
         throw new Error(message);
       }

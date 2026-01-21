@@ -98,6 +98,8 @@ export class Picklists extends BrowserforcePlugin {
         config.picklistValues.map((x) => x.metadataType),
       );
       for (const action of config.picklistValues) {
+        // Error: There's another picklist operation in progress for this object. Try your change again later.
+        // Error: Someone else is editing this picklist or its values. Try again later."
         await retry(async () => {
           const picklistUrl = getPicklistUrl(action.metadataType, action.metadataFullName, fileProperties);
           await using page = await this.browserforce.openPage(picklistUrl);

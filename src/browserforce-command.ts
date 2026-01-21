@@ -44,7 +44,6 @@ export abstract class BrowserforceCommand<T> extends SfCommand<T> {
       }
     }
     handleDeprecations(definition);
-    // TODO: use require.resolve to dynamically load plugins from npm packages
     this.settings = ConfigParser.parse(DRIVERS, definition);
     this.bf = new Browserforce(flags['target-org'], new Ux({ jsonEnabled: this.jsonEnabled() }));
     this.spinner.start('logging in');

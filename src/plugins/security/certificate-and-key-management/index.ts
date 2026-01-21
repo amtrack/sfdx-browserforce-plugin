@@ -141,7 +141,6 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
     }
     if (plan.importFromKeystore) {
       for (const certificate of plan.importFromKeystore) {
-        // TODO: make relative to this.command.flags.definitionfile
         if (!certificate.filePath) {
           throw new Error(`To import a certificate, the filePath is mandatory.`);
         }
