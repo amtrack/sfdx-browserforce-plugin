@@ -93,11 +93,11 @@ export class Browserforce {
         const response = await page.goto(url);
         if (response && !response.ok()) {
           await Promise.race([
-            waitForPageErrors(page, 5_000),
             (async () => {
-              await page.waitForTimeout(10_000);
-              throw new Error(`${response.status()}: ${response.statusText()}`);
+              await page.waitForTimeout(5_000);
+              throw new Error(`${response.status()}: ${response.url()}`);
             })(),
+            waitForPageErrors(page, 6_000),
           ]);
         }
         return page;

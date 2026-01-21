@@ -49,6 +49,11 @@ describe('Browserforce', function () {
       delete process.env.BROWSERFORCE_RETRY_TIMEOUT_MS;
       delete process.env.BROWSERFORCE_RETRY_MAX_RETRIES;
     });
+    it('should throw when the page does not exist', async () => {
+      await assert.rejects(async () => {
+        await global.browserforce.openPage('/thispagedoesnotexist');
+      }, /404.*thispagedoesnotexist/);
+    });
     it('should not throw any error opening a page', async () => {
       await using _page = await global.bf.openPage(
         '/_ui/common/config/field/StandardFieldAttributes/d?type=Account&id=Name',
