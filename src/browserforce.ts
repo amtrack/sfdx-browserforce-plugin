@@ -17,7 +17,6 @@ export class Browserforce {
   public connection: Connection;
   public browserContext: BrowserContext;
   public logger?: Ux;
-  private lightningSetupUrl: string;
   private retryConfig?: RetryOptions;
 
   constructor(connection: Connection, browserContext: BrowserContext, options?: BrowserforceOptions) {
@@ -101,12 +100,7 @@ export class Browserforce {
    * @returns the setup url (e.g. https://[MyDomainName].my.salesforce-setup.com)
    */
   public async getLightningSetupUrl(): Promise<string> {
-    if (!this.lightningSetupUrl) {
-      await using page = await this.browserContext.newPage();
-      const lightningResponse = await page.goto(`${this.getInstanceUrl()}/lightning/setup/SetupOneHome/home`);
-      this.lightningSetupUrl = new URL(lightningResponse.url()).origin;
-    }
-    return this.lightningSetupUrl;
+    return `https://${this.getMyDomain()}.my.salesforce-setup.com`;
   }
 
   public async retry<T>(input: (attemptCount: number) => PromiseLike<T> | T): Promise<T> {
