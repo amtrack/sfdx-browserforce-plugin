@@ -8,12 +8,15 @@
     "sfdx-browserforce-plugin": "bin/run"
   },
   "dependencies": {
+    "@jsforce/jsforce-node": "3.10.4",
     "@mdapi-issues/listmetadata-standardvalueset": "3.1.0",
+    "@salesforce/core": "8.22.0",
     "@salesforce/sf-plugins-core": "12.2.6",
     "p-retry": "7.1.1",
     "playwright": "1.58.0"
   },
   "devDependencies": {
+    "@salesforce/dev-config": "4.3.1",
     "@salesforce/dev-scripts": "11.0.4",
     "oclif": "4.22.70",
     "prettier": "3.8.1",
