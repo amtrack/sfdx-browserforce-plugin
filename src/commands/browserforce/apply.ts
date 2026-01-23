@@ -1,4 +1,28 @@
+import { readFileSync } from 'fs';
 import { BrowserforceCommand } from '../../browserforce-command.js';
+import { maskSensitiveValues } from '../../plugins/utils.js';
+
+// Convert camelCase to kebab-case (e.g., "authProviders" -> "auth-providers")
+function camelToKebab(str: string): string {
+  return str.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+}
+
+// Load schema for a plugin
+function loadPluginSchema(pluginName: string): unknown | undefined {
+  try {
+    // Resolve schema path relative to the plugins directory
+    // Since we're in src/commands/browserforce/, we need to go up to src/plugins/
+    const schemaPath = new URL(
+      `../../plugins/${camelToKebab(pluginName)}/schema.json`,
+      import.meta.url,
+    );
+    const schemaContent = readFileSync(schemaPath, 'utf8');
+    return JSON.parse(schemaContent);
+  } catch (error) {
+    // Schema file not found or invalid - return undefined to fall back to pattern matching
+    return undefined;
+  }
+}
 
 type BrowserforceApplyResponse = {
   success: boolean;
@@ -35,10 +59,14 @@ export class BrowserforceApply extends BrowserforceCommand<BrowserforceApplyResp
       const diff = instance.diff(state, setting.value);
       const action = flags['dry-run'] ? 'would change' : 'changing';
       if (diff !== undefined) {
+        // Load schema for this plugin to check for password fields
+        const schema = loadPluginSchema(setting.key);
+        // Mask sensitive values before logging (using schema if available)
+        const maskedDiff = maskSensitiveValues(diff, '', schema) as typeof diff;
         this.spinner.start(
-          `[${driver.name}] ${Object.keys(diff)
+          `[${driver.name}] ${Object.keys(maskedDiff)
             .map((key) => {
-              return `${action} '${key}' to '${JSON.stringify(diff[key])}'`;
+              return `changing '${key}' to '${JSON.stringify(maskedDiff[key])}'`;
             })
             .join('\n')}`,
         );
