@@ -7,6 +7,9 @@
   "properties": {
     "settings": {
       "properties": {
+        "authProviders": {
+          "$ref": "./auth-providers/schema.json"
+        },
         "userAccessPolicies": {
           "$ref": "./user-access-policies/schema.json"
         },
