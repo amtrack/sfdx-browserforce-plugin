@@ -61,13 +61,13 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "build": "rm -rf lib && tsc -p . && oclif manifest",
+    "build": "rm -rf lib && npx tsc -p . && npx oclif manifest",
     "develop": "bash scripts/develop.sh",
     "format": "npx prettier --write \"+(src|test)/**/*.+(ts|js|json)\"",
     "generate:plugin": "npx hygen plugin new",
     "update:repo-urls": "node scripts/update-repo-urls.js",
     "prepack": "npm run update:repo-urls && npm run build",
-    "prepare": "npm run update:repo-urls && npm run build",
+    "prepare": "node scripts/prepare.js",
     "test": "tsc -p test && nyc --reporter=lcov --reporter=text mocha \"test/**/*.test.ts\" \"src/**/*.test.ts\"",
     "test:e2e": "tsc -p test && mocha --slow 30s --timeout 2m --file test/e2e-setup.ts \"test/**/*.e2e-spec.ts\" \"src/**/*.e2e-spec.ts\"",
     "test:format": "npx prettier --check \"+(src|test)/**/*.+(ts|js|json)\""
