@@ -61,7 +61,7 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "build": "rm -rf lib && npx tsc -p . && npx oclif manifest",
+    "build": "rm -rf lib && node scripts/build.js",
     "develop": "bash scripts/develop.sh",
     "format": "npx prettier --write \"+(src|test)/**/*.+(ts|js|json)\"",
     "generate:plugin": "npx hygen plugin new",
