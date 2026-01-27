@@ -1,3 +1,4 @@
+import { type Interfaces } from '@oclif/core';
 import { Flags, SfCommand, Ux } from '@salesforce/sf-plugins-core';
 import { promises } from 'fs';
 import { type Options } from 'p-retry';
@@ -130,16 +131,18 @@ export abstract class BrowserforceCommand<T> extends SfCommand<T> {
   }
 }
 
-async function createBrowserContextFromFlags(flags) {
+type BrowserforceFlags = Interfaces.InferredFlags<typeof BrowserforceCommand.baseFlags>;
+
+async function createBrowserContextFromFlags(flags: BrowserforceFlags) {
   const browser = await chromium.launch({
-    ...(flags.channel
+    ...(flags['browser-channel']
       ? {
-          channel: flags.channel,
+          channel: flags['browser-channel'],
         }
       : {}),
-    ...(flags['executable-path']
+    ...(flags['browser-executable-path']
       ? {
-          executablePath: flags['executable-path'],
+          executablePath: flags['browser-executable-path'],
         }
       : {}),
     headless: flags.headless,
@@ -159,7 +162,7 @@ async function createBrowserContextFromFlags(flags) {
   return browserContext;
 }
 
-function createRetryOptionsFromFlags(flags): Options {
+function createRetryOptionsFromFlags(flags: BrowserforceFlags): Options {
   return {
     retries: flags['max-retries'],
     minTimeout: flags['retry-timeout'],
