@@ -13,12 +13,11 @@ type RecordTypeConfig = {
 
 export class RecordTypes extends BrowserforcePlugin {
   public async retrieve(definition: Config): Promise<Config> {
-    const conn = this.org.getConnection();
     const response: Config = {
       deletions: [],
     };
-    const recordTypeFileProperties = await listRecordTypes(conn);
-    const recordTypes = await queryRecordTypes(conn);
+    const recordTypeFileProperties = await listRecordTypes(this.browserforce.connection);
+    const recordTypes = await queryRecordTypes(this.browserforce.connection);
     for (const deletion of definition.deletions) {
       const recordType = getRecordType(deletion.fullName, recordTypeFileProperties, recordTypes);
       if (recordType) {
@@ -46,14 +45,13 @@ export class RecordTypes extends BrowserforcePlugin {
   }
 
   public async apply(config: Config): Promise<void> {
-    const conn = this.org.getConnection();
-    const recordTypeFileProperties = await listRecordTypes(conn);
-    const recordTypes = await queryRecordTypes(conn);
+    const recordTypeFileProperties = await listRecordTypes(this.browserforce.connection);
+    const recordTypes = await queryRecordTypes(this.browserforce.connection);
 
     for (const deletion of config.deletions) {
       const recordType = getRecordType(deletion.fullName, recordTypeFileProperties, recordTypes);
-      const page = await this.browserforce.openPage(
-        `ui/setup/rectype/RecordTypes?type=${recordType.EntityDefinitionId}`,
+      await using page = await this.browserforce.openPage(
+        `/ui/setup/rectype/RecordTypes?type=${recordType.EntityDefinitionId}`,
       );
       const recordTypePage = new RecordTypePage(page);
       const deletePage = await recordTypePage.clickDeleteAction(recordType.Id);
@@ -63,13 +61,12 @@ export class RecordTypes extends BrowserforcePlugin {
         newRecordTypeId = replacementRecordType.Id;
       }
       await deletePage.replace(newRecordTypeId);
-      await page.close();
     }
   }
 }
 
-async function listRecordTypes(conn) {
-  const recordTypes = await conn.metadata.list({
+async function listRecordTypes(connection) {
+  const recordTypes = await connection.metadata.list({
     type: 'RecordType',
   });
   return recordTypes;
@@ -81,8 +78,8 @@ type RecordType = {
   IsActive: boolean;
 };
 
-async function queryRecordTypes(conn: Connection): Promise<RecordType[]> {
-  const recordTypesResult = await conn.tooling.query<RecordType>(
+async function queryRecordTypes(connection: Connection): Promise<RecordType[]> {
+  const recordTypesResult = await connection.tooling.query<RecordType>(
     `SELECT Id, EntityDefinitionId, IsActive FROM RecordType`,
   );
   const recordTypes = recordTypesResult.records;

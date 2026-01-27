@@ -5,7 +5,7 @@ describe(RelateContactToMultipleAccounts.name, function () {
   this.timeout('5m');
   let plugin: RelateContactToMultipleAccounts;
   before(() => {
-    plugin = new RelateContactToMultipleAccounts(global.bf);
+    plugin = new RelateContactToMultipleAccounts(global.browserforce);
   });
 
   const configEnabled = {

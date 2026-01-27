@@ -31,7 +31,7 @@ const tests: T[] = [
 
 describe('CustomerPortalEnabled', () => {
   describe('diff()', () => {
-    const p = new CustomerPortalEnabled(global.bf);
+    const p = new CustomerPortalEnabled(global.browserforce);
     for (const t of tests) {
       it(t.description, () => {
         const actual = p.diff(t.source, t.target);

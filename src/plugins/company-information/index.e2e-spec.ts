@@ -4,7 +4,7 @@ import { CompanyInformation, Config } from './index.js';
 describe(CompanyInformation.name, function () {
   let plugin: CompanyInformation;
   before(() => {
-    plugin = new CompanyInformation(global.bf);
+    plugin = new CompanyInformation(global.browserforce);
   });
 
   const configZAR: Config = {

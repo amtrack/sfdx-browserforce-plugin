@@ -29,7 +29,6 @@ jobs:
         run: |
           npm ci --ignore-scripts
           npm install --ignore-scripts --global @salesforce/cli@${SF_CLI_VERSION:-"latest"}
-          npx puppeteer browsers install chrome
       - name: Run unit tests
         run: npm run test
       - name: Check formatting
@@ -46,6 +45,15 @@ jobs:
         if: always()
         run: |
           sf org delete scratch --no-prompt
+      - name: Upload Playwright traces
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: playwright-traces
+          path: trace-*.zip
+          compression-level: 0
+          if-no-files-found: ignore
+          retention-days: 14
   release:
     needs: test
     if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/next' }}

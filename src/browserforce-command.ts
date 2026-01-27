@@ -1,7 +1,9 @@
 import { Flags, SfCommand, Ux } from '@salesforce/sf-plugins-core';
 import { promises } from 'fs';
+import { type Options } from 'p-retry';
 import * as path from 'path';
-import { Browserforce } from './browserforce.js';
+import { chromium } from 'playwright';
+import { Browserforce, type BrowserforceOptions } from './browserforce.js';
 import { ConfigParser } from './config-parser.js';
 import { handleDeprecations } from './plugins/deprecated.js';
 import * as DRIVERS from './plugins/index.js';
@@ -12,16 +14,71 @@ export abstract class BrowserforceCommand<T> extends SfCommand<T> {
     'target-org': Flags.requiredOrg(),
     definitionfile: Flags.string({
       char: 'f',
-      description: 'path to a browserforce config file',
+      summary: 'path to a browserforce config file',
     }),
     'dry-run': Flags.boolean({
       char: 'd',
-      description: 'dry run',
+      summary: 'dry run',
+      description: `Retrieve the config and show the diff, but don't apply it.`,
       env: 'BROWSERFORCE_DRY_RUN',
     }),
+    // browser configuration
+    headless: Flags.boolean({
+      helpGroup: 'Browser Configuration',
+      summary: 'run in headless mode (default: true)',
+      allowNo: true,
+      env: 'BROWSERFORCE_HEADLESS',
+      default: !(process.env.BROWSER_DEBUG === 'true'), // for backwards-compatibility
+    }),
+    'slow-mo': Flags.integer({
+      helpGroup: 'Browser Configuration',
+      summary: 'slow motion in milliseconds (default: 0)',
+      env: 'BROWSERFORCE_SLOWMO',
+      default: Number(process.env.BROWSER_SLOWMO ?? '0'), // for backwards-compatibility
+    }),
+    timeout: Flags.integer({
+      helpGroup: 'Browser Configuration',
+      summary: 'the default navigation timeout in milliseconds',
+      env: 'BROWSERFORCE_NAVIGATION_TIMEOUT_MS',
+      default: 90_000,
+    }),
+    trace: Flags.boolean({
+      helpGroup: 'Browser Configuration',
+      summary: 'create a Playwright trace file',
+      description: 'The trace file can be viewed with "sf browserforce playwright -- show-trace trace-<date>.zip".',
+      env: 'BROWSERFORCE_TRACE',
+    }),
+    'browser-executable-path': Flags.string({
+      helpGroup: 'Browser Configuration',
+      summary: 'the path to a browser executable',
+      description:
+        'Note: The environment variable CHROME_BIN can also be used. On GitHub Actions with ubuntu-latest, CHROME_BIN is set to /usr/bin/google-chrome.',
+      env: 'BROWSERFORCE_BROWSER_EXECUTABLE_PATH',
+      default: process.env.CHROME_BIN?.length ? process.env.CHROME_BIN : undefined,
+    }),
+    'browser-channel': Flags.string({
+      helpGroup: 'Browser Configuration',
+      summary: 'the channel (e.g. chromium or chrome) to use',
+      description: 'Playwright will try to figure out the path to the browser executable automatically.',
+      env: 'BROWSERFORCE_BROWSER_CHANNEL',
+    }),
+    // retry config
+    'max-retries': Flags.integer({
+      helpGroup: 'Retry Configuration',
+      summary: 'the maximum number of retries for retryable actions',
+      env: 'BROWSERFORCE_RETRY_MAX_RETRIES',
+      default: 6,
+    }),
+    'retry-timeout': Flags.integer({
+      helpGroup: 'Retry Configuration',
+      summary: 'the inital timeout in milliseconds for retryable actions (exponentially increased)',
+      env: 'BROWSERFORCE_RETRY_TIMEOUT_MS',
+      default: 4_000,
+    }),
   };
-  protected bf: Browserforce;
+  protected browserforce: Browserforce;
   protected settings: any[];
+  protected retryConfig?: { retries: number; minTimeout: number };
 
   public async init(): Promise<void> {
     await super.init();
@@ -38,12 +95,20 @@ export abstract class BrowserforceCommand<T> extends SfCommand<T> {
       }
     }
     handleDeprecations(definition);
-    // TODO: use require.resolve to dynamically load plugins from npm packages
     this.settings = ConfigParser.parse(DRIVERS, definition);
-    this.bf = new Browserforce(flags['target-org'], new Ux({ jsonEnabled: this.jsonEnabled() }));
+    const connection = flags['target-org'].getConnection();
+    const browserContext = await createBrowserContextFromFlags(flags);
+    const options: BrowserforceOptions = {
+      logger: new Ux({ jsonEnabled: this.jsonEnabled() }),
+      retry: createRetryOptionsFromFlags(flags),
+    };
+    this.browserforce = new Browserforce(connection, browserContext, options);
+
     this.spinner.start('logging in');
-    await this.bf.login();
+    await this.browserforce.browserContext.tracing.group('login');
+    await this.browserforce.login();
     this.spinner.stop();
+    await this.browserforce.browserContext.tracing.groupEnd();
   }
 
   public async finally(err?: Error): Promise<void> {
@@ -51,10 +116,52 @@ export abstract class BrowserforceCommand<T> extends SfCommand<T> {
     if (err?.cause instanceof Error) {
       this.logToStderr(`Cause: ${err.cause.toString()}`);
     }
-    if (this.bf) {
+    if (this.browserforce) {
       this.spinner.start('logging out');
-      await this.bf.logout();
+      try {
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        const tracePath = `trace-${timestamp}.zip`;
+        await this.browserforce.browserContext.tracing.stop({ path: tracePath });
+        this.logToStderr(`Playwright trace saved to: ${tracePath}`);
+      } catch (_) {}
+      await this.browserforce.browserContext.browser().close();
       this.spinner.stop();
     }
   }
+}
+
+async function createBrowserContextFromFlags(flags) {
+  const browser = await chromium.launch({
+    ...(flags.channel
+      ? {
+          channel: flags.channel,
+        }
+      : {}),
+    ...(flags['executable-path']
+      ? {
+          executablePath: flags['executable-path'],
+        }
+      : {}),
+    headless: flags.headless,
+    slowMo: flags['slow-mo'],
+  });
+  const browserContext = await browser.newContext({
+    viewport: { width: 1280, height: 1536 },
+  });
+  browserContext.setDefaultNavigationTimeout(flags.timeout);
+  if (flags.trace) {
+    await browserContext.tracing.start({
+      screenshots: true,
+      snapshots: true,
+      sources: true,
+    });
+  }
+  return browserContext;
+}
+
+function createRetryOptionsFromFlags(flags): Options {
+  return {
+    retries: flags['max-retries'],
+    minTimeout: flags['retry-timeout'],
+  };
 }

@@ -1,6 +1,6 @@
 import { BrowserforcePlugin } from '../../plugin.js';
 
-const BASE_PATH = 'setup/activitiesSetupPage.apexp';
+const BASE_PATH = '/setup/activitiesSetupPage.apexp';
 
 const MANY_WHO_PREF_INPUT_SELECTOR = 'input[id="thePage:theForm:theBlock:manyWhoPref"]';
 const SUBMIT_BUTTON_SELECTOR = 'input[id="thePage:theForm:theBlock:buttons:submit"]';
@@ -11,15 +11,10 @@ type Config = {
 
 export class ActivitySettings extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
-    const page = await this.browserforce.openPage(BASE_PATH);
-    await page.waitForSelector(MANY_WHO_PREF_INPUT_SELECTOR);
+    await using page = await this.browserforce.openPage(BASE_PATH);
     const response = {
-      allowUsersToRelateMultipleContactsToTasksAndEvents: await page.$eval(
-        MANY_WHO_PREF_INPUT_SELECTOR,
-        (el: HTMLInputElement) => el.checked,
-      ),
+      allowUsersToRelateMultipleContactsToTasksAndEvents: await page.locator(MANY_WHO_PREF_INPUT_SELECTOR).isChecked(),
     };
-    await page.close();
     return response;
   }
 
@@ -29,16 +24,14 @@ export class ActivitySettings extends BrowserforcePlugin {
         '`allowUsersToRelateMultipleContactsToTasksAndEvents` can only be disabled with help of the salesforce.com Support team',
       );
     }
-    const page = await this.browserforce.openPage(BASE_PATH);
-    await page.waitForSelector(MANY_WHO_PREF_INPUT_SELECTOR);
-    await page.$eval(
-      MANY_WHO_PREF_INPUT_SELECTOR,
-      (e: HTMLInputElement, v: boolean) => {
-        e.checked = v;
-      },
-      config.allowUsersToRelateMultipleContactsToTasksAndEvents,
-    );
-    await Promise.all([page.waitForNavigation(), page.click(SUBMIT_BUTTON_SELECTOR)]);
-    await page.close();
+    await using page = await this.browserforce.openPage(BASE_PATH);
+    await page.locator(MANY_WHO_PREF_INPUT_SELECTOR).waitFor();
+
+    await page
+      .locator(MANY_WHO_PREF_INPUT_SELECTOR)
+      .setChecked(config.allowUsersToRelateMultipleContactsToTasksAndEvents);
+
+    await page.locator(SUBMIT_BUTTON_SELECTOR).click();
+    await page.waitForURL((url) => url.pathname === '/ui/setup/Setup');
   }
 }

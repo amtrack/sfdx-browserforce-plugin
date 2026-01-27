@@ -130,7 +130,7 @@ const tests = [
 
 describe('CustomerPortalSetup', () => {
   describe('diff()', () => {
-    const p = new CustomerPortalSetup(global.bf);
+    const p = new CustomerPortalSetup(global.browserforce);
     for (const t of tests) {
       it(t.description, () => {
         const actual = p.diff(t.source, t.target);

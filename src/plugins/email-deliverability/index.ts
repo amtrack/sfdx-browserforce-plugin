@@ -1,6 +1,6 @@
 import { BrowserforcePlugin } from '../../plugin.js';
 
-const BASE_PATH = 'email-admin/editOrgEmailSettings.apexp';
+const BASE_PATH = '/email-admin/editOrgEmailSettings.apexp';
 
 const ACCESS_LEVEL_SELECTOR = 'select[id$=":sendEmailAccessControlSelect"]';
 const CONFIRM_MESSAGE_SELECTOR = 'span[id$=":successText"]';
@@ -18,17 +18,13 @@ type Config = {
 
 export class EmailDeliverability extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {
-    const page = await this.browserforce.openPage(BASE_PATH);
-    await page.waitForSelector(ACCESS_LEVEL_SELECTOR);
-    const selectedOptions = await page.$$eval(`${ACCESS_LEVEL_SELECTOR} > option[selected]`, (options) =>
-      options.map((option) => option.textContent ?? ''),
-    );
-    await page.close();
-    if (!selectedOptions) {
+    await using page = await this.browserforce.openPage(BASE_PATH);
+    const selectedOption = await page.locator(`${ACCESS_LEVEL_SELECTOR} > option[selected]`).textContent();
+    if (!selectedOption) {
       throw new Error('Selected access level not found...');
     }
     return {
-      accessLevel: selectedOptions[0],
+      accessLevel: selectedOption,
     };
   }
 
@@ -37,10 +33,9 @@ export class EmailDeliverability extends BrowserforcePlugin {
     if (accessLevelNumber === undefined) {
       throw new Error(`Invalid email access level ${config.accessLevel}`);
     }
-    const page = await this.browserforce.openPage(BASE_PATH);
-    await page.waitForSelector(ACCESS_LEVEL_SELECTOR);
-    await page.select(ACCESS_LEVEL_SELECTOR, accessLevelNumber);
-    await Promise.all([page.waitForSelector(CONFIRM_MESSAGE_SELECTOR), page.click(SAVE_BUTTON_SELECTOR)]);
-    await page.close();
+    await using page = await this.browserforce.openPage(BASE_PATH);
+    await page.locator(ACCESS_LEVEL_SELECTOR).selectOption(accessLevelNumber);
+    await page.locator(SAVE_BUTTON_SELECTOR).click();
+    await page.locator(CONFIRM_MESSAGE_SELECTOR).waitFor();
   }
 }

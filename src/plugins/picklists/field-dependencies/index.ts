@@ -1,4 +1,3 @@
-import { retry } from '../../../browserforce.js';
 import { ensureArray } from '../../../jsforce-utils.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
 import { FieldDependencyPage, NewFieldDependencyPage } from './pages.js';
@@ -13,9 +12,8 @@ export type Config = FieldDependencyConfig[];
 
 export class FieldDependencies extends BrowserforcePlugin {
   public async retrieve(definition: Config): Promise<Config> {
-    const conn = this.org.getConnection();
     const dependentFieldNames = definition.map((f) => `${f.object}.${f.dependentField}`);
-    const result = await conn.metadata.read('CustomField', dependentFieldNames);
+    const result = await this.browserforce.connection.metadata.read('CustomField', dependentFieldNames);
     const metadata = ensureArray(result);
     const state = definition.map((f) => {
       const fieldState = { ...f };
@@ -28,8 +26,7 @@ export class FieldDependencies extends BrowserforcePlugin {
   }
 
   public async apply(plan: Config): Promise<void> {
-    const conn = this.org.getConnection();
-    const listMetadataResult = await conn.metadata.list([
+    const listMetadataResult = await this.browserforce.connection.metadata.list([
       {
         type: 'CustomObject',
       },
@@ -37,7 +34,7 @@ export class FieldDependencies extends BrowserforcePlugin {
     ]);
     const fileProperties = ensureArray(listMetadataResult);
     for (const dep of plan) {
-      await retry(async () => {
+      await this.browserforce.retry(async () => {
         const customObject = fileProperties.find((x) => x.type === 'CustomObject' && x.fullName === dep.object);
         if (!customObject) {
           throw new Error(`Could not find CustomObject "${dep.object}"`);
@@ -49,10 +46,11 @@ export class FieldDependencies extends BrowserforcePlugin {
           throw new Error(`Could not find dependent field "${dep.object}.${dep.dependentField}"`);
         }
         // always try deleting an existing dependency first
-        const fieldDependenciesPage = new FieldDependencyPage(
-          await this.browserforce.openPage(FieldDependencyPage.getUrl(customObject.id)),
-        );
-        await fieldDependenciesPage.clickDeleteDependencyActionForField(dependentField.id);
+        {
+          await using page = await this.browserforce.openPage(FieldDependencyPage.getUrl(customObject.id));
+          const fieldDependenciesPage = new FieldDependencyPage(page);
+          await fieldDependenciesPage.clickDeleteDependencyActionForField(dependentField.id);
+        }
         if (dep.controllingField) {
           const controllingField = fileProperties.find(
             (x) => x.type === 'CustomField' && x.fullName === `${dep.object}.${dep.controllingField}`,
@@ -60,12 +58,13 @@ export class FieldDependencies extends BrowserforcePlugin {
           if (!controllingField) {
             throw new Error(`Could not find controlling field "${dep.object}.${dep.controllingField}"`);
           }
-          const newFieldDependencyPage = new NewFieldDependencyPage(
-            await this.browserforce.openPage(
+          {
+            await using page = await this.browserforce.openPage(
               NewFieldDependencyPage.getUrl(customObject.id, dependentField.id, controllingField.id),
-            ),
-          );
-          await newFieldDependencyPage.save();
+            );
+            const newFieldDependencyPage = new NewFieldDependencyPage(page);
+            await newFieldDependencyPage.save();
+          }
         }
       });
     }

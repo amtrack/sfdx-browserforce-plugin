@@ -5,7 +5,7 @@ describe(OmniChannelSettings.name, function () {
   this.timeout('10m');
   let plugin: OmniChannelSettings;
   before(() => {
-    plugin = new OmniChannelSettings(global.bf);
+    plugin = new OmniChannelSettings(global.browserforce);
   });
 
   const configEnableStatusBasedCapacityModel = {

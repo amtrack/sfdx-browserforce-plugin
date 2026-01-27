@@ -1,5 +1,5 @@
-import { Page } from 'puppeteer';
-import { throwPageErrors } from '../../browserforce.js';
+import type { Page } from 'playwright';
+import { type SalesforceUrlPath, waitForPageErrors } from '../../browserforce.js';
 
 const SET_UP_AND_ENABLE_HVS_BUTTON = 'button.setupAndEnableButton';
 const ENABLE_TOGGLE = '#toggleHighVelocitySalesPref';
@@ -12,23 +12,17 @@ export class HighVelocitySalesSetupPage {
     this.page = page;
   }
 
-  public static getUrl(): string {
-    return 'lightning/setup/SalesEngagement/home';
+  public static getUrl(): SalesforceUrlPath {
+    return '/lightning/setup/SalesEngagement/home';
   }
 
   public async setUpAndEnable(): Promise<void> {
-    await this.page.waitForSelector(AUTOMATION_TAB_ITEM);
-    const tab = await this.page.$(AUTOMATION_TAB_ITEM);
-    if (tab) {
-      await this.page.evaluate((e: HTMLElement) => e.click(), tab);
+    await this.page.locator(AUTOMATION_TAB_ITEM).waitFor();
+    const tabCount = await this.page.locator(AUTOMATION_TAB_ITEM).count();
+    if (tabCount > 0) {
+      await this.page.locator(AUTOMATION_TAB_ITEM).click();
     }
-    await this.page.waitForSelector(SET_UP_AND_ENABLE_HVS_BUTTON);
-    const enableButton = await this.page.$(SET_UP_AND_ENABLE_HVS_BUTTON);
-    await Promise.all([
-      this.page.waitForSelector(ENABLE_TOGGLE, { timeout: 60_000 }),
-      this.page.evaluate((e: HTMLElement) => e.click(), enableButton!),
-    ]);
-    await throwPageErrors(this.page);
-    await this.page.close();
+    await this.page.locator(SET_UP_AND_ENABLE_HVS_BUTTON).click();
+    await Promise.race([this.page.locator(ENABLE_TOGGLE).waitFor({ timeout: 90_000 }), waitForPageErrors(this.page)]);
   }
 }

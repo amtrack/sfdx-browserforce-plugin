@@ -1,4 +1,5 @@
-import { Page } from 'puppeteer';
+import type { Page } from 'playwright';
+import { waitForPageErrors } from '../../browserforce.js';
 
 export class RecordTypePage {
   private page: Page;
@@ -9,18 +10,17 @@ export class RecordTypePage {
 
   public async clickDeleteAction(recordTypeId: string): Promise<RecordTypeDeletePage> {
     const xpath = `//a[contains(@href, "setup/ui/recordtypedelete.jsp?id=${recordTypeId.slice(0, 15)}")]`;
-    await this.page.waitForSelector(`::-p-xpath(${xpath})`);
-    const deleteLink = (await this.page.$$(`xpath/.${xpath}`))[0];
-    await Promise.all([
-      this.page.waitForNavigation(),
-      this.page.evaluate((e: HTMLAnchorElement) => e.click(), deleteLink),
+    await this.page.locator(`xpath=${xpath}`).first().click();
+    await Promise.race([
+      this.page.waitForURL((url) => url.pathname === '/setup/ui/recordtypedelete.jsp'),
+      waitForPageErrors(this.page),
     ]);
     return new RecordTypeDeletePage(this.page);
   }
 }
 
 export class RecordTypeDeletePage {
-  protected page;
+  protected page: Page;
   protected saveButton = 'input[name="save"]';
 
   constructor(page: Page) {
@@ -29,41 +29,29 @@ export class RecordTypeDeletePage {
 
   async replace(newRecordTypeId?: string): Promise<void> {
     await this.throwOnMissingSaveButton();
-    const NEW_VALUE_SELECTOR = 'select#p2';
     if (newRecordTypeId) {
-      await this.page.waitForSelector(NEW_VALUE_SELECTOR);
-      await this.page.select(NEW_VALUE_SELECTOR, newRecordTypeId.slice(0, 15));
+      await this.page.locator('select#p2').describe('new value').selectOption(newRecordTypeId.slice(0, 15));
     }
     await this.save();
   }
 
   async save(): Promise<void> {
-    await this.page.waitForSelector(this.saveButton);
-    await Promise.all([this.page.waitForNavigation(), this.page.click(this.saveButton)]);
-    await this.throwPageErrors();
+    await this.page.locator(this.saveButton).click();
+    await Promise.race([
+      this.page.waitForURL((url) => url.pathname === '/ui/setup/rectype/RecordTypes'),
+      waitForPageErrors(this.page),
+    ]);
   }
 
   async throwOnMissingSaveButton(): Promise<void> {
-    const saveButton = await this.page.$(this.saveButton);
-    if (!saveButton) {
-      const bodyHandle = await this.page.$('div.pbBody');
-      if (bodyHandle) {
-        const errorMsg = await this.page.evaluate((div: HTMLDivElement) => div.textContent, bodyHandle);
-        await bodyHandle.dispose();
+    const saveButtonCount = await this.page.locator(this.saveButton).count();
+    if (saveButtonCount === 0) {
+      const bodyElement = this.page.locator('div.pbBody');
+      if ((await bodyElement.count()) > 0) {
+        const errorMsg = await bodyElement.textContent();
         if (errorMsg?.trim()) {
           throw new Error(errorMsg.trim());
         }
-      }
-    }
-  }
-
-  async throwPageErrors(): Promise<void> {
-    const errorHandle = await this.page.$('div#validationError div.messageText');
-    if (errorHandle) {
-      const errorMsg = await this.page.evaluate((div: HTMLDivElement) => div.innerText, errorHandle);
-      await errorHandle.dispose();
-      if (errorMsg?.trim()) {
-        throw new Error(errorMsg.trim());
       }
     }
   }

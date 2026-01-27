@@ -11,10 +11,12 @@ export type Config = {
 
 export class HighVelocitySalesSettings extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {
-    const conn = this.org.getConnection();
     const result = { setUpAndEnable: false };
     try {
-      const settings = await conn.metadata.read('HighVelocitySalesSettings', 'HighVelocitySales');
+      const settings = await this.browserforce.connection.metadata.read(
+        'HighVelocitySalesSettings',
+        'HighVelocitySales',
+      );
       result.setUpAndEnable = settings['enableHighVelocitySalesSetup'] === true;
     } catch (e) {
       if (/INVALID_TYPE: This type of metadata is not available for this organization/.test(e)) {
@@ -28,22 +30,20 @@ export class HighVelocitySalesSettings extends BrowserforcePlugin {
 
   public async apply(config: Config): Promise<void> {
     if (config.setUpAndEnable) {
-      const page = new HighVelocitySalesSetupPage(
-        await this.browserforce.openPage(HighVelocitySalesSetupPage.getUrl()),
-      );
-      await page.setUpAndEnable();
+      await using page = await this.browserforce.openPage(HighVelocitySalesSetupPage.getUrl());
+      const hvs = new HighVelocitySalesSetupPage(page);
+      await hvs.setUpAndEnable();
     } else {
-      const conn = this.org.getConnection();
-      await disableHighVelocitySalesUsingMetadata(conn);
+      await disableHighVelocitySalesUsingMetadata(this.browserforce.connection);
     }
   }
 }
 
-export async function disableHighVelocitySalesUsingMetadata(conn: Connection): Promise<void> {
+export async function disableHighVelocitySalesUsingMetadata(connection: Connection): Promise<void> {
   const settings = {
     fullName: 'HighVelocitySales',
     enableHighVelocitySalesSetup: false,
     enableHighVelocitySales: false,
   };
-  await conn.metadata.update('HighVelocitySalesSettings', settings);
+  await connection.metadata.update('HighVelocitySalesSettings', settings);
 }

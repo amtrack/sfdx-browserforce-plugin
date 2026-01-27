@@ -94,7 +94,7 @@ const tests = [
 
 describe('HomePageLayouts', () => {
   describe('diff()', () => {
-    const p = new HomePageLayouts(global.bf);
+    const p = new HomePageLayouts(global.browserforce);
     for (const t of tests) {
       it(t.description, () => {
         const actual = p.diff(t.source, t.target);

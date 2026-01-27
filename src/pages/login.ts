@@ -1,10 +1,9 @@
-import { type Org } from '@salesforce/core';
-import { type Page } from 'puppeteer';
+import { type Connection } from '@salesforce/core';
+import { type Page } from 'playwright';
+import { waitForPageErrors } from '../browserforce.js';
 
-const FRONT_DOOR_PATH = 'secur/frontdoor.jsp';
-const POST_LOGIN_PATH = 'setup/forcecomHomepage.apexp';
-
-const ERROR_DIV_SELECTOR = '#error';
+const FRONT_DOOR_PATH = '/secur/frontdoor.jsp';
+const POST_LOGIN_PATH = '/setup/forcecomHomepage.apexp';
 
 export class LoginPage {
   private page: Page;
@@ -13,38 +12,13 @@ export class LoginPage {
     this.page = page;
   }
 
-  async login(org: Org) {
-    try {
-      await org.refreshAuth();
-    } catch (_) {
-      throw new Error('login failed');
-    }
-    const conn = org.getConnection();
-    const response = await this.page.goto(
-      `${conn.instanceUrl.replace(/\/$/, '')}/${FRONT_DOOR_PATH}?sid=${
-        conn.accessToken
+  async login(connection: Connection) {
+    await this.page.goto(
+      `${connection.instanceUrl.replace(/\/$/, '')}${FRONT_DOOR_PATH}?sid=${
+        connection.accessToken
       }&retURL=${encodeURIComponent(POST_LOGIN_PATH)}`,
-      {
-        // should have waited at least 500ms for network connections, redirects should probably have happened already
-        waitUntil: ['load', 'networkidle2'],
-      },
     );
-    const url = new URL(response.url());
-    if (url.searchParams.has('startURL')) {
-      // when query param startURL exists, the login failed
-      // e.g. /?ec=302&startURL=https...
-      await this.throwPageErrors();
-    }
+    await Promise.race([this.page.waitForURL((url) => url.pathname === POST_LOGIN_PATH), waitForPageErrors(this.page)]);
     return this;
-  }
-
-  async throwPageErrors(): Promise<void> {
-    const errorHandle = await this.page.$(ERROR_DIV_SELECTOR);
-    if (errorHandle) {
-      const errorMessage = (await this.page.evaluate((div: HTMLDivElement) => div.innerText, errorHandle))?.trim();
-      if (errorMessage) {
-        throw new Error(errorMessage);
-      }
-    }
   }
 }

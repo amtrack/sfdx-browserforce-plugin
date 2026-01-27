@@ -21,8 +21,9 @@ export class BrowserforceApply extends BrowserforceCommand<BrowserforceApplyResp
     this.log(`Applying config file ${flags.definitionfile} to org ${flags['target-org'].getUsername()}`);
     for (const setting of this.settings) {
       const driver = setting.Driver;
-      const instance = new driver(this.bf);
+      const instance = new driver(this.browserforce);
       this.spinner.start(`[${driver.name}] retrieving state`);
+      await this.browserforce.browserContext.tracing.group(driver.name);
       let state;
       try {
         state = await instance.retrieve(setting.value);
@@ -50,6 +51,7 @@ export class BrowserforceApply extends BrowserforceCommand<BrowserforceApplyResp
           }
           this.spinner.stop();
         }
+        await this.browserforce.browserContext.tracing.groupEnd();
       } else {
         this.log(`[${driver.name}] no action necessary`);
       }

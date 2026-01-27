@@ -1,8 +1,8 @@
 import { BrowserforcePlugin } from '../../plugin.js';
 import { formConfig } from './formConfig.js';
 
-const BASE_PATH = '0A3?setupid=ImportedPackage&retURL=%2Fui%2Fsetup%2FSetup%3Fsetupid%3DStudio';
-const AUTH_PATH = 'setup/secur/RemoteAccessAuthorizationPage.apexp';
+const BASE_PATH = '/0A3?setupid=ImportedPackage&retURL=%2Fui%2Fsetup%2FSetup%3Fsetupid%3DStudio';
+const AUTH_PATH = '/setup/secur/RemoteAccessAuthorizationPage.apexp';
 
 const CONFIGURE_SELECTOR = '.actionLink[title*="Configure"][title*="Salesforce CPQ"]';
 const GENERATE_INTEGRATION_USER_PERMISSIONS_SELECTOR =
@@ -16,41 +16,34 @@ export type Config = any;
 export class SalesforceCpqConfig extends BrowserforcePlugin {
   private logger = this.browserforce.logger;
   public async retrieve(definition?: Config): Promise<Config> {
-    const page = await this.browserforce.openPage(BASE_PATH);
-    await page.waitForSelector(CONFIGURE_SELECTOR);
-    await Promise.all([page.waitForNavigation(), page.click(CONFIGURE_SELECTOR)]);
+    await using page = await this.browserforce.openPage(BASE_PATH);
+    await Promise.all([page.waitForEvent('load'), page.locator(CONFIGURE_SELECTOR).click()]);
 
     const response = {} as Config;
     if (definition) {
       for (const [keyTab, valueTab] of Object.entries(formConfig)) {
         if (definition[keyTab]) {
-          await page.waitForSelector(`td[id="${valueTab.id}"]`);
-          await page.click(`td[id="${valueTab.id}"]`);
+          await page.locator(`td[id="${valueTab.id}"]`).click();
           for (const [keyItem, valueItem] of Object.entries(valueTab.properties)) {
             if (!(definition[keyTab][keyItem] === undefined)) {
               const item = valueItem;
               response[keyTab] = response[keyTab] || {};
               try {
                 if (item.component === 'input' && item.type === 'boolean') {
-                  response[keyTab][keyItem] = await page.$eval(
-                    `${item.component}[name="${item.name}"]`,
-                    (el: HTMLInputElement) => el.checked,
-                  );
+                  response[keyTab][keyItem] = await page.locator(`${item.component}[name="${item.name}"]`).isChecked();
                 } else if (item.component === 'input' && item.type === 'string') {
-                  response[keyTab][keyItem] = await page.$eval(
-                    `${item.component}[name="${item.name}"]`,
-                    (el: HTMLInputElement) => el.value,
-                  );
+                  response[keyTab][keyItem] = await page.locator(`${item.component}[name="${item.name}"]`).inputValue();
                 } else if (item.component === 'select') {
-                  response[keyTab][keyItem] = await page.$eval(
-                    `${item.component}[name="${item.name}"]`,
-                    (el: HTMLSelectElement) => el.selectedOptions[0].text,
-                  );
+                  response[keyTab][keyItem] = await page
+                    .locator(`${item.component}[name="${item.name}"] option:checked`)
+                    .textContent();
                 }
               } catch (e) {
                 if (
-                  e.message ===
-                  `Error: failed to find element matching selector "${item.component}[name="${item.name}"]"`
+                  e instanceof Error &&
+                  e.message.includes(
+                    `Error: failed to find element matching selector "${item.component}[name="${item.name}"]"`,
+                  )
                 ) {
                   this.logger?.warn(
                     `Label '${item.label}' '${keyTab}.${keyItem}' with component '${item.component}[name="${item.name}"]' is not found`,
@@ -64,32 +57,29 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
         }
       }
     }
-    await page.close();
     return response;
   }
 
   public async apply(config: Config): Promise<void> {
-    const page = await this.browserforce.openPage(BASE_PATH);
-    await Promise.all([page.waitForNavigation(), page.click(CONFIGURE_SELECTOR)]);
+    await using page = await this.browserforce.openPage(BASE_PATH);
+    await Promise.all([page.waitForEvent('load'), page.locator(CONFIGURE_SELECTOR).click()]);
 
     /*
     This to click on the 'Generate Integration User Permissions button' for first time setup.
     Once the button is clicked, it will not be available for the next time.
     */
-    try {
+    this.logger?.log(`Checking for 'Generate Integration User Permissions' button`);
+    await page.locator(`td[id="${formConfig.pricingAndCalculation.id}"]`).click();
+
+    const generateButtonCount = await page.locator(GENERATE_INTEGRATION_USER_PERMISSIONS_SELECTOR).count();
+
+    if (generateButtonCount > 0) {
       this.logger?.log(`Clicking on 'Generate Integration User Permissions' button`);
-      await page.waitForSelector(`td[id="${formConfig.pricingAndCalculation.id}"]`);
-      await page.click(`td[id="${formConfig.pricingAndCalculation.id}"]`);
-      await page.click(GENERATE_INTEGRATION_USER_PERMISSIONS_SELECTOR);
-    } catch (e) {
-      if (e.message === `No element found for selector: ${GENERATE_INTEGRATION_USER_PERMISSIONS_SELECTOR}`) {
-        this.logger?.log(
-          `The button 'Generate Integration User Permissions' is not found. It might be already clicked before.`,
-        );
-      } else {
-        this.logger?.warn(`Error clicking 'Generate Integration User Permissions' button with message: ${e.message}`);
-        throw e;
-      }
+      await page.locator(GENERATE_INTEGRATION_USER_PERMISSIONS_SELECTOR).click();
+    } else {
+      this.logger?.log(
+        `The button 'Generate Integration User Permissions' is not found. It might be already clicked before.`,
+      );
     }
 
     /*
@@ -97,8 +87,7 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
     */
     for (const [keyTab, valueTab] of Object.entries(formConfig)) {
       if (config[keyTab]) {
-        await page.waitForSelector(`td[id="${valueTab.id}"]`);
-        await page.click(`td[id="${valueTab.id}"]`);
+        await page.locator(`td[id="${valueTab.id}"]`).click();
         for (const [keyItem, valueItem] of Object.entries(valueTab.properties)) {
           if (!(config[keyTab][keyItem] === undefined)) {
             const item = valueItem;
@@ -107,32 +96,23 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
                 `Updating: '${keyTab}.${keyItem}' (${item.label}) with component '${item.component}[name="${item.name}"]' with value: '${config[keyTab][keyItem]}'`,
               );
               if (item.component === 'input' && item.type === 'boolean') {
-                await page.$eval(
-                  `input[name="${item.name}"]`,
-                  (e: HTMLInputElement, v: boolean) => {
-                    e.checked = v;
-                  },
-                  config[keyTab][keyItem],
-                );
+                const checkbox = await page.locator(`input[name="${item.name}"]`);
+                if (!(await checkbox.isDisabled())) {
+                  if (config[keyTab][keyItem]) {
+                    await checkbox.check();
+                  } else {
+                    await checkbox.uncheck();
+                  }
+                }
               } else if (item.component === 'input' && item.type === 'string') {
-                await page.$eval(
-                  `input[name="${item.name}"]`,
-                  (e: HTMLInputElement, v: string) => {
-                    e.value = v;
-                  },
-                  config[keyTab][keyItem],
-                );
+                await page.locator(`input[name="${item.name}"]`).fill(config[keyTab][keyItem]);
               } else if (item.component === 'select') {
-                const selectFieldOptions = await page.$$eval(
-                  `select[name="${item.name}"] option`,
-                  (options: HTMLOptionElement[]) => {
-                    return options.map((option) => {
-                      return {
-                        text: option.text,
-                        value: option.value,
-                      };
-                    });
-                  },
+                const optionLocators = await page.locator(`select[name="${item.name}"] option`).all();
+                const selectFieldOptions = await Promise.all(
+                  optionLocators.map(async (option) => ({
+                    text: await option.textContent(),
+                    value: await option.getAttribute('value'),
+                  })),
                 );
                 const chooseFieldOption = selectFieldOptions.find((x) => x.text === config[keyTab][keyItem]);
                 if (!chooseFieldOption) {
@@ -145,21 +125,26 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
                     )}\n`,
                   );
                 }
-                await page.select(`select[name="${item.name}"]`, chooseFieldOption.value);
+                await page.locator(`select[name="${item.name}"]`).selectOption(chooseFieldOption.value);
               }
               if (item.immediatelySave) {
-                await Promise.all([page.waitForNavigation(), page.click(SAVE_SELECTOR)]);
+                await Promise.all([page.waitForEvent('load'), page.locator(SAVE_SELECTOR).click()]);
               }
             } catch (e) {
               if (
-                e.message === `Error: failed to find element matching selector "${item.component}[name="${item.name}"]"`
+                e instanceof Error &&
+                e.message.includes(
+                  `Error: failed to find element matching selector "${item.component}[name="${item.name}"]"`,
+                )
               ) {
                 this.logger?.warn(
                   `Label '${item.label}' '${keyTab}.${keyItem}' with component '${item.component}[name="${item.name}"]' is not found`,
                 );
               } else {
                 this.logger?.warn(
-                  `Error: at Label '${item.label}' '${keyTab}.${keyItem}' with component '${item.component}[name="${item.name}"]' with message: ${e.message}`,
+                  `Error: at Label '${item.label}' '${keyTab}.${keyItem}' with component '${
+                    item.component
+                  }[name="${item.name}"]' with message: ${e instanceof Error ? e.message : String(e)}`,
                 );
                 throw e;
               }
@@ -167,7 +152,7 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
           }
         }
       }
-      await Promise.all([page.waitForNavigation(), page.click(SAVE_SELECTOR)]);
+      await Promise.all([page.waitForEvent('load'), page.locator(SAVE_SELECTOR).click()]);
     }
 
     /*
@@ -176,25 +161,22 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
     */
     try {
       this.logger?.log(`'Authorize New Calculation Service' link`);
-      await page.waitForSelector(`td[id="${formConfig.pricingAndCalculation.id}"]`);
-      await page.click(`td[id="${formConfig.pricingAndCalculation.id}"]`);
+      await page.locator(`td[id="${formConfig.pricingAndCalculation.id}"]`).click();
 
-      const authorizeLink = await page.$(AUTHORIZE_NEW_CALCULATION_SERVICE_SELECTOR);
+      const authorizeLinkCount = await page.locator(AUTHORIZE_NEW_CALCULATION_SERVICE_SELECTOR).count();
 
-      if (authorizeLink) {
-        // Click on 'Authorize New Calculation Service' link
-        await page.waitForSelector(AUTHORIZE_NEW_CALCULATION_SERVICE_SELECTOR);
-        await page.click(AUTHORIZE_NEW_CALCULATION_SERVICE_SELECTOR);
-
-        // Wait for popup window with the expected URL
-        const newWindowTarget = await page.browser().waitForTarget((target) => target.url().includes(AUTH_PATH));
-        const newPage = await newWindowTarget.page();
+      if (authorizeLinkCount > 0) {
+        // Click on 'Authorize New Calculation Service' link and wait for popup
+        const popupPromise = page.context().waitForEvent('page', (newPage) => newPage.url().includes(AUTH_PATH));
+        await page.locator(AUTHORIZE_NEW_CALCULATION_SERVICE_SELECTOR).click();
+        await using newPage = await popupPromise;
 
         if (newPage) {
-          // Click on'Allow' button
-          await newPage.waitForSelector(ALLOW_SELECTOR, { visible: true });
-          await newPage.click(ALLOW_SELECTOR);
-          await page.waitForNavigation(); // Wait for the main page to refresh
+          // Click on 'Allow' button
+          await Promise.all([
+            page.waitForEvent('load'), // Wait for the main page to refresh
+            newPage.locator(ALLOW_SELECTOR).click(),
+          ]);
 
           this.logger?.log('The main page has refreshed after allowing.');
         } else {
@@ -207,20 +189,28 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
         );
       }
     } catch (e) {
-      if (e.message === `No element found for selector: ${AUTHORIZE_NEW_CALCULATION_SERVICE_SELECTOR}`) {
+      if (
+        e instanceof Error &&
+        e.message.includes(`No element found for selector: ${AUTHORIZE_NEW_CALCULATION_SERVICE_SELECTOR}`)
+      ) {
         this.logger?.log(
           `The link Authorize New Calculation Service' is not found. It might be already clicked before.`,
         );
       } else if (
-        e.message === `Waiting for selector \`input[name="save"]\` failed: waitForFunction failed: frame got detached.`
+        e instanceof Error &&
+        e.message.includes(
+          `Waiting for selector \`input[name="save"]\` failed: waitForFunction failed: frame got detached.`,
+        )
       ) {
         this.logger?.log(`ALLOW button is not found. It might be already clicked before.`);
       } else {
-        this.logger?.warn(`Error clicking Authorize New Calculation Service' button with message: ${e.message}`);
+        this.logger?.warn(
+          `Error clicking Authorize New Calculation Service' button with message: ${
+            e instanceof Error ? e.message : String(e)
+          }`,
+        );
         throw e;
       }
     }
-
-    await page.close();
   }
 }

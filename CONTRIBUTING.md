@@ -21,6 +21,7 @@
 
 ```shell
 npm ci
+npx playwright install chromium
 ```
 
 ## Scaffolding a new plugin
@@ -31,7 +32,7 @@ Please note that this is only an example. In fact this is supported in the Metad
 You can scaffold a new plugin by running:
 
 ```shell
-npm run generate:plugin --name AdminsCanLogInAsAnyUser
+npm run generate:plugin -- --name AdminsCanLogInAsAnyUser
 ```
 
 Bravo 👏, you have just generated a working browserforce plugin!
@@ -56,8 +57,8 @@ npm run develop
 and now we can run it:
 
 ```shell
-BROWSER_DEBUG=true ./bin/run browserforce apply -f src/plugins/admins-can-log-in-as-any-user/enable.json
-BROWSER_DEBUG=true ./bin/run browserforce apply -f src/plugins/admins-can-log-in-as-any-user/disable.json
+BROWSERFORCE_HEADLESS=false ./bin/run browserforce apply -f src/plugins/admins-can-log-in-as-any-user/enable.json
+BROWSERFORCE_HEADLESS=false ./bin/run browserforce apply -f src/plugins/admins-can-log-in-as-any-user/disable.json
 ```
 
 > [!TIP]
@@ -133,8 +134,8 @@ This allows to run multiple actions (from multiple plugins) using a single confi
 
 Plugins are written in [Typescript](https://www.typescriptlang.org), just like `sf` and most of the available sf plugins.
 
-[Puppeteer](https://pptr.dev) is being used as a library for browser automation.
-If you need more inspiration regarding Puppeteer, checkout [this curated list](https://github.com/transitive-bullshit/awesome-puppeteer) of awesome Puppeteer resources.
+[Playwright](https://playwright.dev) is being used as a library for browser automation.
+If you need more inspiration regarding Playwright, checkout the [official documentation](https://playwright.dev/docs/intro) and our [best practices guide](./docs/PLAYWRIGHT.md).
 
 The simplified browserforce plugin lifecycle can be described as follows
 
@@ -196,3 +197,41 @@ for i in {1..7}; do npm run test:e2e -- -g "AdminsCanLogInAsAnyUser"; done
 ## Debugging
 
 The [Salesforce CLI Plug-In Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_plugins.meta/sfdx_cli_plugins/cli_plugins_debug.htm) describes debugging sfdx plugins using VS Code very well.
+
+### Playwright Debugging and Tracing
+
+When developing or debugging Playwright-based plugins, you have several tools at your disposal:
+
+#### Visual Debugging
+
+To see the browser while tests run:
+
+```bash
+BROWSERFORCE_HEADLESS=false npm run test:e2e -- --grep "YourPlugin"
+```
+
+To slow down execution for better observation (value in milliseconds):
+
+```bash
+BROWSERFORCE_SLOWMO=1000 npm run test:e2e -- --grep "YourPlugin"
+```
+
+#### Playwright Tracing
+
+Playwright tracing captures detailed information about test execution including screenshots, DOM snapshots, network activity, and console logs. This is invaluable for debugging test failures.
+
+To generate a trace for a specific test:
+
+```bash
+BROWSERFORCE_TRACE=true npm run test:e2e -- --grep "YourPlugin"
+```
+
+After the test completes, a trace file will be saved with a timestamp (e.g., `trace-2025-11-23T19-00-00-000Z.zip`).
+
+To view the trace:
+
+```bash
+npx playwright show-trace trace-2025-11-23T19-00-00-000Z.zip
+```
+
+This opens an interactive viewer in your browser where you can step through each action, view screenshots and DOM snapshots, inspect network requests, and review console logs.

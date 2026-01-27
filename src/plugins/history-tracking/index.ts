@@ -1,10 +1,11 @@
+import { type SalesforceUrlPath, waitForPageErrors } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
 
-const BASE_PATH = 'ui/setup/layout/FieldHistoryTracking?pEntity={APINAME}';
+const BASE_PATH: SalesforceUrlPath = `/ui/setup/layout/FieldHistoryTracking?pEntity={APINAME}&retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`;
 
-const ENABLE_HISTORY_SELECTOR = 'input[id="enable"][type="checkbox"][name="enable"]';
+const ENABLE_HISTORY_SELECTOR = 'input[type="checkbox"][id="enable"]';
 const ENABLE_FIELD_HISTORY_SELECTOR = 'input[id="{APINAME}_fht"]';
-const SAVE_BUTTON_SELECTOR = 'input[class="btn"][type="submit"][name="save"][title="Save"]';
+const SAVE_BUTTON_SELECTOR = 'input[type="submit"][name="save"]';
 
 type HistoryTrackingConfig = {
   objectApiName: string;
@@ -26,22 +27,21 @@ export class HistoryTracking extends BrowserforcePlugin {
     const tableEnumOrIdByObjectApiName = await this.getTableEnumOrIdByObjectApiName(definition);
 
     // Now we can iterate over all history tracking configurations in the definition
-    for await (const historyTrackingConfig of definition) {
+    for (const historyTrackingConfig of definition) {
       const historyTrackingResult = { ...historyTrackingConfig };
 
       // Open the object history tracking setup page
-      const page = await this.browserforce.openPage(
-        BASE_PATH.replace('{APINAME}', tableEnumOrIdByObjectApiName.get(historyTrackingConfig.objectApiName)),
+      await using page = await this.browserforce.openPage(
+        BASE_PATH.replace(
+          '{APINAME}',
+          tableEnumOrIdByObjectApiName.get(historyTrackingConfig.objectApiName),
+        ) as SalesforceUrlPath,
       );
 
       // Retrieve the object history tracking
       // If this is a custom object, this checkbox does not exist, so skip
       if (!historyTrackingConfig.objectApiName.includes('__c')) {
-        await page.waitForSelector(ENABLE_HISTORY_SELECTOR);
-
-        historyTrackingResult.enableHistoryTracking = await page.$eval(ENABLE_HISTORY_SELECTOR, (el) =>
-          el.getAttribute('checked') === 'checked' ? true : false,
-        );
+        historyTrackingResult.enableHistoryTracking = await page.locator(ENABLE_HISTORY_SELECTOR).isChecked();
       }
 
       // If we have no field history tracking, there is nothing more to do
@@ -75,15 +75,14 @@ export class HistoryTracking extends BrowserforcePlugin {
       );
 
       // We can now retrieve the field history settings for the fields specified for the object
-      for await (const fieldHistoryTracking of historyTrackingConfig.fieldHistoryTracking) {
+      for (const fieldHistoryTracking of historyTrackingConfig.fieldHistoryTracking) {
         const fieldHistoryTrackingResult = { ...fieldHistoryTracking };
 
         const fieldApiName = fieldSelectorByFieldApiName.get(fieldHistoryTracking.fieldApiName);
 
-        fieldHistoryTrackingResult.enableHistoryTracking = await page.$eval(
-          ENABLE_FIELD_HISTORY_SELECTOR.replace('{APINAME}', fieldApiName),
-          (el) => (el.getAttribute('checked') === 'checked' ? true : false),
-        );
+        fieldHistoryTrackingResult.enableHistoryTracking = await page
+          .locator(ENABLE_FIELD_HISTORY_SELECTOR.replace('{APINAME}', fieldApiName))
+          .isChecked();
 
         fieldHistoryTrackingConfigs.push(fieldHistoryTrackingResult);
       }
@@ -101,25 +100,23 @@ export class HistoryTracking extends BrowserforcePlugin {
     const tableEnumOrIdByObjectApiName = await this.getTableEnumOrIdByObjectApiName(plan);
 
     // Now we can iterate over all history tracking configurations in the plan
-    for await (const historyTrackingConfig of plan) {
+    for (const historyTrackingConfig of plan) {
       // Open the object history tracking setup page
-      const page = await this.browserforce.openPage(
-        BASE_PATH.replace('{APINAME}', tableEnumOrIdByObjectApiName.get(historyTrackingConfig.objectApiName)),
+      await using page = await this.browserforce.openPage(
+        BASE_PATH.replace(
+          '{APINAME}',
+          tableEnumOrIdByObjectApiName.get(historyTrackingConfig.objectApiName),
+        ) as SalesforceUrlPath,
       );
 
       // Retrieve the object history tracking
       // If this is a custom object, this checkbox does not exist, so skip
       if (!historyTrackingConfig.objectApiName.includes('__c')) {
-        await page.waitForSelector(ENABLE_HISTORY_SELECTOR);
-
-        const historyTrackingEnabled = await page.$eval(ENABLE_HISTORY_SELECTOR, (el) =>
-          el.getAttribute('checked') === 'checked' ? true : false,
-        );
+        const historyTrackingEnabled = await page.locator(ENABLE_HISTORY_SELECTOR).isChecked();
 
         if (historyTrackingConfig.enableHistoryTracking !== historyTrackingEnabled) {
           // Click the checkbox
-          const enableHistoryTracking = await page.waitForSelector(ENABLE_HISTORY_SELECTOR);
-          await enableHistoryTracking.evaluate((node) => (node as HTMLElement).click());
+          await page.locator(ENABLE_HISTORY_SELECTOR).click();
         }
       }
 
@@ -132,32 +129,30 @@ export class HistoryTracking extends BrowserforcePlugin {
         );
 
         // We can now retrieve the field history settings for the fields specified for the object
-        for await (const fieldHistoryTracking of historyTrackingConfig.fieldHistoryTracking) {
+        for (const fieldHistoryTracking of historyTrackingConfig.fieldHistoryTracking) {
           const fieldApiName = fieldSelectorByFieldApiName.get(fieldHistoryTracking.fieldApiName);
 
           const fieldSelector = ENABLE_FIELD_HISTORY_SELECTOR.replace('{APINAME}', fieldApiName);
 
-          const fieldHistoryTrackingEnabled = await page.$eval(fieldSelector, (el) =>
-            el.getAttribute('checked') === 'checked' ? true : false,
-          );
+          const fieldHistoryTrackingEnabled = await page.locator(fieldSelector).isChecked();
 
           if (fieldHistoryTracking.enableHistoryTracking !== fieldHistoryTrackingEnabled) {
             // Click the checkbox
-            const enableFieldHistoryTracking = await page.waitForSelector(fieldSelector);
-            await enableFieldHistoryTracking.evaluate((node) => (node as HTMLElement).click());
+            await page.locator(fieldSelector).click();
           }
         }
       }
 
       // Save the settings
-      const saveButton = await page.waitForSelector(SAVE_BUTTON_SELECTOR);
-      await saveButton.evaluate((node) => (node as HTMLElement).click());
-
-      // Wait for the page to refresh
-      await page.waitForNavigation();
-
-      // Close the page
-      await page.close();
+      await page
+        .locator(SAVE_BUTTON_SELECTOR)
+        .filter({ visible: true }) // there are three save buttons [not visible, top row, bottom row]
+        .first()
+        .click();
+      await Promise.race([
+        page.waitForURL((url) => url.pathname.startsWith('/setup/forcecomHomepage.apexp')),
+        waitForPageErrors(page),
+      ]);
     }
   }
 
@@ -194,13 +189,11 @@ export class HistoryTracking extends BrowserforcePlugin {
     if (personAccountFieldApiNames.length > 0) {
       // NOTE: Unfortunately this includes deleted records
       // WORKAROUND: ORDER BY CreatedDate
-      const personAccountFieldsQuery = await this.org
-        .getConnection()
-        .tooling.query(
-          `SELECT Id, DeveloperName FROM CustomField WHERE DeveloperName IN (${personAccountFieldApiNames.join(
-            ',',
-          )}) AND TableEnumOrId = 'Contact' ORDER By CreatedDate ASC`,
-        );
+      const personAccountFieldsQuery = await this.browserforce.connection.tooling.query(
+        `SELECT Id, DeveloperName FROM CustomField WHERE DeveloperName IN (${personAccountFieldApiNames.join(
+          ',',
+        )}) AND TableEnumOrId = 'Contact' ORDER By CreatedDate ASC`,
+      );
 
       for (const personAccountField of personAccountFieldsQuery.records) {
         fieldSelectorByFieldApiName.set(
@@ -213,13 +206,11 @@ export class HistoryTracking extends BrowserforcePlugin {
     if (customFieldApiNames.length > 0) {
       // NOTE: Unfortunately this includes deleted records
       // WORKAROUND: ORDER BY CreatedDate
-      const customFieldsQuery = await this.org
-        .getConnection()
-        .tooling.query(
-          `SELECT Id, DeveloperName FROM CustomField WHERE DeveloperName IN (${customFieldApiNames.join(
-            ',',
-          )}) AND TableEnumOrId = '${tableEnumOrId}' ORDER By CreatedDate ASC`,
-        );
+      const customFieldsQuery = await this.browserforce.connection.tooling.query(
+        `SELECT Id, DeveloperName FROM CustomField WHERE DeveloperName IN (${customFieldApiNames.join(
+          ',',
+        )}) AND TableEnumOrId = '${tableEnumOrId}' ORDER By CreatedDate ASC`,
+      );
 
       for (const customField of customFieldsQuery.records) {
         fieldSelectorByFieldApiName.set(`${customField.DeveloperName}__c`, customField.Id.substring(0, 15));
@@ -251,13 +242,11 @@ export class HistoryTracking extends BrowserforcePlugin {
 
     // NOTE: Unfortunately this includes deleted records
     // WORKAROUND: ORDER BY CreatedDate
-    const customObjectsQuery = await this.org
-      .getConnection()
-      .tooling.query(
-        `SELECT Id, DeveloperName FROM CustomObject WHERE DeveloperName IN (${customObjectApiNames.join(
-          ',',
-        )}) ORDER BY CreatedDate ASC`,
-      );
+    const customObjectsQuery = await this.browserforce.connection.tooling.query(
+      `SELECT Id, DeveloperName FROM CustomObject WHERE DeveloperName IN (${customObjectApiNames.join(
+        ',',
+      )}) ORDER BY CreatedDate ASC`,
+    );
 
     for (const customObject of customObjectsQuery.records) {
       tableEnumOrIdByObjectApiName.set(`${customObject.DeveloperName}__c`, customObject.Id);

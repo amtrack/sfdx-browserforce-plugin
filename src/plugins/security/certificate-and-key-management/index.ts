@@ -1,12 +1,12 @@
 import type { Record } from '@jsforce/jsforce-node';
 import { existsSync } from 'fs';
 import * as path from 'path';
-import type { ElementHandle } from 'puppeteer';
 import * as queryString from 'querystring';
+import { type SalesforceUrlPath, waitForPageErrors } from '../../../browserforce.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
 
-const CERT_PREFIX_PATH = '0P1';
-const KEYSTORE_IMPORT_PATH = '_ui/security/certificate/KeyStoreImportUi/e';
+const CERT_PREFIX_PATH = '/0P1';
+const KEYSTORE_IMPORT_PATH: SalesforceUrlPath = `/_ui/security/certificate/KeyStoreImportUi/e?retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`;
 
 const FILE_UPLOAD_SELECTOR = 'input[type="file"]';
 const KEYSTORE_PASSWORD_SELECTOR = 'input#Password';
@@ -49,12 +49,10 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
       existingCertificates = // Note: Unfortunately scanAll=false has no impact and returns deleted records.
         // Workaround: Order by CreatedDate DESC to get the latest record first.
         (
-          await this.org
-            .getConnection()
-            .tooling.query<CertificateRecord>(
-              `SELECT Id, DeveloperName, MasterLabel, OptionsIsPrivateKeyExportable, KeySize FROM Certificate ORDER BY CreatedDate DESC`,
-              { scanAll: false },
-            )
+          await this.browserforce.connection.tooling.query<CertificateRecord>(
+            `SELECT Id, DeveloperName, MasterLabel, OptionsIsPrivateKeyExportable, KeySize FROM Certificate ORDER BY CreatedDate DESC`,
+            { scanAll: false },
+          )
         )?.records;
     }
     if (definition?.certificates?.length) {
@@ -120,7 +118,7 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
           // update
         } else {
           // create new
-          const urlAttributes = {
+          const urlAttributes: { [key: string]: string | number } = {
             DeveloperName: certificate.name,
             MasterLabel: certificate.label,
           };
@@ -130,21 +128,17 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
           if (certificate.exportable !== undefined) {
             urlAttributes['exp'] = certificate.exportable ? 1 : 0;
           }
-          const page = await this.browserforce.openPage(
+          await using page = await this.browserforce.openPage(
             `${CERT_PREFIX_PATH}/e?${queryString.stringify(urlAttributes)}`,
           );
-          await page.waitForSelector(SAVE_BUTTON_SELECTOR);
-          await Promise.all([page.waitForNavigation(), page.click(SAVE_BUTTON_SELECTOR)]);
-          await page.close();
+          await page.locator(SAVE_BUTTON_SELECTOR).first().click();
+          // -> id (15 character Salesforce ID starting with 0P1)
+          await page.waitForURL((url) => /\/0P1\w{12}/.test(url.pathname));
         }
       }
     }
     if (plan.importFromKeystore) {
       for (const certificate of plan.importFromKeystore) {
-        const page = await this.browserforce.openPage(`${KEYSTORE_IMPORT_PATH}`);
-        await page.waitForSelector(FILE_UPLOAD_SELECTOR);
-        const elementHandle = (await page.$(FILE_UPLOAD_SELECTOR)) as ElementHandle<HTMLInputElement>;
-        // TODO: make relative to this.command.flags.definitionfile
         if (!certificate.filePath) {
           throw new Error(`To import a certificate, the filePath is mandatory.`);
         }
@@ -152,41 +146,43 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
         if (!existsSync(filePath)) {
           throw new Error(`file does not exist: ${filePath}`);
         }
-        await elementHandle.uploadFile(filePath);
+        await using page = await this.browserforce.openPage(KEYSTORE_IMPORT_PATH);
+        await page.locator(FILE_UPLOAD_SELECTOR).setInputFiles(filePath);
         if (certificate.password) {
-          await page.waitForSelector(KEYSTORE_PASSWORD_SELECTOR);
-          await page.type(KEYSTORE_PASSWORD_SELECTOR, certificate.password);
+          await page.locator(KEYSTORE_PASSWORD_SELECTOR).fill(certificate.password);
         }
-        await page.waitForSelector(SAVE_BUTTON_SELECTOR);
-        await Promise.all([page.waitForNavigation(), page.click(SAVE_BUTTON_SELECTOR)]);
-        try {
-          await this.browserforce.throwPageErrors(page);
-        } catch (e) {
-          if (e.message === 'Data Not Available') {
-            throw new Error(
-              'Failed to import certificate from Keystore. Please enable Identity Provider first. https://salesforce.stackexchange.com/questions/61618/import-keystore-in-certificate-and-key-management',
-            );
-          }
-          throw e;
-        }
+        await page.locator(SAVE_BUTTON_SELECTOR).first().click();
+        await Promise.race([
+          page.waitForURL((url) => url.pathname === '/setup/forcecomHomepage.apexp'),
+          (async () => {
+            try {
+              await waitForPageErrors(page);
+            } catch (e) {
+              if (e instanceof Error && e.message === 'Data Not Available') {
+                throw new Error(
+                  'Failed to import certificate from Keystore. Please enable Identity Provider first. https://salesforce.stackexchange.com/questions/61618/import-keystore-in-certificate-and-key-management',
+                );
+              }
+              throw e;
+            }
+          })(),
+        ]);
         if (certificate.name) {
           // rename cert as it has the wrong name
           //  JKS aliases are case-insensitive (and so lowercase)
-          const certsResponse = await this.org
-            .getConnection()
-            .tooling.query<CertificateRecord>(
-              `SELECT Id FROM Certificate WHERE DeveloperName = '${certificate.name.toLowerCase()}'`,
-            );
-          const importedCert = certsResponse.records[0];
-          const certPage = await this.browserforce.openPage(
-            `${importedCert.Id}/e?MasterLabel=${certificate.name}&DeveloperName=${certificate.name}`,
+          const certsResponse = await this.browserforce.connection.tooling.query<CertificateRecord>(
+            `SELECT Id FROM Certificate WHERE DeveloperName = '${certificate.name.toLowerCase()}'`,
           );
-          await certPage.waitForSelector(SAVE_BUTTON_SELECTOR);
-          await Promise.all([certPage.waitForNavigation(), certPage.click(SAVE_BUTTON_SELECTOR)]);
-          await this.browserforce.throwPageErrors(certPage);
-          await certPage.close();
+          const importedCert = certsResponse.records[0];
+          await using certPage = await this.browserforce.openPage(
+            `/${importedCert.Id}/e?MasterLabel=${certificate.name}&DeveloperName=${certificate.name}&retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`,
+          );
+          await certPage.locator(SAVE_BUTTON_SELECTOR).first().click();
+          await Promise.race([
+            await page.waitForURL((url) => url.pathname === '/setup/forcecomHomepage.apexp'),
+            waitForPageErrors(certPage),
+          ]);
         }
-        await page.close();
       }
     }
   }

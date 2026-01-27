@@ -7,7 +7,7 @@ export type Config = {
   }>;
 };
 
-const EDIT_VIEW_PATH = 'lightning/setup/OrgDomain/page?address=%2Fdomainname%2FEditLogin.apexp';
+const EDIT_VIEW_PATH = '/lightning/setup/OrgDomain/page?address=%2Fdomainname%2FEditLogin.apexp';
 
 const SETUP_FORM_SELECTOR = 'form[id="BrandSetup:brandSetupForm"]';
 const SERVICE_CHECKBOX_SELECTOR = 'input.authOption[type="checkbox"]';
@@ -15,73 +15,70 @@ const SAVE_BUTTON_SELECTOR = 'input[id$=":Save"]';
 
 export class AuthenticationConfiguration extends BrowserforcePlugin {
   public async retrieve(definition: Config): Promise<Config> {
-    const page = await this.browserforce.openPage(EDIT_VIEW_PATH);
+    await using page = await this.browserforce.openPage(EDIT_VIEW_PATH);
     const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(page, SETUP_FORM_SELECTOR);
-    await frameOrPage.waitForSelector(SERVICE_CHECKBOX_SELECTOR);
 
-    const services = await frameOrPage.$$eval(
-      SERVICE_CHECKBOX_SELECTOR,
-      (inputs, definedServices) =>
-        (inputs as HTMLInputElement[])
-          .map((cb) => {
-            const labelElement = document.querySelector(`label[for="${cb.id}"]`);
-            const label = labelElement ? labelElement.textContent!.trim() : cb.id;
-            return {
-              label,
-              enabled: cb.checked,
-            };
-          })
-          .filter((service) => definedServices.some((definedService) => definedService.label === service.label)),
-      definition.services,
+    const inputLocators = await frameOrPage.locator(SERVICE_CHECKBOX_SELECTOR).all();
+    const allServices = await Promise.all(
+      inputLocators.map(async (input) => {
+        const id = await input.getAttribute('id');
+        const labelLocator = frameOrPage.locator(`label[for="${id}"]`);
+        const labelCount = await labelLocator.count();
+        const label = labelCount > 0 ? (await labelLocator.textContent())!.trim() : id!;
+        return {
+          label,
+          enabled: await input.isChecked(),
+        };
+      }),
+    );
+    const services = allServices.filter((service) =>
+      definition.services.some((definedService) => definedService.label === service.label),
     );
 
-    await page.close();
     return { services };
   }
 
   public async apply(plan: Config): Promise<void> {
-    const page = await this.browserforce.openPage(EDIT_VIEW_PATH);
+    await using page = await this.browserforce.openPage(EDIT_VIEW_PATH);
     const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(page, SETUP_FORM_SELECTOR);
-    await frameOrPage.waitForSelector(SERVICE_CHECKBOX_SELECTOR);
 
     for (const svc of plan.services) {
-      const checkboxId = (await frameOrPage.$$eval(
-        SERVICE_CHECKBOX_SELECTOR,
-        (inputs, serviceName) => {
-          for (const inp of inputs as HTMLInputElement[]) {
-            const labelElement = document.querySelector(`label[for="${inp.id}"]`);
-            if (labelElement && labelElement.textContent!.trim() === serviceName) {
-              return inp.id;
-            }
+      const inputLocators = await frameOrPage.locator(SERVICE_CHECKBOX_SELECTOR).all();
+      let checkboxId: string | null = null;
+      for (const input of inputLocators) {
+        const id = await input.getAttribute('id');
+        const labelLocator = frameOrPage.locator(`label[for="${id}"]`);
+        const labelCount = await labelLocator.count();
+        if (labelCount > 0) {
+          const labelText = (await labelLocator.textContent())!.trim();
+          if (labelText === svc.label) {
+            checkboxId = id;
+            break;
           }
-          return null;
-        },
-        svc.label,
-      )) as string | null;
+        }
+      }
 
       if (!checkboxId) {
         throw new Error(`Authentication service "${svc.label}" not found`);
       }
 
       const selector = `[id="${checkboxId}"]`;
-      const isChecked = await frameOrPage.$eval(selector, (el) => (el as HTMLInputElement).checked);
+      const isChecked = await frameOrPage.locator(selector).isChecked();
 
       if (svc.enabled !== isChecked) {
-        await frameOrPage.click(selector);
+        await frameOrPage.locator(selector).click();
       }
     }
 
-    const anyChecked = await frameOrPage.$$eval(SERVICE_CHECKBOX_SELECTOR, (inputs) =>
-      (inputs as HTMLInputElement[]).some((cb) => cb.checked),
-    );
+    const inputLocators = await frameOrPage.locator(SERVICE_CHECKBOX_SELECTOR).all();
+    const checkedStates = await Promise.all(inputLocators.map((input) => input.isChecked()));
+    const anyChecked = checkedStates.some((checked) => checked);
     if (!anyChecked) {
-      throw new Error('Change failed: “You must select at least one authentication service.”');
+      throw new Error('Change failed: "You must select at least one authentication service."');
     }
-    await frameOrPage.waitForSelector(SAVE_BUTTON_SELECTOR);
     await Promise.all([
-      frameOrPage.waitForNavigation({ waitUntil: 'networkidle0' }),
-      frameOrPage.click(SAVE_BUTTON_SELECTOR),
+      page.waitForResponse((resp) => new URL(resp.url()).pathname === '/domainname/DomainName.apexp'),
+      frameOrPage.locator(SAVE_BUTTON_SELECTOR).first().click(),
     ]);
-    await page.close();
   }
 }

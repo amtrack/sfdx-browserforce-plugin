@@ -1,10 +1,11 @@
+import { waitForPageErrors } from '../../../browserforce.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
 
 const ADD_BUTTON_SELECTOR = 'a[id$=":duelingListBox:backingList_add"]';
 const REMOVE_BUTTON_SELECTOR = 'a[id$=":duelingListBox:backingList_remove"]';
 const SAVE_BUTTON_SELECTOR = 'input[id$=":button_pc_save"]';
-const VALUES_AVAILABLE_SELECTOR = 'select[id$=":duelingListBox:backingList_a"]:not([disabled="disabled"])';
-const VALUES_ENABLED_SELECTOR = 'select[id$=":duelingListBox:backingList_s"]:not([disabled="disabled"])';
+const VALUES_AVAILABLE_SELECTOR = 'select[id$=":duelingListBox:backingList_a"]';
+const VALUES_ENABLED_SELECTOR = 'select[id$=":duelingListBox:backingList_s"]';
 
 type PermissionSet = {
   permissionSetName: string;
@@ -15,16 +16,17 @@ export class ServicePresenceStatus extends BrowserforcePlugin {
   public async retrieve(definition: PermissionSet): Promise<string[]> {
     // Query for the permission set
     const permissionSetName = definition.permissionSetName;
-    const permissionSet = await this.org
-      .getConnection()
-      .singleRecordQuery(`SELECT Id FROM PermissionSet WHERE Name='${permissionSetName}'`);
+    const permissionSet = await this.browserforce.connection.singleRecordQuery(
+      `SELECT Id FROM PermissionSet WHERE Name='${permissionSetName}'`,
+    );
 
     // Open the permission set setup page
-    const page = await this.browserforce.openPage(`${permissionSet.Id}/e?s=ServicePresenceStatusAccess`);
+    await using page = await this.browserforce.openPage(`/${permissionSet.Id}/e?s=ServicePresenceStatusAccess`);
 
-    const enabledServicePresenceStatuses = await page.$$eval(`${VALUES_ENABLED_SELECTOR} > option`, (options) => {
-      return options.map((option) => option.title ?? '');
-    });
+    const enabledOptions = await page.locator(`${VALUES_ENABLED_SELECTOR} > option:not(:disabled)`).all();
+    const enabledServicePresenceStatuses = await Promise.all(
+      enabledOptions.map((option) => option.getAttribute('title')),
+    );
 
     return enabledServicePresenceStatuses;
   }
@@ -32,44 +34,37 @@ export class ServicePresenceStatus extends BrowserforcePlugin {
   public async apply(config: PermissionSet): Promise<void> {
     // Query for the permission set
     const permissionSetName = config.permissionSetName;
-    const permissionSet = await this.org
-      .getConnection()
-      .singleRecordQuery(`SELECT Id FROM PermissionSet WHERE Name='${permissionSetName}'`);
+    const permissionSet = await this.browserforce.connection.singleRecordQuery(
+      `SELECT Id FROM PermissionSet WHERE Name='${permissionSetName}'`,
+    );
 
-    // Open the permission set setup page
-    const page = await this.browserforce.openPage(`${permissionSet.Id}/e?s=ServicePresenceStatusAccess`);
+    await using page = await this.browserforce.openPage(`/${permissionSet.Id}/e?s=ServicePresenceStatusAccess`);
 
     if (config?.servicePresenceStatuses) {
-      await page.waitForSelector(`${VALUES_AVAILABLE_SELECTOR} > option`);
+      const availableOptionLocators = await page.locator(`${VALUES_AVAILABLE_SELECTOR} > option:not(:disabled)`).all();
+      const availableOptions = await Promise.all(availableOptionLocators.map((option) => option.getAttribute('title')));
 
-      const availableElements = await page.$$(`${VALUES_AVAILABLE_SELECTOR} > option`);
+      const enabledOptionLocators = await page.locator(`${VALUES_ENABLED_SELECTOR} > option:not(:disabled)`).all();
+      const enabledOptions = await Promise.all(enabledOptionLocators.map((option) => option.getAttribute('title')));
 
-      for (const availableElement of availableElements) {
-        const optionTitle = (await availableElement.evaluate((node) => node.getAttribute('title')))?.toString();
-
-        if (optionTitle && config.servicePresenceStatuses.includes(optionTitle)) {
-          await availableElement.click();
-          await page.click(ADD_BUTTON_SELECTOR);
+      for (const optionTitle of availableOptions) {
+        if (config.servicePresenceStatuses.includes(optionTitle)) {
+          await page.getByRole('option', { name: optionTitle, exact: true }).click();
+          await page.locator(ADD_BUTTON_SELECTOR).click();
         }
       }
 
-      await page.waitForSelector(`${VALUES_ENABLED_SELECTOR} > option`);
-      const enabledElements = await page.$$(`${VALUES_ENABLED_SELECTOR} > option`);
-
-      for (const enabledElement of enabledElements) {
-        const optionTitle = (await enabledElement.evaluate((node) => node.getAttribute('title')))?.toString();
-
-        if (optionTitle && !config.servicePresenceStatuses.includes(optionTitle)) {
-          await enabledElement.click();
-          await page.click(REMOVE_BUTTON_SELECTOR);
+      // Find first option that needs to be removed
+      for (const optionTitle of enabledOptions) {
+        if (!config.servicePresenceStatuses.includes(optionTitle)) {
+          await page.getByRole('option', { name: optionTitle, exact: true }).click();
+          await page.locator(REMOVE_BUTTON_SELECTOR).click();
         }
       }
     }
 
     // Save the settings and wait for page refresh
-    await Promise.all([page.waitForNavigation(), page.click(SAVE_BUTTON_SELECTOR)]);
-
-    // Close the page
-    await page.close();
+    await page.locator(SAVE_BUTTON_SELECTOR).click();
+    await Promise.race([page.waitForURL((url) => !url.pathname.endsWith('/e')), waitForPageErrors(page)]);
   }
 }

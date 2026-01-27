@@ -10,11 +10,11 @@ const readJsonFile = function (u: string) {
   return JSON.parse(readFileSync(new URL(u, import.meta.url), 'utf8'));
 };
 
-describe.skip(UserAccessPolicies.name, function () {
+describe(UserAccessPolicies.name, function () {
   this.timeout('10m');
   let plugin: UserAccessPolicies;
   before(() => {
-    plugin = new UserAccessPolicies(global.bf);
+    plugin = new UserAccessPolicies(global.browserforce);
   });
 
   const configActivate = readJsonFile('./activate.json').settings.userAccessPolicies;

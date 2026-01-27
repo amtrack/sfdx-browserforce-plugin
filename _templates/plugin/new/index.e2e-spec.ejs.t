@@ -7,7 +7,7 @@ import { type Config, <%= h.changeCase.pascalCase(name) %> } from './index.js';
 describe(<%= h.changeCase.pascalCase(name) %>.name, function() {
   let plugin: <%= h.changeCase.pascalCase(name) %>;
   before(() => {
-    plugin = new <%= h.changeCase.pascalCase(name) %>(global.bf);
+    plugin = new <%= h.changeCase.pascalCase(name) %>(global.browserforce);
   });
 
   const configEnabled: Config = {

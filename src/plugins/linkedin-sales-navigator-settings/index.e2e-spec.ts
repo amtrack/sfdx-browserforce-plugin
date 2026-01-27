@@ -4,7 +4,7 @@ import { Config, LinkedInSalesNavigatorSettings } from './index.js';
 describe(LinkedInSalesNavigatorSettings.name, function () {
   let plugin: LinkedInSalesNavigatorSettings;
   before(() => {
-    plugin = new LinkedInSalesNavigatorSettings(global.bf);
+    plugin = new LinkedInSalesNavigatorSettings(global.browserforce);
   });
 
   const configEnabled: Config = {

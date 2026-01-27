@@ -11,7 +11,7 @@ describe(ServiceChannels.name, function () {
   this.timeout('10m');
   let plugin: ServiceChannels;
   before(() => {
-    plugin = new ServiceChannels(global.bf);
+    plugin = new ServiceChannels(global.browserforce);
   });
 
   const configureServiceChannels = [
@@ -37,7 +37,7 @@ describe(ServiceChannels.name, function () {
     },
   ];
   it('should disable status based capacity model', async () => {
-    const omnniChannelPlugin = new OmniChannelSettings(global.bf);
+    const omnniChannelPlugin = new OmniChannelSettings(global.browserforce);
     await omnniChannelPlugin.run({ enableStatusBasedCapacityModel: false });
   });
 
@@ -54,7 +54,7 @@ describe(ServiceChannels.name, function () {
   });
 
   it('should enable status based capacity model as a prerequisite', async () => {
-    const omnniChannelPlugin = new OmniChannelSettings(global.bf);
+    const omnniChannelPlugin = new OmniChannelSettings(global.browserforce);
     await omnniChannelPlugin.run({ enableStatusBasedCapacityModel: true });
   });
 
@@ -65,10 +65,11 @@ describe(ServiceChannels.name, function () {
   });
 
   it('should delete Service Channels', async () => {
-    const conn = global.bf.org.getConnection();
-    const result = await conn.query("SELECT Id FROM ServiceChannel WHERE DeveloperName IN ('CaseTest', 'LeadTest')");
+    const result = await global.browserforce.connection.query(
+      "SELECT Id FROM ServiceChannel WHERE DeveloperName IN ('CaseTest', 'LeadTest')",
+    );
     if (result.records?.length) {
-      await conn.delete(
+      await global.browserforce.connection.delete(
         'ServiceChannel',
         result.records.map((r) => r.Id),
       );

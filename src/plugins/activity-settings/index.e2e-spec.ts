@@ -4,7 +4,7 @@ import { ActivitySettings } from './index.js';
 describe(ActivitySettings.name, function () {
   let plugin: ActivitySettings;
   before(() => {
-    plugin = new ActivitySettings(global.bf);
+    plugin = new ActivitySettings(global.browserforce);
   });
 
   describe('allowUsersToRelateMultipleContactsToTasksAndEvents', () => {

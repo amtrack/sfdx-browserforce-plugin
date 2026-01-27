@@ -1,8 +1,11 @@
 # sfdx-browserforce-plugin
 
-> sfdx plugin to apply settings in the Salesforce Setup Menu using browser automation
+> sf plugin to apply settings in the Salesforce Setup Menu using browser automation
 
 [![Actions Status](https://github.com/amtrack/sfdx-browserforce-plugin/actions/workflows/default.yml/badge.svg?branch=main)](https://github.com/amtrack/sfdx-browserforce-plugin/actions?query=branch:main)
+
+> [!NOTE]
+> Since v6 we're using Playwright instead of Puppeteer. Please see the [release notes](https://github.com/amtrack/sfdx-browserforce-plugin/releases) for migration instructions.
 
 ✅ Most settings in the Salesforce Setup Menu are represented as [Settings](https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_settings.htm) in the Metadata API.
 
@@ -54,7 +57,7 @@ $ sf browserforce apply -f ./config/currency.json --target-org myOrg@example.com
 
 - 🔧 configuration using JSON Schema (similar to the [Scratch Org Definition Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_scratch_orgs_def_file.htm))
 - 🧠 idempotency of the `apply` command only applies what's necessary and allows re-execution (concept similar to [terraform](https://www.terraform.io/docs/commands/apply.html))
-- 🏎️ browser automation powered by Puppeteer and "Chrome for Testing", [learn more about Puppeteer and Browserforce](#puppeteer)
+- 🏎️ browser automation powered by Playwright, [learn more about Playwright and Browserforce](#playwright)
 
 ## Supported Browserforce Settings
 
@@ -77,79 +80,165 @@ But there's more:
 
 ## Installation
 
-There are several different methods to install `sfdx-browserforce-plugin`:
+```shell
+sf plugins install sfdx-browserforce-plugin
+```
+
+> [!IMPORTANT]
+> Playwright does not come with a browser automatically
+
+You might need to install a browser explicitly or configure Browserforce to use an existing browser.
+
+> [!TIP]
+> If you're using Browserforce on GitHub Actions with the `ubuntu-latest` (v24) Docker image, we can use the preinstalled Google Chrome automatically.
+> No further configuration and installation needed, because the `CHROME_BIN` environment variable is already set.
+
+### Option 1: Install a browser using our Playwright wrapper command
 
 ```shell
-# as an sf plugin globally
-sf plugins install sfdx-browserforce-plugin
+sf browserforce playwright -- install chromium
+```
 
-# or standalone globally
-npm install --global sfdx-browserforce-plugin
+> [!IMPORTANT]
+> The two hyphens `--` are intentional and separate the sf command from the arguments to be passed to the playwright executable.
 
-# or standalone locally (as a dependency in your Node.js project)
-npm install --save-dev sfdx-browserforce-plugin
+### Option 2: Configure Browserforce to use an existing browser
+
+You can use any of the following environment variables:
+
+```shell
+BROWSERFORCE_BROWSER_CHANNEL="chrome"
+BROWSERFORCE_BROWSER_CHANNEL="chromium"
+BROWSERFORCE_BROWSER_EXECUTABLE_PATH="/usr/bin/google-chrome"
+CHROME_BIN="/usr/bin/google-chrome"
 ```
 
 ## Usage
 
-Depending on your choice of installation, you can find the `browserforce` namespace:
+<!-- commands -->
+* [`sf browserforce apply`](#sf-browserforce-apply)
+* [`sf browserforce playwright`](#sf-browserforce-playwright)
+
+## `sf browserforce apply`
+
+apply a plan from a config file
+
+```
+USAGE
+  $ sf browserforce apply -o <value> [--json] [--flags-dir <value>] [-f <value>] [-d] [--headless] [--slow-mo <value>]
+    [--timeout <value>] [--trace] [--browser-executable-path <value>] [--browser-channel <value>] [--max-retries
+    <value>] [--retry-timeout <value>]
+
+FLAGS
+  -d, --dry-run                 [env: BROWSERFORCE_DRY_RUN] dry run
+  -f, --definitionfile=<value>  path to a browserforce config file
+  -o, --target-org=<value>      (required) Username or alias of the target org. Not required if the `target-org`
+                                configuration variable is already set.
+
+BROWSER CONFIGURATION FLAGS
+  --browser-channel=<value>          [env: BROWSERFORCE_BROWSER_CHANNEL] the channel (e.g. chromium or chrome) to use
+  --browser-executable-path=<value>  [env: BROWSERFORCE_BROWSER_EXECUTABLE_PATH] the path to a browser executable
+  --[no-]headless                    [env: BROWSERFORCE_HEADLESS] run in headless mode (default: true)
+  --slow-mo=<value>                  [env: BROWSERFORCE_SLOWMO] slow motion in milliseconds (default: 0)
+  --timeout=<value>                  [default: 90000, env: BROWSERFORCE_NAVIGATION_TIMEOUT_MS] the default navigation
+                                     timeout in milliseconds
+  --trace                            [env: BROWSERFORCE_TRACE] create a Playwright trace file
+
+GLOBAL FLAGS
+  --flags-dir=<value>  Import flag values from a directory.
+  --json               Format output as json.
+
+RETRY CONFIGURATION FLAGS
+  --max-retries=<value>    [default: 6, env: BROWSERFORCE_RETRY_MAX_RETRIES] the maximum number of retries for retryable
+                           actions
+  --retry-timeout=<value>  [default: 4000, env: BROWSERFORCE_RETRY_TIMEOUT_MS] the inital timeout in milliseconds for
+                           retryable actions (exponentially increased)
+
+DESCRIPTION
+  apply a plan from a config file
+
+EXAMPLES
+  $ sf browserforce apply -f ./config/currency.json --target-org myOrg@example.com
+    logging in... done
+    Applying config file ./config/currency.json to org myOrg@example.com
+    [CompanyInformation] retrieving state... done
+    [CompanyInformation] changing 'defaultCurrencyIsoCode' to '"English (South Africa) - ZAR"'... done
+    logging out... done
+  
+
+FLAG DESCRIPTIONS
+  -d, --dry-run  dry run
+
+    Retrieve the config and show the diff, but don't apply it.
+
+  --browser-channel=<value>  the channel (e.g. chromium or chrome) to use
+
+    Playwright will try to figure out the path to the browser executable automatically.
+
+  --browser-executable-path=<value>  the path to a browser executable
+
+    Note: The environment variable CHROME_BIN can also be used. On GitHub Actions with ubuntu-latest, CHROME_BIN is set
+    to /usr/bin/google-chrome.
+
+  --trace  create a Playwright trace file
+
+    The trace file can be viewed with "sf browserforce playwright -- show-trace trace-<date>.zip".
+```
+
+_See code: [src/commands/browserforce/apply.ts](https://github.com/amtrack/sfdx-browserforce-plugin/blob/v0.0.0-development/src/commands/browserforce/apply.ts)_
+
+## `sf browserforce playwright`
+
+access the Playwright CLI
+
+```
+USAGE
+  $ sf browserforce playwright
+
+DESCRIPTION
+  access the Playwright CLI
+
+EXAMPLES
+  $ sf browserforce playwright -- --help
+
+  $ sf browserforce playwright -- --version
+
+  $ sf browserforce playwright -- install --list
+
+  $ sf browserforce playwright -- install chromium
+```
+
+_See code: [src/commands/browserforce/playwright.ts](https://github.com/amtrack/sfdx-browserforce-plugin/blob/v0.0.0-development/src/commands/browserforce/playwright.ts)_
+<!-- commandsstop -->
+
+## Playwright
+
+We use [Playwright](https://playwright.dev/) for browser automation.
+
+For more information on browser automation best practices, see the [Playwright documentation](./docs/PLAYWRIGHT.md).
+
+## Alternative Installation
+
+You can also install the `sfdx-browserforce-plugin` NPM package without `sf`. The package exports a `sfdx-browserforce-plugin` executable:
+
+Example:
 
 ```shell
-# globally in the sf cli
-sf browserforce
-
-# globally in the sfdx-browserforce-plugin executable
-sfdx-browserforce-plugin browserforce
-
-# locally in the sfdx-browserforce-plugin executable (npx is awesome!)
-npx sfdx-browserforce-plugin browserforce
-```
-
-```console
-$ sfdx-browserforce browserforce -h
-browser automation
-
-USAGE
-  $ sfdx-browserforce-plugin browserforce COMMAND
-
-COMMANDS
-  browserforce apply  apply a plan from a definition file
-  browserforce plan   retrieve state and generate plan file
-```
-
-Both the `browserforce apply` and `browserforce plan` commands expect a config file and a target username or alias for the org.
-
-## Environment Variables
-
-- `BROWSER_DEBUG` run in non-headless mode (default: `false`)
-- `BROWSERFORCE_NAVIGATION_TIMEOUT_MS`: adjustable for slow internet connections (default: `90000`)
-- `BROWSERFORCE_RETRY_MAX_RETRIES`: number of retries on failures opening a page (default: `4`)
-- `BROWSERFORCE_RETRY_TIMEOUT_MS`: initial time between retries in exponential mode (default: `4000`)
-
-## Puppeteer
-
-We use [Puppeteer](https://github.com/puppeteer/puppeteer) for browser automation which comes with its own "Chrome for Testing" browser.
-
-The puppeteer [installation doc](https://github.com/puppeteer/puppeteer#installation) describes how this works:
-
-> When you install Puppeteer, it automatically downloads a recent version of
-> [Chrome for Testing](https://goo.gle/chrome-for-testing) (~170MB macOS, ~282MB Linux, ~280MB Windows) that is [guaranteed to
-> work](https://pptr.dev/faq#q-why-doesnt-puppeteer-vxxx-work-with-chromium-vyyy)
-> with Puppeteer. The browser is downloaded to the `$HOME/.cache/puppeteer` folder
-> by default (starting with Puppeteer v19.0.0).
-
-In most of the cases this just works! If you still want to skip the download and use another browser installation, you can do this as follows:
-
-```console
-export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-sf plugins install sfdx-browserforce-plugin
-export PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
-sf browserforce:apply ...
+npm install --save-dev sfdx-browserforce-plugin
+npx sfdx-browserforce-plugin browserforce -h
 ```
 
 ## Troubleshooting
 
-- The installation is triggered via the `postinstall` hook of npm/yarn. If you've disabled running scripts with npm (`--ignore-scripts` or via config file), it will not download the browser.
+If no browser is installed or launching fails, you'll get an error message from Playwright with a suggestion.
+
+Typically this will guide you to install a browser.
+If you've installed sfdx-browserforce-plugin using `sf`, you can replace the following:
+
+```diff
+- npx playwright install chromium
++ sf browserforce playwright -- install chromium
+```
 
 ## Contributing
 

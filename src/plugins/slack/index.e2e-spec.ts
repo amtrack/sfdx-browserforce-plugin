@@ -1,10 +1,10 @@
 import assert from 'assert';
 import { type Config, Slack } from './index.js';
 
-describe.skip(Slack.name, function () {
+describe(Slack.name, function () {
   let plugin: Slack;
   before(() => {
-    plugin = new Slack(global.bf);
+    plugin = new Slack(global.browserforce);
   });
 
   const configEnable: Config = {

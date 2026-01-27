@@ -1,7 +1,7 @@
-import { ElementHandle, Page } from 'puppeteer';
+import type { Locator, Page } from 'playwright';
 import { BrowserforcePlugin } from '../../plugin.js';
 
-const BASE_PATH = 'lightning/setup/ThemingAndBranding/home';
+const BASE_PATH = '/lightning/setup/ThemingAndBranding/home';
 
 // Spring 25 changed "lightning-datatable" to "one-theme-datatable"
 const THEME_ROW_SELECTOR = '#setupComponent table > tbody > tr';
@@ -15,74 +15,49 @@ type Config = {
 type Theme = {
   developerName: string;
   isActive: boolean;
-  rowElementHandle: ElementHandle;
+  rowLocator: Locator;
 };
 
 export class LightningExperienceSettings extends BrowserforcePlugin {
-  async setupDOMObserver(page: Page, elementName: string, callbackName: string): Promise<void> {
-    await page.evaluate(
-      (elementName: string, callbackName: string) => {
-        const observer = new MutationObserver((mutations) => {
-          for (const mutation of mutations) {
-            for (const node of Array.from(mutation.addedNodes)) {
-              if (node instanceof Element && node.tagName.toLowerCase() === elementName) {
-                observer.disconnect();
-                // Call the exposed function to handle the element
-                (window as any)[callbackName]();
-                return;
-              }
-            }
-          }
-        });
-        observer.observe(document.body, { childList: true, subtree: false });
-        // Clean up observer after navigation starts (element won't appear)
-        window.addEventListener(
-          'beforeunload',
-          () => {
-            observer.disconnect();
-          },
-          { once: true },
-        );
-      },
-      elementName,
-      callbackName,
-    );
-  }
-
   public async retrieve(): Promise<Config> {
-    const page = await this.browserforce.openPage(BASE_PATH);
+    await using page = await this.browserforce.openPage(BASE_PATH);
     const themes = await this.getThemeData(page);
     const activeTheme = themes.find((theme) => theme.isActive);
     const response = {
       activeThemeName: activeTheme!.developerName,
     };
-    await page.close();
     return response;
   }
 
   public async apply(config: Config): Promise<void> {
-    const page = await this.browserforce.openPage(BASE_PATH);
+    await using page = await this.browserforce.openPage(BASE_PATH);
     await this.setActiveTheme(page, config.activeThemeName);
-    await page.close();
   }
 
   async getThemeData(page: Page): Promise<Theme[]> {
-    await page.waitForSelector(THEME_ROW_SELECTOR);
-    const rowElementHandles = await page.$$(THEME_ROW_SELECTOR);
-    await page.waitForSelector(DEVELOPER_NAMES_SELECTOR);
-    const developerNames = await page.$$eval(DEVELOPER_NAMES_SELECTOR, (cells) =>
-      cells.map((cell: HTMLTableCellElement) => cell.innerText),
-    );
-    const states = await page.$$eval(STATES_SELECTOR, (cells) =>
-      cells.map((cell) => cell.shadowRoot?.querySelector('lightning-primitive-icon') !== null),
-    );
-    return developerNames.map((developerName, i) => {
-      return {
+    await page.locator(THEME_ROW_SELECTOR).first().waitFor();
+    const rowLocator = page.locator(THEME_ROW_SELECTOR);
+    const rowCount = await rowLocator.count();
+
+    await page.locator(DEVELOPER_NAMES_SELECTOR).first().waitFor();
+    const developerNameLocator = page.locator(DEVELOPER_NAMES_SELECTOR);
+    const stateLocator = page.locator(STATES_SELECTOR);
+
+    const themes: Theme[] = [];
+    for (let i = 0; i < rowCount; i++) {
+      const developerName = await developerNameLocator.nth(i).innerText();
+      const hasIcon = await stateLocator
+        .nth(i)
+        .filter({ has: page.locator('lightning-primitive-icon') })
+        .isVisible();
+      themes.push({
         developerName,
-        isActive: states[i],
-        rowElementHandle: rowElementHandles[i],
-      };
-    });
+        isActive: hasIcon,
+        rowLocator: rowLocator.nth(i),
+      });
+    }
+
+    return themes;
   }
 
   async setActiveTheme(page: Page, themeDeveloperName: string): Promise<void> {
@@ -93,35 +68,34 @@ export class LightningExperienceSettings extends BrowserforcePlugin {
         `Could not find theme "${themeDeveloperName}" in list of themes: ${data.map((d) => d.developerName)}`,
       );
     }
-    // When switching from a SDLS2 to a SLDS1 theme, the following modal appears:
-    // Activate this theme?
-    // This theme uses SLDS 1. When you activate this theme, you also disable SLDS 2.
-    // - Never Mind
-    // - Activate
-    await page.exposeFunction('onModalAppeared', async () => {
-      const confirmButtonSelector = 'lightning-modal lightning-button[variant="brand"]';
-      await page.waitForSelector(confirmButtonSelector, { visible: true });
-      const confirmButton = await page.$(confirmButtonSelector);
-      if (confirmButton) {
-        await page.evaluate((e: HTMLElement) => e.click(), confirmButton);
-      }
-    });
-    await this.setupDOMObserver(page, 'lightning-overlay-container', 'onModalAppeared');
 
-    const newActiveThemeRowElementHandle = theme.rowElementHandle;
-    await page.waitForSelector(`${THEME_ROW_SELECTOR} lightning-button-menu`, {
-      visible: true,
-    });
-    const menuButton = await newActiveThemeRowElementHandle.$(
+    const newActiveThemeRowLocator = theme.rowLocator;
+    await page.locator(`${THEME_ROW_SELECTOR} lightning-button-menu`).first().waitFor();
+
+    const menuButton = newActiveThemeRowLocator.locator(
       'td lightning-primitive-cell-factory lightning-primitive-cell-actions lightning-button-menu',
     );
-    await page.evaluate((e: HTMLElement) => e.click(), menuButton);
-    await page.waitForSelector(`${THEME_ROW_SELECTOR} lightning-button-menu slot lightning-menu-item`, {
-      visible: true,
-    });
-    const menuItems = await menuButton!.$$('slot lightning-menu-item');
+    await menuButton.click();
+
+    await page.locator(`${THEME_ROW_SELECTOR} lightning-button-menu slot lightning-menu-item`).first().waitFor();
+
     // second last item: [show, activate, preview]
-    const activateMenuItem = menuItems[menuItems.length - 2];
-    await Promise.all([page.waitForNavigation(), page.evaluate((e: HTMLElement) => e.click(), activateMenuItem)]);
+    const activateMenuItem = menuButton.locator('slot lightning-menu-item').nth(-2);
+
+    await Promise.all([
+      Promise.race([
+        page.waitForEvent('load'), // immediate page reload when SLDS1 theme was activated
+        Promise.all([
+          page.waitForEvent('load'),
+          // When switching from a SDLS2 to a SLDS1 theme, the following modal appears:
+          // Activate this theme?
+          // This theme uses SLDS 1. When you activate this theme, you also disable SLDS 2.
+          // - Never Mind
+          // - Activate <--
+          page.locator('lightning-modal lightning-button[variant="brand"]').click(),
+        ]),
+      ]),
+      activateMenuItem.click(),
+    ]);
   }
 }

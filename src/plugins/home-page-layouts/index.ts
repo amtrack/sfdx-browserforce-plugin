@@ -1,7 +1,8 @@
 import type { Record } from '@jsforce/jsforce-node';
+import { type SalesforceUrlPath, waitForPageErrors } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
 
-const BASE_PATH = 'setup/ui/assignhomelayoutedit.jsp';
+const BASE_PATH: SalesforceUrlPath = `/setup/ui/assignhomelayoutedit.jsp?retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`;
 
 const BASE_SELECTOR = 'table.detailList';
 const SAVE_BUTTON_SELECTOR = 'input[name="save"]';
@@ -25,31 +26,21 @@ type HomePageLayoutAssignment = {
 
 export class HomePageLayouts extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
-    const page = await this.browserforce.openPage(BASE_PATH);
-    await page.waitForSelector(BASE_SELECTOR);
-    const profiles = await page.$$eval('table.detailList tbody tr td label', (labels: HTMLLabelElement[]) => {
-      return labels.map((label) => {
-        for (let i = 0; label.childNodes.length; i++) {
-          if (label.childNodes[i].nodeType === label.TEXT_NODE) {
-            return label.childNodes[i].nodeValue ?? '';
-          }
-        }
-        throw new Error('retrieving HomePageLayouts failed');
-      });
-    });
-    const layouts = await page.$$eval('table.detailList tbody tr td select', (selects: HTMLSelectElement[]) => {
-      return selects
-        .map((select) => select.selectedOptions[0].text)
-        .map((text) => (text === 'Home Page Default' ? '' : text));
-    });
-    const homePageLayoutAssignments: HomePageLayoutAssignment[] = [];
-    for (let i = 0; i < profiles.length; i++) {
-      homePageLayoutAssignments.push({
-        profile: profiles[i],
-        layout: layouts[i],
-      });
-    }
-    await page.close();
+    await using page = await this.browserforce.openPage(BASE_PATH);
+    await page.locator(BASE_SELECTOR).waitFor();
+
+    const profiles = (await page.locator('table.detailList tbody tr td label').allTextContents()).map((label) =>
+      label.replace(/^\*/, ''),
+    ); // removing * from assistiveText
+
+    const layouts = (await page.locator('table.detailList tbody tr td select option:checked').allTextContents()).map(
+      (layout) => (layout === 'Home Page Default' ? '' : layout),
+    ); // value is "default" instead of an id
+
+    const homePageLayoutAssignments: HomePageLayoutAssignment[] = profiles.map((profile, i) => ({
+      profile,
+      layout: layouts[i],
+    }));
     return {
       homePageLayoutAssignments,
     };
@@ -75,15 +66,16 @@ export class HomePageLayouts extends BrowserforcePlugin {
         return `'${assignment.layout}'`;
       })
       .join(',');
-    const profiles = await this.org
-      .getConnection()
-      .tooling.query<ProfileRecord>(`SELECT Id, Name FROM Profile WHERE Name IN (${profilesList})`);
-    const homePageLayouts = await this.org
-      .getConnection()
-      .tooling.query<HomePageLayoutRecord>(`SELECT Id, Name FROM HomePageLayout WHERE Name IN (${layoutsList})`);
+    const profiles = await this.browserforce.connection.tooling.query<ProfileRecord>(
+      `SELECT Id, Name FROM Profile WHERE Name IN (${profilesList})`,
+    );
+    const homePageLayouts = await this.browserforce.connection.tooling.query<HomePageLayoutRecord>(
+      `SELECT Id, Name FROM HomePageLayout WHERE Name IN (${layoutsList})`,
+    );
 
-    const page = await this.browserforce.openPage(BASE_PATH);
-    await page.waitForSelector(BASE_SELECTOR);
+    await using page = await this.browserforce.openPage(BASE_PATH);
+    await page.locator(BASE_SELECTOR).waitFor();
+
     for (const assignment of config.homePageLayoutAssignments) {
       const homePageLayoutName = assignment.layout;
       const profile = profiles.records.find((p) => p.Name === assignment.profile);
@@ -102,16 +94,17 @@ export class HomePageLayouts extends BrowserforcePlugin {
         );
       }
       const profileSelector = `select[id='${profile.Id!.substring(0, 15)}']`;
-      await page.waitForSelector(profileSelector);
-      await page.select(profileSelector, homePageLayout.Id!.substring(0, 15));
+      await page.locator(profileSelector).selectOption(homePageLayout.Id!.substring(0, 15));
     }
-    await Promise.all([page.waitForNavigation(), page.click(SAVE_BUTTON_SELECTOR)]);
-    await page.close();
+
+    await page.locator(SAVE_BUTTON_SELECTOR).first().click();
+    await Promise.race([
+      page.waitForURL((url) => url.pathname === '/setup/forcecomHomepage.apexp'),
+      waitForPageErrors(page),
+    ]);
   }
 }
 
 function compareAssignment(a: HomePageLayoutAssignment, b: HomePageLayoutAssignment): number {
-  return `${a.profile}:${a.layout}`.localeCompare(`${b.profile}:${b.layout}`, 'en', {
-    numeric: true,
-  });
+  return `${a.profile}:${a.layout}`.localeCompare(`${b.profile}:${b.layout}`, 'en', { numeric: true });
 }

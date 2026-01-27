@@ -1,14 +1,11 @@
-import { Org } from '@salesforce/core';
 import { Browserforce } from './browserforce.js';
 import { deepDiff } from './plugins/utils.js';
 
 export abstract class BrowserforcePlugin {
   protected browserforce: Browserforce;
-  protected org: Org;
 
   public constructor(browserforce: Browserforce) {
     this.browserforce = browserforce;
-    this.org = browserforce?.org;
   }
   public abstract retrieve(definition?: unknown): Promise<unknown>;
   /**

@@ -1,6 +1,7 @@
+import type { SalesforceUrlPath } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
 
-const getUrl = (orgId: string) => `/${orgId}/e`;
+const getUrl = (orgId: string): SalesforceUrlPath => `/${orgId}/e`;
 
 const CURRENCY_DROPDOWN_SELECTOR = '#DefaultCurrencyIsoCode';
 const SAVE_BUTTON_SELECTOR = 'input[class="btn"][type="submit"][name="save"]';
@@ -11,45 +12,32 @@ export type Config = {
 
 export class CompanyInformation extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
-    const page = await this.browserforce.openPage(getUrl(this.org.getOrgId()));
-    await page.waitForSelector(CURRENCY_DROPDOWN_SELECTOR);
+    const orgId = this.browserforce.connection.getAuthInfoFields().orgId;
+    await using page = await this.browserforce.openPage(getUrl(orgId));
 
     const response: Config = {
       defaultCurrencyIsoCode: '',
     };
-    const selectedOptions = await page.$$eval(`${CURRENCY_DROPDOWN_SELECTOR} > option[selected]`, (options) =>
-      options.map((option) => option.textContent),
-    );
-    if (selectedOptions?.length) {
-      response.defaultCurrencyIsoCode = selectedOptions[0] ?? '';
+    const selectedOption = await page.locator(`${CURRENCY_DROPDOWN_SELECTOR} > option[selected]`).textContent();
+    if (selectedOption) {
+      response.defaultCurrencyIsoCode = selectedOption;
     }
-    await page.close();
     return response;
   }
 
   public async apply(config: Config): Promise<void> {
     if (config.defaultCurrencyIsoCode !== undefined) {
-      const page = await this.browserforce.openPage(getUrl(this.org.getOrgId()));
-      // wait for selectors
-      await page.waitForSelector(CURRENCY_DROPDOWN_SELECTOR);
-      const selectElem = await page.$(CURRENCY_DROPDOWN_SELECTOR);
-      await page.waitForSelector(SAVE_BUTTON_SELECTOR);
+      const orgId = this.browserforce.connection.getAuthInfoFields().orgId;
+      await using page = await this.browserforce.openPage(getUrl(orgId));
 
-      // apply changes
-      // await page.click(CURRENCY_DROPDOWN_SELECTOR);
-      const optionList = await page.$$eval(`${CURRENCY_DROPDOWN_SELECTOR} > option`, (options) =>
-        options.map((option) => ({
-          value: (option as HTMLOptionElement).value,
-          textContent: option.textContent,
-        })),
-      );
-      const toBeSelectedOption = optionList.find((option) => option.textContent == config.defaultCurrencyIsoCode);
-      if (!toBeSelectedOption) {
+      await page.locator(CURRENCY_DROPDOWN_SELECTOR).waitFor();
+      const availableCurrencies = await page.locator(`${CURRENCY_DROPDOWN_SELECTOR} > option`).allTextContents();
+      if (!availableCurrencies.includes(config.defaultCurrencyIsoCode)) {
         throw new Error(
           `Invalid currency provided. '${config.defaultCurrencyIsoCode}' is not a valid option available for currencies. Please use the exact name as it appears in the list.`,
         );
       }
-      await selectElem!.select(toBeSelectedOption.value);
+      await page.locator(CURRENCY_DROPDOWN_SELECTOR).selectOption({ label: config.defaultCurrencyIsoCode });
 
       // auto accept the dialog when it appears
       page.on('dialog', (dialog) => {
@@ -57,8 +45,8 @@ export class CompanyInformation extends BrowserforcePlugin {
       });
 
       // save
-      await Promise.all([page.waitForNavigation(), page.click(SAVE_BUTTON_SELECTOR)]);
-      await page.close();
+      await page.locator(SAVE_BUTTON_SELECTOR).click();
+      await page.waitForURL((url) => !url.pathname.endsWith('/e'));
     }
   }
 }

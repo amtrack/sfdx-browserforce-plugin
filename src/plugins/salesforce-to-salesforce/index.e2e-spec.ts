@@ -4,7 +4,7 @@ import { SalesforceToSalesforce } from './index.js';
 describe(SalesforceToSalesforce.name, function () {
   let plugin: SalesforceToSalesforce;
   before(() => {
-    plugin = new SalesforceToSalesforce(global.bf);
+    plugin = new SalesforceToSalesforce(global.browserforce);
   });
 
   const configEnabled = {
