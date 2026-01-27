@@ -50,7 +50,10 @@
     "no-warnings": "ExperimentalWarning",
     "enable-source-maps": true
   },
-  "repository": "amtrack/sfdx-browserforce-plugin",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amtrack/sfdx-browserforce-plugin.git"
+  },
   "scripts": {
     "build": "rm -rf lib && tsc -p . && oclif manifest && oclif readme",
     "develop": "bash scripts/develop.sh",
