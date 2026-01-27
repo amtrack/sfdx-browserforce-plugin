@@ -1,4 +1,4 @@
-import { Flags, SfCommand, Ux, requiredOrgFlagWithDeprecations } from '@salesforce/sf-plugins-core';
+import { Flags, SfCommand, Ux } from '@salesforce/sf-plugins-core';
 import { promises } from 'fs';
 import * as path from 'path';
 import { Browserforce } from './browserforce.js';
@@ -9,7 +9,7 @@ import * as DRIVERS from './plugins/index.js';
 export abstract class BrowserforceCommand<T> extends SfCommand<T> {
   static baseFlags = {
     ...SfCommand.baseFlags,
-    'target-org': requiredOrgFlagWithDeprecations,
+    'target-org': Flags.requiredOrg(),
     definitionfile: Flags.string({
       char: 'f',
       description: 'path to a browserforce state file',
