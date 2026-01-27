@@ -11,12 +11,12 @@
     "@mdapi-issues/listmetadata-standardvalueset": "3.1.0",
     "@salesforce/sf-plugins-core": "12.2.6",
     "p-retry": "7.1.1",
-    "playwright": "1.57.0"
+    "playwright": "1.58.0"
   },
   "devDependencies": {
     "@salesforce/dev-scripts": "11.0.4",
-    "oclif": "4.22.57",
-    "prettier": "3.7.4"
+    "oclif": "4.22.70",
+    "prettier": "3.8.1"
   },
   "files": [
     "/bin",
