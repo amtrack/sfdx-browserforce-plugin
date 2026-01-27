@@ -41,8 +41,6 @@ jobs:
           npm run develop
       - name: Run end-to-end tests
         run: npm run test:e2e
-        env:
-          PLAYWRIGHT_TRACE: true
       - name: Delete scratch org
         if: always()
         run: |
