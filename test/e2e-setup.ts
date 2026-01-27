@@ -1,4 +1,5 @@
 import { Org } from '@salesforce/core';
+import { type Options } from 'p-retry';
 import { chromium } from 'playwright';
 import { Browserforce } from '../src/browserforce.js';
 
@@ -66,7 +67,7 @@ async function createBrowserContextFromEnv() {
   return browserContext;
 }
 
-function createRetryOptionsFromEnv() {
+function createRetryOptionsFromEnv(): Options {
   return {
     retries: Number(process.env.BROWSERFORCE_RETRY_MAX_RETRIES ?? '6'),
     minTimeout: Number(process.env.BROWSERFORCE_RETRY_TIMEOUT_MS ?? '4000'),

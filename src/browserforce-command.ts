@@ -1,8 +1,9 @@
 import { Flags, SfCommand, Ux } from '@salesforce/sf-plugins-core';
 import { promises } from 'fs';
+import { type Options } from 'p-retry';
 import * as path from 'path';
 import { chromium } from 'playwright';
-import { Browserforce } from './browserforce.js';
+import { Browserforce, type BrowserforceOptions } from './browserforce.js';
 import { ConfigParser } from './config-parser.js';
 import { handleDeprecations } from './plugins/deprecated.js';
 import * as DRIVERS from './plugins/index.js';
@@ -95,9 +96,9 @@ export abstract class BrowserforceCommand<T> extends SfCommand<T> {
     this.settings = ConfigParser.parse(DRIVERS, definition);
     const connection = flags['target-org'].getConnection();
     const browserContext = await createBrowserContextFromFlags(flags);
-    const options = {
+    const options: BrowserforceOptions = {
       logger: new Ux({ jsonEnabled: this.jsonEnabled() }),
-      ...createRetryOptionsFromFlags(flags),
+      retry: createRetryOptionsFromFlags(flags),
     };
     this.browserforce = new Browserforce(connection, browserContext, options);
 
@@ -156,7 +157,7 @@ async function createBrowserContextFromFlags(flags) {
   return browserContext;
 }
 
-function createRetryOptionsFromFlags(flags) {
+function createRetryOptionsFromFlags(flags): Options {
   return {
     retries: flags['max-retries'],
     minTimeout: flags['retry-timeout'],
