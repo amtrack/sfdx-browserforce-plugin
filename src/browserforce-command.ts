@@ -12,18 +12,12 @@ export abstract class BrowserforceCommand<T> extends SfCommand<T> {
     'target-org': Flags.requiredOrg(),
     definitionfile: Flags.string({
       char: 'f',
-      description: 'path to a browserforce state file',
+      description: 'path to a browserforce config file',
     }),
-    planfile: Flags.string({
-      char: 'p',
-      name: 'plan',
-      description: 'path to a browserforce plan file',
-    }),
-    statefile: Flags.string({
-      char: 's',
-      name: 'state',
-      description:
-        'path to a browserforce definition file\nThe schema is similar to the scratch org definition file.\nSee https://github.com/amtrack/sfdx-browserforce-plugin#supported-org-preferences for supported values.',
+    'dry-run': Flags.boolean({
+      char: 'd',
+      description: 'dry run',
+      env: 'BROWSERFORCE_DRY_RUN',
     }),
   };
   protected bf: Browserforce;
@@ -40,7 +34,7 @@ export abstract class BrowserforceCommand<T> extends SfCommand<T> {
       try {
         definition = JSON.parse(definitionFileData);
       } catch (err) {
-        throw new Error('Failed parsing definitionfile');
+        throw new Error('Failed parsing config file');
       }
     }
     handleDeprecations(definition);

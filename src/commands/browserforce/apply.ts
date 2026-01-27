@@ -5,11 +5,11 @@ type BrowserforceApplyResponse = {
 };
 
 export class BrowserforceApply extends BrowserforceCommand<BrowserforceApplyResponse> {
-  public static description = 'apply a plan from a definition file';
+  public static description = 'apply a plan from a config file';
   public static examples = [
     `$ <%= config.bin %> <%= command.id %> -f ./config/currency.json --target-org myOrg@example.com
   logging in... done
-  Applying definition file ./config/currency.json to org myOrg@example.com
+  Applying config file ./config/currency.json to org myOrg@example.com
   [CompanyInformation] retrieving state... done
   [CompanyInformation] changing 'defaultCurrencyIsoCode' to '"English (South Africa) - ZAR"'... done
   logging out... done
@@ -18,7 +18,7 @@ export class BrowserforceApply extends BrowserforceCommand<BrowserforceApplyResp
 
   public async run(): Promise<BrowserforceApplyResponse> {
     const { flags } = await this.parse(BrowserforceApply);
-    this.log(`Applying definition file ${flags.definitionfile} to org ${flags['target-org'].getUsername()}`);
+    this.log(`Applying config file ${flags.definitionfile} to org ${flags['target-org'].getUsername()}`);
     for (const setting of this.settings) {
       const driver = setting.Driver;
       const instance = new driver(this.bf);
@@ -32,21 +32,24 @@ export class BrowserforceApply extends BrowserforceCommand<BrowserforceApplyResp
       }
       this.spinner.stop();
       const diff = instance.diff(state, setting.value);
+      const action = flags['dry-run'] ? 'would change' : 'changing';
       if (diff !== undefined) {
         this.spinner.start(
           `[${driver.name}] ${Object.keys(diff)
             .map((key) => {
-              return `changing '${key}' to '${JSON.stringify(diff[key])}'`;
+              return `${action} '${key}' to '${JSON.stringify(diff[key])}'`;
             })
             .join('\n')}`,
         );
-        try {
-          await instance.apply(diff);
-        } catch (err) {
-          this.spinner.stop('failed');
-          throw err;
+        if (!flags['dry-run']) {
+          try {
+            await instance.apply(diff);
+          } catch (err) {
+            this.spinner.stop('failed');
+            throw err;
+          }
+          this.spinner.stop();
         }
-        this.spinner.stop();
       } else {
         this.log(`[${driver.name}] no action necessary`);
       }

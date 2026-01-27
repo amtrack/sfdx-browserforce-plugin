@@ -44,7 +44,7 @@ Apply the config:
 ```console
 $ sf browserforce apply -f ./config/currency.json --target-org myOrg@example.com
   logging in... done
-  Applying definition file ./config/currency.json to org myOrg@example.com
+  Applying config file ./config/currency.json to org myOrg@example.com
   [CompanyInformation] retrieving state... done
   [CompanyInformation] changing 'defaultCurrencyIsoCode' to '"English (South Africa) - ZAR"'... done
   logging out... done

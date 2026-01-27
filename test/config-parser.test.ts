@@ -4,7 +4,7 @@ import * as DRIVERS from '../src/plugins/index.js';
 
 describe('ConfigParser', () => {
   describe('parse()', () => {
-    it('should parse a valid definition file', () => {
+    it('should parse a valid config file', () => {
       const definition = {
         settings: {
           security: {},
@@ -13,7 +13,7 @@ describe('ConfigParser', () => {
       const result = ConfigParser.parse(DRIVERS, definition);
       assert.deepStrictEqual(result[0].Driver.name, 'Security');
     });
-    it('should fail parsing an invalid definition file', () => {
+    it('should fail parsing an invalid config file', () => {
       const definition = {
         foo: {
           bar: {
@@ -27,7 +27,7 @@ describe('ConfigParser', () => {
         ConfigParser.parse(DRIVERS, anonymousDefinition);
       }, /Missing 'settings' attribute in definition:/);
     });
-    it('should fail parsing a definition file with an invalid plugin', () => {
+    it('should fail parsing a config file with an invalid plugin', () => {
       const definition = {
         settings: {
           foo: {
