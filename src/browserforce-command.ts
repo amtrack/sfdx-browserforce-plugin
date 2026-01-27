@@ -97,7 +97,7 @@ export abstract class BrowserforceCommand<T> extends SfCommand<T> {
     const browserContext = await createBrowserContextFromFlags(flags);
     const options = {
       logger: new Ux({ jsonEnabled: this.jsonEnabled() }),
-      ...createRetryOptionsFromFlags(flags),
+      retry: createRetryOptionsFromFlags(flags),
     };
     this.browserforce = new Browserforce(connection, browserContext, options);
 
