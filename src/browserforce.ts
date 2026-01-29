@@ -29,11 +29,6 @@ export class Browserforce {
   }
 
   public async login(): Promise<Browserforce> {
-    try {
-      await this.connection.refreshAuth();
-    } catch (e) {
-      throw new Error('login failed', { cause: e });
-    }
     await using page = await this.browserContext.newPage();
     const loginPage = new LoginPage(page);
     await loginPage.login(this.connection);
