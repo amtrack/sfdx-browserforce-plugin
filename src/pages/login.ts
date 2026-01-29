@@ -1,8 +1,7 @@
-import { type Connection } from '@salesforce/core';
+import { Org, type Connection } from '@salesforce/core';
 import { type Page } from 'playwright';
 import { waitForPageErrors } from '../browserforce.js';
 
-const FRONT_DOOR_PATH = '/secur/frontdoor.jsp';
 const POST_LOGIN_PATH = '/setup/forcecomHomepage.apexp';
 
 export class LoginPage {
@@ -13,11 +12,9 @@ export class LoginPage {
   }
 
   async login(connection: Connection) {
-    await this.page.goto(
-      `${connection.instanceUrl.replace(/\/$/, '')}${FRONT_DOOR_PATH}?sid=${
-        connection.accessToken
-      }&retURL=${encodeURIComponent(POST_LOGIN_PATH)}`,
-    );
+    const org = await Org.create({ connection });
+    const frontDoorUrl = await org.getFrontDoorUrl(POST_LOGIN_PATH);
+    await this.page.goto(frontDoorUrl);
     await Promise.race([this.page.waitForURL((url) => url.pathname === POST_LOGIN_PATH), waitForPageErrors(this.page)]);
     return this;
   }
