@@ -66,7 +66,7 @@ export class BrowserforceApply extends BrowserforceCommand<BrowserforceApplyResp
         this.spinner.start(
           `[${driver.name}] ${Object.keys(maskedDiff)
             .map((key) => {
-              return `changing '${key}' to '${JSON.stringify(maskedDiff[key])}'`;
+              return `${action} '${key}' to '${JSON.stringify(maskedDiff[key])}'`;
             })
             .join('\n')}`,
         );
