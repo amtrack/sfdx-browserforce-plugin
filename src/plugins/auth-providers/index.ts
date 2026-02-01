@@ -1,5 +1,6 @@
 import { type SalesforceUrlPath, waitForPageErrors } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
+import { AuthenticationService } from './authentication-service/index.js';
 
 const CONSUMER_SECRET_SELECTOR = '#ConsumerSecret';
 const CONSUMER_KEY_SELECTOR = '#ConsumerKey';
@@ -10,6 +11,7 @@ const getUrl = (orgId: string): SalesforceUrlPath => `/${orgId}/e` as Salesforce
 type AuthProviderConfig = {
   consumerSecret?: string;
   consumerKey?: string;
+  enableAuthenticationService?: boolean;
 };
 
 export type Config = {
@@ -66,24 +68,23 @@ export class AuthProviders extends BrowserforcePlugin {
         throw new Error(`AuthProvider with DeveloperName '${developerName}' not found`);
       }
 
-      // Navigate to the edit page
-      const editPageUrl = getUrl(authProviderId);
-
-      this.browserforce.logger?.log('editPageUrl', editPageUrl);
-      console.log(`[AuthProviders] Navigating to edit page for ${developerName}: ${editPageUrl}`);
-      
-      await using page = await this.browserforce.openPage(editPageUrl);
-
-      // Wait for the page/frame to load - handle both Lightning (iframe) and Classic UI
-      // Use ConsumerSecret as the selector to wait for, or fallback to ConsumerKey
-      const formSelector = `${CONSUMER_SECRET_SELECTOR}, ${CONSUMER_KEY_SELECTOR}`;
-      const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(page, formSelector);
-
       try {
-        // Check if there's anything to update
-        const hasUpdates = authProviderConfig.consumerSecret !== undefined || authProviderConfig.consumerKey !== undefined;
+        // Check if there are updates to consumerSecret or consumerKey
+        const hasConsumerUpdates = authProviderConfig.consumerSecret !== undefined || authProviderConfig.consumerKey !== undefined;
 
-        if (hasUpdates) {
+        if (hasConsumerUpdates) {
+          // Navigate to the edit page
+          const editPageUrl = getUrl(authProviderId);
+
+          this.browserforce.logger?.log('editPageUrl', editPageUrl);
+          console.log(`[AuthProviders] Navigating to edit page for ${developerName}: ${editPageUrl}`);
+          
+          await using page = await this.browserforce.openPage(editPageUrl);
+
+          // Wait for the page/frame to load - handle both Lightning (iframe) and Classic UI
+          // Use ConsumerSecret as the selector to wait for, or fallback to ConsumerKey
+          const formSelector = `${CONSUMER_SECRET_SELECTOR}, ${CONSUMER_KEY_SELECTOR}`;
+          const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(page, formSelector);
           // Update ConsumerSecret if provided
           if (authProviderConfig.consumerSecret !== undefined) {
             await frameOrPage.locator(CONSUMER_SECRET_SELECTOR).waitFor({ timeout: 10000 });
@@ -131,9 +132,19 @@ export class AuthProviders extends BrowserforcePlugin {
             await waitForPageErrors(page);
           }
         }
+
+        // Handle enableAuthenticationService if requested
+        if (authProviderConfig.enableAuthenticationService !== undefined) {
+          const pluginAuthenticationService = new AuthenticationService(this.browserforce);
+          await pluginAuthenticationService.apply({
+            authProviderId,
+            developerName,
+            enabled: authProviderConfig.enableAuthenticationService,
+          });
+        }
       } catch (error) {
         throw new Error(`Failed to update AuthProvider '${developerName}': ${error.message}`);
-      }
+      }      
     }
   }
 }

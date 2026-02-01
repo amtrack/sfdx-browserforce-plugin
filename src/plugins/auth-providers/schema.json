@@ -18,10 +18,11 @@
           "title": "Consumer Key",
           "description": "The Consumer Key value for the Auth Provider",
           "type": "string"
+        },
+        "enableAuthenticationService": {
+          "$ref": "./authentication-service/schema.json"
         }
-      },
-      "additionalProperties": false
+      }
     }
-  },
-  "additionalProperties": false
+  }
 }
