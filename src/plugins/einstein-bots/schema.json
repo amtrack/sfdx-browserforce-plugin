@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/einstein-bots/schema.json",
+  "title": "Einstein Bots",
+  "type": "object",
+  "properties": {
+    "enabled": {
+      "title": "Einstein Bots",
+      "description": "Enable or disable Einstein Bots. Setup -> Einstein Bots -> Einstein Bots toggle.",
+      "type": "boolean"
+    }
+  }
+}
+

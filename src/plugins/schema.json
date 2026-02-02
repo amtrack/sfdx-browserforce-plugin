@@ -46,6 +46,9 @@
         "densitySettings": {
           "$ref": "./density-settings/schema.json"
         },
+        "einsteinBots": {
+          "$ref": "./einstein-bots/schema.json"
+        },
         "historyTracking": {
           "$ref": "./history-tracking/schema.json"
         },
