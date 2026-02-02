@@ -1,0 +1,9 @@
+{
+  "$schema": "../schema.json",
+  "settings": {
+    "einsteinBots": {
+      "enabled": false
+    }
+  }
+}
+
