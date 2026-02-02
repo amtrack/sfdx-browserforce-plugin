@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AuthProvider xmlns="http://soap.sforce.com/2006/04/metadata">
+    <friendlyName>TestAuthProvider</friendlyName>
+    <includeOrgIdInIdentifier>true</includeOrgIdInIdentifier>
+    <isPkceEnabled>true</isPkceEnabled>
+    <providerType>OpenIdConnect</providerType>
+    <requireMfa>false</requireMfa>
+    <sendClientCredentialsInHeader>false</sendClientCredentialsInHeader>
+    <sendSecretInApis>true</sendSecretInApis>
+    <authorizeUrl>https://login.openid.com/services/oauth2/authorize</authorizeUrl>
+    <consumerKey>3MVG9k9cKU2O1H29X8gT08Ks2jVjH6Kd92WjH6Kd92WjH6Kd92WjH6Kd92WjH6Kd92WjH6Kd92WjH6Kd92WjH6Kd92WjH6Kd92WjH6Kd92WjH6Kd92WjH6Kd92WjH6Kd92WjH6Kd92WjH6Kd92W</consumerKey>
+    <consumerSecret>Placeholder_Value</consumerSecret>
+    <defaultScopes>openid profile</defaultScopes>
+    <idTokenIssuer>https://login.openid.com</idTokenIssuer>
+    <sendAccessTokenInHeader>true</sendAccessTokenInHeader>
+    <tokenUrl>https://login.openid.com/services/oauth2/token</tokenUrl>
+    <userInfoUrl>https://login.openid.com/services/oauth2/userinfo</userInfoUrl>
+</AuthProvider>
