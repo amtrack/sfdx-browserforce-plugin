@@ -53,6 +53,17 @@ $ sf browserforce apply -f ./config/currency.json --target-org myOrg@example.com
   logging out... done
 ```
 
+Apply the config again: 👉 No action necessary
+
+```console
+$ sf browserforce apply -f ./config/currency.json --target-org myOrg@example.com
+  logging in... done
+  Applying config file ./config/currency.json to org myOrg@example.com
+  [CompanyInformation] retrieving state... done
+  [CompanyInformation] no action necessary
+  logging out... done
+```
+
 ## Key Concepts
 
 - 🔧 configuration using JSON Schema (similar to the [Scratch Org Definition Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_scratch_orgs_def_file.htm))
