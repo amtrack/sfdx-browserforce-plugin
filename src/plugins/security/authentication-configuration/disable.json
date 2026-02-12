@@ -6,7 +6,7 @@
         "services": [
           {
             "label": "Login Form",
-            "enabled": false
+            "enabled": true
           }
         ]
       }

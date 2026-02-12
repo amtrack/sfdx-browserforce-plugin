@@ -37,26 +37,6 @@ describe(AuthProviders.name, function () {
     TestAuthProvider: {},
   };
 
-  const configWithAuthenticationService: Config = {
-    TestAuthProvider: {
-      enableAuthenticationService: true,
-    },
-  };
-
-  const configWithDisabledAuthenticationService: Config = {
-    TestAuthProvider: {
-      enableAuthenticationService: false,
-    },
-  };
-
-  const configWithAllProperties: Config = {
-    TestAuthProvider: {
-      consumerSecret: 'test-secret-12345',
-      consumerKey: 'test-key-67890',
-      enableAuthenticationService: true,
-    },
-  };
-
   it('should deploy an AuthProvider for testing', () => {
     const sourceDeployCmd = child.spawnSync('sf', [
       'project',
@@ -86,16 +66,6 @@ describe(AuthProviders.name, function () {
     await plugin.apply(configEmpty);
   });
 
-  it('should enable authentication service', async () => {
-    await plugin.apply(configWithAuthenticationService);
-    // Note: retrieve() returns empty config, so we can only verify apply completes without errors
-  });
-
-  it('should update consumerSecret, consumerKey, and enable authentication service together', async () => {
-    await plugin.apply(configWithAllProperties);
-    // Note: retrieve() returns empty config, so we can only verify apply completes without errors
-  });
-
   it('should throw an error when AuthProvider does not exist', async () => {
     const configInvalid: Config = {
       NonExistentAuthProvider: {
@@ -112,11 +82,6 @@ describe(AuthProviders.name, function () {
     assert.throws(() => {
       throw err;
     }, /No AuthProviders found with DeveloperNames/);
-  });
-
-  it('should disable authentication service', async () => {
-    await plugin.apply(configWithDisabledAuthenticationService);
-    // Note: retrieve() returns empty config, so we can only verify apply completes without errors
   });
 
   it('should remove the testing AuthProvider', async () => {

@@ -1,6 +1,5 @@
 import { type SalesforceUrlPath, waitForPageErrors } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
-import { AuthenticationService } from './authentication-service/index.js';
 
 const CONSUMER_SECRET_SELECTOR = '#ConsumerSecret';
 const CONSUMER_KEY_SELECTOR = '#ConsumerKey';
@@ -11,7 +10,6 @@ const getUrl = (orgId: string): SalesforceUrlPath => `/${orgId}/e` as Salesforce
 type AuthProviderConfig = {
   consumerSecret?: string;
   consumerKey?: string;
-  enableAuthenticationService?: boolean;
 };
 
 export type Config = {
@@ -76,8 +74,7 @@ export class AuthProviders extends BrowserforcePlugin {
           // Navigate to the edit page
           const editPageUrl = getUrl(authProviderId);
 
-          this.browserforce.logger?.log('editPageUrl', editPageUrl);
-          console.log(`[AuthProviders] Navigating to edit page for ${developerName}: ${editPageUrl}`);
+          this.browserforce.logger?.log(`Navigating to edit page for ${developerName}: ${editPageUrl}`);
           
           await using page = await this.browserforce.openPage(editPageUrl);
 
@@ -131,16 +128,6 @@ export class AuthProviders extends BrowserforcePlugin {
             // If checking frame fails, check the main page
             await waitForPageErrors(page);
           }
-        }
-
-        // Handle enableAuthenticationService if requested
-        if (authProviderConfig.enableAuthenticationService !== undefined) {
-          const pluginAuthenticationService = new AuthenticationService(this.browserforce);
-          await pluginAuthenticationService.apply({
-            authProviderId,
-            developerName,
-            enabled: authProviderConfig.enableAuthenticationService,
-          });
         }
       } catch (error) {
         throw new Error(`Failed to update AuthProvider '${developerName}': ${error.message}`);

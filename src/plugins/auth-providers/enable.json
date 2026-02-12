@@ -4,8 +4,7 @@
     "authProviders": {
       "TestAuthProvider": {
         "consumerSecret": "test-secret-12345",
-        "consumerKey": "test-key-67890",
-        "enableAuthenticationService": true
+        "consumerKey": "test-key-67890"
       }
     }
   }

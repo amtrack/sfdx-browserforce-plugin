@@ -14,12 +14,20 @@
             "type": "string",
             "description": "The visible name of the authentication service"
           },
+          "authProviderApiName": {
+            "type": "string",
+            "description": "The DeveloperName of the AuthProvider (alternative to label for matching)"
+          },
           "enabled": {
             "type": "boolean",
             "description": "True to enable, false to disable"
           }
         },
-        "required": ["label", "enabled"]
+        "oneOf": [
+          { "required": ["label", "enabled"] },
+          { "required": ["authProviderApiName", "enabled"] },
+          { "required": ["label", "authProviderApiName", "enabled"] }
+        ]
       },
       "default": []
     }
