@@ -1,4 +1,5 @@
 import { ActivitySettings as activitySettings } from './activity-settings/index.js';
+import { AuthProviders as authProviders } from './auth-providers/index.js';
 import { CompanyInformation as companyInformation } from './company-information/index.js';
 import { CustomerPortal as customerPortal } from './customer-portal/index.js';
 import { DensitySettings as densitySettings } from './density-settings/index.js';
@@ -24,6 +25,7 @@ import { UserAccessPolicies as userAccessPolicies } from './user-access-policies
 
 export {
   activitySettings,
+  authProviders,
   companyInformation,
   customerPortal,
   densitySettings,
