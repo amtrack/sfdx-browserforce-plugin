@@ -12,10 +12,7 @@ function loadPluginSchema(pluginName: string): unknown | undefined {
   try {
     // Resolve schema path relative to the plugins directory
     // Since we're in src/commands/browserforce/, we need to go up to src/plugins/
-    const schemaPath = new URL(
-      `../../plugins/${camelToKebab(pluginName)}/schema.json`,
-      import.meta.url,
-    );
+    const schemaPath = new URL(`../../plugins/${camelToKebab(pluginName)}/schema.json`, import.meta.url);
     const schemaContent = readFileSync(schemaPath, 'utf8');
     return JSON.parse(schemaContent);
   } catch (error) {
