@@ -76,7 +76,6 @@ export class AuthProviders extends BrowserforcePlugin {
           const editPageUrl = getUrl(authProviderId);
 
           this.browserforce.logger?.log(`Navigating to edit page for ${developerName}: ${editPageUrl}`);
-          
           await using page = await this.browserforce.openPage(editPageUrl);
 
           // Wait for the page/frame to load - handle both Lightning (iframe) and Classic UI
