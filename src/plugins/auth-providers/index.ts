@@ -102,7 +102,7 @@ export class AuthProviders extends BrowserforcePlugin {
         }
       } catch (error) {
         throw new Error(`Failed to update AuthProvider '${developerName}': ${error.message}`);
-      }      
+      }
     }
   }
 }
