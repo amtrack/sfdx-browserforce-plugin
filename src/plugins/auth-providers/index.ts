@@ -95,27 +95,10 @@ export class AuthProviders extends BrowserforcePlugin {
           // Save the changes
           const saveButtonLocator = page.locator(SAVE_BUTTON_SELECTOR);
           await saveButtonLocator.first().click();
-          
-          // Wait for save to complete - give it time to process
-          // The page might reload or show a success/error message
-          await new Promise((resolve) => setTimeout(resolve, 3000));
-          
-          // Check for errors on the page/frame
-          // If the frame still exists, check it; otherwise check the main page
-          try {
-            // Try to check for errors in the frame first
-            const errorLocator = frameOrPage.locator('div.errorMsg, div.error, .errorMessage, #errorTitle');
-            const errorCount = await errorLocator.count();
-            if (errorCount > 0) {
-              const errorText = await errorLocator.first().textContent();
-              if (errorText && !errorText.includes('page no longer exists')) {
-                throw new Error(`Save failed: ${errorText.trim()}`);
-              }
-            }
-          } catch (e) {
-            // If checking frame fails, check the main page
-            await waitForPageErrors(page);
-          }
+          await Promise.race([
+            page.waitForURL((url) => url.pathname === `/${authProviderId}`),
+            waitForPageErrors(page),
+          ]);
         }
       } catch (error) {
         throw new Error(`Failed to update AuthProvider '${developerName}': ${error.message}`);
