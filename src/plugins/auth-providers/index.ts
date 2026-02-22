@@ -55,7 +55,7 @@ export class AuthProviders extends BrowserforcePlugin {
     if (missingProviders.length > 0) {
       throw new Error(
         `AuthProvider with DeveloperName(s) not found: ${missingProviders.join(', ')}. ` +
-        `Please verify the DeveloperNames are correct and the AuthProviders exist in your org.`,
+          `Please verify the DeveloperNames are correct and the AuthProviders exist in your org.`,
       );
     }
 
