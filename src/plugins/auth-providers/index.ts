@@ -93,17 +93,7 @@ export class AuthProviders extends BrowserforcePlugin {
           }
 
           // Save the changes
-          await frameOrPage.locator(SAVE_BUTTON_SELECTOR).waitFor({ timeout: 10000 });
-          
-          // Click save button - don't wait for navigation as it may redirect to a non-existent page
-          // Instead, wait for the click to complete and then check for errors
-          const saveButtonLocator = frameOrPage.locator(SAVE_BUTTON_SELECTOR);
-          const saveButtonCount = await saveButtonLocator.count();
-          if (saveButtonCount === 0) {
-            throw new Error(`Save button not found for AuthProvider '${developerName}'`);
-          }
-          
-          // Click the save button
+          const saveButtonLocator = page.locator(SAVE_BUTTON_SELECTOR);
           await saveButtonLocator.first().click();
           
           // Wait for save to complete - give it time to process
