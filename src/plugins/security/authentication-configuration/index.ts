@@ -6,10 +6,7 @@ type AuthProviderRecord = {
 };
 
 export type Config = {
-  services: Array<
-    | { label: string; enabled: boolean }
-    | { authProviderApiName: string; enabled: boolean }
-  >;
+  services: Array<{ label: string; enabled: boolean } | { authProviderApiName: string; enabled: boolean }>;
 };
 
 const EDIT_VIEW_PATH = '/lightning/setup/OrgDomain/page?address=%2Fdomainname%2FEditLogin.apexp';
