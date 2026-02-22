@@ -3,6 +3,7 @@ import { AuthProviders as authProviders } from './auth-providers/index.js';
 import { CompanyInformation as companyInformation } from './company-information/index.js';
 import { CustomerPortal as customerPortal } from './customer-portal/index.js';
 import { DensitySettings as densitySettings } from './density-settings/index.js';
+import { EinsteinBots as einsteinBots } from './einstein-bots/index.js';
 import { EmailDeliverability as emailDeliverability } from './email-deliverability/index.js';
 import { HighVelocitySalesSettings as highVelocitySalesSettings } from './high-velocity-sales-settings/index.js';
 import { HistoryTracking as historyTracking } from './history-tracking/index.js';
@@ -29,6 +30,7 @@ export {
   companyInformation,
   customerPortal,
   densitySettings,
+  einsteinBots,
   emailDeliverability,
   highVelocitySalesSettings,
   historyTracking,
