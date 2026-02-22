@@ -89,8 +89,7 @@ export class AuthProviders extends BrowserforcePlugin {
 
           // Update ConsumerKey if provided
           if (authProviderConfig.consumerKey !== undefined) {
-            await frameOrPage.locator(CONSUMER_KEY_SELECTOR).waitFor({ timeout: 10000 });
-            await frameOrPage.locator(CONSUMER_KEY_SELECTOR).fill(authProviderConfig.consumerKey);
+            await page.locator(CONSUMER_KEY_SELECTOR).fill(authProviderConfig.consumerKey);
           }
 
           // Save the changes
