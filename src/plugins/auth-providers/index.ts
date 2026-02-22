@@ -68,7 +68,8 @@ export class AuthProviders extends BrowserforcePlugin {
 
       try {
         // Check if there are updates to consumerSecret or consumerKey
-        const hasConsumerUpdates = authProviderConfig.consumerSecret !== undefined || authProviderConfig.consumerKey !== undefined;
+        const hasConsumerUpdates =
+          authProviderConfig.consumerSecret !== undefined || authProviderConfig.consumerKey !== undefined;
 
         if (hasConsumerUpdates) {
           // Navigate to the edit page
