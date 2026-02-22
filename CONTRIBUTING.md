@@ -165,6 +165,16 @@ The execution will apply as few changes as necessary and so you will be able to 
 Both the result of the `retrieve` function and the argument of the `apply` function are objects in the format defined in your `schema.json`.
 In this example, you would return `{enabled: boolean}` as part of `retrieve`, and expect `{enabled: boolean}` as argument in `apply`.
 
+### Formatting
+
+After plugin development is completed, run the following command to ensure your code adheres to the project's style guidelines:
+
+```shell
+npm run format
+```
+
+This will automatically format your TypeScript and configuration files (e.g., indentation, line breaks, trailing commas) to maintain consistency across the codebase.
+
 ## Testing
 
 To run **unit tests**:

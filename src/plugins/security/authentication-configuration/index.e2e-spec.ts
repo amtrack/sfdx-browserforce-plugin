@@ -35,6 +35,18 @@ describe(AuthenticationConfiguration.name, function () {
         { label: 'TestAuthMethod', enabled: false },
       ],
     };
+    const configRetrieveByApiName: Config = {
+      services: [{ authProviderApiName: 'TestAuthMethod', enabled: true }],
+    };
+    const configApplyByApiName: Config = {
+      services: [
+        { label: 'Login Form', enabled: true },
+        { authProviderApiName: 'TestAuthMethod', enabled: false },
+      ],
+    };
+    const configApplyMissingApiName: Config = {
+      services: [{ authProviderApiName: 'NonExistentAuthProvider', enabled: true }],
+    };
 
     it('should retrieve the single enabled Login Form auth', async () => {
       const res = await plugin.retrieve(configRetrieveSingle);
@@ -74,6 +86,34 @@ describe(AuthenticationConfiguration.name, function () {
       await plugin.apply(configApplyMultiple);
       const res = await plugin.retrieve(configApplyMultiple);
       assert.deepStrictEqual(res, configApplyMultiple);
+    });
+
+    it('should retrieve using authProviderApiName', async () => {
+      const res = await plugin.retrieve(configRetrieveByApiName);
+      assert.deepStrictEqual(res, configRetrieveByApiName);
+    });
+
+    it('should update auth service using authProviderApiName', async () => {
+      await plugin.apply(configApplyByApiName);
+      const res = await plugin.retrieve(configApplyByApiName);
+      assert.deepStrictEqual(res, configApplyByApiName);
+    });
+
+    it('should not do anything when run with authProviderApiName and config already set', async () => {
+      const res = await plugin.run(configApplyByApiName);
+      assert.deepStrictEqual(res, { message: 'no action necessary' });
+    });
+
+    it('should throw an error when authProviderApiName does not exist', async () => {
+      let err;
+      try {
+        await plugin.apply(configApplyMissingApiName);
+      } catch (e) {
+        err = e;
+      }
+      assert.throws(() => {
+        throw err;
+      }, /not found/);
     });
 
     it('should throw an error when trying to apply a missing service', async () => {

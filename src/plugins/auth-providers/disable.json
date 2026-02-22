@@ -1,0 +1,11 @@
+{
+  "$schema": "../schema.json",
+  "settings": {
+    "authProviders": {
+      "TestAuthProvider": {
+        "consumerSecret": "test-secret-12345",
+        "consumerKey": "test-key-67890"
+      }
+    }
+  }
+}
