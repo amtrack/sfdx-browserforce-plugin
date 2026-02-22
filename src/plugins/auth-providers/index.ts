@@ -78,10 +78,6 @@ export class AuthProviders extends BrowserforcePlugin {
           this.browserforce.logger?.log(`Navigating to edit page for ${developerName}: ${editPageUrl}`);
           await using page = await this.browserforce.openPage(editPageUrl);
 
-          // Wait for the page/frame to load - handle both Lightning (iframe) and Classic UI
-          // Use ConsumerSecret as the selector to wait for, or fallback to ConsumerKey
-          const formSelector = `${CONSUMER_SECRET_SELECTOR}, ${CONSUMER_KEY_SELECTOR}`;
-          const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(page, formSelector);
           // Update ConsumerSecret if provided
           if (authProviderConfig.consumerSecret !== undefined) {
             await page.locator(CONSUMER_SECRET_SELECTOR).fill(authProviderConfig.consumerSecret);
