@@ -156,6 +156,38 @@ export class HistoryTracking extends BrowserforcePlugin {
     }
   }
 
+  private async queryCustomFieldsAndPopulateMap(
+    fieldApiNameTuples: [string, string | undefined][],
+    tableEnumOrId: string,
+    suffix: string,
+    fieldSelectorByFieldApiName: Map<string, string>,
+  ): Promise<void> {
+    const developerNameConditions = fieldApiNameTuples.map(([apiname, namespace]) =>
+      namespace
+        ? `(DeveloperName ='${apiname}' AND NamespacePrefix ='${namespace}')`
+        : `(DeveloperName = '${apiname}')`,
+    );
+    const customFieldsQuery = await this.browserforce.connection.tooling.query(
+      `SELECT Id, DeveloperName, NamespacePrefix FROM CustomField WHERE (${developerNameConditions.join(' OR ')}) AND TableEnumOrId = '${tableEnumOrId}' ORDER By CreatedDate ASC`,
+    );
+
+    for (const customField of customFieldsQuery.records) {
+      const fieldApiName = `${customField.NamespacePrefix ? `${customField.NamespacePrefix}__` : ''}${customField.DeveloperName}${suffix}`;
+      fieldSelectorByFieldApiName.set(fieldApiName, customField.Id.substring(0, 15));
+    }
+  }
+
+  private parseNamespacedFieldApiName(
+    fieldApiName: string,
+    suffix: string,
+  ): [apiname: string, namespace: string | undefined] {
+    const fieldNameWithoutSuffix = fieldApiName.replace(suffix, '');
+    const parts = fieldNameWithoutSuffix.split('__');
+    const namespace = parts.length > 1 ? parts[0] : undefined;
+    const apiname = parts.length > 1 ? parts.slice(1).join('__') : parts[0];
+    return [apiname, namespace];
+  }
+
   private async getFieldSelectorByFieldApiName(
     tableEnumOrId: String,
     fieldHistoryTrackingConfigs: FieldHistoryTrackingConfig[],
@@ -168,13 +200,15 @@ export class HistoryTracking extends BrowserforcePlugin {
     for (const fieldHistoryTrackingConfig of fieldHistoryTrackingConfigs) {
       // If this is a person account field, we must do special handling for this
       if (tableEnumOrId === 'Account' && fieldHistoryTrackingConfig.fieldApiName.includes('__pc')) {
-        personAccountFieldApiNames.push(`'${fieldHistoryTrackingConfig.fieldApiName.replace('__pc', '')}'`);
+        personAccountFieldApiNames.push(
+          this.parseNamespacedFieldApiName(fieldHistoryTrackingConfig.fieldApiName, '__pc'),
+        );
         continue;
       }
 
       // If this is a custom field, we must query for the Field Id
       if (fieldHistoryTrackingConfig.fieldApiName.includes('__c')) {
-        customFieldApiNames.push(`'${fieldHistoryTrackingConfig.fieldApiName.replace('__c', '')}'`);
+        customFieldApiNames.push(this.parseNamespacedFieldApiName(fieldHistoryTrackingConfig.fieldApiName, '__c'));
         continue;
       }
 
@@ -189,32 +223,23 @@ export class HistoryTracking extends BrowserforcePlugin {
     if (personAccountFieldApiNames.length > 0) {
       // NOTE: Unfortunately this includes deleted records
       // WORKAROUND: ORDER BY CreatedDate
-      const personAccountFieldsQuery = await this.browserforce.connection.tooling.query(
-        `SELECT Id, DeveloperName FROM CustomField WHERE DeveloperName IN (${personAccountFieldApiNames.join(
-          ',',
-        )}) AND TableEnumOrId = 'Contact' ORDER By CreatedDate ASC`,
+      await this.queryCustomFieldsAndPopulateMap(
+        personAccountFieldApiNames,
+        'Contact',
+        '__pc',
+        fieldSelectorByFieldApiName,
       );
-
-      for (const personAccountField of personAccountFieldsQuery.records) {
-        fieldSelectorByFieldApiName.set(
-          `${personAccountField.DeveloperName}__pc`,
-          personAccountField.Id.substring(0, 15),
-        );
-      }
     }
 
     if (customFieldApiNames.length > 0) {
       // NOTE: Unfortunately this includes deleted records
       // WORKAROUND: ORDER BY CreatedDate
-      const customFieldsQuery = await this.browserforce.connection.tooling.query(
-        `SELECT Id, DeveloperName FROM CustomField WHERE DeveloperName IN (${customFieldApiNames.join(
-          ',',
-        )}) AND TableEnumOrId = '${tableEnumOrId}' ORDER By CreatedDate ASC`,
+      await this.queryCustomFieldsAndPopulateMap(
+        customFieldApiNames,
+        tableEnumOrId as string,
+        '__c',
+        fieldSelectorByFieldApiName,
       );
-
-      for (const customField of customFieldsQuery.records) {
-        fieldSelectorByFieldApiName.set(`${customField.DeveloperName}__c`, customField.Id.substring(0, 15));
-      }
     }
 
     return fieldSelectorByFieldApiName;
@@ -228,7 +253,7 @@ export class HistoryTracking extends BrowserforcePlugin {
     for (const historyTrackingConfig of historyTrackingConfigs) {
       // If it is a custom object, the CustomField.TableEnumOrId is the Object Id
       if (historyTrackingConfig.objectApiName.includes('__c')) {
-        customObjectApiNames.push(`'${historyTrackingConfig.objectApiName.replace('__c', '')}'`);
+        customObjectApiNames.push(this.parseNamespacedFieldApiName(historyTrackingConfig.objectApiName, '__c'));
         continue;
       }
 
@@ -242,9 +267,14 @@ export class HistoryTracking extends BrowserforcePlugin {
 
     // NOTE: Unfortunately this includes deleted records
     // WORKAROUND: ORDER BY CreatedDate
+    const customObjectDeveloperNames = customObjectApiNames.map(([apiname, namespace]) =>
+      namespace
+        ? `(DeveloperName = '${apiname}' AND NamespacePrefix = '${namespace}')`
+        : `(DeveloperName = '${apiname}')`,
+    );
     const customObjectsQuery = await this.browserforce.connection.tooling.query(
-      `SELECT Id, DeveloperName FROM CustomObject WHERE DeveloperName IN (${customObjectApiNames.join(
-        ',',
+      `SELECT Id, DeveloperName FROM CustomObject WHERE (${customObjectDeveloperNames.join(
+        ' OR ',
       )}) ORDER BY CreatedDate ASC`,
     );
 
