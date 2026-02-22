@@ -5,7 +5,7 @@ const CONSUMER_SECRET_SELECTOR = '#ConsumerSecret';
 const CONSUMER_KEY_SELECTOR = '#ConsumerKey';
 const SAVE_BUTTON_SELECTOR = 'input[id$=":saveBtn"], #topButtonRow > input[name="save"], button[title="Save"]';
 
-const getUrl = (orgId: string): SalesforceUrlPath => `/${orgId}/e` as SalesforceUrlPath;
+const getUrl = (orgId: string): SalesforceUrlPath => `/${orgId}/e?retURL=/${orgId}` as SalesforceUrlPath;
 
 type AuthProviderConfig = {
   consumerSecret?: string;
