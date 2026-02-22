@@ -70,9 +70,7 @@ export class AuthenticationConfiguration extends BrowserforcePlugin {
         const authProviderId = authProviderIdMap.get(definedService.authProviderApiName);
         if (!authProviderId) return null;
         const service = allServices.find((s) => authProviderIdMatchesCheckboxValue(authProviderId, s.value));
-        return service
-          ? { authProviderApiName: definedService.authProviderApiName, enabled: service.enabled }
-          : null;
+        return service ? { authProviderApiName: definedService.authProviderApiName, enabled: service.enabled } : null;
       })
       .filter((s): s is NonNullable<typeof s> => s !== null);
 
