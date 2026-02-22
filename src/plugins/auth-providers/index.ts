@@ -84,8 +84,7 @@ export class AuthProviders extends BrowserforcePlugin {
           const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(page, formSelector);
           // Update ConsumerSecret if provided
           if (authProviderConfig.consumerSecret !== undefined) {
-            await frameOrPage.locator(CONSUMER_SECRET_SELECTOR).waitFor({ timeout: 10000 });
-            await frameOrPage.locator(CONSUMER_SECRET_SELECTOR).fill(authProviderConfig.consumerSecret);
+            await page.locator(CONSUMER_SECRET_SELECTOR).fill(authProviderConfig.consumerSecret);
           }
 
           // Update ConsumerKey if provided
