@@ -163,7 +163,9 @@ export class HistoryTracking extends BrowserforcePlugin {
     fieldSelectorByFieldApiName: Map<string, string>,
   ): Promise<void> {
     const developerNameConditions = fieldApiNameTuples.map(([apiname, namespace]) =>
-      namespace ? `(DeveloperName ='${apiname}' AND NamespacePrefix ='${namespace}')` : `(DeveloperName = '${apiname}')`,
+      namespace
+        ? `(DeveloperName ='${apiname}' AND NamespacePrefix ='${namespace}')`
+        : `(DeveloperName = '${apiname}')`,
     );
     const customFieldsQuery = await this.browserforce.connection.tooling.query(
       `SELECT Id, DeveloperName, NamespacePrefix FROM CustomField WHERE (${developerNameConditions.join(' OR ')}) AND TableEnumOrId = '${tableEnumOrId}' ORDER By CreatedDate ASC`,
@@ -266,7 +268,9 @@ export class HistoryTracking extends BrowserforcePlugin {
     // NOTE: Unfortunately this includes deleted records
     // WORKAROUND: ORDER BY CreatedDate
     const customObjectDeveloperNames = customObjectApiNames.map(([apiname, namespace]) =>
-      namespace ? `(DeveloperName = '${apiname}' AND NamespacePrefix = '${namespace}')` : `(DeveloperName = '${apiname}')`
+      namespace
+        ? `(DeveloperName = '${apiname}' AND NamespacePrefix = '${namespace}')`
+        : `(DeveloperName = '${apiname}')`,
     );
     const customObjectsQuery = await this.browserforce.connection.tooling.query(
       `SELECT Id, DeveloperName FROM CustomObject WHERE (${customObjectDeveloperNames.join(
