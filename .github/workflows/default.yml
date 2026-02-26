@@ -47,7 +47,7 @@ jobs:
           sf org delete scratch --no-prompt
       - name: Upload Playwright traces
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-traces
           path: trace-*.zip
