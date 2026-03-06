@@ -17,7 +17,11 @@ export class HighVelocitySalesSetupPage {
   }
 
   public async setUpAndEnable(): Promise<void> {
-    await this.page.locator(AUTOMATION_TAB_ITEM).waitFor();
+    await Promise.race([
+      this.page.locator(AUTOMATION_TAB_ITEM).waitFor(),
+      // workaround: Starting Spring '26 there is a modal "Event fired" on page load.
+      this.page.locator(`div[role=dialog] button.slds-modal__close`).click(),
+    ]);
     const tabCount = await this.page.locator(AUTOMATION_TAB_ITEM).count();
     if (tabCount > 0) {
       await this.page.locator(AUTOMATION_TAB_ITEM).click();
