@@ -85,9 +85,7 @@ export class ListViewCustomButtons extends BrowserforcePlugin {
         );
       }
 
-      const targetLabels = entry.buttons
-        .filter((b) => apiNameToLabel.has(b))
-        .map((b) => apiNameToLabel.get(b)!);
+      const targetLabels = entry.buttons.filter((b) => apiNameToLabel.has(b)).map((b) => apiNameToLabel.get(b)!);
 
       const page = await this.browserforce.openPage(buildPagePath(entry.objectApiName));
       const availableListbox = page.getByRole('listbox', { name: AVAILABLE_LISTBOX_NAME });
@@ -131,9 +129,7 @@ export class ListViewCustomButtons extends BrowserforcePlugin {
     }
   }
 
-  private async queryWebLinks(
-    params: { apiNames?: string[]; labels?: string[] },
-  ): Promise<WebLinkMappings> {
+  private async queryWebLinks(params: { apiNames?: string[]; labels?: string[] }): Promise<WebLinkMappings> {
     const apiNameToLabel = new Map<string, string>();
     const labelToApiName = new Map<string, string>();
 
