@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema",
   "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/list-view-custom-buttons/schema.json",
   "title": "List View Custom Buttons",
-  "description": "Manage the selected custom buttons in the list view button layout (Aloha Search Layout) for any object.",
+  "description": "Manage the selected custom buttons in the list view button layout (Aloha Search Layout) for any object. Buttons are identified by their WebLink API Name (DeveloperName), with optional namespace prefix (e.g. 'AssignTask' or 'th_dev__AssignTask').",
   "type": "array",
   "items": { "$ref": "#/definitions/listViewCustomButtons" },
   "default": [],
@@ -17,11 +17,11 @@
         },
         "buttons": {
           "title": "Buttons",
-          "description": "The exact list of button labels that should appear in the selected (right-hand) side of the list view button layout.",
+          "description": "WebLink API Names (DeveloperName) of the custom buttons to select. Use namespace__Name for namespaced buttons (e.g. 'th_dev__AssignTask') or just Name for unpackaged buttons (e.g. 'AssignTask').",
           "type": "array",
           "items": {
             "type": "string",
-            "description": "Label of the custom button to include in the list view."
+            "description": "WebLink API Name (DeveloperName) of the custom button, optionally prefixed with namespace (e.g. 'AssignTask' or 'th_dev__AssignTask')."
           },
           "default": []
         }
