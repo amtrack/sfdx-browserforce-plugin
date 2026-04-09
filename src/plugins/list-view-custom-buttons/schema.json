@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/list-view-custom-buttons/schema.json",
+  "title": "List View Custom Buttons",
+  "description": "Manage the selected custom buttons in the list view button layout (Aloha Search Layout) for any object.",
+  "type": "array",
+  "items": { "$ref": "#/definitions/listViewCustomButtons" },
+  "default": [],
+  "definitions": {
+    "listViewCustomButtons": {
+      "type": "object",
+      "properties": {
+        "objectApiName": {
+          "title": "Object API Name",
+          "description": "The API name of the object whose list view custom buttons to manage (e.g. Activity, Account, Contact).",
+          "type": "string"
+        },
+        "buttons": {
+          "title": "Buttons",
+          "description": "The exact list of button labels that should appear in the selected (right-hand) side of the list view button layout.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "Label of the custom button to include in the list view."
+          },
+          "default": []
+        }
+      },
+      "required": ["objectApiName", "buttons"]
+    }
+  }
+}

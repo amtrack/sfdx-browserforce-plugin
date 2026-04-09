@@ -8,6 +8,7 @@ import { HighVelocitySalesSettings as highVelocitySalesSettings } from './high-v
 import { HistoryTracking as historyTracking } from './history-tracking/index.js';
 import { HomePageLayouts as homePageLayouts } from './home-page-layouts/index.js';
 import { LightningExperienceSettings as lightningExperienceSettings } from './lightning-experience-settings/index.js';
+import { ListViewCustomButtons as listViewCustomButtons } from './list-view-custom-buttons/index.js';
 import { LinkedInSalesNavigatorSettings as linkedInSalesNavigatorSettings } from './linkedin-sales-navigator-settings/index.js';
 import { OmniChannelSettings as omniChannelSettings } from './omni-channel-settings/index.js';
 import { OpportunitySplits as opportunitySplits } from './opportunity-splits/index.js';
@@ -34,6 +35,7 @@ export {
   historyTracking,
   homePageLayouts,
   lightningExperienceSettings,
+  listViewCustomButtons,
   linkedInSalesNavigatorSettings,
   omniChannelSettings,
   opportunitySplits,

@@ -40,6 +40,9 @@
         "lightningExperienceSettings": {
           "$ref": "./lightning-experience-settings/schema.json"
         },
+        "listViewCustomButtons": {
+          "$ref": "./list-view-custom-buttons/schema.json"
+        },
         "activitySettings": {
           "$ref": "./activity-settings/schema.json"
         },
