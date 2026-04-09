@@ -82,11 +82,4 @@ describe(ListViewCustomButtons.name, function () {
     assert.strictEqual(res[0].buttons[0], 'TestListButton');
   });
 
-  it('should clean up test WebLink buttons', async () => {
-    await plugin.run(disableButtons);
-    await global.browserforce.connection.metadata.delete('CustomAction', [
-      'Activity.TestListButton',
-      'Activity.TestListButton2',
-    ]);
-  });
 });
