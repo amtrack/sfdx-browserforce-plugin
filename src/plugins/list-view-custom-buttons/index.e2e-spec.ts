@@ -81,5 +81,4 @@ describe(ListViewCustomButtons.name, function () {
     assert.strictEqual(res[0].buttons.length, 1);
     assert.strictEqual(res[0].buttons[0], 'TestListButton');
   });
-
 });
