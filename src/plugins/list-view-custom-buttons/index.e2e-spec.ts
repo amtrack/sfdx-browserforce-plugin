@@ -14,28 +14,32 @@ describe(ListViewCustomButtons.name, function () {
 
   const enableButtons = [
     {
-      objectApiName: 'Activity',
+      objectApiName: 'Task',
+      buttons: ['TestListButton', 'TestListButton2'],
+    },
+    {
+      objectApiName: 'Event',
       buttons: ['TestListButton', 'TestListButton2'],
     },
   ];
 
   const enableSingleButton = [
     {
-      objectApiName: 'Activity',
+      objectApiName: 'Task',
       buttons: ['TestListButton'],
     },
   ];
 
   const disableButtons = [
     {
-      objectApiName: 'Activity',
+      objectApiName: 'Task',
       buttons: [],
     },
   ];
 
   const missingButton = [
     {
-      objectApiName: 'Activity',
+      objectApiName: 'Task',
       buttons: ['TestListButton', 'NonExistentButton'],
     },
   ];
@@ -53,7 +57,7 @@ describe(ListViewCustomButtons.name, function () {
   });
 
   it('should add both custom buttons to the list view', async () => {
-    await plugin.run(enableButtons);
+    await plugin.apply(enableButtons);
     const res = await plugin.retrieve(enableButtons);
     assert.deepStrictEqual(res, enableButtons);
   });
@@ -64,20 +68,20 @@ describe(ListViewCustomButtons.name, function () {
   });
 
   it('should remove one button and keep the other', async () => {
-    await plugin.run(enableSingleButton);
+    await plugin.apply(enableSingleButton);
     const res = await plugin.retrieve(enableSingleButton);
     assert.deepStrictEqual(res, enableSingleButton);
   });
 
   it('should remove all custom buttons', async () => {
-    await plugin.run(disableButtons);
+    await plugin.apply(disableButtons);
     const res = await plugin.retrieve(disableButtons);
     assert.deepStrictEqual(res, disableButtons);
   });
 
   it('should add found button and warn about missing button without failing', async () => {
-    await plugin.run(missingButton);
-    const res = await plugin.retrieve([{ objectApiName: 'Activity', buttons: ['TestListButton'] }]);
+    await plugin.apply(missingButton);
+    const res = await plugin.retrieve([{ objectApiName: 'Task', buttons: ['TestListButton'] }]);
     assert.strictEqual(res[0].buttons.length, 1);
     assert.strictEqual(res[0].buttons[0], 'TestListButton');
   });

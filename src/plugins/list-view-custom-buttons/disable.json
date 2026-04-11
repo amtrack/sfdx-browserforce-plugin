@@ -2,7 +2,11 @@
   "settings": {
     "listViewCustomButtons": [
       {
-        "objectApiName": "Activity",
+        "objectApiName": "Task",
+        "buttons": []
+      },
+      {
+        "objectApiName": "Event",
         "buttons": []
       }
     ]

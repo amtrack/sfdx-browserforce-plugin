@@ -5,19 +5,12 @@ import { BrowserforcePlugin } from '../../plugin.js';
 const AVAILABLE_LISTBOX_NAME = 'Available Buttons';
 const SELECTED_LISTBOX_NAME = 'Selected Buttons';
 const SAVE_BUTTON_SELECTOR = 'input[name="save"]';
-const NONE_PLACEHOLDER = '--None--';
 
 interface WebLinkRecord extends Record {
   Id: string;
   Name: string;
-  MasterLabel: string;
   NamespacePrefix: string | null;
 }
-
-type WebLinkMappings = {
-  apiNameToLabel: Map<string, string>;
-  labelToApiName: Map<string, string>;
-};
 
 type ListViewCustomButtonsConfig = {
   objectApiName: string;
@@ -25,8 +18,12 @@ type ListViewCustomButtonsConfig = {
 };
 
 function buildPagePath(objectApiName: string): SalesforceUrlPath {
-  const retURL = encodeURIComponent(`/setup/ObjectManager/${objectApiName}/AlohaSearchLayouts/view`);
-  return `/p/setup/layout/ListButtonsEdit?LayoutEntity=${objectApiName}&retURL=${retURL}`;
+  let pageObjApiName = objectApiName;
+  if (objectApiName === 'Task' || objectApiName === 'Event') {
+    pageObjApiName = 'Activity';
+  }
+
+  return `/p/setup/layout/ListButtonsEdit?LayoutEntity=${pageObjApiName}&retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`;
 }
 
 export class ListViewCustomButtons extends BrowserforcePlugin {
@@ -38,133 +35,113 @@ export class ListViewCustomButtons extends BrowserforcePlugin {
       const selectedListbox = page.getByRole('listbox', { name: SELECTED_LISTBOX_NAME });
       await selectedListbox.waitFor();
 
-      const labels = (
-        await Promise.all((await selectedListbox.locator('option').all()).map((opt) => opt.textContent()))
+      const buttonIds = (
+        await Promise.all((await selectedListbox.locator('option').all()).map((opt) => opt.getAttribute('value')))
       )
-        .map((b) => b?.trim() ?? '')
-        .filter((b) => Boolean(b) && b !== NONE_PLACEHOLDER);
+        .filter((b) => b?.trim() !== '')
+        .map((b) => `'${b?.trim()}'`);
 
-      const { labelToApiName } = await this.queryWebLinks({ labels });
-      const apiNames = labels.map((label) => labelToApiName.get(label) ?? label);
+      const result =
+        buttonIds.length > 0
+          ? await this.browserforce.connection.query<WebLinkRecord>(
+              `SELECT Id, Name, NamespacePrefix FROM WebLink WHERE Id IN (${buttonIds.join(',')})`,
+            )
+          : { records: [] };
 
-      results.push({ objectApiName: entry.objectApiName, buttons: apiNames });
+      const buttons = [];
+
+      for (const record of result.records) {
+        const fullApiName = record.NamespacePrefix ? `${record.NamespacePrefix}__${record.Name}` : record.Name;
+        buttons.push(fullApiName);
+      }
+
+      results.push({ objectApiName: entry.objectApiName, buttons: buttons.sort() });
     }
 
     return results;
   }
 
-  public diff(
-    source: ListViewCustomButtonsConfig[],
-    target: ListViewCustomButtonsConfig[],
-  ): ListViewCustomButtonsConfig[] | undefined {
-    const changes: ListViewCustomButtonsConfig[] = [];
-
-    for (const targetEntry of target) {
-      const sourceEntry = source.find((s) => s.objectApiName === targetEntry.objectApiName);
-      const sourceSet = new Set(sourceEntry?.buttons ?? []);
-      const targetSet = new Set(targetEntry.buttons);
-      const hasDiff =
-        targetEntry.buttons.some((b) => !sourceSet.has(b)) ||
-        (sourceEntry?.buttons ?? []).some((b) => !targetSet.has(b));
-      if (hasDiff) {
-        changes.push(targetEntry);
-      }
-    }
-
-    return changes.length > 0 ? changes : undefined;
-  }
-
   public async apply(plan: ListViewCustomButtonsConfig[]): Promise<void> {
     for (const entry of plan) {
-      const { apiNameToLabel } = await this.queryWebLinks({ apiNames: entry.buttons });
+      const buttons = await this.queryWebLinks(entry.buttons, entry.objectApiName);
 
-      const missingButtons = entry.buttons.filter((b) => !apiNameToLabel.has(b));
+      const buttonApiNames = new Set(
+        buttons.map((b) => (b.NamespacePrefix ? `${b.NamespacePrefix}__${b.Name}` : b.Name)),
+      );
+      const missingButtons = entry.buttons.filter((b) => !buttonApiNames.has(b));
+
       if (missingButtons.length > 0) {
         this.browserforce.logger?.warn(
           `[${entry.objectApiName}] WebLink(s) not found for button API name(s): ${missingButtons.map((b) => `"${b}"`).join(', ')}. Skipping missing buttons.`,
         );
       }
 
-      const targetLabels = entry.buttons.filter((b) => apiNameToLabel.has(b)).map((b) => apiNameToLabel.get(b)!);
+      const targetButtonIds = buttons.map((b) => b.Id.slice(0, 15)!);
 
       const page = await this.browserforce.openPage(buildPagePath(entry.objectApiName));
       const availableListbox = page.getByRole('listbox', { name: AVAILABLE_LISTBOX_NAME });
       const selectedListbox = page.getByRole('listbox', { name: SELECTED_LISTBOX_NAME });
       await availableListbox.waitFor();
 
-      const availableLabels = (
-        await Promise.all((await availableListbox.locator('option').all()).map((opt) => opt.textContent()))
-      ).map((l) => l?.trim() ?? '');
+      const availableButtonIds = (
+        await Promise.all((await availableListbox.locator('option').all()).map((opt) => opt.getAttribute('value')))
+      ).map((b) => b?.trim() ?? '');
 
-      const selectedLabels = (
-        await Promise.all((await selectedListbox.locator('option').all()).map((opt) => opt.textContent()))
+      const selectedButtonIds = (
+        await Promise.all((await selectedListbox.locator('option').all()).map((opt) => opt.getAttribute('value')))
       )
-        .map((l) => l?.trim() ?? '')
-        .filter((l) => l !== NONE_PLACEHOLDER);
+        .map((b) => b?.trim() ?? '')
+        .filter((b) => b !== '');
 
       const addButton = page.locator('img.rightArrowIcon');
       const removeButton = page.locator('img.leftArrowIcon');
 
-      for (const label of targetLabels) {
-        if (availableLabels.includes(label) && !selectedLabels.includes(label)) {
-          await availableListbox.selectOption({ label });
+      for (const buttonId of targetButtonIds) {
+        if (availableButtonIds.includes(buttonId) && !selectedButtonIds.includes(buttonId)) {
+          await availableListbox.selectOption({ value: buttonId });
           await addButton.click();
-          await selectedListbox.locator('option', { hasText: new RegExp(`^${label}$`) }).waitFor();
+          await selectedListbox.locator(`option[value="${buttonId}"]`).waitFor();
         }
       }
 
-      for (const label of selectedLabels) {
-        if (!targetLabels.includes(label)) {
-          await selectedListbox.selectOption({ label });
+      for (const buttonId of selectedButtonIds) {
+        if (!targetButtonIds.includes(buttonId)) {
+          await selectedListbox.selectOption({ value: buttonId });
           await removeButton.click();
-          await availableListbox.locator('option', { hasText: new RegExp(`^${label}$`) }).waitFor();
+          await availableListbox.locator(`option[value="${buttonId}"]`).waitFor();
         }
       }
 
       await page.locator(SAVE_BUTTON_SELECTOR).click();
       await Promise.race([
-        page.waitForURL((url) => !url.pathname.includes('ListButtonsEdit')),
+        page.waitForURL((url) => url.pathname === '/setup/forcecomHomepage.apexp'),
         waitForPageErrors(page),
       ]);
     }
   }
 
-  private async queryWebLinks(params: { apiNames?: string[]; labels?: string[] }): Promise<WebLinkMappings> {
-    const apiNameToLabel = new Map<string, string>();
-    const labelToApiName = new Map<string, string>();
+  private async queryWebLinks(apiNames: string[], objectApiName: string): Promise<WebLinkRecord[]> {
+    if (!apiNames?.length) {
+      return [];
+    }
 
     const conditions: string[] = [];
 
-    if (params.apiNames?.length) {
-      for (const name of params.apiNames) {
-        const parts = name.split('__');
-        if (parts.length > 1) {
-          const namespace = parts[0];
-          const devName = parts.slice(1).join('__');
-          conditions.push(`(Name = '${devName}' AND NamespacePrefix = '${namespace}')`);
-        } else {
-          conditions.push(`(Name = '${name}' AND NamespacePrefix = '')`);
-        }
+    for (const name of apiNames) {
+      const parts = name.split('__');
+      if (parts.length > 1) {
+        const namespace = parts[0];
+        const devName = parts.slice(1).join('__');
+        conditions.push(`(Name = '${devName}' AND NamespacePrefix = '${namespace}')`);
+      } else {
+        conditions.push(`(Name = '${name}' AND NamespacePrefix = NULL)`);
       }
     }
 
-    if (params.labels?.length) {
-      const labelsList = params.labels.map((l) => `'${l}'`).join(',');
-      conditions.push(`MasterLabel IN (${labelsList})`);
-    }
-
-    if (conditions.length === 0) return { apiNameToLabel, labelToApiName };
-
-    const result = await this.browserforce.connection.tooling.query<WebLinkRecord>(
-      `SELECT Id, Name, MasterLabel, NamespacePrefix FROM WebLink WHERE ${conditions.join(' OR ')}`,
+    const result = await this.browserforce.connection.query<WebLinkRecord>(
+      `SELECT Id, Name, NamespacePrefix FROM WebLink WHERE (${conditions.join(' OR ')}) AND PageOrSobjectType = '${objectApiName}'`,
     );
 
-    for (const record of result.records) {
-      const fullApiName = record.NamespacePrefix ? `${record.NamespacePrefix}__${record.Name}` : record.Name;
-      apiNameToLabel.set(fullApiName, record.MasterLabel);
-      labelToApiName.set(record.MasterLabel, fullApiName);
-    }
-
-    return { apiNameToLabel, labelToApiName };
+    return result.records;
   }
 }

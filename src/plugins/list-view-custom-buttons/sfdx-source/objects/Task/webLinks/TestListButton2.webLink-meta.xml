@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>TestListButton2</fullName>
+    <availability>online</availability>
+    <displayType>massActionButton</displayType>
+    <encodingKey>UTF-8</encodingKey>
+    <linkType>javascript</linkType>
+    <masterLabel>Test List Button 2</masterLabel>
+    <openType>onClickJavaScript</openType>
+    <protected>false</protected>
+    <url>alert(&apos;test2&apos;);</url>
+</WebLink>
