@@ -74,7 +74,9 @@ describe(ListViewCustomButtons.name, function () {
 
   it('should remove other buttons when removeOtherButtons is true', async () => {
     await plugin.apply([{ objectApiName: 'Task', buttons: ['TestListButton'], removeOtherButtons: true }]);
-    const res = await plugin.retrieve([{ objectApiName: 'Task', buttons: ['TestListButton'], removeOtherButtons: true }]);
+    const res = await plugin.retrieve([
+      { objectApiName: 'Task', buttons: ['TestListButton'], removeOtherButtons: true },
+    ]);
     assert.deepStrictEqual(res, [{ objectApiName: 'Task', buttons: ['TestListButton'], removeOtherButtons: true }]);
   });
 

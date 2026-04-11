@@ -56,7 +56,11 @@ export class ListViewCustomButtons extends BrowserforcePlugin {
         buttons.push(fullApiName);
       }
 
-      results.push({ objectApiName: entry.objectApiName, buttons: buttons.sort(), removeOtherButtons: entry.removeOtherButtons });
+      results.push({
+        objectApiName: entry.objectApiName,
+        buttons: buttons.sort(),
+        removeOtherButtons: entry.removeOtherButtons,
+      });
     }
 
     return results;
