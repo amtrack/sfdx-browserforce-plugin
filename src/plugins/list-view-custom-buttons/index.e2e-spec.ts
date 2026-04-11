@@ -16,10 +16,12 @@ describe(ListViewCustomButtons.name, function () {
     {
       objectApiName: 'Task',
       buttons: ['TestListButton', 'TestListButton2'],
+      removeOtherButtons: false,
     },
     {
       objectApiName: 'Event',
       buttons: ['TestListButton', 'TestListButton2'],
+      removeOtherButtons: false,
     },
   ];
 
@@ -27,6 +29,7 @@ describe(ListViewCustomButtons.name, function () {
     {
       objectApiName: 'Task',
       buttons: ['TestListButton'],
+      removeOtherButtons: false,
     },
   ];
 
@@ -34,6 +37,7 @@ describe(ListViewCustomButtons.name, function () {
     {
       objectApiName: 'Task',
       buttons: [],
+      removeOtherButtons: true,
     },
   ];
 
@@ -41,6 +45,7 @@ describe(ListViewCustomButtons.name, function () {
     {
       objectApiName: 'Task',
       buttons: ['TestListButton', 'NonExistentButton'],
+      removeOtherButtons: false,
     },
   ];
 
@@ -65,6 +70,12 @@ describe(ListViewCustomButtons.name, function () {
   it('should be idempotent when buttons are already selected', async () => {
     const result = await plugin.run(enableButtons);
     assert.deepStrictEqual(result, { message: 'no action necessary' });
+  });
+
+  it('should remove other buttons when removeOtherButtons is true', async () => {
+    await plugin.apply([{ objectApiName: 'Task', buttons: ['TestListButton'], removeOtherButtons: true }]);
+    const res = await plugin.retrieve([{ objectApiName: 'Task', buttons: ['TestListButton'], removeOtherButtons: true }]);
+    assert.deepStrictEqual(res, [{ objectApiName: 'Task', buttons: ['TestListButton'], removeOtherButtons: true }]);
   });
 
   it('should remove one button and keep the other', async () => {

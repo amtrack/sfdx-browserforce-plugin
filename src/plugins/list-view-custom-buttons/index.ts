@@ -15,6 +15,7 @@ interface WebLinkRecord extends Record {
 type ListViewCustomButtonsConfig = {
   objectApiName: string;
   buttons: string[];
+  removeOtherButtons?: boolean | false;
 };
 
 function buildPagePath(objectApiName: string): SalesforceUrlPath {
@@ -44,7 +45,7 @@ export class ListViewCustomButtons extends BrowserforcePlugin {
       const result =
         buttonIds.length > 0
           ? await this.browserforce.connection.query<WebLinkRecord>(
-              `SELECT Id, Name, NamespacePrefix FROM WebLink WHERE Id IN (${buttonIds.join(',')})`,
+              `SELECT Id, Name, NamespacePrefix FROM WebLink WHERE Id IN (${buttonIds.join(',')}) AND PageOrSobjectType = '${entry.objectApiName}'`,
             )
           : { records: [] };
 
@@ -55,7 +56,7 @@ export class ListViewCustomButtons extends BrowserforcePlugin {
         buttons.push(fullApiName);
       }
 
-      results.push({ objectApiName: entry.objectApiName, buttons: buttons.sort() });
+      results.push({ objectApiName: entry.objectApiName, buttons: buttons.sort(), removeOtherButtons: entry.removeOtherButtons });
     }
 
     return results;
@@ -104,11 +105,13 @@ export class ListViewCustomButtons extends BrowserforcePlugin {
         }
       }
 
-      for (const buttonId of selectedButtonIds) {
-        if (!targetButtonIds.includes(buttonId)) {
-          await selectedListbox.selectOption({ value: buttonId });
-          await removeButton.click();
-          await availableListbox.locator(`option[value="${buttonId}"]`).waitFor();
+      if (entry.removeOtherButtons) {
+        for (const buttonId of selectedButtonIds) {
+          if (!targetButtonIds.includes(buttonId)) {
+            await selectedListbox.selectOption({ value: buttonId });
+            await removeButton.click();
+            await availableListbox.locator(`option[value="${buttonId}"]`).waitFor();
+          }
         }
       }
 
