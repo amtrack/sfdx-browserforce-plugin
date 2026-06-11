@@ -15,6 +15,10 @@ export class LoginPage {
     const org = await Org.create({ connection });
     const frontDoorUrl = await org.getFrontDoorUrl(POST_LOGIN_PATH);
     await this.page.goto(frontDoorUrl);
+    const currentUrl = new URL(this.page.url());
+    if (currentUrl.pathname === '/msg/maintenanceandavailable.jsp') {
+      await this.page.goto(currentUrl.origin + POST_LOGIN_PATH);
+    }
     await Promise.race([this.page.waitForURL((url) => url.pathname === POST_LOGIN_PATH), waitForPageErrors(this.page)]);
     return this;
   }
