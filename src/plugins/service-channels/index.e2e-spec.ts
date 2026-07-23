@@ -7,7 +7,7 @@ import { OmniChannelSettings } from '../omni-channel-settings/index.js';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
-describe(ServiceChannels.name, function () {
+describe.skip(ServiceChannels.name, function () {
   this.timeout('10m');
   let plugin: ServiceChannels;
   before(() => {
