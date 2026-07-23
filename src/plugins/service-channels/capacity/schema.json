@@ -33,7 +33,7 @@
   },
   "if": {
     "properties": {
-      "capacityModel": { "const": "Status-based" }
+      "capacityModel": { "const": "StatusBased" }
     }
   },
   "then": {
