@@ -102,8 +102,7 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
         // copy id of existing object to new object to be retained and used
         availableCustomObject._id = oldCustomObject._id;
         const diff = semanticallyCleanObject(super.diff(oldCustomObject, availableCustomObject), '_id') as
-          | AvailableCustomObjectConfig
-          | undefined;
+          AvailableCustomObjectConfig | undefined;
         if (diff?.available !== undefined) {
           response.push(diff);
         }

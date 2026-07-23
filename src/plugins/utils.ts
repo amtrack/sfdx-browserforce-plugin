@@ -25,8 +25,7 @@ export function deepDiff<T extends unknown>(source: T | undefined, target: T | u
     let objectOrArray: T | undefined;
     if (Array.isArray(target)) {
       objectOrArray = target.map((item, i) => deepDiff(source?.[i], item)).filter((x) => x !== undefined) as
-        | T
-        | undefined;
+        T | undefined;
     } else {
       const targetKeys = Object.keys(target);
       const minSource = Object.fromEntries(

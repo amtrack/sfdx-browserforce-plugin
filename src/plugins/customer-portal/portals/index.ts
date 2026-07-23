@@ -116,8 +116,7 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
               throw new Error(`Could not find portal profile membership for '${member.name}'`);
             }
             const membershipDiff = semanticallyCleanObject(super.diff(sourceMember, member), '_id') as
-              | PortalProfileMembership
-              | undefined;
+              PortalProfileMembership | undefined;
             if (membershipDiff) {
               membershipResponse.push(membershipDiff);
             }

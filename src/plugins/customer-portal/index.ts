@@ -38,8 +38,7 @@ export class CustomerPortal extends BrowserforcePlugin {
 
   public diff(state: Config, definition: Config): Config | undefined {
     const enabled = new CustomerPortalEnable(this.browserforce).diff(state.enabled, definition.enabled) as
-      | boolean
-      | undefined;
+      boolean | undefined;
     const portals = new CustomerPortalSetup(this.browserforce).diff(state.portals, definition.portals);
     const availableCustomObjects = new CustomerPortalAvailableCustomObjects(this.browserforce).diff(
       state.availableCustomObjects,
