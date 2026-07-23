@@ -1,7 +1,7 @@
 import { BrowserforcePlugin } from '../../plugin.js';
 import { Capacity, CapacityConfig } from './capacity/index.js';
 
-type ServiceChannel = {
+export type ServiceChannel = {
   serviceChannelDeveloperName: string;
   capacity: CapacityConfig;
 };
