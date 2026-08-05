@@ -1,0 +1,9 @@
+{
+  "$schema": "../schema.json",
+  "settings": {
+    "passkey": {
+      "registered": false,
+      "credentialFile": "./sf-passkey-<host>.json"
+    }
+  }
+}

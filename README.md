@@ -137,8 +137,8 @@ apply a plan from a config file
 ```
 USAGE
   $ sf browserforce apply -o <value> [--json] [--flags-dir <value>] [-f <value>] [-d] [--headless] [--slow-mo <value>]
-    [--timeout <value>] [--trace] [--browser-executable-path <value>] [--browser-channel <value>] [--max-retries
-    <value>] [--retry-timeout <value>]
+    [--timeout <value>] [--trace] [--browser-executable-path <value>] [--browser-channel <value>] [--passkey-credential
+    <value>] [--max-retries <value>] [--retry-timeout <value>]
 
 FLAGS
   -d, --dry-run                 [env: BROWSERFORCE_DRY_RUN] dry run
@@ -150,6 +150,8 @@ BROWSER CONFIGURATION FLAGS
   --browser-channel=<value>          [env: BROWSERFORCE_BROWSER_CHANNEL] the channel (e.g. chromium or chrome) to use
   --browser-executable-path=<value>  [env: BROWSERFORCE_BROWSER_EXECUTABLE_PATH] the path to a browser executable
   --[no-]headless                    [env: BROWSERFORCE_HEADLESS] run in headless mode (default: true)
+  --passkey-credential=<value>       [env: BROWSERFORCE_PASSKEY_CREDENTIAL] path to a passkey credential file to use for
+                                     the login
   --slow-mo=<value>                  [env: BROWSERFORCE_SLOWMO] slow motion in milliseconds (default: 0)
   --timeout=<value>                  [default: 90000, env: BROWSERFORCE_NAVIGATION_TIMEOUT_MS] the default navigation
                                      timeout in milliseconds
@@ -190,6 +192,14 @@ FLAG DESCRIPTIONS
 
     Note: The environment variable CHROME_BIN can also be used. On GitHub Actions with ubuntu-latest, CHROME_BIN is set
     to /usr/bin/google-chrome.
+
+  --passkey-credential=<value>  path to a passkey credential file to use for the login
+
+    The credential is loaded into a virtual authenticator before the login, so that a passkey challenge (e.g. from an
+    untrusted CI IP) could be answered.
+    This is unverified best-effort: it is inert unless Salesforce actually challenges the passkey, and server side
+    acceptance has not been confirmed.
+    '<host>' in the path is replaced by the org hostname. The file contains a private key and is password-equivalent.
 
   --trace  create a Playwright trace file
 

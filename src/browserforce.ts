@@ -2,7 +2,7 @@ import { type Connection } from '@salesforce/core';
 import { type Ux } from '@salesforce/sf-plugins-core';
 import pRetry, { Options as RetryOptions } from 'p-retry';
 import { type BrowserContext, type FrameLocator, type Page } from 'playwright';
-import { LoginPage } from './pages/login.js';
+import { LoginPage, type LoginOptions } from './pages/login.js';
 
 const VF_IFRAME_SELECTOR = 'force-aloha-page iframe[name^=vfFrameId]';
 
@@ -28,11 +28,21 @@ export class Browserforce {
     };
   }
 
-  public async login(): Promise<Browserforce> {
+  public async login(options?: LoginOptions): Promise<Browserforce> {
     await using page = await this.browserContext.newPage();
-    const loginPage = new LoginPage(page);
-    await loginPage.login(this.connection);
+    await this.loginOnPage(page, options);
     return this;
+  }
+
+  /**
+   * Logs in on an existing page instead of a throwaway one, e.g. to keep the
+   * page a Virtual Authenticator is attached to, or to inspect where the login
+   * landed.
+   */
+  public async loginOnPage(page: Page, options?: LoginOptions): Promise<Page> {
+    const loginPage = new LoginPage(page);
+    await loginPage.login(this.connection, options);
+    return page;
   }
 
   // path instead of url

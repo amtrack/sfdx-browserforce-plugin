@@ -17,3 +17,7 @@ coverage/
 
 # Playwright traces
 trace-*.zip
+
+# Exported WebAuthn credentials contain the authenticator's PRIVATE KEY.
+# Treat these exactly like a password. Never commit them.
+sf-passkey-*.json

@@ -6,8 +6,17 @@ import * as path from 'path';
 import { chromium } from 'playwright';
 import { Browserforce, type BrowserforceOptions } from './browserforce.js';
 import { ConfigParser } from './config-parser.js';
+import { type LoginOptions } from './pages/login.js';
 import { handleDeprecations } from './plugins/deprecated.js';
 import * as DRIVERS from './plugins/index.js';
+import {
+  readCredentialFile,
+  resolveCredentialFilePath,
+  withSignCountHeadroom,
+} from './plugins/passkey/credential-file.js';
+import { VirtualAuthenticator } from './plugins/passkey/virtual-authenticator.js';
+
+const PASSKEY_PLUGIN_KEY = 'passkey';
 
 export abstract class BrowserforceCommand<T> extends SfCommand<T> {
   static baseFlags = {
@@ -63,6 +72,14 @@ export abstract class BrowserforceCommand<T> extends SfCommand<T> {
       description: 'Playwright will try to figure out the path to the browser executable automatically.',
       env: 'BROWSERFORCE_BROWSER_CHANNEL',
     }),
+    'passkey-credential': Flags.string({
+      helpGroup: 'Browser Configuration',
+      summary: 'path to a passkey credential file to use for the login',
+      description: `The credential is loaded into a virtual authenticator before the login, so that a passkey challenge (e.g. from an untrusted CI IP) could be answered.
+This is unverified best-effort: it is inert unless Salesforce actually challenges the passkey, and server side acceptance has not been confirmed. Do not rely on it as MFA.
+'<host>' in the path is replaced by the org hostname. The file contains a private key and is password-equivalent.`,
+      env: 'BROWSERFORCE_PASSKEY_CREDENTIAL',
+    }),
     // retry config
     'max-retries': Flags.integer({
       helpGroup: 'Retry Configuration',
@@ -107,9 +124,39 @@ export abstract class BrowserforceCommand<T> extends SfCommand<T> {
 
     this.spinner.start('logging in');
     await this.browserforce.browserContext.tracing.group('login');
-    await this.browserforce.login();
+    await this.loginToOrg(flags['passkey-credential'], {
+      // only the passkey plugin can get past a forced passkey enrollment
+      tolerateEnrollmentGate: this.settings.some((setting) => setting.key === PASSKEY_PLUGIN_KEY),
+    });
     this.spinner.stop();
     await this.browserforce.browserContext.tracing.groupEnd();
+  }
+
+  private async loginToOrg(passkeyCredentialFile: string | undefined, options: LoginOptions): Promise<void> {
+    if (!passkeyCredentialFile) {
+      await this.browserforce.login(options);
+      return;
+    }
+    const host = new URL(this.browserforce.getInstanceUrl()).host;
+    const credentialFile = resolveCredentialFilePath(passkeyCredentialFile, host);
+    const file = await readCredentialFile(credentialFile);
+    if (!file) {
+      throw new Error(`Passkey credential file '${credentialFile}' not found`);
+    }
+    if (file.rpId !== host) {
+      throw new Error(
+        `Passkey credential file '${credentialFile}' belongs to '${file.rpId}', but this org is '${host}'`,
+      );
+    }
+    const page = await this.browserforce.browserContext.newPage();
+    try {
+      // exactly ONE virtual authenticator holding exactly this credential:
+      // a stray empty one would intercept the assertion and fail it
+      await VirtualAuthenticator.attach(page, [withSignCountHeadroom(file.credential)]);
+      await this.browserforce.loginOnPage(page, options);
+    } finally {
+      await page.close();
+    }
   }
 
   public async finally(err?: Error): Promise<void> {

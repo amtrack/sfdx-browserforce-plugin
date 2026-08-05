@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/passkey/schema.json",
+  "title": "Passkey (Built-in Authenticator) of the automation user",
+  "description": "Registers or deletes the single passkey of a DEDICATED automation user, so that it can clear Salesforce's forced passkey enrollment. Never point this at a user shared with a human: a second passkey cannot be added without an assertion against an existing one.",
+  "type": "object",
+  "properties": {
+    "registered": {
+      "title": "Whether a passkey we hold the credential for is registered",
+      "description": "true registers a passkey if the user has none, false deletes the registered passkey. 'Registered' means a passkey exists AND its credential is the one in credentialFile.",
+      "type": "boolean"
+    },
+    "credentialFile": {
+      "title": "Path to the file storing the passkey credential",
+      "description": "The exported credential contains the authenticator's PRIVATE KEY and is password-equivalent: keep it out of version control and treat it as a secret. It is only valid for one org (the relying party id is the org hostname) and dies on a sandbox refresh, so '<host>' in the path is replaced by the org hostname. Without this file the passkey cannot be recognized as ours later and can only be deleted using 'force'.",
+      "type": "string"
+    },
+    "force": {
+      "title": "Delete a passkey whose credential we do not hold",
+      "description": "By default Browserforce refuses to delete a passkey it cannot recognize as its own, because a human may have created it. Only set this for a dedicated automation user.",
+      "type": "boolean"
+    }
+  },
+  "required": ["registered"]
+}

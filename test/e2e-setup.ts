@@ -2,6 +2,7 @@ import { Org } from '@salesforce/core';
 import { type Options } from 'p-retry';
 import { chromium } from 'playwright';
 import { Browserforce } from '../src/browserforce.js';
+import { isEnrollmentGateUrl } from '../src/pages/login.js';
 
 before('global setup', async () => {
   const org = await Org.create({});
@@ -10,7 +11,15 @@ before('global setup', async () => {
   await browserContext.tracing.group('global setup');
   const browserforce = new Browserforce(connection, browserContext, { retry: createRetryOptionsFromEnv() });
   global.browserforce = browserforce;
-  await browserforce.login();
+  // The passkey e2e spec needs the user to start without a passkey, which makes
+  // the login land on the enrollment gate. Tolerate it here so that spec can run.
+  const page = await browserforce.loginOnPage(await browserContext.newPage(), { tolerateEnrollmentGate: true });
+  if (isEnrollmentGateUrl(new URL(page.url()))) {
+    console.warn(
+      `WARNING: the login was intercepted by the passkey enrollment gate, because this user has no passkey.\nOnly the passkey e2e spec can run against this org.`,
+    );
+  }
+  await page.close();
   await browserContext.tracing.groupEnd();
 });
 
