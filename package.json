@@ -14,7 +14,7 @@
     "playwright": "1.61.1"
   },
   "devDependencies": {
-    "@salesforce/dev-scripts": "11.0.4",
+    "@salesforce/dev-scripts": "13.0.2",
     "oclif": "4.23.27",
     "prettier": "3.9.5",
     "typescript": "*"
