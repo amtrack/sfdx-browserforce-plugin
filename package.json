@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@salesforce/dev-scripts": "13.0.2",
-    "oclif": "4.23.27",
+    "oclif": "4.23.30",
     "prettier": "3.9.5",
     "typescript": "*"
   },
