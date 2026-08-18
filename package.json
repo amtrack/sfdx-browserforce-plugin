@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@mdapi-issues/listmetadata-standardvalueset": "3.1.0",
-    "@salesforce/sf-plugins-core": "12.2.6",
+    "@salesforce/sf-plugins-core": "12.2.28",
     "p-retry": "7.1.1",
     "playwright": "1.61.1"
   },
