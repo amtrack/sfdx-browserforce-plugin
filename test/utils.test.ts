@@ -87,6 +87,18 @@ describe('maskSensitiveValues', () => {
     assert.strictEqual(result.security.certificates.password, '****');
   });
 
+  it('should mask consumerSecret and not consumerKey when given the real converted auth-providers schema', async () => {
+    const { schema: authProvidersSchema } = await import('../src/plugins/auth-providers/schema.js');
+    const jsonSchema = z.toJSONSchema(authProvidersSchema, { target: 'draft-7', io: 'input' });
+    const result = maskSensitiveValues(
+      { myProvider: { consumerSecret: 's3cret', consumerKey: 'ck' } },
+      '',
+      jsonSchema,
+    ) as { myProvider: { consumerSecret: string; consumerKey: string } };
+    assert.strictEqual(result.myProvider.consumerSecret, '****');
+    assert.strictEqual(result.myProvider.consumerKey, 'ck');
+  });
+
   it('should still mask via regex fallback when no schema is given', async () => {
     const result = maskSensitiveValues({ consumerSecret: 'x' }, '', undefined) as { consumerSecret: string };
     assert.strictEqual(result.consumerSecret, '****');

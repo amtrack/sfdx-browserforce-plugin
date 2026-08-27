@@ -1,5 +1,7 @@
+import type { z } from 'zod';
 import { type SalesforceUrlPath, waitForPageErrors } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
+import type { schema } from './schema.js';
 
 const CONSUMER_SECRET_SELECTOR = '#ConsumerSecret';
 const CONSUMER_KEY_SELECTOR = '#ConsumerKey';
@@ -7,14 +9,7 @@ const SAVE_BUTTON_SELECTOR = 'input[id$=":saveBtn"], #topButtonRow > input[name=
 
 const getUrl = (orgId: string): SalesforceUrlPath => `/${orgId}/e?retURL=/${orgId}` as SalesforceUrlPath;
 
-type AuthProviderConfig = {
-  consumerSecret?: string;
-  consumerKey?: string;
-};
-
-export type Config = {
-  [developerName: string]: AuthProviderConfig;
-};
+export type Config = z.infer<typeof schema>;
 
 type AuthProviderRecord = {
   Id: string;

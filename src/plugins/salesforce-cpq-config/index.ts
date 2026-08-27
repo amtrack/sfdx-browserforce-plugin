@@ -1,5 +1,7 @@
+import type { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
 import { formConfig } from './formConfig.js';
+import type { schema } from './schema.js';
 
 const BASE_PATH = '/0A3?setupid=ImportedPackage&retURL=%2Fui%2Fsetup%2FSetup%3Fsetupid%3DStudio';
 const AUTH_PATH = '/setup/secur/RemoteAccessAuthorizationPage.apexp';
@@ -11,7 +13,7 @@ const SAVE_SELECTOR = 'input[name="page:form:j_id2:j_id3:j_id11"]';
 const AUTHORIZE_NEW_CALCULATION_SERVICE_SELECTOR = 'span#page\\:form\\:pb\\:calculatorOptions\\:j_id201\\:j_id203 a';
 const ALLOW_SELECTOR = 'input[name="save"]:not([id="oadeny"])';
 
-export type Config = any;
+export type Config = z.infer<typeof schema> & { [key: string]: any };
 
 export class SalesforceCpqConfig extends BrowserforcePlugin {
   private logger = this.browserforce.logger;
