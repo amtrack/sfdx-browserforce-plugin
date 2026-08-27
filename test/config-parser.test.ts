@@ -1,6 +1,14 @@
 import assert from 'assert';
 import { ConfigParser } from '../src/config-parser.js';
-import * as DRIVERS from '../src/plugins/index.js';
+import { type BrowserforcePlugin } from '../src/plugin.js';
+import * as pluginExports from '../src/plugins/index.js';
+
+// `pluginExports` also carries `schemas` (the zod schema map used to generate schema.json),
+// which is not a driver; ConfigParser only wants the driver classes.
+const DRIVERS = Object.fromEntries(Object.entries(pluginExports).filter(([key]) => key !== 'schemas')) as Record<
+  string,
+  typeof BrowserforcePlugin
+>;
 
 describe('ConfigParser', () => {
   describe('parse()', () => {

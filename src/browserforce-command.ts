@@ -7,7 +7,15 @@ import { chromium } from 'playwright';
 import { Browserforce, type BrowserforceOptions } from './browserforce.js';
 import { ConfigParser } from './config-parser.js';
 import { handleDeprecations } from './plugins/deprecated.js';
-import * as DRIVERS from './plugins/index.js';
+import * as pluginExports from './plugins/index.js';
+import { type BrowserforcePlugin } from './plugin.js';
+
+// `pluginExports` also carries `schemas` (the zod schema map used to generate schema.json),
+// which is not a driver; ConfigParser only wants the driver classes.
+const DRIVERS = Object.fromEntries(Object.entries(pluginExports).filter(([key]) => key !== 'schemas')) as Record<
+  string,
+  typeof BrowserforcePlugin
+>;
 
 export abstract class BrowserforceCommand<T> extends SfCommand<T> {
   static baseFlags = {
