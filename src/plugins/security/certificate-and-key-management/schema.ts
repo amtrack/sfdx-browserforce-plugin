@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { password } from '../../utils.js';
 
 const certificateSchema = z
   .object({
@@ -16,7 +17,7 @@ const keystoreSchema = z
         'Optional new name of the certificate. WARNING: Only use this to change the case of the certificate name as the imported name is lowercase by default.',
     }),
     filePath: z.string().meta({ description: 'Relative path from current working directory' }),
-    password: z.string().optional(),
+    password: password(z.string()).optional(),
   })
   .meta({ id: 'keystore' });
 

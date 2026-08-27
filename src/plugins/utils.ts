@@ -92,6 +92,11 @@ function extractPasswordFields(
     recurseInto(schemaObj.additionalProperties, prefix);
   }
 
+  // Handle array items (for z.array(...))
+  if (schemaObj.items && typeof schemaObj.items === 'object') {
+    recurseInto(schemaObj.items, prefix);
+  }
+
   // Handle allOf (optional refs are wrapped in allOf)
   if (Array.isArray(schemaObj.allOf)) {
     for (const subSchema of schemaObj.allOf) {
@@ -145,8 +150,12 @@ export function password<T extends z.ZodType>(schema: T): T {
  * @returns True if the field should be masked
  */
 function isPasswordField(fieldPath: string, passwordFields: Set<string>): boolean {
+  // Array indices (e.g. "[0]") are runtime-only and not part of the schema path, so strip them
+  // before comparing against the schema-derived password field paths.
+  const normalizedPath = fieldPath.replace(/\[\d+\]/g, '');
+
   // Check exact match
-  if (passwordFields.has(fieldPath)) {
+  if (passwordFields.has(normalizedPath)) {
     return true;
   }
 
@@ -154,7 +163,7 @@ function isPasswordField(fieldPath: string, passwordFields: Set<string>): boolea
   // e.g., if schema has "consumerSecret" and path is "test.consumerSecret"
   const passwordFieldsArray = Array.from(passwordFields);
   for (const passwordField of passwordFieldsArray) {
-    if (fieldPath.endsWith(`.${passwordField}`) || fieldPath === passwordField) {
+    if (normalizedPath.endsWith(`.${passwordField}`) || normalizedPath === passwordField) {
       return true;
     }
   }

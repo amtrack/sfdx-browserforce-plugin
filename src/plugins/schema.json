@@ -1228,7 +1228,8 @@
           "description": "Relative path from current working directory"
         },
         "password": {
-          "type": "string"
+          "type": "string",
+          "x-password": true
         }
       },
       "required": ["name", "filePath"]

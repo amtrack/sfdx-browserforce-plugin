@@ -1,5 +1,6 @@
 import assert from 'assert';
 import { z } from 'zod';
+import { schemas } from '../src/plugins/index.js';
 import { isEmptyObjectOrArray, maskSensitiveValues, password, semanticallyCleanObject } from '../src/plugins/utils.js';
 
 describe('semanticallyCleanObject', () => {
@@ -102,6 +103,36 @@ describe('maskSensitiveValues', () => {
   it('should still mask via regex fallback when no schema is given', async () => {
     const result = maskSensitiveValues({ consumerSecret: 'x' }, '', undefined) as { consumerSecret: string };
     assert.strictEqual(result.consumerSecret, '****');
+  });
+
+  it('should mask consumerSecret and not consumerKey when converted from the schemas map', async () => {
+    const jsonSchema = z.toJSONSchema(schemas.authProviders, { target: 'draft-7', io: 'input' });
+    const result = maskSensitiveValues(
+      { myProvider: { consumerSecret: 's3cret', consumerKey: 'ck' } },
+      '',
+      jsonSchema,
+    ) as { myProvider: { consumerSecret: string; consumerKey: string } };
+    assert.strictEqual(result.myProvider.consumerSecret, '****');
+    assert.strictEqual(result.myProvider.consumerKey, 'ck');
+  });
+
+  it('should mask a password nested behind a definitions-local $ref when converted from the schemas map', async () => {
+    const jsonSchema = z.toJSONSchema(schemas.security, { target: 'draft-7', io: 'input' });
+    const result = maskSensitiveValues(
+      {
+        certificateAndKeyManagement: {
+          importFromKeystore: [{ name: 'n', filePath: '/tmp/keystore.p12', password: 's3cret' }],
+        },
+      },
+      '',
+      jsonSchema,
+    ) as {
+      certificateAndKeyManagement: {
+        importFromKeystore: [{ filePath: string; password: string }];
+      };
+    };
+    assert.strictEqual(result.certificateAndKeyManagement.importFromKeystore[0].password, '****');
+    assert.strictEqual(result.certificateAndKeyManagement.importFromKeystore[0].filePath, '/tmp/keystore.p12');
   });
 });
 
