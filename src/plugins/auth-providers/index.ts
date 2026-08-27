@@ -5,19 +5,22 @@ import { password } from '../utils.js';
 
 const authProviderSchema = z.object({
   consumerSecret: password(
-    z.string().meta({ title: 'Consumer Secret', description: 'The Consumer Secret value for the Auth Provider' }),
+    z.string().meta({ title: 'Consumer Secret' }).describe('The Consumer Secret value for the Auth Provider'),
   ).optional(),
   consumerKey: z
     .string()
-    .meta({ title: 'Consumer Key', description: 'The Consumer Key value for the Auth Provider' })
+    .meta({ title: 'Consumer Key' })
+    .describe('The Consumer Key value for the Auth Provider')
     .optional(),
 });
 
-export const authProvidersSchema = z.record(z.string().regex(/^[a-zA-Z0-9_]+$/), authProviderSchema).meta({
-  id: 'authProviders',
-  title: 'Auth Providers',
-  description: 'Configuration for updating Auth Provider Consumer Key and Consumer Secret',
-});
+export const authProvidersSchema = z
+  .record(z.string().regex(/^[a-zA-Z0-9_]+$/), authProviderSchema)
+  .describe('Configuration for updating Auth Provider Consumer Key and Consumer Secret')
+  .meta({
+    id: 'authProviders',
+    title: 'Auth Providers',
+  });
 
 const CONSUMER_SECRET_SELECTOR = '#ConsumerSecret';
 const CONSUMER_KEY_SELECTOR = '#ConsumerKey';

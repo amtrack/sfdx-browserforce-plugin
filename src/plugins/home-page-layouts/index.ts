@@ -5,8 +5,8 @@ import { BrowserforcePlugin } from '../../plugin.js';
 
 export const homePageLayoutAssignmentSchema = z
   .object({
-    profile: z.string().meta({ description: 'Developer Name of Profile' }),
-    layout: z.string().meta({ description: 'Developer Name of the HomePageLayout or empty string for default layout' }),
+    profile: z.string().describe('Developer Name of Profile'),
+    layout: z.string().describe('Developer Name of the HomePageLayout or empty string for default layout'),
   })
   .meta({ id: 'homePageLayoutAssignment' });
 
@@ -16,10 +16,10 @@ export const homePageLayoutsSchema = z
       title: 'Home Page Layout Assignment',
     }),
   })
+  .describe('Assign Home Page Layouts for Profiles. Only available in Salesforce Classic UI')
   .meta({
     id: 'homePageLayouts',
     title: 'Home Page Layouts',
-    description: 'Assign Home Page Layouts for Profiles. Only available in Salesforce Classic UI',
   });
 
 const BASE_PATH: SalesforceUrlPath = `/setup/ui/assignhomelayoutedit.jsp?retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`;

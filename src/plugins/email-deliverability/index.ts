@@ -5,7 +5,8 @@ export const emailDeliverabilitySchema = z
   .object({
     accessLevel: z
       .enum(['No access', 'System email only', 'All email'])
-      .meta({ title: 'Access Level', description: 'Choose the email Deliverability Access Level required' })
+      .meta({ title: 'Access Level' })
+      .describe('Choose the email Deliverability Access Level required')
       .optional(),
   })
   .meta({ id: 'emailDeliverability', title: 'Email Deliverability Settings' });

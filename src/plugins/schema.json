@@ -227,8 +227,8 @@
           }
         }
       },
-      "title": "Auth Providers",
-      "description": "Configuration for updating Auth Provider Consumer Key and Consumer Secret"
+      "description": "Configuration for updating Auth Provider Consumer Key and Consumer Secret",
+      "title": "Auth Providers"
     },
     "companyInformation": {
       "type": "object",
@@ -238,8 +238,8 @@
           "title": "Default Currency"
         }
       },
-      "title": "Company Information",
-      "description": ""
+      "description": "",
+      "title": "Company Information"
     },
     "customerPortal": {
       "type": "object",
@@ -266,8 +266,8 @@
           }
         }
       },
-      "title": "Customer Portal Settings",
-      "description": "Only available in Salesforce Classic UI"
+      "description": "Only available in Salesforce Classic UI",
+      "title": "Customer Portal Settings"
     },
     "portal": {
       "type": "object",
@@ -365,8 +365,8 @@
           "title": "Set Up and Enable High Velocity Sales"
         }
       },
-      "title": "HighVelocitySalesSettings",
-      "description": "Due to a bug, High Velocity Sales needs to be set up and enabled initially using the UI.\nOnce set up, it can be configured using HighVelocitySalesSettings Metadata https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_highvelocitysalessettings.htm"
+      "description": "Due to a bug, High Velocity Sales needs to be set up and enabled initially using the UI.\nOnce set up, it can be configured using HighVelocitySalesSettings Metadata https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_highvelocitysalessettings.htm",
+      "title": "HighVelocitySalesSettings"
     },
     "historyTracking": {
       "type": "object",
@@ -420,8 +420,8 @@
           }
         }
       },
-      "title": "Home Page Layouts",
-      "description": "Assign Home Page Layouts for Profiles. Only available in Salesforce Classic UI"
+      "description": "Assign Home Page Layouts for Profiles. Only available in Salesforce Classic UI",
+      "title": "Home Page Layouts"
     },
     "homePageLayoutAssignment": {
       "type": "object",
@@ -446,8 +446,8 @@
           "description": "The API Name of the Lightning Experience Theme to be activated"
         }
       },
-      "title": "LightningExperienceSettings",
-      "description": "Although the Metadata API has a field activeThemeName in LightningExperienceSettings it's not possible to activate any of the standard themes like Lightning and LightningLite or SalesforceCosmos."
+      "description": "Although the Metadata API has a field activeThemeName in LightningExperienceSettings it's not possible to activate any of the standard themes like Lightning and LightningLite or SalesforceCosmos.",
+      "title": "LightningExperienceSettings"
     },
     "listViewCustomButtons": {
       "type": "object",
@@ -597,8 +597,8 @@
     },
     "fieldDependencies": {
       "default": [],
-      "title": "Field Dependencies",
       "description": "Manage (create/modify/delete) Field Dependencies on CustomFields.\nIf a Field Dependency already exists for the dependent field, it will be deleted.",
+      "title": "Field Dependencies",
       "type": "array",
       "items": {
         "$ref": "#/definitions/fieldDependency"

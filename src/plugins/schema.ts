@@ -7,6 +7,7 @@ export const rootSchema = z
   })
   .meta({
     title: 'Browserforce Configuration',
-    description:
-      'The browserforce config file contains the configuration values that defines browser automation tasks for Salesforce orgs.',
-  });
+  })
+  .describe(
+    'The browserforce config file contains the configuration values that defines browser automation tasks for Salesforce orgs.',
+  );

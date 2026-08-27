@@ -18,11 +18,12 @@ const certificateSchema = z
 
 const keystoreSchema = z
   .object({
-    name: z.string().meta({
-      description:
+    name: z
+      .string()
+      .describe(
         'Optional new name of the certificate. WARNING: Only use this to change the case of the certificate name as the imported name is lowercase by default.',
-    }),
-    filePath: z.string().meta({ description: 'Relative path from current working directory' }),
+      ),
+    filePath: z.string().describe('Relative path from current working directory'),
     password: password(z.string()).optional(),
   })
   .meta({ id: 'keystore' });

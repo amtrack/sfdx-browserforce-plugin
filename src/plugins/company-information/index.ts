@@ -6,7 +6,8 @@ export const companyInformationSchema = z
   .object({
     defaultCurrencyIsoCode: z.string().meta({ title: 'Default Currency' }).optional(),
   })
-  .meta({ id: 'companyInformation', title: 'Company Information', description: '' });
+  .describe('')
+  .meta({ id: 'companyInformation', title: 'Company Information' });
 
 const getUrl = (orgId: string): SalesforceUrlPath => `/${orgId}/e`;
 

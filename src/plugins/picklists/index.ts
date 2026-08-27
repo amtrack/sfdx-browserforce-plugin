@@ -9,30 +9,29 @@ import { determineStandardValueSetEditUrl } from './standard-value-set.js';
 
 export const picklistActionSchema = z
   .object({
-    metadataType: z.enum(['CustomField', 'GlobalValueSet', 'StandardValueSet']).meta({
-      description: 'the metadata type',
-    }),
-    metadataFullName: z
-      .string()
-      .meta({ description: 'the API name of the CustomField/GlobalValueSet/StandardValueSet' }),
-    value: z.string().meta({ description: 'the API name of the value' }).optional(),
-    newValue: z.string().meta({ description: 'the API name of the new value, otherwise blank' }).optional(),
-    statusCategory: z.string().meta({ description: 'the Status Category of a new picklist value' }).optional(),
+    metadataType: z.enum(['CustomField', 'GlobalValueSet', 'StandardValueSet']).describe('the metadata type'),
+    metadataFullName: z.string().describe('the API name of the CustomField/GlobalValueSet/StandardValueSet'),
+    value: z.string().describe('the API name of the value').optional(),
+    newValue: z.string().describe('the API name of the new value, otherwise blank').optional(),
+    statusCategory: z.string().describe('the Status Category of a new picklist value').optional(),
     replaceAllBlankValues: z
       .boolean()
-      .meta({ description: 'replace all blank values (mutually exclusive to replacing an old value)' })
+      .describe('replace all blank values (mutually exclusive to replacing an old value)')
       .optional(),
-    active: z.boolean().meta({ description: 'ensure the picklist value is active/inactive' }).optional(),
-    absent: z.boolean().meta({ description: 'ensure the picklist value is absent/deleted' }).optional(),
+    active: z.boolean().describe('ensure the picklist value is active/inactive').optional(),
+    absent: z.boolean().describe('ensure the picklist value is absent/deleted').optional(),
   })
   .meta({ id: 'picklistAction' });
 
 export const picklistsSchema = z
   .object({
-    picklistValues: z.array(picklistActionSchema).default([]).meta({
-      title: 'Picklist Values',
-      description: 'Replace (and delete) picklist values',
-    }),
+    picklistValues: z
+      .array(picklistActionSchema)
+      .default([])
+      .meta({
+        title: 'Picklist Values',
+      })
+      .describe('Replace (and delete) picklist values'),
     fieldDependencies: fieldDependenciesSchema.optional(),
   })
   .meta({ id: 'picklists', title: 'Picklists' });

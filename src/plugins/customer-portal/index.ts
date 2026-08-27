@@ -24,9 +24,10 @@ export const portalSchema = z
     selfRegUserDefaultLicense: z.string().optional(),
     selfRegUserDefaultProfile: z.string().optional(),
     selfRegUserDefaultRole: z.string().optional(),
-    portalProfileMemberships: z.array(portalProfileMembershipSchema).default([]).meta({
-      description: 'Profiles for which this portal should be activated or deactivated',
-    }),
+    portalProfileMemberships: z
+      .array(portalProfileMembershipSchema)
+      .default([])
+      .describe('Profiles for which this portal should be activated or deactivated'),
   })
   .meta({ id: 'portal' });
 
@@ -44,19 +45,20 @@ export const customerPortalSchema = z
       .boolean()
       .meta({
         title: 'Enable Customer Portal',
-        description:
-          "Although the Metadata API has a OrgSettings.enableCustomerSuccessPortal field, enabling this via the browser can be handy because it automatically creates a Portal named 'Customer Portal', where the admin and emailSenderAddress are set to the current user. Warning: cannot be disabled once enabled",
       })
+      .describe(
+        "Although the Metadata API has a OrgSettings.enableCustomerSuccessPortal field, enabling this via the browser can be handy because it automatically creates a Portal named 'Customer Portal', where the admin and emailSenderAddress are set to the current user. Warning: cannot be disabled once enabled",
+      )
       .optional(),
     portals: z.array(portalSchema).default([]).meta({ title: 'Portals' }),
     availableCustomObjects: z.array(availableCustomObjectSchema).default([]).meta({
       title: 'Custom Objects available for Customer Portal',
     }),
   })
+  .describe('Only available in Salesforce Classic UI')
   .meta({
     id: 'customerPortal',
     title: 'Customer Portal Settings',
-    description: 'Only available in Salesforce Classic UI',
   });
 
 // `portals`/`availableCustomObjects` use the sub-plugins' own `Config` types (decision C: they carry

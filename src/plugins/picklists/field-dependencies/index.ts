@@ -25,18 +25,24 @@ export const fieldDependencySchema = z
       .optional()
       .meta({
         title: 'the API name of the CustomField that drives filtering',
-        description: 'If this value is null or not set, the Field Dependency will be deleted.',
+      })
+      .describe('If this value is null or not set, the Field Dependency will be deleted.')
+      .meta({
         examples: ['Transmission__c', 'ACME__Transmission__c', null],
       }),
   })
   .meta({ id: 'fieldDependency' });
 
-export const fieldDependenciesSchema = z.array(fieldDependencySchema).default([]).meta({
-  id: 'fieldDependencies',
-  title: 'Field Dependencies',
-  description:
+export const fieldDependenciesSchema = z
+  .array(fieldDependencySchema)
+  .default([])
+  .describe(
     'Manage (create/modify/delete) Field Dependencies on CustomFields.\nIf a Field Dependency already exists for the dependent field, it will be deleted.',
-});
+  )
+  .meta({
+    id: 'fieldDependencies',
+    title: 'Field Dependencies',
+  });
 
 export type FieldDependencyConfig = z.infer<typeof fieldDependencySchema>;
 

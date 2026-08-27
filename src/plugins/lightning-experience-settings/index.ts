@@ -8,15 +8,16 @@ export const lightningExperienceSettingsSchema = z
       .string()
       .meta({
         title: 'The active Lightning Experience Theme',
-        description: 'The API Name of the Lightning Experience Theme to be activated',
       })
+      .describe('The API Name of the Lightning Experience Theme to be activated')
       .optional(),
   })
+  .describe(
+    "Although the Metadata API has a field activeThemeName in LightningExperienceSettings it's not possible to activate any of the standard themes like Lightning and LightningLite or SalesforceCosmos.",
+  )
   .meta({
     id: 'lightningExperienceSettings',
     title: 'LightningExperienceSettings',
-    description:
-      "Although the Metadata API has a field activeThemeName in LightningExperienceSettings it's not possible to activate any of the standard themes like Lightning and LightningLite or SalesforceCosmos.",
   });
 
 const BASE_PATH = '/lightning/setup/ThemingAndBranding/home';

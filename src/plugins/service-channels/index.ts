@@ -4,10 +4,12 @@ import { Capacity, CapacityConfig, capacitySchema } from './capacity/index.js';
 
 const serviceChannelSchema = z
   .object({
-    serviceChannelDeveloperName: z.string().meta({
-      title: 'Service Channel',
-      description: 'The developer name of the Service Channel to modify',
-    }),
+    serviceChannelDeveloperName: z
+      .string()
+      .meta({
+        title: 'Service Channel',
+      })
+      .describe('The developer name of the Service Channel to modify'),
     capacity: capacitySchema.optional(),
   })
   .meta({ id: 'serviceChannel' });

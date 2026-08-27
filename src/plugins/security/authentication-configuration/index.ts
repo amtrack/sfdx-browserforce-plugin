@@ -3,12 +3,12 @@ import { BrowserforcePlugin } from '../../../plugin.js';
 
 const serviceSchema = z
   .object({
-    label: z.string().meta({ description: 'The visible name of the authentication service' }).optional(),
+    label: z.string().describe('The visible name of the authentication service').optional(),
     authProviderApiName: z
       .string()
-      .meta({ description: 'The DeveloperName of the AuthProvider (alternative to label for matching)' })
+      .describe('The DeveloperName of the AuthProvider (alternative to label for matching)')
       .optional(),
-    enabled: z.boolean().meta({ description: 'True to enable, false to disable' }).optional(),
+    enabled: z.boolean().describe('True to enable, false to disable').optional(),
   })
   .meta({
     oneOf: [
@@ -20,10 +20,12 @@ const serviceSchema = z
 
 export const authenticationConfigurationSchema = z
   .object({
-    services: z.array(serviceSchema).meta({
-      description: 'List of Authentication Services to configure under My Domain, each with desired enabled state',
-      default: [],
-    }),
+    services: z
+      .array(serviceSchema)
+      .describe('List of Authentication Services to configure under My Domain, each with desired enabled state')
+      .meta({
+        default: [],
+      }),
   })
   .meta({ id: 'authenticationConfiguration', title: 'Authentication Configuration' });
 

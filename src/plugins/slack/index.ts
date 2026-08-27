@@ -7,8 +7,8 @@ export const slackSchema = z
       .boolean()
       .meta({
         title: 'Agree to Termns and Conditions',
-        description: 'Once the terms have been accepted, this cannot be reverted.',
       })
+      .describe('Once the terms have been accepted, this cannot be reverted.')
       .optional(),
     enableSalesCloudForSlack: z.boolean().meta({ title: "Enable the 'Sales Cloud for Slack' Slack App" }).optional(),
   })

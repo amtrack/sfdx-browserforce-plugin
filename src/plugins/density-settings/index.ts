@@ -6,7 +6,8 @@ export const densitySettingsSchema = z
   .object({
     density: z
       .enum(['Comfy', 'Compact'])
-      .meta({ title: 'Density', description: 'Choose the default display setting for your org' })
+      .meta({ title: 'Density' })
+      .describe('Choose the default display setting for your org')
       .optional(),
   })
   .meta({ id: 'densitySettings', title: 'Density Settings' });

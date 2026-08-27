@@ -7,11 +7,12 @@ export const highVelocitySalesSettingsSchema = z
   .object({
     setUpAndEnable: z.boolean().meta({ title: 'Set Up and Enable High Velocity Sales' }).optional(),
   })
+  .describe(
+    'Due to a bug, High Velocity Sales needs to be set up and enabled initially using the UI.\nOnce set up, it can be configured using HighVelocitySalesSettings Metadata https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_highvelocitysalessettings.htm',
+  )
   .meta({
     id: 'highVelocitySalesSettings',
     title: 'HighVelocitySalesSettings',
-    description:
-      'Due to a bug, High Velocity Sales needs to be set up and enabled initially using the UI.\nOnce set up, it can be configured using HighVelocitySalesSettings Metadata https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_highvelocitysalessettings.htm',
   });
 
 const MSG_NOT_AVAILABLE = `HighVelocitySales is not available in this organization.
