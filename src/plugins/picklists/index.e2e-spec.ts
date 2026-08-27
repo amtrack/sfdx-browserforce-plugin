@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import * as path from 'path';
 import { FieldDependencies } from './field-dependencies/index.js';
-import { Config, Picklists } from './index.js';
+import { PicklistsConfig, Picklists } from './index.js';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const readJsonFile = function (u: string) {
@@ -29,7 +29,7 @@ describe(Picklists.name, function () {
   const configReplaceAndDelete = readJsonFile('./replace-and-delete.json').settings.picklists;
   const configDeactivate = readJsonFile('./deactivate.json').settings.picklists;
   const configActivate = readJsonFile('./activate.json').settings.picklists;
-  const configDeactivateWithDep: Config = {
+  const configDeactivateWithDep: PicklistsConfig = {
     picklistValues: [
       {
         metadataType: 'CustomField',
@@ -39,7 +39,7 @@ describe(Picklists.name, function () {
       },
     ],
   };
-  const configActivateWithDep: Config = {
+  const configActivateWithDep: PicklistsConfig = {
     picklistValues: [
       {
         metadataType: 'CustomField',

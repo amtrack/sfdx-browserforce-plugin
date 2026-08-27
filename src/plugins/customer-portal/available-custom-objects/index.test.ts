@@ -1,11 +1,11 @@
 import assert from 'assert';
-import { type Config, CustomerPortalAvailableCustomObjects } from './index.js';
+import { type CustomerPortalAvailableCustomObjectsConfig, CustomerPortalAvailableCustomObjects } from './index.js';
 
 type T = {
   description: string;
-  source: Config;
-  target: Config;
-  expected: Config;
+  source: CustomerPortalAvailableCustomObjectsConfig;
+  target: CustomerPortalAvailableCustomObjectsConfig;
+  expected: CustomerPortalAvailableCustomObjectsConfig;
 };
 const tests: T[] = [
   {
@@ -29,7 +29,7 @@ const tests: T[] = [
         name: 'Dummy',
         available: true,
       },
-    ] as Config,
+    ] as CustomerPortalAvailableCustomObjectsConfig,
   },
 ];
 

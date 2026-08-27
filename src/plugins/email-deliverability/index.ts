@@ -22,21 +22,21 @@ const ACCESS_LEVEL_VALUES = new Map([
   ['All email', '2'],
 ]);
 
-export type Config = z.infer<typeof emailDeliverabilitySchema>;
+export type EmailDeliverabilityConfig = z.infer<typeof emailDeliverabilitySchema>;
 
 export class EmailDeliverability extends BrowserforcePlugin {
-  public async retrieve(definition?: Config): Promise<Config> {
+  public async retrieve(definition?: EmailDeliverabilityConfig): Promise<EmailDeliverabilityConfig> {
     await using page = await this.browserforce.openPage(BASE_PATH);
     const selectedOption = await page.locator(`${ACCESS_LEVEL_SELECTOR} > option[selected]`).textContent();
     if (!selectedOption) {
       throw new Error('Selected access level not found...');
     }
     return {
-      accessLevel: selectedOption as Config['accessLevel'],
+      accessLevel: selectedOption as EmailDeliverabilityConfig['accessLevel'],
     };
   }
 
-  public async apply(config: Config): Promise<void> {
+  public async apply(config: EmailDeliverabilityConfig): Promise<void> {
     const accessLevelNumber = config.accessLevel ? ACCESS_LEVEL_VALUES.get(config.accessLevel) : undefined;
     if (accessLevelNumber === undefined) {
       throw new Error(`Invalid email access level ${config.accessLevel}`);

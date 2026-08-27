@@ -17,10 +17,12 @@ export const relateContactToMultipleAccountsSchema = z
 
 const BASE_PATH = '/accounts/accountSetup.apexp';
 
-export type Config = z.infer<typeof relateContactToMultipleAccountsSchema>;
+export type RelateContactToMultipleAccountsConfig = z.infer<typeof relateContactToMultipleAccountsSchema>;
 
 export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
-  public async retrieve(definition?: Config): Promise<Config> {
+  public async retrieve(
+    definition?: RelateContactToMultipleAccountsConfig,
+  ): Promise<RelateContactToMultipleAccountsConfig> {
     await using page = await this.browserforce.openPage(BASE_PATH);
     const response = {
       enabled: await page.locator('input[id$=":sharedContactsCheckBox"]').isChecked(),
@@ -28,7 +30,7 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
     return response;
   }
 
-  public async apply(config: Config): Promise<void> {
+  public async apply(config: RelateContactToMultipleAccountsConfig): Promise<void> {
     await using page = await this.browserforce.openPage(BASE_PATH);
     await this.waitForProcessFinished(page);
     // First we have to click the 'Edit' button, to make the checkbox editable

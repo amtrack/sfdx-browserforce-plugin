@@ -30,7 +30,7 @@ const DEFAULT_TRIGGER_TYPE: PolicyTriggerType = 'CreateAndUpdate';
 
 type AccessPolicy = z.infer<typeof accessPolicySchema>;
 
-export type Config = z.infer<typeof userAccessPoliciesSchema>;
+export type UserAccessPoliciesConfig = z.infer<typeof userAccessPoliciesSchema>;
 
 export class UserAccessPolicies extends BrowserforcePlugin {
   private async queryPolicies(policyApiNames: string[]): Promise<{
@@ -63,8 +63,8 @@ export class UserAccessPolicies extends BrowserforcePlugin {
     return { policyStateMap, policyIdMap, policyTriggerTypeMap };
   }
 
-  public async retrieve(definition?: Config): Promise<Config> {
-    const response: Config = {
+  public async retrieve(definition?: UserAccessPoliciesConfig): Promise<UserAccessPoliciesConfig> {
+    const response: UserAccessPoliciesConfig = {
       accessPolicies: [],
     };
 
@@ -96,7 +96,7 @@ export class UserAccessPolicies extends BrowserforcePlugin {
     return response;
   }
 
-  public async apply(config: Config): Promise<void> {
+  public async apply(config: UserAccessPoliciesConfig): Promise<void> {
     if (!config.accessPolicies || config.accessPolicies.length === 0) {
       return;
     }

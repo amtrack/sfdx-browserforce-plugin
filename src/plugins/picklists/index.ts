@@ -3,11 +3,7 @@ import { z } from 'zod';
 import { type SalesforceUrlPath } from '../../browserforce.js';
 import { ensureArray } from '../../jsforce-utils.js';
 import { BrowserforcePlugin } from '../../plugin.js';
-import {
-  FieldDependencies,
-  Config as FieldDependenciesConfig,
-  fieldDependenciesSchema,
-} from './field-dependencies/index.js';
+import { FieldDependencies, FieldDependenciesConfig, fieldDependenciesSchema } from './field-dependencies/index.js';
 import { DefaultPicklistAddPage, PicklistPage, StatusPicklistAddPage } from './pages.js';
 import { determineStandardValueSetEditUrl } from './standard-value-set.js';
 
@@ -41,14 +37,14 @@ export const picklistsSchema = z
   })
   .meta({ id: 'picklists', title: 'Picklists' });
 
-export type Config = z.infer<typeof picklistsSchema>;
+export type PicklistsConfig = z.infer<typeof picklistsSchema>;
 
 type PicklistValuesConfig = z.infer<typeof picklistActionSchema> & { _newValueId?: string };
 
 export class Picklists extends BrowserforcePlugin {
-  public async retrieve(definition: Config): Promise<Config> {
+  public async retrieve(definition: PicklistsConfig): Promise<PicklistsConfig> {
     const picklistValues: PicklistValuesConfig[] = [];
-    const result: Config = { picklistValues, fieldDependencies: [] };
+    const result: PicklistsConfig = { picklistValues, fieldDependencies: [] };
     if (definition.picklistValues) {
       const fileProperties = await listMetadata(
         this.browserforce.connection,
@@ -75,8 +71,8 @@ export class Picklists extends BrowserforcePlugin {
     return result;
   }
 
-  public diff(state: Config, definition: Config): Partial<Config> | undefined {
-    const changes: Partial<Config> = {};
+  public diff(state: PicklistsConfig, definition: PicklistsConfig): Partial<PicklistsConfig> | undefined {
+    const changes: Partial<PicklistsConfig> = {};
     if (definition.picklistValues) {
       const picklistValues = definition.picklistValues.filter((target, i) => {
         const source = state.picklistValues?.[i] as PicklistValuesConfig | undefined;
@@ -112,7 +108,7 @@ export class Picklists extends BrowserforcePlugin {
     return Object.keys(changes).length ? changes : undefined;
   }
 
-  public async apply(config: Config): Promise<void> {
+  public async apply(config: PicklistsConfig): Promise<void> {
     if (config.picklistValues) {
       const fileProperties = await listMetadata(
         this.browserforce.connection,

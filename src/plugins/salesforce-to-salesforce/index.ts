@@ -12,10 +12,10 @@ export const salesforceToSalesforceSchema = z
 
 const BASE_PATH = '/_ui/s2s/ui/PartnerNetworkEnable/e';
 
-export type Config = z.infer<typeof salesforceToSalesforceSchema>;
+export type SalesforceToSalesforceConfig = z.infer<typeof salesforceToSalesforceSchema>;
 
 export class SalesforceToSalesforce extends BrowserforcePlugin {
-  public async retrieve(): Promise<Config> {
+  public async retrieve(): Promise<SalesforceToSalesforceConfig> {
     await using page = await this.browserforce.openPage(BASE_PATH);
     const response = {
       enabled: true,
@@ -29,7 +29,7 @@ export class SalesforceToSalesforce extends BrowserforcePlugin {
     return response;
   }
 
-  public async apply(config: Config): Promise<void> {
+  public async apply(config: SalesforceToSalesforceConfig): Promise<void> {
     if (config.enabled === false) {
       throw new Error('`enabled` cannot be disabled once enabled');
     }

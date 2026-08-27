@@ -40,10 +40,10 @@ export const fieldDependenciesSchema = z.array(fieldDependencySchema).default([]
 
 export type FieldDependencyConfig = z.infer<typeof fieldDependencySchema>;
 
-export type Config = z.infer<typeof fieldDependenciesSchema>;
+export type FieldDependenciesConfig = z.infer<typeof fieldDependenciesSchema>;
 
 export class FieldDependencies extends BrowserforcePlugin {
-  public async retrieve(definition: Config): Promise<Config> {
+  public async retrieve(definition: FieldDependenciesConfig): Promise<FieldDependenciesConfig> {
     const dependentFieldNames = definition.map((f) => `${f.object}.${f.dependentField}`);
     const result = await this.browserforce.connection.metadata.read('CustomField', dependentFieldNames);
     const metadata = ensureArray(result);
@@ -57,7 +57,7 @@ export class FieldDependencies extends BrowserforcePlugin {
     return state;
   }
 
-  public async apply(plan: Config): Promise<void> {
+  public async apply(plan: FieldDependenciesConfig): Promise<void> {
     const listMetadataResult = await this.browserforce.connection.metadata.list([
       {
         type: 'CustomObject',

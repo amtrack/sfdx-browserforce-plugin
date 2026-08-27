@@ -2,7 +2,7 @@ import assert from 'assert';
 import * as child from 'child_process';
 import { fileURLToPath } from 'node:url';
 import * as path from 'path';
-import { type Config, AuthenticationConfiguration } from './index.js';
+import { type AuthenticationConfigurationConfig, AuthenticationConfiguration } from './index.js';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
@@ -14,37 +14,37 @@ describe(AuthenticationConfiguration.name, function () {
   });
 
   describe('authentication configuration', () => {
-    const configRetrieveSingle: Config = {
+    const configRetrieveSingle: AuthenticationConfigurationConfig = {
       services: [{ label: 'Login Form', enabled: true }],
     };
-    const configRmoveSingle: Config = {
+    const configRmoveSingle: AuthenticationConfigurationConfig = {
       services: [{ label: 'Login Form', enabled: false }],
     };
-    const configApplyMultiple: Config = {
+    const configApplyMultiple: AuthenticationConfigurationConfig = {
       services: [
         { label: 'Login Form', enabled: false },
         { label: 'TestAuthMethod', enabled: true },
       ],
     };
-    const configApplyMissing: Config = {
+    const configApplyMissing: AuthenticationConfigurationConfig = {
       services: [{ label: 'FakeAuthMethod', enabled: true }],
     };
-    const resetTestState: Config = {
+    const resetTestState: AuthenticationConfigurationConfig = {
       services: [
         { label: 'Login Form', enabled: true },
         { label: 'TestAuthMethod', enabled: false },
       ],
     };
-    const configRetrieveByApiName: Config = {
+    const configRetrieveByApiName: AuthenticationConfigurationConfig = {
       services: [{ authProviderApiName: 'TestAuthMethod', enabled: true }],
     };
-    const configApplyByApiName: Config = {
+    const configApplyByApiName: AuthenticationConfigurationConfig = {
       services: [
         { label: 'Login Form', enabled: true },
         { authProviderApiName: 'TestAuthMethod', enabled: false },
       ],
     };
-    const configApplyMissingApiName: Config = {
+    const configApplyMissingApiName: AuthenticationConfigurationConfig = {
       services: [{ authProviderApiName: 'NonExistentAuthProvider', enabled: true }],
     };
 

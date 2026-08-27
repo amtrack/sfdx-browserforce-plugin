@@ -18,16 +18,16 @@ const BASE_PATH = '/omnichannel/settings.apexp';
 const SAVE_BUTTON_SELECTOR = 'input[id$=":save"]';
 const STATUS_CAPACITY_TOGGLE_SELECTOR = 'input[id$=":toggleOmniStatusCapModelPref"]';
 
-export type Config = z.infer<typeof omniChannelSettingsSchema>;
+export type OmniChannelSettingsConfig = z.infer<typeof omniChannelSettingsSchema>;
 
 export class OmniChannelSettings extends BrowserforcePlugin {
-  public async retrieve(definition?: Config): Promise<Config> {
+  public async retrieve(definition?: OmniChannelSettingsConfig): Promise<OmniChannelSettingsConfig> {
     await using page = await this.browserforce.openPage(BASE_PATH);
     const enableStatusBasedCapacityModel = await page.locator(STATUS_CAPACITY_TOGGLE_SELECTOR).isChecked();
     return { enableStatusBasedCapacityModel };
   }
 
-  public async apply(config: Config): Promise<void> {
+  public async apply(config: OmniChannelSettingsConfig): Promise<void> {
     await using page = await this.browserforce.openPage(BASE_PATH);
     await page.locator(STATUS_CAPACITY_TOGGLE_SELECTOR).click();
     await page.locator(SAVE_BUTTON_SELECTOR).click();

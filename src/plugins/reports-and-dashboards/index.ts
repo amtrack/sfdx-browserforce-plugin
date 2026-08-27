@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
-import { FolderSharing, Config as FolderSharingConfig, folderSharingSchema } from './folder-sharing/index.js';
+import { FolderSharing, FolderSharingConfig, folderSharingSchema } from './folder-sharing/index.js';
 
 export const reportsAndDashboardsSchema = z
   .object({
@@ -8,13 +8,13 @@ export const reportsAndDashboardsSchema = z
   })
   .meta({ id: 'reportsAndDashboards', title: 'Reports & Dashboards' });
 
-type Config = {
+type ReportsAndDashboardsConfig = {
   folderSharing?: FolderSharingConfig;
 };
 
 export class ReportsAndDashboards extends BrowserforcePlugin {
-  public async retrieve(definition?: Config): Promise<Config> {
-    const response: Config = {};
+  public async retrieve(definition?: ReportsAndDashboardsConfig): Promise<ReportsAndDashboardsConfig> {
+    const response: ReportsAndDashboardsConfig = {};
     if (definition) {
       if (definition.folderSharing) {
         const pluginFolderSharing = new FolderSharing(this.browserforce);
@@ -24,8 +24,11 @@ export class ReportsAndDashboards extends BrowserforcePlugin {
     return response;
   }
 
-  public diff(state: Config, definition: Config): Config | undefined {
-    const response: Config = {};
+  public diff(
+    state: ReportsAndDashboardsConfig,
+    definition: ReportsAndDashboardsConfig,
+  ): ReportsAndDashboardsConfig | undefined {
+    const response: ReportsAndDashboardsConfig = {};
     const folderSharing = new FolderSharing(this.browserforce).diff(state.folderSharing, definition.folderSharing) as
       FolderSharingConfig | undefined;
     if (folderSharing !== undefined) {
@@ -34,7 +37,7 @@ export class ReportsAndDashboards extends BrowserforcePlugin {
     return Object.keys(response).length ? response : undefined;
   }
 
-  public async apply(plan: Config): Promise<void> {
+  public async apply(plan: ReportsAndDashboardsConfig): Promise<void> {
     if (plan.folderSharing) {
       const pluginFolderSharing = new FolderSharing(this.browserforce);
       await pluginFolderSharing.apply(plan.folderSharing);

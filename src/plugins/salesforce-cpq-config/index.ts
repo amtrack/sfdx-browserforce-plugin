@@ -163,15 +163,15 @@ const SAVE_SELECTOR = 'input[name="page:form:j_id2:j_id3:j_id11"]';
 const AUTHORIZE_NEW_CALCULATION_SERVICE_SELECTOR = 'span#page\\:form\\:pb\\:calculatorOptions\\:j_id201\\:j_id203 a';
 const ALLOW_SELECTOR = 'input[name="save"]:not([id="oadeny"])';
 
-export type Config = z.infer<typeof salesforceCpqConfigSchema> & { [key: string]: any };
+export type SalesforceCpqConfigConfig = z.infer<typeof salesforceCpqConfigSchema> & { [key: string]: any };
 
 export class SalesforceCpqConfig extends BrowserforcePlugin {
   private logger = this.browserforce.logger;
-  public async retrieve(definition?: Config): Promise<Config> {
+  public async retrieve(definition?: SalesforceCpqConfigConfig): Promise<SalesforceCpqConfigConfig> {
     await using page = await this.browserforce.openPage(BASE_PATH);
     await Promise.all([page.waitForEvent('load'), page.locator(CONFIGURE_SELECTOR).click()]);
 
-    const response = {} as Config;
+    const response = {} as SalesforceCpqConfigConfig;
     if (definition) {
       for (const [keyTab, valueTab] of Object.entries(formConfig)) {
         if (definition[keyTab]) {
@@ -212,7 +212,7 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
     return response;
   }
 
-  public async apply(config: Config): Promise<void> {
+  public async apply(config: SalesforceCpqConfigConfig): Promise<void> {
     await using page = await this.browserforce.openPage(BASE_PATH);
     await Promise.all([page.waitForEvent('load'), page.locator(CONFIGURE_SELECTOR).click()]);
 

@@ -19,10 +19,10 @@ const BASE_PATH = '/setup/activitiesSetupPage.apexp';
 const MANY_WHO_PREF_INPUT_SELECTOR = 'input[id="thePage:theForm:theBlock:manyWhoPref"]';
 const SUBMIT_BUTTON_SELECTOR = 'input[id="thePage:theForm:theBlock:buttons:submit"]';
 
-export type Config = z.infer<typeof activitySettingsSchema>;
+export type ActivitySettingsConfig = z.infer<typeof activitySettingsSchema>;
 
 export class ActivitySettings extends BrowserforcePlugin {
-  public async retrieve(): Promise<Config> {
+  public async retrieve(): Promise<ActivitySettingsConfig> {
     await using page = await this.browserforce.openPage(BASE_PATH);
     const response = {
       allowUsersToRelateMultipleContactsToTasksAndEvents: await page.locator(MANY_WHO_PREF_INPUT_SELECTOR).isChecked(),
@@ -30,7 +30,7 @@ export class ActivitySettings extends BrowserforcePlugin {
     return response;
   }
 
-  public async apply(config: Config): Promise<void> {
+  public async apply(config: ActivitySettingsConfig): Promise<void> {
     if (config.allowUsersToRelateMultipleContactsToTasksAndEvents === false) {
       throw new Error(
         '`allowUsersToRelateMultipleContactsToTasksAndEvents` can only be disabled with help of the salesforce.com Support team',

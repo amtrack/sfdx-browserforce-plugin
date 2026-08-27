@@ -48,7 +48,7 @@ interface CertificateRecord extends Record {
   KeySize: number;
 }
 
-export type Config = {
+export type CertificateAndKeyManagementConfig = {
   certificates?: Certificate[];
   importFromKeystore?: KeyStore[];
 };
@@ -68,8 +68,8 @@ type KeyStore = {
 };
 
 export class CertificateAndKeyManagement extends BrowserforcePlugin {
-  public async retrieve(definition: Config): Promise<Config> {
-    const response: Config = {
+  public async retrieve(definition: CertificateAndKeyManagementConfig): Promise<CertificateAndKeyManagementConfig> {
+    const response: CertificateAndKeyManagementConfig = {
       certificates: [],
       importFromKeystore: [],
     };
@@ -111,8 +111,11 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
     return response;
   }
 
-  public diff(state?: Config, definition?: Config): Config | undefined {
-    const response: Config = {};
+  public diff(
+    state?: CertificateAndKeyManagementConfig,
+    definition?: CertificateAndKeyManagementConfig,
+  ): CertificateAndKeyManagementConfig | undefined {
+    const response: CertificateAndKeyManagementConfig = {};
     if (state && definition && state.certificates && definition.certificates) {
       for (const cert of definition.certificates) {
         const existingCert = state.certificates.find((c) => c.name === cert.name);
@@ -140,7 +143,7 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
     return Object.keys(response).length ? response : undefined;
   }
 
-  public async apply(plan: Config): Promise<void> {
+  public async apply(plan: CertificateAndKeyManagementConfig): Promise<void> {
     if (plan.certificates) {
       for (const certificate of plan.certificates) {
         if (certificate._id) {

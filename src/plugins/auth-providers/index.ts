@@ -25,7 +25,7 @@ const SAVE_BUTTON_SELECTOR = 'input[id$=":saveBtn"], #topButtonRow > input[name=
 
 const getUrl = (orgId: string): SalesforceUrlPath => `/${orgId}/e?retURL=/${orgId}` as SalesforceUrlPath;
 
-export type Config = z.infer<typeof authProvidersSchema>;
+export type AuthProvidersConfig = z.infer<typeof authProvidersSchema>;
 
 type AuthProviderRecord = {
   Id: string;
@@ -33,12 +33,12 @@ type AuthProviderRecord = {
 };
 
 export class AuthProviders extends BrowserforcePlugin {
-  public async retrieve(): Promise<Config> {
+  public async retrieve(): Promise<AuthProvidersConfig> {
     // Skip retrieve as requested - return empty config
     return {};
   }
 
-  public async apply(config: Config): Promise<void> {
+  public async apply(config: AuthProvidersConfig): Promise<void> {
     if (!config || Object.keys(config).length === 0) {
       return;
     }

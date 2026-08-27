@@ -2,10 +2,10 @@ import { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
 import {
   CustomerPortalAvailableCustomObjects,
-  Config as CustomerPortalAvailableCustomObjectsConfig,
+  CustomerPortalAvailableCustomObjectsConfig,
 } from './available-custom-objects/index.js';
-import { CustomerPortalEnable, Config as CustomerPortalEnableConfig } from './enabled/index.js';
-import { CustomerPortalSetup, Config as CustomerPortalSetupConfig } from './portals/index.js';
+import { CustomerPortalEnable, CustomerPortalEnableConfig } from './enabled/index.js';
+import { CustomerPortalSetup, CustomerPortalSetupConfig } from './portals/index.js';
 
 export const portalProfileMembershipSchema = z
   .object({
@@ -61,16 +61,19 @@ export const customerPortalSchema = z
 
 // `portals`/`availableCustomObjects` use the sub-plugins' own `Config` types (decision C: they carry
 // an internal `_id` that must not enter the schema), while `enabled` derives from the schema directly.
-type Config = Omit<z.infer<typeof customerPortalSchema>, 'portals' | 'availableCustomObjects' | 'enabled'> & {
+type CustomerPortalConfig = Omit<
+  z.infer<typeof customerPortalSchema>,
+  'portals' | 'availableCustomObjects' | 'enabled'
+> & {
   enabled?: CustomerPortalEnableConfig;
   portals?: CustomerPortalSetupConfig;
   availableCustomObjects?: CustomerPortalAvailableCustomObjectsConfig;
 };
 
 export class CustomerPortal extends BrowserforcePlugin {
-  public async retrieve(definition: Config): Promise<Config> {
+  public async retrieve(definition: CustomerPortalConfig): Promise<CustomerPortalConfig> {
     const pluginEnable = new CustomerPortalEnable(this.browserforce);
-    const response: Config = {
+    const response: CustomerPortalConfig = {
       enabled: false,
       portals: [],
       availableCustomObjects: [],
@@ -91,7 +94,7 @@ export class CustomerPortal extends BrowserforcePlugin {
     return response;
   }
 
-  public diff(state: Config, definition: Config): Config | undefined {
+  public diff(state: CustomerPortalConfig, definition: CustomerPortalConfig): CustomerPortalConfig | undefined {
     const enabled = new CustomerPortalEnable(this.browserforce).diff(state.enabled, definition.enabled) as
       boolean | undefined;
     const portals = new CustomerPortalSetup(this.browserforce).diff(state.portals, definition.portals);
@@ -99,7 +102,7 @@ export class CustomerPortal extends BrowserforcePlugin {
       state.availableCustomObjects,
       definition.availableCustomObjects,
     );
-    const response: Config = {
+    const response: CustomerPortalConfig = {
       ...(enabled !== undefined && {
         enabled,
       }),
@@ -113,7 +116,7 @@ export class CustomerPortal extends BrowserforcePlugin {
     return Object.keys(response).length ? response : undefined;
   }
 
-  public async apply(config: Config): Promise<void> {
+  public async apply(config: CustomerPortalConfig): Promise<void> {
     if (config.enabled !== undefined) {
       const pluginEnable = new CustomerPortalEnable(this.browserforce);
       await pluginEnable.apply(config.enabled);

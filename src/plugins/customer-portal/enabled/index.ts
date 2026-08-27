@@ -6,15 +6,15 @@ const BASE_PATH = '/_ui/core/portal/CustomerSuccessPortalSetup/e';
 const SAVE_BUTTON = 'input[name="save"]';
 const ENABLE_CHECKBOX = 'input[type="checkbox"][id="penabled"]';
 
-export type Config = boolean | undefined;
+export type CustomerPortalEnableConfig = boolean | undefined;
 
 export class CustomerPortalEnable extends BrowserforcePlugin {
-  public async retrieve(): Promise<Config> {
+  public async retrieve(): Promise<CustomerPortalEnableConfig> {
     const orgSettings = await this.browserforce.connection.metadata.read('OrgSettings', 'Org');
     return orgSettings.enableCustomerSuccessPortal ?? false;
   }
 
-  public async apply(plan: Config): Promise<void> {
+  public async apply(plan: CustomerPortalEnableConfig): Promise<void> {
     if (plan === false) {
       throw new Error('`enabled` cannot be disabled once enabled');
     }

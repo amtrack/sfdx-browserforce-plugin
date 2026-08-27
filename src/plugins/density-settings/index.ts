@@ -13,13 +13,13 @@ export const densitySettingsSchema = z
 
 const BASE_PATH = '/lightning/setup/DensitySetup/home';
 
-export type Config = z.infer<typeof densitySettingsSchema>;
-type Density = NonNullable<Config['density']>;
+export type DensitySettingsConfig = z.infer<typeof densitySettingsSchema>;
+type Density = NonNullable<DensitySettingsConfig['density']>;
 
 const availableOptions = ['Comfy', 'Compact'];
 
 export class DensitySettings extends BrowserforcePlugin {
-  public async retrieve(): Promise<Config> {
+  public async retrieve(): Promise<DensitySettingsConfig> {
     await using page = await this.browserforce.openPage(BASE_PATH);
     const density = (await page.locator('input[name="options"]:checked').getAttribute('value')) as Density;
     return {
@@ -27,7 +27,7 @@ export class DensitySettings extends BrowserforcePlugin {
     };
   }
 
-  public async apply(config: Config): Promise<void> {
+  public async apply(config: DensitySettingsConfig): Promise<void> {
     if (!availableOptions.includes(config.density)) {
       throw new Error(`Could not find density "${config.density}". Available options: ${availableOptions.join(', ')}`);
     }

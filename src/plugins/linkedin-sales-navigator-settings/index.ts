@@ -8,10 +8,12 @@ export const linkedInSalesNavigatorSettingsSchema = z
   })
   .meta({ id: 'linkedInSalesNavigatorSettings', title: 'LinkedIn Sales Navigator Settings' });
 
-export type Config = z.infer<typeof linkedInSalesNavigatorSettingsSchema>;
+export type LinkedInSalesNavigatorSettingsConfig = z.infer<typeof linkedInSalesNavigatorSettingsSchema>;
 
 export class LinkedInSalesNavigatorSettings extends BrowserforcePlugin {
-  public async retrieve(definition?: Config): Promise<Config> {
+  public async retrieve(
+    definition?: LinkedInSalesNavigatorSettingsConfig,
+  ): Promise<LinkedInSalesNavigatorSettingsConfig> {
     const result = { enabled: false };
     await using page = await this.browserforce.openPage(LinkedInSalesNavigatorPage.getUrl());
     const linkedIn = new LinkedInSalesNavigatorPage(page);
@@ -19,7 +21,7 @@ export class LinkedInSalesNavigatorSettings extends BrowserforcePlugin {
     return result;
   }
 
-  public async apply(config: Config): Promise<void> {
+  public async apply(config: LinkedInSalesNavigatorSettingsConfig): Promise<void> {
     await using page = await this.browserforce.openPage(LinkedInSalesNavigatorPage.getUrl());
     const linkedIn = new LinkedInSalesNavigatorPage(page);
     await linkedIn.setStatus(config.enabled);

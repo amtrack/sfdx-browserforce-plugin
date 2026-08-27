@@ -20,12 +20,12 @@ const BASE_SELECTOR = 'div.pbBody';
 const ENABLE_CHECKBOX_SELECTOR = 'input[id="0"]';
 const SAVE_BUTTON_SELECTOR = 'input[id="saveButton"]';
 
-export type Config = {
+export type FolderSharingConfig = {
   enableEnhancedFolderSharing: boolean;
 };
 
 export class FolderSharing extends BrowserforcePlugin {
-  public async retrieve(definition?: Config): Promise<Config> {
+  public async retrieve(definition?: FolderSharingConfig): Promise<FolderSharingConfig> {
     const response = {
       enableEnhancedFolderSharing: true,
     };
@@ -49,7 +49,7 @@ export class FolderSharing extends BrowserforcePlugin {
     return response;
   }
 
-  public async apply(config: Config): Promise<void> {
+  public async apply(config: FolderSharingConfig): Promise<void> {
     if (config.enableEnhancedFolderSharing === false) {
       throw new Error('`enableEnhancedFolderSharing` cannot be disabled once enabled');
     }

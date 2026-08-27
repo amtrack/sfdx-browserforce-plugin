@@ -32,7 +32,7 @@ type AuthProviderRecord = {
   DeveloperName: string;
 };
 
-export type Config = {
+export type AuthenticationConfigurationConfig = {
   services: Array<{ label: string; enabled: boolean } | { authProviderApiName: string; enabled: boolean }>;
 };
 
@@ -63,7 +63,7 @@ export class AuthenticationConfiguration extends BrowserforcePlugin {
     return map;
   }
 
-  public async retrieve(definition: Config): Promise<Config> {
+  public async retrieve(definition: AuthenticationConfigurationConfig): Promise<AuthenticationConfigurationConfig> {
     await using page = await this.browserforce.openPage(EDIT_VIEW_PATH);
     const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(page, SETUP_FORM_SELECTOR);
 
@@ -104,7 +104,7 @@ export class AuthenticationConfiguration extends BrowserforcePlugin {
     return { services };
   }
 
-  public async apply(plan: Config): Promise<void> {
+  public async apply(plan: AuthenticationConfigurationConfig): Promise<void> {
     await using page = await this.browserforce.openPage(EDIT_VIEW_PATH);
     const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(page, SETUP_FORM_SELECTOR);
 

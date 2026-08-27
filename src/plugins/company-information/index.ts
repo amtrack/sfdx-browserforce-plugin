@@ -13,14 +13,14 @@ const getUrl = (orgId: string): SalesforceUrlPath => `/${orgId}/e`;
 const CURRENCY_DROPDOWN_SELECTOR = '#DefaultCurrencyIsoCode';
 const SAVE_BUTTON_SELECTOR = 'input[class="btn"][type="submit"][name="save"]';
 
-export type Config = z.infer<typeof companyInformationSchema>;
+export type CompanyInformationConfig = z.infer<typeof companyInformationSchema>;
 
 export class CompanyInformation extends BrowserforcePlugin {
-  public async retrieve(): Promise<Config> {
+  public async retrieve(): Promise<CompanyInformationConfig> {
     const orgId = this.browserforce.connection.getAuthInfoFields().orgId;
     await using page = await this.browserforce.openPage(getUrl(orgId));
 
-    const response: Config = {
+    const response: CompanyInformationConfig = {
       defaultCurrencyIsoCode: '',
     };
     const selectedOption = await page.locator(`${CURRENCY_DROPDOWN_SELECTOR} > option[selected]`).textContent();
@@ -30,7 +30,7 @@ export class CompanyInformation extends BrowserforcePlugin {
     return response;
   }
 
-  public async apply(config: Config): Promise<void> {
+  public async apply(config: CompanyInformationConfig): Promise<void> {
     if (config.defaultCurrencyIsoCode !== undefined) {
       const orgId = this.browserforce.connection.getAuthInfoFields().orgId;
       await using page = await this.browserforce.openPage(getUrl(orgId));

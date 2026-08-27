@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { Config, HighVelocitySalesSettings } from './index.js';
+import { HighVelocitySalesSettingsConfig, HighVelocitySalesSettings } from './index.js';
 
 describe(HighVelocitySalesSettings.name, function () {
   let plugin: HighVelocitySalesSettings;
@@ -7,7 +7,7 @@ describe(HighVelocitySalesSettings.name, function () {
     plugin = new HighVelocitySalesSettings(global.browserforce);
   });
 
-  const configEnabled: Config = {
+  const configEnabled: HighVelocitySalesSettingsConfig = {
     setUpAndEnable: true,
   };
   const configDisabled = {

@@ -26,7 +26,7 @@ const THEME_ROW_SELECTOR = '#setupComponent table > tbody > tr';
 const DEVELOPER_NAMES_SELECTOR = `${THEME_ROW_SELECTOR} > td:nth-child(2) > lightning-primitive-cell-factory lightning-base-formatted-text`;
 const STATES_SELECTOR = `${THEME_ROW_SELECTOR} > td:nth-child(6) > lightning-primitive-cell-factory`;
 
-export type Config = z.infer<typeof lightningExperienceSettingsSchema>;
+export type LightningExperienceSettingsConfig = z.infer<typeof lightningExperienceSettingsSchema>;
 
 type Theme = {
   developerName: string;
@@ -35,7 +35,7 @@ type Theme = {
 };
 
 export class LightningExperienceSettings extends BrowserforcePlugin {
-  public async retrieve(): Promise<Config> {
+  public async retrieve(): Promise<LightningExperienceSettingsConfig> {
     await using page = await this.browserforce.openPage(BASE_PATH);
     const themes = await this.getThemeData(page);
     const activeTheme = themes.find((theme) => theme.isActive);
@@ -45,7 +45,7 @@ export class LightningExperienceSettings extends BrowserforcePlugin {
     return response;
   }
 
-  public async apply(config: Config): Promise<void> {
+  public async apply(config: LightningExperienceSettingsConfig): Promise<void> {
     await using page = await this.browserforce.openPage(BASE_PATH);
     await this.setActiveTheme(page, config.activeThemeName);
   }

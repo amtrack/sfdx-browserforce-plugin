@@ -10,7 +10,7 @@ const PORTAL_PROFILE_MEMBERSHIP_PATH = '/_ui/core/portal/PortalProfileMembership
 
 const SAVE_BUTTON_SELECTOR = 'input[name="save"]';
 
-export type Config = PortalConfig[];
+export type CustomerPortalSetupConfig = PortalConfig[];
 
 type PortalConfig = Omit<z.infer<typeof portalSchema>, 'portalProfileMemberships'> & {
   portalProfileMemberships?: PortalProfileMembership[];
@@ -20,14 +20,14 @@ type PortalConfig = Omit<z.infer<typeof portalSchema>, 'portalProfileMemberships
 type PortalProfileMembership = z.infer<typeof portalProfileMembershipSchema> & { _id?: string };
 
 export class CustomerPortalSetup extends BrowserforcePlugin {
-  public async retrieve(): Promise<Config> {
+  public async retrieve(): Promise<CustomerPortalSetupConfig> {
     await using page = await this.browserforce.openPage(LIST_VIEW_PATH);
     const portalLinksLocator = page.locator(
       'xpath=//div[contains(@class,"pbBody")]//th[contains(@class,"dataCell")]//a[starts-with(@href, "/060")]',
     );
     await portalLinksLocator.first().waitFor();
     const linkLocators = await portalLinksLocator.all();
-    const response: Config = await Promise.all(
+    const response: CustomerPortalSetupConfig = await Promise.all(
       linkLocators.map(async (link) => ({
         _id: (await link.getAttribute('href'))!.split('/')[1],
         name: await link.textContent(),
@@ -75,8 +75,11 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
     return response;
   }
 
-  public diff(source?: Config, target?: Config): Config | undefined {
-    const response: Config = [];
+  public diff(
+    source?: CustomerPortalSetupConfig,
+    target?: CustomerPortalSetupConfig,
+  ): CustomerPortalSetupConfig | undefined {
+    const response: CustomerPortalSetupConfig = [];
     if (source && target) {
       for (const plannedPortal of target) {
         const portal: PortalConfig = JSON.parse(JSON.stringify(plannedPortal));
@@ -126,7 +129,7 @@ export class CustomerPortalSetup extends BrowserforcePlugin {
     return response.length ? response : undefined;
   }
 
-  public async apply(config: Config): Promise<void> {
+  public async apply(config: CustomerPortalSetupConfig): Promise<void> {
     for (const portal of config) {
       if (portal._id) {
         // everything that can be changed using the url

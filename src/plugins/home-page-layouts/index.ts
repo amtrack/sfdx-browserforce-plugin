@@ -35,12 +35,12 @@ interface HomePageLayoutRecord extends Record {
   Name: string;
 }
 
-type Config = z.infer<typeof homePageLayoutsSchema>;
+type HomePageLayoutsConfig = z.infer<typeof homePageLayoutsSchema>;
 
 type HomePageLayoutAssignment = z.infer<typeof homePageLayoutAssignmentSchema>;
 
 export class HomePageLayouts extends BrowserforcePlugin {
-  public async retrieve(): Promise<Config> {
+  public async retrieve(): Promise<HomePageLayoutsConfig> {
     await using page = await this.browserforce.openPage(BASE_PATH);
     await page.locator(BASE_SELECTOR).waitFor();
 
@@ -61,16 +61,16 @@ export class HomePageLayouts extends BrowserforcePlugin {
     };
   }
 
-  public diff(source: Config, target: Config): Config | undefined {
+  public diff(source: HomePageLayoutsConfig, target: HomePageLayoutsConfig): HomePageLayoutsConfig | undefined {
     target.homePageLayoutAssignments.sort(compareAssignment);
     const profileNames = target.homePageLayoutAssignments.map((assignment) => assignment.profile);
     source.homePageLayoutAssignments = source.homePageLayoutAssignments
       .filter((assignment) => profileNames.includes(assignment.profile))
       .sort(compareAssignment);
-    return super.diff(source, target) as Config | undefined;
+    return super.diff(source, target) as HomePageLayoutsConfig | undefined;
   }
 
-  public async apply(config: Config): Promise<void> {
+  public async apply(config: HomePageLayoutsConfig): Promise<void> {
     const profilesList = config.homePageLayoutAssignments
       .map((assignment) => {
         return `'${assignment.profile}'`;

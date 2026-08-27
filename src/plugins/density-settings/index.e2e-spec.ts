@@ -1,7 +1,7 @@
 import assert from 'assert';
 import { DensitySettings } from './index.js';
 
-type Config = Awaited<ReturnType<DensitySettings['retrieve']>>;
+type DensitySettingsConfig = Awaited<ReturnType<DensitySettings['retrieve']>>;
 
 describe(DensitySettings.name, function () {
   let plugin: DensitySettings;
@@ -9,7 +9,7 @@ describe(DensitySettings.name, function () {
     plugin = new DensitySettings(global.browserforce);
   });
 
-  const configComfy: Config = {
+  const configComfy: DensitySettingsConfig = {
     density: 'Comfy',
   };
   const configCompact = { density: 'Compact' };
