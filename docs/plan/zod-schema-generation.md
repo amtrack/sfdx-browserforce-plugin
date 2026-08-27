@@ -66,11 +66,13 @@ Three choices the design does not cover surfaced while pre-chewing. They are rec
 recommendation; the parts below are written assuming the recommendation, and a different ruling only changes the
 named lines.
 
-| # | Choice | Alternatives | Recommendation |
-|---|---|---|---|
-| A | `service-channels/capacity`'s `if`/`then`/`else` conditional, which zod cannot express as a validator | (a) keep it as JSON-Schema-only metadata via `.meta({ if, then, else })` passthrough — editors keep the hint, zod runtime does not enforce it; (b) drop it entirely; (c) model as `z.discriminatedUnion` → changes the emitted shape to `anyOf` | **(a)** — preserves the generated file (requirement 5), never tightens runtime validation |
-| B | `security/authentication-configuration`'s `oneOf` required-combination block, likewise inexpressible | (a) `.meta({ oneOf: [...] })` passthrough; (b) drop, keeping only `required: ['enabled']` on the item; (c) `z.union` of three object shapes → emits `anyOf` | **(a)** — same reasoning as A |
-| C | Internal, non-user-facing fields on plugin Config types (`_id`, `_newValueId`) that must not appear in the schema, and `salesforce-cpq-config`'s `export type Config = any` | (a) `export type Config = z.infer<typeof schema>` intersected with a local `{ _id?: string }` type where needed; (b) add the `_` fields to the zod schema (leaks into the public JSON Schema); (c) leave those plugins' Config hand-written | **(a)** — keeps the public schema clean and still satisfies requirement 7 for every user-facing field |
+All three decided by the user (2026-08-27); all three follow the recommendation as-is.
+
+| # | Choice | Alternatives | Recommendation | Accepted |
+|---|---|---|---|---|
+| A | `service-channels/capacity`'s `if`/`then`/`else` conditional, which zod cannot express as a validator | (a) keep it as JSON-Schema-only metadata via `.meta({ if, then, else })` passthrough — editors keep the hint, zod runtime does not enforce it; (b) drop it entirely; (c) model as `z.discriminatedUnion` → changes the emitted shape to `anyOf` | **(a)** — preserves the generated file (requirement 5), never tightens runtime validation | (a) |
+| B | `security/authentication-configuration`'s `oneOf` required-combination block, likewise inexpressible | (a) `.meta({ oneOf: [...] })` passthrough; (b) drop, keeping only `required: ['enabled']` on the item; (c) `z.union` of three object shapes → emits `anyOf` | **(a)** — same reasoning as A | (a) |
+| C | Internal, non-user-facing fields on plugin Config types (`_id`, `_newValueId`) that must not appear in the schema, and `salesforce-cpq-config`'s `export type Config = any` | (a) `export type Config = z.infer<typeof schema>` intersected with a local `{ _id?: string }` type where needed; (b) add the `_` fields to the zod schema (leaks into the public JSON Schema); (c) leave those plugins' Config hand-written | **(a)** — keeps the public schema clean and still satisfies requirement 7 for every user-facing field | (a) |
 
 ## Sizing rules
 
