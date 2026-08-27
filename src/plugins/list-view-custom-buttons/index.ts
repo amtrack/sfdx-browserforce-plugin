@@ -1,6 +1,8 @@
 import type { Record } from '@jsforce/jsforce-node';
+import type { z } from 'zod';
 import { type SalesforceUrlPath, waitForPageErrors } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
+import type { listViewCustomButtonsSchema } from './schema.js';
 
 const AVAILABLE_LISTBOX_NAME = 'Available Buttons';
 const SELECTED_LISTBOX_NAME = 'Selected Buttons';
@@ -12,11 +14,7 @@ interface WebLinkRecord extends Record {
   NamespacePrefix: string | null;
 }
 
-type ListViewCustomButtonsConfig = {
-  objectApiName: string;
-  buttons: string[];
-  removeOtherButtons?: boolean | false;
-};
+type ListViewCustomButtonsConfig = z.infer<typeof listViewCustomButtonsSchema>;
 
 function buildPagePath(objectApiName: string): SalesforceUrlPath {
   let pageObjApiName = objectApiName;

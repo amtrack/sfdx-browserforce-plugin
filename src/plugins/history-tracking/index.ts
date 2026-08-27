@@ -1,5 +1,7 @@
+import type { z } from 'zod';
 import { type SalesforceUrlPath, waitForPageErrors } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
+import type { fieldHistorySchema, historyTrackingSchema } from './schema.js';
 
 const BASE_PATH: SalesforceUrlPath = `/ui/setup/layout/FieldHistoryTracking?pEntity={APINAME}&retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`;
 
@@ -7,16 +9,9 @@ const ENABLE_HISTORY_SELECTOR = 'input[type="checkbox"][id="enable"]';
 const ENABLE_FIELD_HISTORY_SELECTOR = 'input[id="{APINAME}_fht"]';
 const SAVE_BUTTON_SELECTOR = 'input[type="submit"][name="save"]';
 
-type HistoryTrackingConfig = {
-  objectApiName: string;
-  enableHistoryTracking?: boolean;
-  fieldHistoryTracking?: FieldHistoryTrackingConfig[];
-};
+type HistoryTrackingConfig = z.infer<typeof historyTrackingSchema>;
 
-export type FieldHistoryTrackingConfig = {
-  fieldApiName: string;
-  enableHistoryTracking: boolean;
-};
+export type FieldHistoryTrackingConfig = z.infer<typeof fieldHistorySchema>;
 
 export class HistoryTracking extends BrowserforcePlugin {
   public async retrieve(definition?: HistoryTrackingConfig[]): Promise<HistoryTrackingConfig[]> {

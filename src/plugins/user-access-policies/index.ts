@@ -1,19 +1,15 @@
+import type { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
 import { UserAccessPoliciesPage } from './page.js';
+import type { accessPolicySchema, schema } from './schema.js';
 
 export type PolicyTriggerType = 'Create' | 'Update' | 'CreateAndUpdate';
 
 const DEFAULT_TRIGGER_TYPE: PolicyTriggerType = 'CreateAndUpdate';
 
-type AccessPolicy = {
-  apiName: string;
-  active: boolean;
-  on?: PolicyTriggerType;
-};
+type AccessPolicy = z.infer<typeof accessPolicySchema>;
 
-export type Config = {
-  accessPolicies?: AccessPolicy[];
-};
+export type Config = z.infer<typeof schema>;
 
 export class UserAccessPolicies extends BrowserforcePlugin {
   private async queryPolicies(policyApiNames: string[]): Promise<{

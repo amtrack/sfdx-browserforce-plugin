@@ -1,15 +1,10 @@
 import { Connection } from '@salesforce/core';
+import type { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
 import { RecordTypePage } from './pages.js';
+import type { schema } from './schema.js';
 
-type Config = {
-  deletions: RecordTypeConfig[];
-};
-
-type RecordTypeConfig = {
-  fullName: string;
-  replacement?: string;
-};
+type Config = z.infer<typeof schema>;
 
 export class RecordTypes extends BrowserforcePlugin {
   public async retrieve(definition: Config): Promise<Config> {

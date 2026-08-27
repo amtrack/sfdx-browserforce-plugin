@@ -1,3 +1,4 @@
+import type { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
 import {
   CustomerPortalAvailableCustomObjects,
@@ -5,8 +6,11 @@ import {
 } from './available-custom-objects/index.js';
 import { CustomerPortalEnable, Config as CustomerPortalEnableConfig } from './enabled/index.js';
 import { CustomerPortalSetup, Config as CustomerPortalSetupConfig } from './portals/index.js';
+import type { schema } from './schema.js';
 
-type Config = {
+// `portals`/`availableCustomObjects` use the sub-plugins' own `Config` types (decision C: they carry
+// an internal `_id` that must not enter the schema), while `enabled` derives from the schema directly.
+type Config = Omit<z.infer<typeof schema>, 'portals' | 'availableCustomObjects' | 'enabled'> & {
   enabled?: CustomerPortalEnableConfig;
   portals?: CustomerPortalSetupConfig;
   availableCustomObjects?: CustomerPortalAvailableCustomObjectsConfig;

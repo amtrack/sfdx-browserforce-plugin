@@ -1,7 +1,9 @@
 import * as queryString from 'querystring';
+import type { z } from 'zod';
 import { waitForPageErrors } from '../../../browserforce.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
 import { semanticallyCleanObject } from '../../utils.js';
+import type { portalProfileMembershipSchema, portalSchema } from '../schema.js';
 
 const LIST_VIEW_PATH = '/_ui/core/portal/CustomerSuccessPortalSetup/d';
 const PORTAL_PROFILE_MEMBERSHIP_PATH = '/_ui/core/portal/PortalProfileMembershipPage/e';
@@ -10,24 +12,12 @@ const SAVE_BUTTON_SELECTOR = 'input[name="save"]';
 
 export type Config = PortalConfig[];
 
-type PortalConfig = {
-  adminUser?: string;
-  description?: string;
-  isSelfRegistrationActivated?: boolean;
-  name: string;
-  oldName?: string;
-  selfRegUserDefaultLicense?: string;
-  selfRegUserDefaultProfile?: string;
-  selfRegUserDefaultRole?: string;
+type PortalConfig = Omit<z.infer<typeof portalSchema>, 'portalProfileMemberships'> & {
   portalProfileMemberships?: PortalProfileMembership[];
   _id?: string;
 };
 
-type PortalProfileMembership = {
-  name: string;
-  active: boolean;
-  _id?: string;
-};
+type PortalProfileMembership = z.infer<typeof portalProfileMembershipSchema> & { _id?: string };
 
 export class CustomerPortalSetup extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {

@@ -1,6 +1,8 @@
 import type { Record } from '@jsforce/jsforce-node';
+import type { z } from 'zod';
 import { type SalesforceUrlPath, waitForPageErrors } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
+import type { homePageLayoutAssignmentSchema, schema } from './schema.js';
 
 const BASE_PATH: SalesforceUrlPath = `/setup/ui/assignhomelayoutedit.jsp?retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`;
 
@@ -15,14 +17,9 @@ interface HomePageLayoutRecord extends Record {
   Name: string;
 }
 
-type Config = {
-  homePageLayoutAssignments: HomePageLayoutAssignment[];
-};
+type Config = z.infer<typeof schema>;
 
-type HomePageLayoutAssignment = {
-  profile: string;
-  layout: string;
-};
+type HomePageLayoutAssignment = z.infer<typeof homePageLayoutAssignmentSchema>;
 
 export class HomePageLayouts extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {

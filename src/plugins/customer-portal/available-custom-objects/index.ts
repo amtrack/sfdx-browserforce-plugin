@@ -1,7 +1,9 @@
 import type { Record } from '@jsforce/jsforce-node';
+import type { z } from 'zod';
 import type { SalesforceUrlPath } from '../../../browserforce.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
 import { semanticallyCleanObject } from '../../utils.js';
+import type { availableCustomObjectSchema } from '../schema.js';
 
 const SAVE_BUTTON_SELECTOR = 'input[name="save"]';
 const CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL_SELECTOR = '#options_9';
@@ -13,12 +15,7 @@ interface CustomObjectRecord extends Record {
 
 export type Config = AvailableCustomObjectConfig[];
 
-type AvailableCustomObjectConfig = {
-  name: string;
-  namespacePrefix?: string;
-  available: boolean;
-  _id?: string;
-};
+type AvailableCustomObjectConfig = z.infer<typeof availableCustomObjectSchema> & { _id?: string };
 
 export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
   public async retrieve(definition: Config): Promise<Config> {

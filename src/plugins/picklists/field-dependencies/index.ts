@@ -1,14 +1,12 @@
+import type { z } from 'zod';
 import { ensureArray } from '../../../jsforce-utils.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
 import { FieldDependencyPage, NewFieldDependencyPage } from './pages.js';
+import type { fieldDependencySchema, schema } from './schema.js';
 
-export type FieldDependencyConfig = {
-  object: string;
-  dependentField: string;
-  controllingField: string | null;
-};
+export type FieldDependencyConfig = z.infer<typeof fieldDependencySchema>;
 
-export type Config = FieldDependencyConfig[];
+export type Config = z.infer<typeof schema>;
 
 export class FieldDependencies extends BrowserforcePlugin {
   public async retrieve(definition: Config): Promise<Config> {
