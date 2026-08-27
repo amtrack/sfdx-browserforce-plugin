@@ -15,6 +15,13 @@ describe('ConfigParser', () => {
       const result = ConfigParser.parse(DRIVERS, definition);
       assert.deepStrictEqual(result[0].Driver.name, 'Security');
     });
+    it('should forward the raw config value, not the zod-parsed one with defaults materialized in', () => {
+      const definition = { settings: { security: {} } };
+      const result = ConfigParser.parse(DRIVERS, definition);
+      // security's schema has optional nested objects with array .default([]) fields several levels down;
+      // forwarding the parsed output would materialize those into `{ certificateAndKeyManagement: {...} }` etc.
+      assert.deepStrictEqual(result[0].value, {});
+    });
     it('should fail parsing an invalid config file', () => {
       const definition = {
         foo: {
