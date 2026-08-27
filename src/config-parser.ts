@@ -26,20 +26,20 @@ export class ConfigParser {
   public static parse(drivers: Drivers, data: Data): Config[] {
     const settings: Config[] = [];
     if (data?.settings) {
-      let parsedSettings: Record<string, unknown>;
       try {
-        parsedSettings = rootSchema.shape.settings.parse(data.settings);
+        rootSchema.shape.settings.parse(data.settings);
       } catch (error) {
         if (error instanceof z.ZodError) {
           throw new Error(`Invalid browserforce configuration:\n${formatZodError(error)}`);
         }
         throw error;
       }
-      for (const driverName of Object.keys(data.settings as Record<string, unknown>)) {
+      const rawSettings = data.settings as Record<string, unknown>;
+      for (const driverName of Object.keys(rawSettings)) {
         settings.push({
           Driver: drivers[driverName],
           key: driverName,
-          value: parsedSettings[driverName],
+          value: rawSettings[driverName],
         });
       }
     } else {

@@ -2,15 +2,7 @@ import assert from 'assert';
 import { readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
 import { ConfigParser } from '../src/config-parser.js';
-import { type BrowserforcePlugin } from '../src/plugin.js';
-import * as pluginExports from '../src/plugins/index.js';
-
-// `pluginExports` also carries `schemas` (the zod schema map used to generate schema.json),
-// which is not a driver; ConfigParser only wants the driver classes.
-const DRIVERS = Object.fromEntries(Object.entries(pluginExports).filter(([key]) => key !== 'schemas')) as Record<
-  string,
-  typeof BrowserforcePlugin
->;
+import { drivers as DRIVERS, schemas } from '../src/plugins/index.js';
 
 describe('ConfigParser', () => {
   describe('parse()', () => {
@@ -108,6 +100,35 @@ describe('ConfigParser', () => {
       assert.throws(() => {
         ConfigParser.parse(DRIVERS, definition);
       }, /emailDeliverability\.accessLevel: /);
+    });
+
+    // Minimal positive-path samples for settings keys no fixture on disk happens to exercise
+    // (historyTracking, omniChannelSettings, permissionSets, serviceChannels), so every converted
+    // plugin schema has at least one proof it accepts real input. The coverage-completeness check
+    // below fails loudly if a future plugin is added without either a fixture or a sample here.
+    const MINIMAL_SAMPLES: Record<string, unknown> = {
+      historyTracking: [{ objectApiName: 'Account', fieldHistoryTracking: [] }],
+      omniChannelSettings: { enableStatusBasedCapacityModel: true },
+      permissionSets: [{ permissionSetName: 'MyPermissionSet' }],
+      serviceChannels: [{ serviceChannelDeveloperName: 'MyServiceChannel' }],
+    };
+
+    for (const [key, value] of Object.entries(MINIMAL_SAMPLES)) {
+      it(`should parse a minimal ${key} sample`, () => {
+        assert.doesNotThrow(() => ConfigParser.parse(DRIVERS, { settings: { [key]: value } }));
+      });
+    }
+
+    it('given every settings key, when checked against fixtures and minimal samples, then each has positive-path coverage', () => {
+      const coveredKeys = new Set(Object.keys(MINIMAL_SAMPLES));
+      for (const fixture of ['examples/full.json', 'examples/empty.json', ...fixtures]) {
+        const definition = JSON.parse(readFileSync(fixture, 'utf8')) as { settings?: Record<string, unknown> };
+        for (const key of Object.keys(definition.settings ?? {})) {
+          coveredKeys.add(key);
+        }
+      }
+      const uncovered = Object.keys(schemas).filter((key) => !coveredKeys.has(key));
+      assert.deepStrictEqual(uncovered, []);
     });
   });
 });

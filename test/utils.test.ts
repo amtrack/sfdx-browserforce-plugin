@@ -134,6 +134,32 @@ describe('maskSensitiveValues', () => {
     assert.strictEqual(result.certificateAndKeyManagement.importFromKeystore[0].password, '****');
     assert.strictEqual(result.certificateAndKeyManagement.importFromKeystore[0].filePath, '/tmp/keystore.p12');
   });
+
+  it('should mask a $ref reused at two different paths, not only the first one visited', async () => {
+    const schema = {
+      definitions: {
+        keystore: { properties: { password: { 'x-password': true } } },
+      },
+      properties: {
+        a: { $ref: '#/definitions/keystore' },
+        b: { $ref: '#/definitions/keystore' },
+      },
+    };
+    const result = maskSensitiveValues({ a: { password: 'p1' }, b: { password: 'p2' } }, '', schema) as {
+      a: { password: string };
+      b: { password: string };
+    };
+    assert.strictEqual(result.a.password, '****');
+    assert.strictEqual(result.b.password, '****');
+  });
+
+  it('should NOT mask a secret-looking field left unmarked by its schema (schema is the source of truth once provided)', async () => {
+    // Intentional: once a schema is passed, the regex fallback is not consulted — pinned here so a
+    // future author cannot rely on the fallback as a safety net for a forgotten password() marker.
+    const schema = { properties: { apiToken: { type: 'string' } } };
+    const result = maskSensitiveValues({ apiToken: 'shh' }, '', schema) as { apiToken: string };
+    assert.strictEqual(result.apiToken, 'shh');
+  });
 });
 
 describe('password', () => {

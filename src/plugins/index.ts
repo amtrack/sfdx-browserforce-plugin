@@ -79,7 +79,7 @@ import { schema as serviceChannelsSchema } from './service-channels/schema.js';
 import { schema as slackSchema } from './slack/schema.js';
 import { schema as userAccessPoliciesSchema } from './user-access-policies/schema.js';
 
-const drivers = {
+export const drivers = {
   activitySettings,
   authProviders,
   companyInformation,
