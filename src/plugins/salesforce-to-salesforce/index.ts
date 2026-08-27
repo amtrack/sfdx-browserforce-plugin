@@ -1,10 +1,10 @@
+import type { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
+import { schema } from './schema.js';
 
 const BASE_PATH = '/_ui/s2s/ui/PartnerNetworkEnable/e';
 
-type Config = {
-  enabled: boolean;
-};
+export type Config = z.infer<typeof schema>;
 
 export class SalesforceToSalesforce extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {

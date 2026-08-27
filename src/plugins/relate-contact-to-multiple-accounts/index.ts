@@ -1,11 +1,11 @@
 import type { Page } from 'playwright';
+import type { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
+import { schema } from './schema.js';
 
 const BASE_PATH = '/accounts/accountSetup.apexp';
 
-type Config = {
-  enabled: boolean;
-};
+export type Config = z.infer<typeof schema>;
 
 export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {

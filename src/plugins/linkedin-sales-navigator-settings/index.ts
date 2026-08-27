@@ -1,9 +1,9 @@
+import type { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
 import { LinkedInSalesNavigatorPage } from './page.js';
+import { schema } from './schema.js';
 
-export type Config = {
-  enabled: boolean;
-};
+export type Config = z.infer<typeof schema>;
 
 export class LinkedInSalesNavigatorSettings extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {

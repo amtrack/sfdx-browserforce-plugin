@@ -1,10 +1,10 @@
+import type { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
 import { OverviewPage } from './pages/overview.js';
 import { SetupPage } from './pages/setup.js';
+import { schema } from './schema.js';
 
-type Config = {
-  enabled: boolean;
-};
+export type Config = z.infer<typeof schema>;
 
 export class OpportunitySplits extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {

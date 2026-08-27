@@ -1,13 +1,13 @@
 import { Connection } from '@salesforce/core';
+import type { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
 import { HighVelocitySalesSetupPage } from './page.js';
+import { schema } from './schema.js';
 
 const MSG_NOT_AVAILABLE = `HighVelocitySales is not available in this organization.
 Please add 'HighVelocitySales' to your Scratch Org Features or purchase a license.`;
 
-export type Config = {
-  setUpAndEnable: boolean;
-};
+export type Config = z.infer<typeof schema>;
 
 export class HighVelocitySalesSettings extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {

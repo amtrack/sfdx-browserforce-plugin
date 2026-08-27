@@ -1,13 +1,13 @@
+import type { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
+import { schema } from './schema.js';
 
 const BASE_PATH = '/setup/activitiesSetupPage.apexp';
 
 const MANY_WHO_PREF_INPUT_SELECTOR = 'input[id="thePage:theForm:theBlock:manyWhoPref"]';
 const SUBMIT_BUTTON_SELECTOR = 'input[id="thePage:theForm:theBlock:buttons:submit"]';
 
-type Config = {
-  allowUsersToRelateMultipleContactsToTasksAndEvents: boolean;
-};
+export type Config = z.infer<typeof schema>;
 
 export class ActivitySettings extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {

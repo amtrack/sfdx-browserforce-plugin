@@ -1,12 +1,12 @@
+import type { z } from 'zod';
 import { waitForPageErrors } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
+import { schema } from './schema.js';
 
 const BASE_PATH = '/lightning/setup/DensitySetup/home';
 
-type Density = 'Comfy' | 'Compact';
-type Config = {
-  density: Density;
-};
+export type Config = z.infer<typeof schema>;
+type Density = NonNullable<Config['density']>;
 
 const availableOptions = ['Comfy', 'Compact'];
 

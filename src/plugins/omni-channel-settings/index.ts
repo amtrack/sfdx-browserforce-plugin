@@ -1,13 +1,13 @@
+import type { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
+import { schema } from './schema.js';
 
 const BASE_PATH = '/omnichannel/settings.apexp';
 
 const SAVE_BUTTON_SELECTOR = 'input[id$=":save"]';
 const STATUS_CAPACITY_TOGGLE_SELECTOR = 'input[id$=":toggleOmniStatusCapModelPref"]';
 
-type Config = {
-  enableStatusBasedCapacityModel?: boolean;
-};
+export type Config = z.infer<typeof schema>;
 
 export class OmniChannelSettings extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {

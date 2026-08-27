@@ -1,4 +1,6 @@
+import type { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
+import { schema } from './schema.js';
 
 const BASE_PATH = '/lightning/setup/SlackSetupAssistant/home';
 
@@ -9,10 +11,7 @@ const SALES_CLOUD_FOR_SLACK_CHECKBOX = 'input[type="checkbox"][name="SlkSetupSte
 // unfortunately the divs intercept pointer events so we need to click on the label instead
 const SALES_CLOUD_FOR_SLACK_CHECKBOX_TOGGLE = `lightning-primitive-input-toggle:has(${SALES_CLOUD_FOR_SLACK_CHECKBOX})`;
 
-export type Config = {
-  agreeToTermsAndConditions: boolean;
-  enableSalesCloudForSlack: boolean;
-};
+export type Config = z.infer<typeof schema>;
 
 export class Slack extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {

@@ -1,5 +1,7 @@
 import type { Locator, Page } from 'playwright';
+import type { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
+import { schema } from './schema.js';
 
 const BASE_PATH = '/lightning/setup/ThemingAndBranding/home';
 
@@ -8,9 +10,7 @@ const THEME_ROW_SELECTOR = '#setupComponent table > tbody > tr';
 const DEVELOPER_NAMES_SELECTOR = `${THEME_ROW_SELECTOR} > td:nth-child(2) > lightning-primitive-cell-factory lightning-base-formatted-text`;
 const STATES_SELECTOR = `${THEME_ROW_SELECTOR} > td:nth-child(6) > lightning-primitive-cell-factory`;
 
-type Config = {
-  activeThemeName: string;
-};
+export type Config = z.infer<typeof schema>;
 
 type Theme = {
   developerName: string;

@@ -1,4 +1,6 @@
+import type { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
+import { schema } from './schema.js';
 
 const BASE_PATH = '/email-admin/editOrgEmailSettings.apexp';
 
@@ -12,9 +14,7 @@ const ACCESS_LEVEL_VALUES = new Map([
   ['All email', '2'],
 ]);
 
-type Config = {
-  accessLevel: string;
-};
+export type Config = z.infer<typeof schema>;
 
 export class EmailDeliverability extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {
@@ -24,12 +24,12 @@ export class EmailDeliverability extends BrowserforcePlugin {
       throw new Error('Selected access level not found...');
     }
     return {
-      accessLevel: selectedOption,
+      accessLevel: selectedOption as Config['accessLevel'],
     };
   }
 
   public async apply(config: Config): Promise<void> {
-    const accessLevelNumber = ACCESS_LEVEL_VALUES.get(config.accessLevel);
+    const accessLevelNumber = config.accessLevel ? ACCESS_LEVEL_VALUES.get(config.accessLevel) : undefined;
     if (accessLevelNumber === undefined) {
       throw new Error(`Invalid email access level ${config.accessLevel}`);
     }
