@@ -4,13 +4,24 @@ sh: "npx prettier --write 'src/plugins/<%= h.changeCase.paramCase(name) %>/*' 's
 ---
 import { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
-import { schema } from './schema.js';
+
+export const <%= h.changeCase.camelCase(name) %>Schema = z
+  .object({
+    enabled: z
+      .boolean()
+      .meta({
+        title: 'Enable <%= h.changeCase.pascalCase(name) %>',
+        description: 'The description you want to be displayed as toolip when the user is editing the configuration',
+      })
+      .optional(),
+  })
+  .meta({ id: '<%= h.changeCase.camelCase(name) %>', title: '<%= h.changeCase.pascalCase(name) %> Settings' });
 
 const BASE_PATH = '/partnerbt/loginAccessPolicies.apexp';
 
 const ENABLED_SELECTOR = 'input[id$="adminsCanLogInAsAny"]';
 
-export type Config = z.infer<typeof schema>;
+export type Config = z.infer<typeof <%= h.changeCase.camelCase(name) %>Schema>;
 
 export class <%= h.changeCase.pascalCase(name) %> extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {

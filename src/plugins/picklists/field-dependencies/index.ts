@@ -1,12 +1,46 @@
-import type { z } from 'zod';
+import { z } from 'zod';
 import { ensureArray } from '../../../jsforce-utils.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
 import { FieldDependencyPage, NewFieldDependencyPage } from './pages.js';
-import type { fieldDependencySchema, schema } from './schema.js';
+
+export const fieldDependencySchema = z
+  .object({
+    object: z
+      .string()
+      .meta({
+        title: 'the API name of the CustomObject',
+        examples: ['Account', 'Vehicle__c', 'ACME__Vehicle__c'],
+      })
+      .optional(),
+    dependentField: z
+      .string()
+      .meta({
+        title: 'the API name of the CustomField that has its values filtered',
+        examples: ['Gears__c', 'ACME__Gears__c'],
+      })
+      .optional(),
+    controllingField: z
+      .string()
+      .nullable()
+      .optional()
+      .meta({
+        title: 'the API name of the CustomField that drives filtering',
+        description: 'If this value is null or not set, the Field Dependency will be deleted.',
+        examples: ['Transmission__c', 'ACME__Transmission__c', null],
+      }),
+  })
+  .meta({ id: 'fieldDependency' });
+
+export const fieldDependenciesSchema = z.array(fieldDependencySchema).default([]).meta({
+  id: 'fieldDependencies',
+  title: 'Field Dependencies',
+  description:
+    'Manage (create/modify/delete) Field Dependencies on CustomFields.\nIf a Field Dependency already exists for the dependent field, it will be deleted.',
+});
 
 export type FieldDependencyConfig = z.infer<typeof fieldDependencySchema>;
 
-export type Config = z.infer<typeof schema>;
+export type Config = z.infer<typeof fieldDependenciesSchema>;
 
 export class FieldDependencies extends BrowserforcePlugin {
   public async retrieve(definition: Config): Promise<Config> {

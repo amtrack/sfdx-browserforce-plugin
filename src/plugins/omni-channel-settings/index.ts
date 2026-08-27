@@ -1,13 +1,24 @@
-import type { z } from 'zod';
+import { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
-import { schema } from './schema.js';
+
+export const omniChannelSettingsSchema = z
+  .object({
+    enableStatusBasedCapacityModel: z
+      .boolean()
+      .meta({
+        title: 'Enable Status-Based Capacity Model',
+        description: 'Route and track work based on changes to work status and ownership.',
+      })
+      .optional(),
+  })
+  .meta({ id: 'omniChannelSettings', title: 'Omni-Channel Settings' });
 
 const BASE_PATH = '/omnichannel/settings.apexp';
 
 const SAVE_BUTTON_SELECTOR = 'input[id$=":save"]';
 const STATUS_CAPACITY_TOGGLE_SELECTOR = 'input[id$=":toggleOmniStatusCapModelPref"]';
 
-export type Config = z.infer<typeof schema>;
+export type Config = z.infer<typeof omniChannelSettingsSchema>;
 
 export class OmniChannelSettings extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {

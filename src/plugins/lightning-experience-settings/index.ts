@@ -1,7 +1,23 @@
 import type { Locator, Page } from 'playwright';
-import type { z } from 'zod';
+import { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
-import { schema } from './schema.js';
+
+export const lightningExperienceSettingsSchema = z
+  .object({
+    activeThemeName: z
+      .string()
+      .meta({
+        title: 'The active Lightning Experience Theme',
+        description: 'The API Name of the Lightning Experience Theme to be activated',
+      })
+      .optional(),
+  })
+  .meta({
+    id: 'lightningExperienceSettings',
+    title: 'LightningExperienceSettings',
+    description:
+      "Although the Metadata API has a field activeThemeName in LightningExperienceSettings it's not possible to activate any of the standard themes like Lightning and LightningLite or SalesforceCosmos.",
+  });
 
 const BASE_PATH = '/lightning/setup/ThemingAndBranding/home';
 
@@ -10,7 +26,7 @@ const THEME_ROW_SELECTOR = '#setupComponent table > tbody > tr';
 const DEVELOPER_NAMES_SELECTOR = `${THEME_ROW_SELECTOR} > td:nth-child(2) > lightning-primitive-cell-factory lightning-base-formatted-text`;
 const STATES_SELECTOR = `${THEME_ROW_SELECTOR} > td:nth-child(6) > lightning-primitive-cell-factory`;
 
-export type Config = z.infer<typeof schema>;
+export type Config = z.infer<typeof lightningExperienceSettingsSchema>;
 
 type Theme = {
   developerName: string;

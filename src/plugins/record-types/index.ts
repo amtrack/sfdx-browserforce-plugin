@@ -1,10 +1,25 @@
 import { Connection } from '@salesforce/core';
-import type { z } from 'zod';
+import { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
 import { RecordTypePage } from './pages.js';
-import type { schema } from './schema.js';
 
-type Config = z.infer<typeof schema>;
+export const recordTypeActionSchema = z
+  .object({
+    fullName: z.string().meta({ description: 'the API name of the RecordType' }),
+    replacement: z.string().meta({ description: 'optional API name of the replacement RecordType' }).optional(),
+  })
+  .meta({ id: 'recordTypeAction' });
+
+export const recordTypesSchema = z
+  .object({
+    deletions: z.array(recordTypeActionSchema).default([]).meta({
+      title: 'Record Type Deletions',
+      description: 'Delete inactive record types',
+    }),
+  })
+  .meta({ id: 'recordTypes', title: 'RecordTypes' });
+
+type Config = z.infer<typeof recordTypesSchema>;
 
 export class RecordTypes extends BrowserforcePlugin {
   public async retrieve(definition: Config): Promise<Config> {

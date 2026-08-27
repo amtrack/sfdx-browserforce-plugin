@@ -1,7 +1,23 @@
-import type { z } from 'zod';
+import { z } from 'zod';
 import { type SalesforceUrlPath, waitForPageErrors } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
-import type { schema } from './schema.js';
+import { password } from '../utils.js';
+
+const authProviderSchema = z.object({
+  consumerSecret: password(
+    z.string().meta({ title: 'Consumer Secret', description: 'The Consumer Secret value for the Auth Provider' }),
+  ).optional(),
+  consumerKey: z
+    .string()
+    .meta({ title: 'Consumer Key', description: 'The Consumer Key value for the Auth Provider' })
+    .optional(),
+});
+
+export const authProvidersSchema = z.record(z.string().regex(/^[a-zA-Z0-9_]+$/), authProviderSchema).meta({
+  id: 'authProviders',
+  title: 'Auth Providers',
+  description: 'Configuration for updating Auth Provider Consumer Key and Consumer Secret',
+});
 
 const CONSUMER_SECRET_SELECTOR = '#ConsumerSecret';
 const CONSUMER_KEY_SELECTOR = '#ConsumerKey';
@@ -9,7 +25,7 @@ const SAVE_BUTTON_SELECTOR = 'input[id$=":saveBtn"], #topButtonRow > input[name=
 
 const getUrl = (orgId: string): SalesforceUrlPath => `/${orgId}/e?retURL=/${orgId}` as SalesforceUrlPath;
 
-export type Config = z.infer<typeof schema>;
+export type Config = z.infer<typeof authProvidersSchema>;
 
 type AuthProviderRecord = {
   Id: string;

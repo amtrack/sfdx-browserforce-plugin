@@ -1,11 +1,19 @@
-import type { z } from 'zod';
+import { z } from 'zod';
 import { waitForPageErrors } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
-import { schema } from './schema.js';
+
+export const densitySettingsSchema = z
+  .object({
+    density: z
+      .enum(['Comfy', 'Compact'])
+      .meta({ title: 'Density', description: 'Choose the default display setting for your org' })
+      .optional(),
+  })
+  .meta({ id: 'densitySettings', title: 'Density Settings' });
 
 const BASE_PATH = '/lightning/setup/DensitySetup/home';
 
-export type Config = z.infer<typeof schema>;
+export type Config = z.infer<typeof densitySettingsSchema>;
 type Density = NonNullable<Config['density']>;
 
 const availableOptions = ['Comfy', 'Compact'];

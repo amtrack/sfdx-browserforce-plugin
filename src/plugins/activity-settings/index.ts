@@ -1,13 +1,25 @@
-import type { z } from 'zod';
+import { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
-import { schema } from './schema.js';
+
+export const activitySettingsSchema = z
+  .object({
+    allowUsersToRelateMultipleContactsToTasksAndEvents: z
+      .boolean()
+      .meta({
+        title: 'Allow Users to Relate Multiple Contacts to Tasks and Events',
+        description:
+          'Although the Metadata API has a ActivitiesSettings.allowUsersToRelateMultipleContactsToTasksAndEvents field, it is not possible to enable this setting using an API. Warning: can only be disabled with help of the salesforce.com Support team. https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_activitiessettings.htm',
+      })
+      .optional(),
+  })
+  .meta({ id: 'activitySettings', title: 'Activity Settings' });
 
 const BASE_PATH = '/setup/activitiesSetupPage.apexp';
 
 const MANY_WHO_PREF_INPUT_SELECTOR = 'input[id="thePage:theForm:theBlock:manyWhoPref"]';
 const SUBMIT_BUTTON_SELECTOR = 'input[id="thePage:theForm:theBlock:buttons:submit"]';
 
-export type Config = z.infer<typeof schema>;
+export type Config = z.infer<typeof activitySettingsSchema>;
 
 export class ActivitySettings extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {

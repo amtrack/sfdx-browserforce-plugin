@@ -1,5 +1,18 @@
+import { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
-import { Capacity, CapacityConfig } from './capacity/index.js';
+import { Capacity, CapacityConfig, capacitySchema } from './capacity/index.js';
+
+const serviceChannelSchema = z
+  .object({
+    serviceChannelDeveloperName: z.string().meta({
+      title: 'Service Channel',
+      description: 'The developer name of the Service Channel to modify',
+    }),
+    capacity: capacitySchema.optional(),
+  })
+  .meta({ id: 'serviceChannel' });
+
+export const serviceChannelsSchema = z.array(serviceChannelSchema).default([]).meta({ title: 'Service Channels' });
 
 type ServiceChannel = {
   serviceChannelDeveloperName: string;

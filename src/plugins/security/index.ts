@@ -1,12 +1,22 @@
+import { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
 import {
   AuthenticationConfiguration,
+  authenticationConfigurationSchema,
   Config as AuthenticationConfigurationConfig,
 } from './authentication-configuration/index.js';
 import {
   CertificateAndKeyManagement,
+  certificateAndKeyManagementSchema,
   Config as CertificateAndKeyManagementConfig,
 } from './certificate-and-key-management/index.js';
+
+export const securitySchema = z
+  .object({
+    certificateAndKeyManagement: certificateAndKeyManagementSchema.optional(),
+    authenticationConfiguration: authenticationConfigurationSchema.optional(),
+  })
+  .meta({ id: 'security', title: 'Security Controls' });
 
 type Config = {
   certificateAndKeyManagement?: CertificateAndKeyManagementConfig;

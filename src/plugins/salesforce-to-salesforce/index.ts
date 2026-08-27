@@ -1,10 +1,18 @@
-import type { z } from 'zod';
+import { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
-import { schema } from './schema.js';
+
+export const salesforceToSalesforceSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .meta({ title: 'Enable Salesforce to Salesforce', description: 'Warning: cannot be disabled once enabled' })
+      .optional(),
+  })
+  .meta({ id: 'salesforceToSalesforce', title: 'Salesforce to Salesforce Settings' });
 
 const BASE_PATH = '/_ui/s2s/ui/PartnerNetworkEnable/e';
 
-export type Config = z.infer<typeof schema>;
+export type Config = z.infer<typeof salesforceToSalesforceSchema>;
 
 export class SalesforceToSalesforce extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {

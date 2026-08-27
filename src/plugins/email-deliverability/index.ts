@@ -1,6 +1,14 @@
-import type { z } from 'zod';
+import { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
-import { schema } from './schema.js';
+
+export const emailDeliverabilitySchema = z
+  .object({
+    accessLevel: z
+      .enum(['No access', 'System email only', 'All email'])
+      .meta({ title: 'Access Level', description: 'Choose the email Deliverability Access Level required' })
+      .optional(),
+  })
+  .meta({ id: 'emailDeliverability', title: 'Email Deliverability Settings' });
 
 const BASE_PATH = '/email-admin/editOrgEmailSettings.apexp';
 
@@ -14,7 +22,7 @@ const ACCESS_LEVEL_VALUES = new Map([
   ['All email', '2'],
 ]);
 
-export type Config = z.infer<typeof schema>;
+export type Config = z.infer<typeof emailDeliverabilitySchema>;
 
 export class EmailDeliverability extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {

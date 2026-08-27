@@ -2,8 +2,37 @@ import type { Record } from '@jsforce/jsforce-node';
 import { existsSync } from 'fs';
 import * as path from 'path';
 import * as queryString from 'querystring';
+import { z } from 'zod';
 import { type SalesforceUrlPath, waitForPageErrors } from '../../../browserforce.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
+import { password } from '../../utils.js';
+
+const certificateSchema = z
+  .object({
+    name: z.string(),
+    label: z.string(),
+    exportable: z.boolean().optional(),
+    keysize: z.number().int().optional(),
+  })
+  .meta({ id: 'certificate' });
+
+const keystoreSchema = z
+  .object({
+    name: z.string().meta({
+      description:
+        'Optional new name of the certificate. WARNING: Only use this to change the case of the certificate name as the imported name is lowercase by default.',
+    }),
+    filePath: z.string().meta({ description: 'Relative path from current working directory' }),
+    password: password(z.string()).optional(),
+  })
+  .meta({ id: 'keystore' });
+
+export const certificateAndKeyManagementSchema = z
+  .object({
+    certificates: z.array(certificateSchema).default([]).meta({ title: 'Self-Signed Certificates' }),
+    importFromKeystore: z.array(keystoreSchema).default([]).meta({ title: 'Import Certificate from Keystore' }),
+  })
+  .meta({ id: 'certificateAndKeyManagement', title: 'Certificate and Key Management' });
 
 const CERT_PREFIX_PATH = '/0P1';
 const KEYSTORE_IMPORT_PATH: SalesforceUrlPath = `/_ui/security/certificate/KeyStoreImportUi/e?retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`;

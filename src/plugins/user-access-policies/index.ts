@@ -1,7 +1,28 @@
-import type { z } from 'zod';
+import { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
 import { UserAccessPoliciesPage } from './page.js';
-import type { accessPolicySchema, schema } from './schema.js';
+
+export const accessPolicySchema = z
+  .object({
+    apiName: z.string().meta({ description: "The API name of the user access policy (e.g., 'Grant_Permissions')" }),
+    active: z.boolean().meta({ description: 'Whether the policy should be active (true) or inactive (false)' }),
+    on: z
+      .enum(['Create', 'Update', 'CreateAndUpdate'])
+      .meta({
+        description: "Optional: specify when to apply the policy - 'Create', 'Update', or 'CreateAndUpdate'",
+      })
+      .optional(),
+  })
+  .meta({ id: 'accessPolicy' });
+
+export const userAccessPoliciesSchema = z
+  .object({
+    accessPolicies: z.array(accessPolicySchema).default([]).meta({
+      title: 'Access Policies',
+      description: 'List of user access policies to activate or deactivate',
+    }),
+  })
+  .meta({ id: 'userAccessPolicies', title: 'User Access Policies' });
 
 export type PolicyTriggerType = 'Create' | 'Update' | 'CreateAndUpdate';
 
@@ -9,7 +30,7 @@ const DEFAULT_TRIGGER_TYPE: PolicyTriggerType = 'CreateAndUpdate';
 
 type AccessPolicy = z.infer<typeof accessPolicySchema>;
 
-export type Config = z.infer<typeof schema>;
+export type Config = z.infer<typeof userAccessPoliciesSchema>;
 
 export class UserAccessPolicies extends BrowserforcePlugin {
   private async queryPolicies(policyApiNames: string[]): Promise<{

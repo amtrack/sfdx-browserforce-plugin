@@ -1,10 +1,22 @@
-import type { z } from 'zod';
+import { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
 import { OverviewPage } from './pages/overview.js';
 import { SetupPage } from './pages/setup.js';
-import { schema } from './schema.js';
 
-export type Config = z.infer<typeof schema>;
+export const opportunitySplitsSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .meta({
+        title: 'Enable Opportunity Splits',
+        description:
+          "Prerequisite: Opportunity Teams must be enabled e.g. by deploying 'Settings:Opportunity' containing `<enableOpportunityTeam>true</enableOpportunityTeam>`.",
+      })
+      .optional(),
+  })
+  .meta({ id: 'opportunitySplits', title: 'OpportunitySplits Settings' });
+
+export type Config = z.infer<typeof opportunitySplitsSchema>;
 
 export class OpportunitySplits extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {

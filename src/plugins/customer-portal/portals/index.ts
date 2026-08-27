@@ -3,7 +3,7 @@ import type { z } from 'zod';
 import { waitForPageErrors } from '../../../browserforce.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
 import { semanticallyCleanObject } from '../../utils.js';
-import type { portalProfileMembershipSchema, portalSchema } from '../schema.js';
+import type { portalProfileMembershipSchema, portalSchema } from '../index.js';
 
 const LIST_VIEW_PATH = '/_ui/core/portal/CustomerSuccessPortalSetup/d';
 const PORTAL_PROFILE_MEMBERSHIP_PATH = '/_ui/core/portal/PortalProfileMembershipPage/e';

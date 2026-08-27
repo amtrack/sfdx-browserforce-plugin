@@ -3,7 +3,7 @@ import type { z } from 'zod';
 import type { SalesforceUrlPath } from '../../../browserforce.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
 import { semanticallyCleanObject } from '../../utils.js';
-import type { availableCustomObjectSchema } from '../schema.js';
+import type { availableCustomObjectSchema } from '../index.js';
 
 const SAVE_BUTTON_SELECTOR = 'input[name="save"]';
 const CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL_SELECTOR = '#options_9';

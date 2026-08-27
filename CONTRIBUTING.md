@@ -84,25 +84,25 @@ src/plugins/admins-can-log-in-as-any-user
 ├── disable.json        <-- example config file for manual testing
 ├── enable.json         <-- example config file for manual testing
 ├── index.e2e-spec.ts   <-- end-to-end test
-├── index.ts            <-- implementation
-└── schema.ts           <-- schema for configuration (zod)
+└── index.ts            <-- implementation, including the schema for configuration (zod)
 ```
 
-We'll start with `schema.ts`.
+We'll start with the configuration schema.
 
-#### Configuration Schema (`schema.ts`)
+#### Configuration Schema
 
-Browserforce leverages [zod](https://zod.dev) (`schema.ts`) for its configuration. The plugin's `Config` type
-is derived from the schema with `z.infer<typeof schema>`, so the type and the schema cannot drift.
+Browserforce leverages [zod](https://zod.dev) for its configuration. The schema lives directly in the plugin's
+`index.ts`, and the plugin's `Config` type is derived from it with `z.infer<typeof adminsCanLogInAsAnyUserSchema>`,
+so the type and the schema cannot drift.
 
-Example: Given you have defined the property `enabled` in your `schema.ts` for your plugin `AdminsCanLogInAsAnyUser`, end users can create a browserforce configuration file looking like this (entry point: `settings -> adminsCanLogInAsAnyUser`).
+Example: Given you have defined the property `enabled` in the schema for your plugin `AdminsCanLogInAsAnyUser`, end users can create a browserforce configuration file looking like this (entry point: `settings -> adminsCanLogInAsAnyUser`).
 
-**schema.ts**
+**index.ts**
 
 ```ts
 import { z } from 'zod';
 
-export const schema = z
+export const adminsCanLogInAsAnyUserSchema = z
   .object({
     enabled: z
       .boolean()
@@ -171,7 +171,7 @@ Your plugin is required to implement the `retrieve` and `apply` function. In mos
 Now, this concept might seem superfluous at first, but it is important as it enforces idempotency:
 The execution will apply as few changes as necessary and so you will be able to re-execute the `apply` command leading to the same result without any failure.
 
-Both the result of the `retrieve` function and the argument of the `apply` function are objects in the format defined in your `schema.ts`.
+Both the result of the `retrieve` function and the argument of the `apply` function are objects in the format defined by your schema.
 In this example, you would return `{enabled: boolean}` as part of `retrieve`, and expect `{enabled: boolean}` as argument in `apply`.
 
 ### Formatting

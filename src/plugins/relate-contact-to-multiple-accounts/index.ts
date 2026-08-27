@@ -1,11 +1,23 @@
 import type { Page } from 'playwright';
-import type { z } from 'zod';
+import { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
-import { schema } from './schema.js';
+
+export const relateContactToMultipleAccountsSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .meta({
+        title: 'Enable RelateContactToMultipleAccounts',
+        description:
+          "This allows you to enable the 'Relate contact to multiple Accounts' in the Account settings. Doing this through the metadata API will not always make the AccountContactRelation object available. Enabling the feature using the setup does always work, therefore this plugin.",
+      })
+      .optional(),
+  })
+  .meta({ id: 'relateContactToMultipleAccounts', title: 'RelateContactToMultipleAccounts Settings' });
 
 const BASE_PATH = '/accounts/accountSetup.apexp';
 
-export type Config = z.infer<typeof schema>;
+export type Config = z.infer<typeof relateContactToMultipleAccountsSchema>;
 
 export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {

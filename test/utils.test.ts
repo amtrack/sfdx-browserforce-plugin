@@ -89,7 +89,7 @@ describe('maskSensitiveValues', () => {
   });
 
   it('should mask consumerSecret and not consumerKey when given the real converted auth-providers schema', async () => {
-    const { schema: authProvidersSchema } = await import('../src/plugins/auth-providers/schema.js');
+    const { authProvidersSchema } = await import('../src/plugins/auth-providers/index.js');
     const jsonSchema = z.toJSONSchema(authProvidersSchema, { target: 'draft-7', io: 'input' });
     const result = maskSensitiveValues(
       { myProvider: { consumerSecret: 's3cret', consumerKey: 'ck' } },

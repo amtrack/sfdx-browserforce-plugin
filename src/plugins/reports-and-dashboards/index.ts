@@ -1,5 +1,12 @@
+import { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
-import { FolderSharing, Config as FolderSharingConfig } from './folder-sharing/index.js';
+import { FolderSharing, Config as FolderSharingConfig, folderSharingSchema } from './folder-sharing/index.js';
+
+export const reportsAndDashboardsSchema = z
+  .object({
+    folderSharing: folderSharingSchema.optional(),
+  })
+  .meta({ id: 'reportsAndDashboards', title: 'Reports & Dashboards' });
 
 type Config = {
   folderSharing?: FolderSharingConfig;

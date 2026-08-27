@@ -1,6 +1,6 @@
 ---
 to: src/plugins/index.ts
 inject: true
-before: export const schemas
+before: export {
 ---
-import { schema as <%= h.changeCase.camelCase(name) %>Schema } from './<%= h.changeCase.paramCase(name) %>/schema.js';
+import { <%= h.changeCase.camelCase(name) %>Schema } from './<%= h.changeCase.paramCase(name) %>/index.js';

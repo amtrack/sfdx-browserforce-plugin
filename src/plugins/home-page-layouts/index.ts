@@ -1,8 +1,26 @@
 import type { Record } from '@jsforce/jsforce-node';
-import type { z } from 'zod';
+import { z } from 'zod';
 import { type SalesforceUrlPath, waitForPageErrors } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
-import type { homePageLayoutAssignmentSchema, schema } from './schema.js';
+
+export const homePageLayoutAssignmentSchema = z
+  .object({
+    profile: z.string().meta({ description: 'Developer Name of Profile' }),
+    layout: z.string().meta({ description: 'Developer Name of the HomePageLayout or empty string for default layout' }),
+  })
+  .meta({ id: 'homePageLayoutAssignment' });
+
+export const homePageLayoutsSchema = z
+  .object({
+    homePageLayoutAssignments: z.array(homePageLayoutAssignmentSchema).default([]).meta({
+      title: 'Home Page Layout Assignment',
+    }),
+  })
+  .meta({
+    id: 'homePageLayouts',
+    title: 'Home Page Layouts',
+    description: 'Assign Home Page Layouts for Profiles. Only available in Salesforce Classic UI',
+  });
 
 const BASE_PATH: SalesforceUrlPath = `/setup/ui/assignhomelayoutedit.jsp?retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`;
 
@@ -17,7 +35,7 @@ interface HomePageLayoutRecord extends Record {
   Name: string;
 }
 
-type Config = z.infer<typeof schema>;
+type Config = z.infer<typeof homePageLayoutsSchema>;
 
 type HomePageLayoutAssignment = z.infer<typeof homePageLayoutAssignmentSchema>;
 

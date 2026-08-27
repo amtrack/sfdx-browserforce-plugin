@@ -1,9 +1,14 @@
-import type { z } from 'zod';
+import { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
 import { LinkedInSalesNavigatorPage } from './page.js';
-import { schema } from './schema.js';
 
-export type Config = z.infer<typeof schema>;
+export const linkedInSalesNavigatorSettingsSchema = z
+  .object({
+    enabled: z.boolean().meta({ title: 'Enable LinkedIn Sales Navigator Integration' }).optional(),
+  })
+  .meta({ id: 'linkedInSalesNavigatorSettings', title: 'LinkedIn Sales Navigator Settings' });
+
+export type Config = z.infer<typeof linkedInSalesNavigatorSettingsSchema>;
 
 export class LinkedInSalesNavigatorSettings extends BrowserforcePlugin {
   public async retrieve(definition?: Config): Promise<Config> {

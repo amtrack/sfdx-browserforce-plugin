@@ -1,14 +1,19 @@
-import type { z } from 'zod';
+import { z } from 'zod';
 import type { SalesforceUrlPath } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
-import { schema } from './schema.js';
+
+export const companyInformationSchema = z
+  .object({
+    defaultCurrencyIsoCode: z.string().meta({ title: 'Default Currency' }).optional(),
+  })
+  .meta({ id: 'companyInformation', title: 'Company Information', description: '' });
 
 const getUrl = (orgId: string): SalesforceUrlPath => `/${orgId}/e`;
 
 const CURRENCY_DROPDOWN_SELECTOR = '#DefaultCurrencyIsoCode';
 const SAVE_BUTTON_SELECTOR = 'input[class="btn"][type="submit"][name="save"]';
 
-export type Config = z.infer<typeof schema>;
+export type Config = z.infer<typeof companyInformationSchema>;
 
 export class CompanyInformation extends BrowserforcePlugin {
   public async retrieve(): Promise<Config> {
