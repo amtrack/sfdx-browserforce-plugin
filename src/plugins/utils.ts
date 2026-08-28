@@ -172,70 +172,41 @@ function isPasswordField(fieldPath: string, passwordFields: Set<string>): boolea
 }
 
 /**
- * Masks sensitive values in an object for safe logging
- * Fields matching patterns like "secret", "password", "key", "token", etc. will be masked
- * Additionally, fields marked as type "password" in the schema will be masked
+ * Masks sensitive values in an object for safe logging.
+ * Fields marked as type "password" in the schema will be masked.
  * @param value The value to mask (can be object, array, or primitive)
  * @param keyPath The current key path (for nested objects)
- * @param schema Optional JSON schema to check for password type fields
+ * @param schema JSON schema to check for password type fields
  * @returns Masked value safe for logging
  */
 export function maskSensitiveValues(value: unknown, keyPath = '', schema?: unknown): unknown {
   // Extract password fields from schema once, up front, instead of on every recursive call
   const passwordFields = schema ? extractPasswordFields(schema) : new Set<string>();
-  return maskWithPasswordFields(value, keyPath, schema !== undefined, passwordFields);
+  return maskWithPasswordFields(value, keyPath, passwordFields);
 }
 
-// List of patterns that indicate sensitive fields (fallback for when schema is not available)
-const sensitivePatterns = [
-  /secret/i,
-  /password/i,
-  /token/i,
-  /key/i,
-  /credential/i,
-  /auth/i,
-  /api[_-]?key/i,
-  /access[_-]?token/i,
-];
-
-function maskWithPasswordFields(
-  value: unknown,
-  keyPath: string,
-  hasSchema: boolean,
-  passwordFields: Set<string>,
-): unknown {
-  const isSensitiveField = (key: string): boolean => {
-    // When a schema is provided, rely solely on its password field markers
-    if (hasSchema) {
-      return isPasswordField(key, passwordFields);
-    }
-    // Fallback to pattern matching when no schema is available
-    return sensitivePatterns.some((pattern) => pattern.test(key));
-  };
-
+function maskWithPasswordFields(value: unknown, keyPath: string, passwordFields: Set<string>): unknown {
   if (value === null || value === undefined) {
     return value;
   }
 
   // If it's a string and we're in a sensitive field context, mask it
-  if (typeof value === 'string' && keyPath && isSensitiveField(keyPath)) {
+  if (typeof value === 'string' && keyPath && isPasswordField(keyPath, passwordFields)) {
     return '****';
   }
 
   // If it's an object, recursively mask nested values
   if (typeof value === 'object') {
     if (Array.isArray(value)) {
-      return value.map((item, index) =>
-        maskWithPasswordFields(item, `${keyPath}[${index}]`, hasSchema, passwordFields),
-      );
+      return value.map((item, index) => maskWithPasswordFields(item, `${keyPath}[${index}]`, passwordFields));
     } else {
       const masked: Record<string, unknown> = {};
       for (const [key, val] of Object.entries(value)) {
         const currentPath = keyPath ? `${keyPath}.${key}` : key;
-        if (isSensitiveField(key) && typeof val === 'string' && val.length > 0) {
+        if (isPasswordField(key, passwordFields) && typeof val === 'string' && val.length > 0) {
           masked[key] = '****';
         } else {
-          masked[key] = maskWithPasswordFields(val, currentPath, hasSchema, passwordFields);
+          masked[key] = maskWithPasswordFields(val, currentPath, passwordFields);
         }
       }
       return masked;

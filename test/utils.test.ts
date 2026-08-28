@@ -100,11 +100,6 @@ describe('maskSensitiveValues', () => {
     assert.strictEqual(result.myProvider.consumerKey, 'ck');
   });
 
-  it('should still mask via regex fallback when no schema is given', async () => {
-    const result = maskSensitiveValues({ consumerSecret: 'x' }, '', undefined) as { consumerSecret: string };
-    assert.strictEqual(result.consumerSecret, '****');
-  });
-
   it('should mask consumerSecret and not consumerKey when converted from the schemas map', async () => {
     const jsonSchema = z.toJSONSchema(schemas.authProviders, { target: 'draft-7', io: 'input' });
     const result = maskSensitiveValues(
