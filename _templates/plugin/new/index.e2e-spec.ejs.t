@@ -2,7 +2,7 @@
 to: src/plugins/<%= h.changeCase.paramCase(name) %>/index.e2e-spec.ts
 ---
 import assert from 'assert';
-import { type Config, <%= h.changeCase.pascalCase(name) %> } from './index.js';
+import { type <%= h.changeCase.pascalCase(name) %>Config, <%= h.changeCase.pascalCase(name) %> } from './index.js';
 
 describe(<%= h.changeCase.pascalCase(name) %>.name, function() {
   let plugin: <%= h.changeCase.pascalCase(name) %>;
@@ -10,10 +10,10 @@ describe(<%= h.changeCase.pascalCase(name) %>.name, function() {
     plugin = new <%= h.changeCase.pascalCase(name) %>(global.browserforce);
   });
 
-  const configEnabled: Config = {
+  const configEnabled: <%= h.changeCase.pascalCase(name) %>Config = {
     enabled: true
   };
-  const configDisabled: Config = {
+  const configDisabled: <%= h.changeCase.pascalCase(name) %>Config = {
     enabled: true
   };
   it('should enable', async () => {

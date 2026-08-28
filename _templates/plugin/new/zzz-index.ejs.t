@@ -21,10 +21,10 @@ const BASE_PATH = '/partnerbt/loginAccessPolicies.apexp';
 
 const ENABLED_SELECTOR = 'input[id$="adminsCanLogInAsAny"]';
 
-export type Config = z.infer<typeof <%= h.changeCase.camelCase(name) %>Schema>;
+export type <%= h.changeCase.pascalCase(name) %>Config = z.infer<typeof <%= h.changeCase.camelCase(name) %>Schema>;
 
 export class <%= h.changeCase.pascalCase(name) %> extends BrowserforcePlugin {
-  public async retrieve(definition?: Config): Promise<Config> {
+  public async retrieve(definition?: <%= h.changeCase.pascalCase(name) %>Config): Promise<<%= h.changeCase.pascalCase(name) %>Config> {
     await using page = await this.browserforce.openPage(BASE_PATH);
     const response = {
       enabled: await page.locator(ENABLED_SELECTOR).isChecked()
@@ -32,7 +32,7 @@ export class <%= h.changeCase.pascalCase(name) %> extends BrowserforcePlugin {
     return response;
   }
 
-  public async apply(config: Config): Promise<void> {
+  public async apply(config: <%= h.changeCase.pascalCase(name) %>Config): Promise<void> {
     await using page = await this.browserforce.openPage(BASE_PATH);
     await page.locator(ENABLED_SELECTOR).setChecked(config.enabled ?? false);
     await Promise.all([
