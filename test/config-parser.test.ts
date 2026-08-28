@@ -2,7 +2,7 @@ import assert from 'assert';
 import { readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
 import { ConfigParser } from '../src/config-parser.js';
-import { drivers as DRIVERS, schemas } from '../src/plugins/index.js';
+import { drivers, schemas } from '../src/plugins/index.js';
 
 describe('ConfigParser', () => {
   describe('parse()', () => {
@@ -12,12 +12,12 @@ describe('ConfigParser', () => {
           security: {},
         },
       };
-      const result = ConfigParser.parse(DRIVERS, definition);
+      const result = ConfigParser.parse(drivers, definition);
       assert.deepStrictEqual(result[0].Driver.name, 'Security');
     });
     it('should forward the raw config value, not the zod-parsed one with defaults materialized in', () => {
       const definition = { settings: { security: {} } };
-      const result = ConfigParser.parse(DRIVERS, definition);
+      const result = ConfigParser.parse(drivers, definition);
       // security's schema has optional nested objects with array .default([]) fields several levels down;
       // forwarding the parsed output would materialize those into `{ certificateAndKeyManagement: {...} }` etc.
       assert.deepStrictEqual(result[0].value, {});
@@ -33,7 +33,7 @@ describe('ConfigParser', () => {
       // workaround to disable static type checking
       const anonymousDefinition = JSON.parse(JSON.stringify(definition));
       assert.throws(() => {
-        ConfigParser.parse(DRIVERS, anonymousDefinition);
+        ConfigParser.parse(drivers, anonymousDefinition);
       }, /Missing 'settings' attribute in definition:/);
     });
     it('should fail parsing a config file with an invalid plugin', () => {
@@ -47,7 +47,7 @@ describe('ConfigParser', () => {
         },
       };
       assert.throws(() => {
-        ConfigParser.parse(DRIVERS, definition);
+        ConfigParser.parse(drivers, definition);
       }, /Invalid browserforce configuration:[\s\S]*foo/);
     });
     it('should fail parsing a config with an invalid value', () => {
@@ -57,7 +57,7 @@ describe('ConfigParser', () => {
         },
       };
       assert.throws(() => {
-        ConfigParser.parse(DRIVERS, definition);
+        ConfigParser.parse(drivers, definition);
       }, /Invalid browserforce configuration:\ndensitySettings\.density: /);
     });
     it('should fail parsing a config with a missing required nested property', () => {
@@ -69,7 +69,7 @@ describe('ConfigParser', () => {
         },
       };
       assert.throws(() => {
-        ConfigParser.parse(DRIVERS, definition);
+        ConfigParser.parse(drivers, definition);
       }, /picklists\.picklistValues\.0\.metadataFullName/);
     });
   });
@@ -82,12 +82,12 @@ describe('ConfigParser', () => {
 
     it('should parse examples/full.json', () => {
       const definition = JSON.parse(readFileSync('examples/full.json', 'utf8'));
-      assert.doesNotThrow(() => ConfigParser.parse(DRIVERS, definition));
+      assert.doesNotThrow(() => ConfigParser.parse(drivers, definition));
     });
 
     it('should parse examples/empty.json', () => {
       const definition = JSON.parse(readFileSync('examples/empty.json', 'utf8'));
-      assert.doesNotThrow(() => ConfigParser.parse(DRIVERS, definition));
+      assert.doesNotThrow(() => ConfigParser.parse(drivers, definition));
     });
 
     const fixtures = readdirSync('src/plugins', { recursive: true, encoding: 'utf8' })
@@ -98,14 +98,14 @@ describe('ConfigParser', () => {
     for (const fixture of fixtures) {
       it(`should parse ${fixture}`, () => {
         const definition = JSON.parse(readFileSync(fixture, 'utf8'));
-        assert.doesNotThrow(() => ConfigParser.parse(DRIVERS, definition));
+        assert.doesNotThrow(() => ConfigParser.parse(drivers, definition));
       });
     }
 
     it('should fail parsing src/plugins/email-deliverability/invalid.json with an enum message', () => {
       const definition = JSON.parse(readFileSync('src/plugins/email-deliverability/invalid.json', 'utf8'));
       assert.throws(() => {
-        ConfigParser.parse(DRIVERS, definition);
+        ConfigParser.parse(drivers, definition);
       }, /emailDeliverability\.accessLevel: /);
     });
 
@@ -122,7 +122,7 @@ describe('ConfigParser', () => {
 
     for (const [key, value] of Object.entries(MINIMAL_SAMPLES)) {
       it(`should parse a minimal ${key} sample`, () => {
-        assert.doesNotThrow(() => ConfigParser.parse(DRIVERS, { settings: { [key]: value } }));
+        assert.doesNotThrow(() => ConfigParser.parse(drivers, { settings: { [key]: value } }));
       });
     }
 
