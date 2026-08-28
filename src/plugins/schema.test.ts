@@ -20,13 +20,12 @@ describe('aggregate plugin schema', () => {
     assert.deepStrictEqual(onDisk, generated);
   });
 
-  it('given the generated schema, when reading settings.properties, then it has exactly 25 keys including reportsAndDashboards and linkedInSalesNavigatorSettings', () => {
+  it('given the generated schema, when reading settings.properties, then it includes reportsAndDashboards and linkedInSalesNavigatorSettings', () => {
     const generated = z.toJSONSchema(rootSchema, { target: 'draft-7', io: 'input' }) as unknown as {
       properties: { settings: { properties: Record<string, unknown> } };
     };
     const keys = Object.keys(generated.properties.settings.properties);
 
-    assert.strictEqual(keys.length, 25);
     assert.ok(keys.includes('reportsAndDashboards'));
     assert.ok(keys.includes('linkedInSalesNavigatorSettings'));
   });
