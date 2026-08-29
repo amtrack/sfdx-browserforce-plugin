@@ -2,19 +2,19 @@ import assert from 'assert';
 import * as child from 'child_process';
 import { fileURLToPath } from 'node:url';
 import * as path from 'path';
-import { ServiceChannels } from './index.js';
+import { ServiceChannel, ServiceChannels } from './index.js';
 import { OmniChannelSettings } from '../omni-channel-settings/index.js';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
-describe.skip(ServiceChannels.name, function () {
+describe(ServiceChannels.name, function () {
   this.timeout('10m');
   let plugin: ServiceChannels;
   before(() => {
     plugin = new ServiceChannels(global.browserforce);
   });
 
-  const configureServiceChannels = [
+  const configureServiceChannels: ServiceChannel[] = [
     {
       serviceChannelDeveloperName: 'CaseTest',
       capacity: {
