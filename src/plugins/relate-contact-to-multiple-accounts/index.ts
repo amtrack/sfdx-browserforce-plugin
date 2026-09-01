@@ -1,14 +1,29 @@
 import type { Page } from 'playwright';
+import { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
+
+export const relateContactToMultipleAccountsSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .meta({
+        title: 'Enable RelateContactToMultipleAccounts',
+      })
+      .describe(
+        "This allows you to enable the 'Relate contact to multiple Accounts' in the Account settings. Doing this through the metadata API will not always make the AccountContactRelation object available. Enabling the feature using the setup does always work, therefore this plugin.",
+      )
+      .optional(),
+  })
+  .meta({ id: 'relateContactToMultipleAccounts', title: 'RelateContactToMultipleAccounts Settings' });
 
 const BASE_PATH = '/accounts/accountSetup.apexp';
 
-type Config = {
-  enabled: boolean;
-};
+export type RelateContactToMultipleAccountsConfig = z.infer<typeof relateContactToMultipleAccountsSchema>;
 
 export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
-  public async retrieve(definition?: Config): Promise<Config> {
+  public async retrieve(
+    definition?: RelateContactToMultipleAccountsConfig,
+  ): Promise<RelateContactToMultipleAccountsConfig> {
     await using page = await this.browserforce.openPage(BASE_PATH);
     const response = {
       enabled: await page.locator('input[id$=":sharedContactsCheckBox"]').isChecked(),
@@ -16,7 +31,7 @@ export class RelateContactToMultipleAccounts extends BrowserforcePlugin {
     return response;
   }
 
-  public async apply(config: Config): Promise<void> {
+  public async apply(config: RelateContactToMultipleAccountsConfig): Promise<void> {
     await using page = await this.browserforce.openPage(BASE_PATH);
     await this.waitForProcessFinished(page);
     // First we have to click the 'Edit' button, to make the checkbox editable

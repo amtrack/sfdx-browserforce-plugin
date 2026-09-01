@@ -1,12 +1,12 @@
 import assert from 'assert';
-import { Config } from './index.js';
+import { FieldDependenciesConfig } from './index.js';
 import { deepDiff } from '../../utils.js';
 
 type T = {
   description: string;
-  source: Config;
-  target: Config;
-  expected: Config | undefined;
+  source: FieldDependenciesConfig;
+  target: FieldDependenciesConfig;
+  expected: FieldDependenciesConfig | undefined;
 };
 const tests: T[] = [
   {

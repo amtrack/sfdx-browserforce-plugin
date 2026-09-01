@@ -1,5 +1,20 @@
+import { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
-import { ServicePresenceStatus } from './service-presence-status/index.js';
+import { ServicePresenceStatus, servicePresenceStatusesSchema } from './service-presence-status/index.js';
+
+const permissionSetSchema = z
+  .object({
+    permissionSetName: z
+      .string()
+      .meta({
+        title: 'Permission Set',
+      })
+      .describe('The name of the Permission Set to modify'),
+    servicePresenceStatuses: servicePresenceStatusesSchema.optional(),
+  })
+  .meta({ id: 'permissionSet' });
+
+export const permissionSetsSchema = z.array(permissionSetSchema).default([]).meta({ title: 'Permission Sets' });
 
 type PermissionSet = {
   permissionSetName: string;

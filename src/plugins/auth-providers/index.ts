@@ -1,5 +1,26 @@
+import { z } from 'zod';
 import { type SalesforceUrlPath, waitForPageErrors } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
+import { password } from '../utils.js';
+
+const authProviderSchema = z.object({
+  consumerSecret: password(
+    z.string().meta({ title: 'Consumer Secret' }).describe('The Consumer Secret value for the Auth Provider'),
+  ).optional(),
+  consumerKey: z
+    .string()
+    .meta({ title: 'Consumer Key' })
+    .describe('The Consumer Key value for the Auth Provider')
+    .optional(),
+});
+
+export const authProvidersSchema = z
+  .record(z.string().regex(/^[a-zA-Z0-9_]+$/), authProviderSchema)
+  .describe('Configuration for updating Auth Provider Consumer Key and Consumer Secret')
+  .meta({
+    id: 'authProviders',
+    title: 'Auth Providers',
+  });
 
 const CONSUMER_SECRET_SELECTOR = '#ConsumerSecret';
 const CONSUMER_KEY_SELECTOR = '#ConsumerKey';
@@ -7,14 +28,7 @@ const SAVE_BUTTON_SELECTOR = 'input[id$=":saveBtn"], #topButtonRow > input[name=
 
 const getUrl = (orgId: string): SalesforceUrlPath => `/${orgId}/e?retURL=/${orgId}` as SalesforceUrlPath;
 
-type AuthProviderConfig = {
-  consumerSecret?: string;
-  consumerKey?: string;
-};
-
-export type Config = {
-  [developerName: string]: AuthProviderConfig;
-};
+export type AuthProvidersConfig = z.infer<typeof authProvidersSchema>;
 
 type AuthProviderRecord = {
   Id: string;
@@ -22,12 +36,12 @@ type AuthProviderRecord = {
 };
 
 export class AuthProviders extends BrowserforcePlugin {
-  public async retrieve(): Promise<Config> {
+  public async retrieve(): Promise<AuthProvidersConfig> {
     // Skip retrieve as requested - return empty config
     return {};
   }
 
-  public async apply(config: Config): Promise<void> {
+  public async apply(config: AuthProvidersConfig): Promise<void> {
     if (!config || Object.keys(config).length === 0) {
       return;
     }

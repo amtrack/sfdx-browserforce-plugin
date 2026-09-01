@@ -11,7 +11,8 @@
     "@mdapi-issues/listmetadata-standardvalueset": "3.1.0",
     "@salesforce/sf-plugins-core": "13.0.0",
     "p-retry": "8.0.0",
-    "playwright": "1.61.1"
+    "playwright": "1.61.1",
+    "zod": "4.5.2"
   },
   "devDependencies": {
     "@salesforce/dev-scripts": "13.0.2",
@@ -55,10 +56,11 @@
     "url": "git+https://github.com/amtrack/sfdx-browserforce-plugin.git"
   },
   "scripts": {
-    "build": "rm -rf lib && tsc -p . && oclif manifest && oclif readme",
+    "build": "rm -rf lib && tsc -p . && oclif manifest && oclif readme && npm run generate:schema",
     "develop": "bash scripts/develop.sh",
     "format": "npx prettier --write \"+(src|test)/**/*.+(ts|js|json)\"",
     "generate:plugin": "npx --yes hygen plugin new",
+    "generate:schema": "node --loader ts-node/esm --no-warnings=ExperimentalWarning scripts/generate-schema.ts",
     "prepack": "npm run build",
     "prepare": "npm run build",
     "test": "tsc -p test && nyc --reporter=lcov --reporter=text mocha \"test/**/*.test.ts\" \"src/**/*.test.ts\"",

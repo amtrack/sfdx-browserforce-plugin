@@ -1,13 +1,22 @@
+import { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
+
+export const salesforceToSalesforceSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .meta({ title: 'Enable Salesforce to Salesforce' })
+      .describe('Warning: cannot be disabled once enabled')
+      .optional(),
+  })
+  .meta({ id: 'salesforceToSalesforce', title: 'Salesforce to Salesforce Settings' });
 
 const BASE_PATH = '/_ui/s2s/ui/PartnerNetworkEnable/e';
 
-type Config = {
-  enabled: boolean;
-};
+export type SalesforceToSalesforceConfig = z.infer<typeof salesforceToSalesforceSchema>;
 
 export class SalesforceToSalesforce extends BrowserforcePlugin {
-  public async retrieve(): Promise<Config> {
+  public async retrieve(): Promise<SalesforceToSalesforceConfig> {
     await using page = await this.browserforce.openPage(BASE_PATH);
     const response = {
       enabled: true,
@@ -21,7 +30,7 @@ export class SalesforceToSalesforce extends BrowserforcePlugin {
     return response;
   }
 
-  public async apply(config: Config): Promise<void> {
+  public async apply(config: SalesforceToSalesforceConfig): Promise<void> {
     if (config.enabled === false) {
       throw new Error('`enabled` cannot be disabled once enabled');
     }

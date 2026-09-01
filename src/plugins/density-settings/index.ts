@@ -1,17 +1,24 @@
+import { z } from 'zod';
 import { waitForPageErrors } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
 
+export const densitySettingsSchema = z
+  .object({
+    density: z
+      .enum(['Comfy', 'Compact'])
+      .meta({ title: 'Density' })
+      .describe('Choose the default display setting for your org')
+      .optional(),
+  })
+  .meta({ id: 'densitySettings', title: 'Density Settings' });
+
 const BASE_PATH = '/lightning/setup/DensitySetup/home';
 
-type Density = 'Comfy' | 'Compact';
-type Config = {
-  density: Density;
-};
-
-const availableOptions = ['Comfy', 'Compact'];
+export type DensitySettingsConfig = z.infer<typeof densitySettingsSchema>;
+type Density = NonNullable<DensitySettingsConfig['density']>;
 
 export class DensitySettings extends BrowserforcePlugin {
-  public async retrieve(): Promise<Config> {
+  public async retrieve(): Promise<DensitySettingsConfig> {
     await using page = await this.browserforce.openPage(BASE_PATH);
     const density = (await page.locator('input[name="options"]:checked').getAttribute('value')) as Density;
     return {
@@ -19,10 +26,7 @@ export class DensitySettings extends BrowserforcePlugin {
     };
   }
 
-  public async apply(config: Config): Promise<void> {
-    if (!availableOptions.includes(config.density)) {
-      throw new Error(`Could not find density "${config.density}". Available options: ${availableOptions.join(', ')}`);
-    }
+  public async apply(config: DensitySettingsConfig): Promise<void> {
     await using page = await this.browserforce.openPage(BASE_PATH);
     const densityPickerItem = page.locator(
       `one-density-visual-picker-item:has(input[name="options"][value="${config.density}"])`,

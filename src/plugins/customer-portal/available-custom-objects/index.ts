@@ -1,7 +1,9 @@
 import type { Record } from '@jsforce/jsforce-node';
+import type { z } from 'zod';
 import type { SalesforceUrlPath } from '../../../browserforce.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
 import { semanticallyCleanObject } from '../../utils.js';
+import type { availableCustomObjectSchema } from '../index.js';
 
 const SAVE_BUTTON_SELECTOR = 'input[name="save"]';
 const CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL_SELECTOR = '#options_9';
@@ -11,18 +13,15 @@ interface CustomObjectRecord extends Record {
   NamespacePrefix?: string;
 }
 
-export type Config = AvailableCustomObjectConfig[];
+export type CustomerPortalAvailableCustomObjectsConfig = AvailableCustomObjectConfig[];
 
-type AvailableCustomObjectConfig = {
-  name: string;
-  namespacePrefix?: string;
-  available: boolean;
-  _id?: string;
-};
+type AvailableCustomObjectConfig = z.infer<typeof availableCustomObjectSchema> & { _id?: string };
 
 export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
-  public async retrieve(definition: Config): Promise<Config> {
-    const response: Config = [];
+  public async retrieve(
+    definition: CustomerPortalAvailableCustomObjectsConfig,
+  ): Promise<CustomerPortalAvailableCustomObjectsConfig> {
+    const response: CustomerPortalAvailableCustomObjectsConfig = [];
     if (definition) {
       const availableCustomObjectList = definition
         .map((customObject) => {
@@ -86,8 +85,11 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
     return response;
   }
 
-  public diff(state?: Config, definition?: Config): Config | undefined {
-    const response: Config = [];
+  public diff(
+    state?: CustomerPortalAvailableCustomObjectsConfig,
+    definition?: CustomerPortalAvailableCustomObjectsConfig,
+  ): CustomerPortalAvailableCustomObjectsConfig | undefined {
+    const response: CustomerPortalAvailableCustomObjectsConfig = [];
     if (state && definition) {
       for (const availableCustomObject of definition) {
         const oldCustomObject = state.find((customObject) => {
@@ -111,7 +113,7 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
     return response.length ? response : undefined;
   }
 
-  public async apply(plan: Config): Promise<void> {
+  public async apply(plan: CustomerPortalAvailableCustomObjectsConfig): Promise<void> {
     if (plan && plan.length) {
       await using page = await this.browserforce.openPage('/');
       // new URLs for LEX: https://help.salesforce.com/articleView?id=FAQ-for-the-New-URL-Format-for-Lightning-Experience-and-the-Salesforce-Mobile-App&type=1

@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { Config, LinkedInSalesNavigatorSettings } from './index.js';
+import { LinkedInSalesNavigatorSettingsConfig, LinkedInSalesNavigatorSettings } from './index.js';
 
 describe(LinkedInSalesNavigatorSettings.name, function () {
   let plugin: LinkedInSalesNavigatorSettings;
@@ -7,10 +7,10 @@ describe(LinkedInSalesNavigatorSettings.name, function () {
     plugin = new LinkedInSalesNavigatorSettings(global.browserforce);
   });
 
-  const configEnabled: Config = {
+  const configEnabled: LinkedInSalesNavigatorSettingsConfig = {
     enabled: true,
   };
-  const configDisabled: Config = {
+  const configDisabled: LinkedInSalesNavigatorSettingsConfig = {
     enabled: false,
   };
 

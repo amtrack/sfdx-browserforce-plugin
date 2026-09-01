@@ -1,6 +1,26 @@
 import type { Record } from '@jsforce/jsforce-node';
+import { z } from 'zod';
 import { type SalesforceUrlPath, waitForPageErrors } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
+
+export const homePageLayoutAssignmentSchema = z
+  .object({
+    profile: z.string().describe('Developer Name of Profile'),
+    layout: z.string().describe('Developer Name of the HomePageLayout or empty string for default layout'),
+  })
+  .meta({ id: 'homePageLayoutAssignment' });
+
+export const homePageLayoutsSchema = z
+  .object({
+    homePageLayoutAssignments: z.array(homePageLayoutAssignmentSchema).default([]).meta({
+      title: 'Home Page Layout Assignment',
+    }),
+  })
+  .describe('Assign Home Page Layouts for Profiles. Only available in Salesforce Classic UI')
+  .meta({
+    id: 'homePageLayouts',
+    title: 'Home Page Layouts',
+  });
 
 const BASE_PATH: SalesforceUrlPath = `/setup/ui/assignhomelayoutedit.jsp?retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`;
 
@@ -15,17 +35,12 @@ interface HomePageLayoutRecord extends Record {
   Name: string;
 }
 
-type Config = {
-  homePageLayoutAssignments: HomePageLayoutAssignment[];
-};
+type HomePageLayoutsConfig = z.infer<typeof homePageLayoutsSchema>;
 
-type HomePageLayoutAssignment = {
-  profile: string;
-  layout: string;
-};
+type HomePageLayoutAssignment = z.infer<typeof homePageLayoutAssignmentSchema>;
 
 export class HomePageLayouts extends BrowserforcePlugin {
-  public async retrieve(): Promise<Config> {
+  public async retrieve(): Promise<HomePageLayoutsConfig> {
     await using page = await this.browserforce.openPage(BASE_PATH);
     await page.locator(BASE_SELECTOR).waitFor();
 
@@ -46,16 +61,16 @@ export class HomePageLayouts extends BrowserforcePlugin {
     };
   }
 
-  public diff(source: Config, target: Config): Config | undefined {
+  public diff(source: HomePageLayoutsConfig, target: HomePageLayoutsConfig): HomePageLayoutsConfig | undefined {
     target.homePageLayoutAssignments.sort(compareAssignment);
     const profileNames = target.homePageLayoutAssignments.map((assignment) => assignment.profile);
     source.homePageLayoutAssignments = source.homePageLayoutAssignments
       .filter((assignment) => profileNames.includes(assignment.profile))
       .sort(compareAssignment);
-    return super.diff(source, target) as Config | undefined;
+    return super.diff(source, target) as HomePageLayoutsConfig | undefined;
   }
 
-  public async apply(config: Config): Promise<void> {
+  public async apply(config: HomePageLayoutsConfig): Promise<void> {
     const profilesList = config.homePageLayoutAssignments
       .map((assignment) => {
         return `'${assignment.profile}'`;

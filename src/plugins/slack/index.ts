@@ -1,4 +1,18 @@
+import { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
+
+export const slackSchema = z
+  .object({
+    agreeToTermsAndConditions: z
+      .boolean()
+      .meta({
+        title: 'Agree to Termns and Conditions',
+      })
+      .describe('Once the terms have been accepted, this cannot be reverted.')
+      .optional(),
+    enableSalesCloudForSlack: z.boolean().meta({ title: "Enable the 'Sales Cloud for Slack' Slack App" }).optional(),
+  })
+  .meta({ id: 'slack', title: 'Slack Apps Setup' });
 
 const BASE_PATH = '/lightning/setup/SlackSetupAssistant/home';
 
@@ -9,13 +23,10 @@ const SALES_CLOUD_FOR_SLACK_CHECKBOX = 'input[type="checkbox"][name="SlkSetupSte
 // unfortunately the divs intercept pointer events so we need to click on the label instead
 const SALES_CLOUD_FOR_SLACK_CHECKBOX_TOGGLE = `lightning-primitive-input-toggle:has(${SALES_CLOUD_FOR_SLACK_CHECKBOX})`;
 
-export type Config = {
-  agreeToTermsAndConditions: boolean;
-  enableSalesCloudForSlack: boolean;
-};
+export type SlackConfig = z.infer<typeof slackSchema>;
 
 export class Slack extends BrowserforcePlugin {
-  public async retrieve(definition?: Config): Promise<Config> {
+  public async retrieve(definition?: SlackConfig): Promise<SlackConfig> {
     await using page = await this.browserforce.openPage(BASE_PATH);
     const response = {
       agreeToTermsAndConditions: await page.locator(TOS_CHECKBOX).isChecked(),
@@ -24,7 +35,7 @@ export class Slack extends BrowserforcePlugin {
     return response;
   }
 
-  public async apply(config: Config): Promise<void> {
+  public async apply(config: SlackConfig): Promise<void> {
     if (config.agreeToTermsAndConditions === false) {
       throw new Error('terms and conditions cannot be unaccepted once accepted');
     }

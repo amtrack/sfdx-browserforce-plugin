@@ -1,24 +1,12 @@
-import { readFileSync } from 'fs';
+import { z } from 'zod';
 import { BrowserforceCommand } from '../../browserforce-command.js';
+import { schemas } from '../../plugins/index.js';
 import { maskSensitiveValues } from '../../plugins/utils.js';
 
-// Convert camelCase to kebab-case (e.g., "authProviders" -> "auth-providers")
-function camelToKebab(str: string): string {
-  return str.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
-}
-
-// Load schema for a plugin
-function loadPluginSchema(pluginName: string): unknown | undefined {
-  try {
-    // Resolve schema path relative to the plugins directory
-    // Since we're in src/commands/browserforce/, we need to go up to src/plugins/
-    const schemaPath = new URL(`../../plugins/${camelToKebab(pluginName)}/schema.json`, import.meta.url);
-    const schemaContent = readFileSync(schemaPath, 'utf8');
-    return JSON.parse(schemaContent);
-  } catch (error) {
-    // Schema file not found or invalid - return undefined to fall back to pattern matching
-    return undefined;
-  }
+// Convert a plugin's zod schema to a JSON schema for password-field detection
+function toJsonSchema(key: string): unknown | undefined {
+  const pluginSchema = schemas[key as keyof typeof schemas];
+  return pluginSchema ? z.toJSONSchema(pluginSchema, { target: 'draft-7', io: 'input' }) : undefined;
 }
 
 type BrowserforceApplyResponse = {
@@ -56,10 +44,8 @@ export class BrowserforceApply extends BrowserforceCommand<BrowserforceApplyResp
       const diff = instance.diff(state, setting.value);
       const action = flags['dry-run'] ? 'would change' : 'changing';
       if (diff !== undefined) {
-        // Load schema for this plugin to check for password fields
-        const schema = loadPluginSchema(setting.key);
         // Mask sensitive values before logging (using schema if available)
-        const maskedDiff = maskSensitiveValues(diff, '', schema) as typeof diff;
+        const maskedDiff = maskSensitiveValues(diff, '', toJsonSchema(setting.key)) as typeof diff;
         this.spinner.start(
           `[${driver.name}] ${Object.keys(maskedDiff)
             .map((key) => {

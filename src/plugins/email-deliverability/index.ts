@@ -1,4 +1,15 @@
+import { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
+
+export const emailDeliverabilitySchema = z
+  .object({
+    accessLevel: z
+      .enum(['No access', 'System email only', 'All email'])
+      .meta({ title: 'Access Level' })
+      .describe('Choose the email Deliverability Access Level required')
+      .optional(),
+  })
+  .meta({ id: 'emailDeliverability', title: 'Email Deliverability Settings' });
 
 const BASE_PATH = '/email-admin/editOrgEmailSettings.apexp';
 
@@ -12,24 +23,22 @@ const ACCESS_LEVEL_VALUES = new Map([
   ['All email', '2'],
 ]);
 
-type Config = {
-  accessLevel: string;
-};
+export type EmailDeliverabilityConfig = z.infer<typeof emailDeliverabilitySchema>;
 
 export class EmailDeliverability extends BrowserforcePlugin {
-  public async retrieve(definition?: Config): Promise<Config> {
+  public async retrieve(definition?: EmailDeliverabilityConfig): Promise<EmailDeliverabilityConfig> {
     await using page = await this.browserforce.openPage(BASE_PATH);
     const selectedOption = await page.locator(`${ACCESS_LEVEL_SELECTOR} > option[selected]`).textContent();
     if (!selectedOption) {
       throw new Error('Selected access level not found...');
     }
     return {
-      accessLevel: selectedOption,
+      accessLevel: selectedOption as EmailDeliverabilityConfig['accessLevel'],
     };
   }
 
-  public async apply(config: Config): Promise<void> {
-    const accessLevelNumber = ACCESS_LEVEL_VALUES.get(config.accessLevel);
+  public async apply(config: EmailDeliverabilityConfig): Promise<void> {
+    const accessLevelNumber = config.accessLevel ? ACCESS_LEVEL_VALUES.get(config.accessLevel) : undefined;
     if (accessLevelNumber === undefined) {
       throw new Error(`Invalid email access level ${config.accessLevel}`);
     }

@@ -84,34 +84,35 @@ src/plugins/admins-can-log-in-as-any-user
 ├── disable.json        <-- example config file for manual testing
 ├── enable.json         <-- example config file for manual testing
 ├── index.e2e-spec.ts   <-- end-to-end test
-├── index.ts            <-- implementation
-└── schema.json         <-- schema for configuration
+└── index.ts            <-- implementation, including the schema for configuration (zod)
 ```
 
-We'll start with `schema.json`.
+We'll start with the configuration schema.
 
-#### Configuration Schema (`schema.json`)
+#### Configuration Schema
 
-Browserforce leverages [JSON schema](https://json-schema.org/learn/getting-started-step-by-step.html) (`schema.json`) for its configuration.
+Browserforce leverages [zod](https://zod.dev) for its configuration. The schema lives directly in the plugin's
+`index.ts`, and the plugin's `Config` type is derived from it with `z.infer<typeof adminsCanLogInAsAnyUserSchema>`,
+so the type and the schema cannot drift.
 
-Example: Given you have defined the property `enabled` in your `schema.json` for your plugin `AdminsCanLogInAsAnyUser`, end users can create a browserforce configuration file looking like this (entry point: `settings -> adminsCanLogInAsAnyUser`).
+Example: Given you have defined the property `enabled` in the schema for your plugin `AdminsCanLogInAsAnyUser`, end users can create a browserforce configuration file looking like this (entry point: `settings -> adminsCanLogInAsAnyUser`).
 
-**schema.json**
+**index.ts**
 
-```json
-{
-  "$schema": "http://json-schema.org/draft-07/schema",
-  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/packages/admins-can-log-in-as-any-user/schema.json",
-  "title": "Administrators Can Log in as Any User Settings",
-  "type": "object",
-  "properties": {
-    "enabled": {
-      "title": "Enable Administrators Can Log in as Any User",
-      "description": "The description you want to be displayed as toolip when the user is editing the configuration",
-      "type": "boolean"
-    }
-  }
-}
+```ts
+import { z } from 'zod';
+
+export const adminsCanLogInAsAnyUserSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .meta({
+        title: 'Enable Administrators Can Log in as Any User',
+        description: 'The description you want to be displayed as toolip when the user is editing the configuration',
+      })
+      .optional(),
+  })
+  .meta({ id: 'adminsCanLogInAsAnyUser', title: 'Administrators Can Log in as Any User Settings' });
 ```
 
 **config/setup-admin-login-as-any.json**
@@ -129,6 +130,14 @@ Example: Given you have defined the property `enabled` in your `schema.json` for
 
 The entry point (key) is automatically determined by the plugin name (starting lowercase).
 This allows to run multiple actions (from multiple plugins) using a single configuration file.
+
+`src/plugins/schema.json` is **generated** from all plugin schemas by `npm run generate:schema` (also run by
+`npm run build` and by the plugin scaffolder), is committed, and must never be edited by hand; CI fails if the
+committed file differs from the generated one.
+
+If your plugin has a secret configuration field (e.g. an API key or password), wrap it with the `password()`
+helper exported from `src/plugins/utils.ts`, e.g. `consumerSecret: password(z.string()).optional()`. Its value is
+then masked in `browserforce apply` output.
 
 #### Implementation (`index.ts`)
 
@@ -162,7 +171,7 @@ Your plugin is required to implement the `retrieve` and `apply` function. In mos
 Now, this concept might seem superfluous at first, but it is important as it enforces idempotency:
 The execution will apply as few changes as necessary and so you will be able to re-execute the `apply` command leading to the same result without any failure.
 
-Both the result of the `retrieve` function and the argument of the `apply` function are objects in the format defined in your `schema.json`.
+Both the result of the `retrieve` function and the argument of the `apply` function are objects in the format defined by your schema.
 In this example, you would return `{enabled: boolean}` as part of `retrieve`, and expect `{enabled: boolean}` as argument in `apply`.
 
 ### Formatting

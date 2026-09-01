@@ -2,8 +2,38 @@ import type { Record } from '@jsforce/jsforce-node';
 import { existsSync } from 'fs';
 import * as path from 'path';
 import * as queryString from 'querystring';
+import { z } from 'zod';
 import { type SalesforceUrlPath, waitForPageErrors } from '../../../browserforce.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
+import { password } from '../../utils.js';
+
+const certificateSchema = z
+  .object({
+    name: z.string(),
+    label: z.string(),
+    exportable: z.boolean().optional(),
+    keysize: z.number().int().optional(),
+  })
+  .meta({ id: 'certificate' });
+
+const keystoreSchema = z
+  .object({
+    name: z
+      .string()
+      .describe(
+        'Optional new name of the certificate. WARNING: Only use this to change the case of the certificate name as the imported name is lowercase by default.',
+      ),
+    filePath: z.string().describe('Relative path from current working directory'),
+    password: password(z.string()).optional(),
+  })
+  .meta({ id: 'keystore' });
+
+export const certificateAndKeyManagementSchema = z
+  .object({
+    certificates: z.array(certificateSchema).default([]).meta({ title: 'Self-Signed Certificates' }),
+    importFromKeystore: z.array(keystoreSchema).default([]).meta({ title: 'Import Certificate from Keystore' }),
+  })
+  .meta({ id: 'certificateAndKeyManagement', title: 'Certificate and Key Management' });
 
 const CERT_PREFIX_PATH = '/0P1';
 const KEYSTORE_IMPORT_PATH: SalesforceUrlPath = `/_ui/security/certificate/KeyStoreImportUi/e?retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`;
@@ -19,7 +49,7 @@ interface CertificateRecord extends Record {
   KeySize: number;
 }
 
-export type Config = {
+export type CertificateAndKeyManagementConfig = {
   certificates?: Certificate[];
   importFromKeystore?: KeyStore[];
 };
@@ -39,8 +69,8 @@ type KeyStore = {
 };
 
 export class CertificateAndKeyManagement extends BrowserforcePlugin {
-  public async retrieve(definition: Config): Promise<Config> {
-    const response: Config = {
+  public async retrieve(definition: CertificateAndKeyManagementConfig): Promise<CertificateAndKeyManagementConfig> {
+    const response: CertificateAndKeyManagementConfig = {
       certificates: [],
       importFromKeystore: [],
     };
@@ -82,8 +112,11 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
     return response;
   }
 
-  public diff(state?: Config, definition?: Config): Config | undefined {
-    const response: Config = {};
+  public diff(
+    state?: CertificateAndKeyManagementConfig,
+    definition?: CertificateAndKeyManagementConfig,
+  ): CertificateAndKeyManagementConfig | undefined {
+    const response: CertificateAndKeyManagementConfig = {};
     if (state && definition && state.certificates && definition.certificates) {
       for (const cert of definition.certificates) {
         const existingCert = state.certificates.find((c) => c.name === cert.name);
@@ -111,7 +144,7 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
     return Object.keys(response).length ? response : undefined;
   }
 
-  public async apply(plan: Config): Promise<void> {
+  public async apply(plan: CertificateAndKeyManagementConfig): Promise<void> {
     if (plan.certificates) {
       for (const certificate of plan.certificates) {
         if (certificate._id) {

@@ -1,5 +1,48 @@
+import { z } from 'zod';
 import { waitForPageErrors } from '../../../browserforce.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
+
+export const capacitySchema = z
+  .object({
+    capacityModel: z
+      .enum(['TabBased', 'StatusBased'])
+      .meta({
+        title: 'Capacity Model',
+      })
+      .describe('Choose the service channel Capacity Model')
+      .optional(),
+    statusField: z
+      .string()
+      .meta({ title: 'Status Field' })
+      .describe('API Name of the field used to track status')
+      .optional(),
+    valuesForInProgress: z
+      .array(z.string())
+      .meta({ title: 'Values for In-Progress' })
+      .describe('Choose the field values for In-Progress work')
+      .optional(),
+    checkAgentCapacityOnReopenedWorkItems: z
+      .boolean()
+      .meta({
+        title: 'Check agent capacity on reopened work items',
+      })
+      .describe('Check agent capacity on reopened work items')
+      .optional(),
+    checkAgentCapacityOnReassignedWorkItems: z
+      .boolean()
+      .meta({
+        title: 'Check agent capacity on reassigned work items',
+      })
+      .describe('Check agent capacity on reassigned work items')
+      .optional(),
+  })
+  .meta({
+    id: 'capacity',
+    title: 'Capacity Settings',
+    if: { properties: { capacityModel: { const: 'Status-based' } } },
+    then: { required: ['statusField', 'valuesForInProgress'] },
+    else: { not: { required: ['statusField', 'valuesForInProgress'] } },
+  });
 
 const ADD_BUTTON_SELECTOR = 'a[id$=":duelingListBox:backingList_add"]';
 const CAPACITY_MODEL_SELECTOR = 'select[id$=":capacityModelSection:editCapacityModel"]';

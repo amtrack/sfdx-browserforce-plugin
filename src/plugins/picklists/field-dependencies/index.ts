@@ -1,17 +1,55 @@
+import { z } from 'zod';
 import { ensureArray } from '../../../jsforce-utils.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
 import { FieldDependencyPage, NewFieldDependencyPage } from './pages.js';
 
-export type FieldDependencyConfig = {
-  object: string;
-  dependentField: string;
-  controllingField: string | null;
-};
+export const fieldDependencySchema = z
+  .object({
+    object: z
+      .string()
+      .meta({
+        title: 'the API name of the CustomObject',
+        examples: ['Account', 'Vehicle__c', 'ACME__Vehicle__c'],
+      })
+      .optional(),
+    dependentField: z
+      .string()
+      .meta({
+        title: 'the API name of the CustomField that has its values filtered',
+        examples: ['Gears__c', 'ACME__Gears__c'],
+      })
+      .optional(),
+    controllingField: z
+      .string()
+      .nullable()
+      .optional()
+      .meta({
+        title: 'the API name of the CustomField that drives filtering',
+      })
+      .describe('If this value is null or not set, the Field Dependency will be deleted.')
+      .meta({
+        examples: ['Transmission__c', 'ACME__Transmission__c', null],
+      }),
+  })
+  .meta({ id: 'fieldDependency' });
 
-export type Config = FieldDependencyConfig[];
+export const fieldDependenciesSchema = z
+  .array(fieldDependencySchema)
+  .default([])
+  .describe(
+    'Manage (create/modify/delete) Field Dependencies on CustomFields.\nIf a Field Dependency already exists for the dependent field, it will be deleted.',
+  )
+  .meta({
+    id: 'fieldDependencies',
+    title: 'Field Dependencies',
+  });
+
+export type FieldDependencyConfig = z.infer<typeof fieldDependencySchema>;
+
+export type FieldDependenciesConfig = z.infer<typeof fieldDependenciesSchema>;
 
 export class FieldDependencies extends BrowserforcePlugin {
-  public async retrieve(definition: Config): Promise<Config> {
+  public async retrieve(definition: FieldDependenciesConfig): Promise<FieldDependenciesConfig> {
     const dependentFieldNames = definition.map((f) => `${f.object}.${f.dependentField}`);
     const result = await this.browserforce.connection.metadata.read('CustomField', dependentFieldNames);
     const metadata = ensureArray(result);
@@ -25,7 +63,7 @@ export class FieldDependencies extends BrowserforcePlugin {
     return state;
   }
 
-  public async apply(plan: Config): Promise<void> {
+  public async apply(plan: FieldDependenciesConfig): Promise<void> {
     const listMetadataResult = await this.browserforce.connection.metadata.list([
       {
         type: 'CustomObject',

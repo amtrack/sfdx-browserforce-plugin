@@ -1,5 +1,11 @@
+import { z } from 'zod';
 import { waitForPageErrors } from '../../../browserforce.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
+
+export const servicePresenceStatusesSchema = z
+  .array(z.string())
+  .default([])
+  .meta({ id: 'servicePresenceStatuses', title: 'Service Presence Statuses' });
 
 const ADD_BUTTON_SELECTOR = 'a[id$=":duelingListBox:backingList_add"]';
 const REMOVE_BUTTON_SELECTOR = 'a[id$=":duelingListBox:backingList_remove"]';

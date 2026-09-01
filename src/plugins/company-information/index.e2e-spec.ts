@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { CompanyInformation, Config } from './index.js';
+import { CompanyInformation, CompanyInformationConfig } from './index.js';
 
 describe(CompanyInformation.name, function () {
   let plugin: CompanyInformation;
@@ -7,10 +7,10 @@ describe(CompanyInformation.name, function () {
     plugin = new CompanyInformation(global.browserforce);
   });
 
-  const configZAR: Config = {
+  const configZAR: CompanyInformationConfig = {
     defaultCurrencyIsoCode: 'English (South Africa) - ZAR',
   };
-  const configIRE: Config = {
+  const configIRE: CompanyInformationConfig = {
     defaultCurrencyIsoCode: 'English (Ireland) - EUR',
   };
 

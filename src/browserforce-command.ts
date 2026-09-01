@@ -7,7 +7,7 @@ import { chromium } from 'playwright';
 import { Browserforce, type BrowserforceOptions } from './browserforce.js';
 import { ConfigParser } from './config-parser.js';
 import { handleDeprecations } from './plugins/deprecated.js';
-import * as DRIVERS from './plugins/index.js';
+import { drivers } from './plugins/index.js';
 
 export abstract class BrowserforceCommand<T> extends SfCommand<T> {
   static baseFlags = {
@@ -96,7 +96,7 @@ export abstract class BrowserforceCommand<T> extends SfCommand<T> {
       }
     }
     handleDeprecations(definition);
-    this.settings = ConfigParser.parse(DRIVERS, definition);
+    this.settings = ConfigParser.parse(drivers, definition);
     const connection = flags['target-org'].getConnection();
     const browserContext = await createBrowserContextFromFlags(flags);
     const options: BrowserforceOptions = {

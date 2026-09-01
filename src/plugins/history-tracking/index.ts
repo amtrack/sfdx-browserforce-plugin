@@ -1,5 +1,52 @@
+import { z } from 'zod';
 import { type SalesforceUrlPath, waitForPageErrors } from '../../browserforce.js';
 import { BrowserforcePlugin } from '../../plugin.js';
+
+export const fieldHistorySchema = z
+  .object({
+    fieldApiName: z
+      .string()
+      .meta({
+        title: 'Field API Name',
+      })
+      .describe('The API name of the field to manage history tracking for.'),
+    enableHistoryTracking: z
+      .boolean()
+      .meta({
+        title: 'Enable History Tracking',
+      })
+      .describe('If history tracking should be enabled.'),
+  })
+  .meta({ id: 'fieldHistory' });
+
+export const historyTrackingEntrySchema = z
+  .object({
+    objectApiName: z
+      .string()
+      .meta({
+        title: 'Object API Name',
+      })
+      .describe('The API name of the object to manage history tracking for.'),
+    enableHistoryTracking: z
+      .boolean()
+      .meta({
+        title: 'Enable History Tracking',
+      })
+      .describe('If history tracking should be enabled.')
+      .optional(),
+    fieldHistoryTracking: z.array(fieldHistorySchema).default([]).meta({ title: 'Field History Tracking' }).optional(),
+  })
+  .meta({ id: 'historyTracking' });
+
+export const historyTrackingSchema = z
+  .array(historyTrackingEntrySchema)
+  .default([])
+  .meta({
+    title: 'History Tracking',
+  })
+  .describe(
+    'This feature specifically closes a gap where you cannot enable field history tracking for custom Person Account fields via the Metadata API.',
+  );
 
 const BASE_PATH: SalesforceUrlPath = `/ui/setup/layout/FieldHistoryTracking?pEntity={APINAME}&retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`;
 
@@ -7,16 +54,9 @@ const ENABLE_HISTORY_SELECTOR = 'input[type="checkbox"][id="enable"]';
 const ENABLE_FIELD_HISTORY_SELECTOR = 'input[id="{APINAME}_fht"]';
 const SAVE_BUTTON_SELECTOR = 'input[type="submit"][name="save"]';
 
-type HistoryTrackingConfig = {
-  objectApiName: string;
-  enableHistoryTracking?: boolean;
-  fieldHistoryTracking?: FieldHistoryTrackingConfig[];
-};
+type HistoryTrackingConfig = z.infer<typeof historyTrackingEntrySchema>;
 
-export type FieldHistoryTrackingConfig = {
-  fieldApiName: string;
-  enableHistoryTracking: boolean;
-};
+export type FieldHistoryTrackingConfig = z.infer<typeof fieldHistorySchema>;
 
 export class HistoryTracking extends BrowserforcePlugin {
   public async retrieve(definition?: HistoryTrackingConfig[]): Promise<HistoryTrackingConfig[]> {

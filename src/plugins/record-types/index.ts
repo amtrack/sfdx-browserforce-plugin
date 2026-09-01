@@ -1,19 +1,32 @@
 import { Connection } from '@salesforce/core';
+import { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
 import { RecordTypePage } from './pages.js';
 
-type Config = {
-  deletions: RecordTypeConfig[];
-};
+export const recordTypeActionSchema = z
+  .object({
+    fullName: z.string().describe('the API name of the RecordType'),
+    replacement: z.string().describe('optional API name of the replacement RecordType').optional(),
+  })
+  .meta({ id: 'recordTypeAction' });
 
-type RecordTypeConfig = {
-  fullName: string;
-  replacement?: string;
-};
+export const recordTypesSchema = z
+  .object({
+    deletions: z
+      .array(recordTypeActionSchema)
+      .default([])
+      .meta({
+        title: 'Record Type Deletions',
+      })
+      .describe('Delete inactive record types'),
+  })
+  .meta({ id: 'recordTypes', title: 'RecordTypes' });
+
+type RecordTypesConfig = z.infer<typeof recordTypesSchema>;
 
 export class RecordTypes extends BrowserforcePlugin {
-  public async retrieve(definition: Config): Promise<Config> {
-    const response: Config = {
+  public async retrieve(definition: RecordTypesConfig): Promise<RecordTypesConfig> {
+    const response: RecordTypesConfig = {
       deletions: [],
     };
     const recordTypeFileProperties = await listRecordTypes(this.browserforce.connection);
@@ -36,15 +49,15 @@ export class RecordTypes extends BrowserforcePlugin {
     return response;
   }
 
-  public diff(source: Config, target: Config): Partial<Config> | undefined {
-    const changes: Partial<Config> = {};
+  public diff(source: RecordTypesConfig, target: RecordTypesConfig): Partial<RecordTypesConfig> | undefined {
+    const changes: Partial<RecordTypesConfig> = {};
     if (target.deletions?.length && source.deletions?.length) {
       changes.deletions = source.deletions;
     }
     return Object.keys(changes).length ? changes : undefined;
   }
 
-  public async apply(config: Config): Promise<void> {
+  public async apply(config: RecordTypesConfig): Promise<void> {
     const recordTypeFileProperties = await listRecordTypes(this.browserforce.connection);
     const recordTypes = await queryRecordTypes(this.browserforce.connection);
 

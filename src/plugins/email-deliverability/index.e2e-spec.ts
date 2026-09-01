@@ -8,13 +8,13 @@ describe(EmailDeliverability.name, function () {
   });
   const configNone = {
     accessLevel: 'No access',
-  };
+  } as const;
   const configAll = {
     accessLevel: 'All email',
-  };
+  } as const;
   const configSystem = {
     accessLevel: 'System email only',
-  };
+  } as const;
   const configInvalid = {
     accessLevel: 'Invalid',
   };
@@ -44,7 +44,7 @@ describe(EmailDeliverability.name, function () {
   it('should error on invalid input', async () => {
     let err;
     try {
-      await plugin.apply(configInvalid);
+      await plugin.apply(configInvalid as unknown as Parameters<typeof plugin.apply>[0]);
     } catch (e) {
       err = e;
     }

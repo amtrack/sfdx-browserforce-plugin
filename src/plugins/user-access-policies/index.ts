@@ -1,19 +1,37 @@
+import { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
 import { UserAccessPoliciesPage } from './page.js';
+
+export const accessPolicySchema = z
+  .object({
+    apiName: z.string().describe("The API name of the user access policy (e.g., 'Grant_Permissions')"),
+    active: z.boolean().describe('Whether the policy should be active (true) or inactive (false)'),
+    on: z
+      .enum(['Create', 'Update', 'CreateAndUpdate'])
+      .describe("Optional: specify when to apply the policy - 'Create', 'Update', or 'CreateAndUpdate'")
+      .optional(),
+  })
+  .meta({ id: 'accessPolicy' });
+
+export const userAccessPoliciesSchema = z
+  .object({
+    accessPolicies: z
+      .array(accessPolicySchema)
+      .default([])
+      .meta({
+        title: 'Access Policies',
+      })
+      .describe('List of user access policies to activate or deactivate'),
+  })
+  .meta({ id: 'userAccessPolicies', title: 'User Access Policies' });
 
 export type PolicyTriggerType = 'Create' | 'Update' | 'CreateAndUpdate';
 
 const DEFAULT_TRIGGER_TYPE: PolicyTriggerType = 'CreateAndUpdate';
 
-type AccessPolicy = {
-  apiName: string;
-  active: boolean;
-  on?: PolicyTriggerType;
-};
+type AccessPolicy = z.infer<typeof accessPolicySchema>;
 
-export type Config = {
-  accessPolicies?: AccessPolicy[];
-};
+export type UserAccessPoliciesConfig = z.infer<typeof userAccessPoliciesSchema>;
 
 export class UserAccessPolicies extends BrowserforcePlugin {
   private async queryPolicies(policyApiNames: string[]): Promise<{
@@ -46,8 +64,8 @@ export class UserAccessPolicies extends BrowserforcePlugin {
     return { policyStateMap, policyIdMap, policyTriggerTypeMap };
   }
 
-  public async retrieve(definition?: Config): Promise<Config> {
-    const response: Config = {
+  public async retrieve(definition?: UserAccessPoliciesConfig): Promise<UserAccessPoliciesConfig> {
+    const response: UserAccessPoliciesConfig = {
       accessPolicies: [],
     };
 
@@ -79,7 +97,7 @@ export class UserAccessPolicies extends BrowserforcePlugin {
     return response;
   }
 
-  public async apply(config: Config): Promise<void> {
+  public async apply(config: UserAccessPoliciesConfig): Promise<void> {
     if (!config.accessPolicies || config.accessPolicies.length === 0) {
       return;
     }

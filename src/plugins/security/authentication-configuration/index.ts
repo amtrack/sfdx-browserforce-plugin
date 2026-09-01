@@ -1,11 +1,40 @@
+import { z } from 'zod';
 import { BrowserforcePlugin } from '../../../plugin.js';
+
+const serviceSchema = z
+  .object({
+    label: z.string().describe('The visible name of the authentication service').optional(),
+    authProviderApiName: z
+      .string()
+      .describe('The DeveloperName of the AuthProvider (alternative to label for matching)')
+      .optional(),
+    enabled: z.boolean().describe('True to enable, false to disable').optional(),
+  })
+  .meta({
+    oneOf: [
+      { required: ['label', 'enabled'] },
+      { required: ['authProviderApiName', 'enabled'] },
+      { required: ['label', 'authProviderApiName', 'enabled'] },
+    ],
+  });
+
+export const authenticationConfigurationSchema = z
+  .object({
+    services: z
+      .array(serviceSchema)
+      .describe('List of Authentication Services to configure under My Domain, each with desired enabled state')
+      .meta({
+        default: [],
+      }),
+  })
+  .meta({ id: 'authenticationConfiguration', title: 'Authentication Configuration' });
 
 type AuthProviderRecord = {
   Id: string;
   DeveloperName: string;
 };
 
-export type Config = {
+export type AuthenticationConfigurationConfig = {
   services: Array<{ label: string; enabled: boolean } | { authProviderApiName: string; enabled: boolean }>;
 };
 
@@ -36,7 +65,7 @@ export class AuthenticationConfiguration extends BrowserforcePlugin {
     return map;
   }
 
-  public async retrieve(definition: Config): Promise<Config> {
+  public async retrieve(definition: AuthenticationConfigurationConfig): Promise<AuthenticationConfigurationConfig> {
     await using page = await this.browserforce.openPage(EDIT_VIEW_PATH);
     const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(page, SETUP_FORM_SELECTOR);
 
@@ -77,7 +106,7 @@ export class AuthenticationConfiguration extends BrowserforcePlugin {
     return { services };
   }
 
-  public async apply(plan: Config): Promise<void> {
+  public async apply(plan: AuthenticationConfigurationConfig): Promise<void> {
     await using page = await this.browserforce.openPage(EDIT_VIEW_PATH);
     const frameOrPage = await this.browserforce.waitForSelectorInFrameOrPage(page, SETUP_FORM_SELECTOR);
 

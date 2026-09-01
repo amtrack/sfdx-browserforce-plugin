@@ -33,6 +33,8 @@ jobs:
         run: npm run test
       - name: Check formatting
         run: npm run test:format
+      - name: Check generated schema is up to date
+        run: npm run generate:schema && git diff --exit-code src/plugins/schema.json
       - name: Authenticate DevHub and create scratch org
         env:
           SFDX_AUTH_URL_DEVHUB: ${{ secrets.SFDX_AUTH_URL_DEVHUB }}

@@ -1,5 +1,24 @@
 import type { Locator, Page } from 'playwright';
+import { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
+
+export const lightningExperienceSettingsSchema = z
+  .object({
+    activeThemeName: z
+      .string()
+      .meta({
+        title: 'The active Lightning Experience Theme',
+      })
+      .describe('The API Name of the Lightning Experience Theme to be activated')
+      .optional(),
+  })
+  .describe(
+    "Although the Metadata API has a field activeThemeName in LightningExperienceSettings it's not possible to activate any of the standard themes like Lightning and LightningLite or SalesforceCosmos.",
+  )
+  .meta({
+    id: 'lightningExperienceSettings',
+    title: 'LightningExperienceSettings',
+  });
 
 const BASE_PATH = '/lightning/setup/ThemingAndBranding/home';
 
@@ -8,9 +27,7 @@ const THEME_ROW_SELECTOR = '#setupComponent table > tbody > tr';
 const DEVELOPER_NAMES_SELECTOR = `${THEME_ROW_SELECTOR} > td:nth-child(2) > lightning-primitive-cell-factory lightning-base-formatted-text`;
 const STATES_SELECTOR = `${THEME_ROW_SELECTOR} > td:nth-child(6) > lightning-primitive-cell-factory`;
 
-type Config = {
-  activeThemeName: string;
-};
+export type LightningExperienceSettingsConfig = z.infer<typeof lightningExperienceSettingsSchema>;
 
 type Theme = {
   developerName: string;
@@ -19,7 +36,7 @@ type Theme = {
 };
 
 export class LightningExperienceSettings extends BrowserforcePlugin {
-  public async retrieve(): Promise<Config> {
+  public async retrieve(): Promise<LightningExperienceSettingsConfig> {
     await using page = await this.browserforce.openPage(BASE_PATH);
     const themes = await this.getThemeData(page);
     const activeTheme = themes.find((theme) => theme.isActive);
@@ -29,7 +46,7 @@ export class LightningExperienceSettings extends BrowserforcePlugin {
     return response;
   }
 
-  public async apply(config: Config): Promise<void> {
+  public async apply(config: LightningExperienceSettingsConfig): Promise<void> {
     await using page = await this.browserforce.openPage(BASE_PATH);
     await this.setActiveTheme(page, config.activeThemeName);
   }

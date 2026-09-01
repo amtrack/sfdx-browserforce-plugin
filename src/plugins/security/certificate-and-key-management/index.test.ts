@@ -1,11 +1,11 @@
 import assert from 'assert';
-import { CertificateAndKeyManagement, Config } from './index.js';
+import { CertificateAndKeyManagement, CertificateAndKeyManagementConfig } from './index.js';
 
 type T = {
   description: string;
-  source: Config;
-  target: Config;
-  expected: Config | undefined;
+  source: CertificateAndKeyManagementConfig;
+  target: CertificateAndKeyManagementConfig;
+  expected: CertificateAndKeyManagementConfig | undefined;
 };
 
 const tests: T[] = [

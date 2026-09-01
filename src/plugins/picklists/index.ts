@@ -1,31 +1,49 @@
 import type { FileProperties } from '@jsforce/jsforce-node/lib/api/metadata.js';
+import { z } from 'zod';
 import { type SalesforceUrlPath } from '../../browserforce.js';
 import { ensureArray } from '../../jsforce-utils.js';
 import { BrowserforcePlugin } from '../../plugin.js';
-import { FieldDependencies, Config as FieldDependenciesConfig } from './field-dependencies/index.js';
+import { FieldDependencies, FieldDependenciesConfig, fieldDependenciesSchema } from './field-dependencies/index.js';
 import { DefaultPicklistAddPage, PicklistPage, StatusPicklistAddPage } from './pages.js';
 import { determineStandardValueSetEditUrl } from './standard-value-set.js';
 
-export type Config = {
-  picklistValues?: PicklistValuesConfig[];
-  fieldDependencies?: FieldDependenciesConfig;
-};
+export const picklistActionSchema = z
+  .object({
+    metadataType: z.enum(['CustomField', 'GlobalValueSet', 'StandardValueSet']).describe('the metadata type'),
+    metadataFullName: z.string().describe('the API name of the CustomField/GlobalValueSet/StandardValueSet'),
+    value: z.string().describe('the API name of the value').optional(),
+    newValue: z.string().describe('the API name of the new value, otherwise blank').optional(),
+    statusCategory: z.string().describe('the Status Category of a new picklist value').optional(),
+    replaceAllBlankValues: z
+      .boolean()
+      .describe('replace all blank values (mutually exclusive to replacing an old value)')
+      .optional(),
+    active: z.boolean().describe('ensure the picklist value is active/inactive').optional(),
+    absent: z.boolean().describe('ensure the picklist value is absent/deleted').optional(),
+  })
+  .meta({ id: 'picklistAction' });
 
-type PicklistValuesConfig = {
-  metadataType: string;
-  metadataFullName: string;
-  value?: string;
-  newValue?: string;
-  statusCategory?: string;
-  replaceAllBlankValues?: boolean;
-  active?: boolean;
-  absent?: boolean;
-  _newValueId?: string;
-};
+export const picklistsSchema = z
+  .object({
+    picklistValues: z
+      .array(picklistActionSchema)
+      .default([])
+      .meta({
+        title: 'Picklist Values',
+      })
+      .describe('Replace (and delete) picklist values'),
+    fieldDependencies: fieldDependenciesSchema.optional(),
+  })
+  .meta({ id: 'picklists', title: 'Picklists' });
+
+export type PicklistsConfig = z.infer<typeof picklistsSchema>;
+
+type PicklistValuesConfig = z.infer<typeof picklistActionSchema> & { _newValueId?: string };
 
 export class Picklists extends BrowserforcePlugin {
-  public async retrieve(definition: Config): Promise<Config> {
-    const result: Config = { picklistValues: [], fieldDependencies: [] };
+  public async retrieve(definition: PicklistsConfig): Promise<PicklistsConfig> {
+    const picklistValues: PicklistValuesConfig[] = [];
+    const result: PicklistsConfig = { picklistValues, fieldDependencies: [] };
     if (definition.picklistValues) {
       const fileProperties = await listMetadata(
         this.browserforce.connection,
@@ -37,12 +55,12 @@ export class Picklists extends BrowserforcePlugin {
         await using page = await this.browserforce.openPage(picklistUrl);
         const picklistPage = new PicklistPage(page);
         const values = await picklistPage.getPicklistValues();
-        const state = { ...action };
+        const state: PicklistValuesConfig = { ...action };
         const valueMatch = action.value !== undefined ? values.find((x) => x.value === action.value) : undefined;
         state.absent = !valueMatch;
         state.active = valueMatch?.active;
         state._newValueId = values.find((x) => x.value === action.newValue)?.id;
-        result.picklistValues!.push(state);
+        picklistValues.push(state);
       }
     }
     if (definition.fieldDependencies) {
@@ -52,11 +70,11 @@ export class Picklists extends BrowserforcePlugin {
     return result;
   }
 
-  public diff(state: Config, definition: Config): Config | undefined {
-    const changes: Config = {};
+  public diff(state: PicklistsConfig, definition: PicklistsConfig): Partial<PicklistsConfig> | undefined {
+    const changes: Partial<PicklistsConfig> = {};
     if (definition.picklistValues) {
       const picklistValues = definition.picklistValues.filter((target, i) => {
-        const source = state.picklistValues?.[i];
+        const source = state.picklistValues?.[i] as PicklistValuesConfig | undefined;
         if (target.absent) {
           return target.absent !== source?.absent;
         }
@@ -89,7 +107,7 @@ export class Picklists extends BrowserforcePlugin {
     return Object.keys(changes).length ? changes : undefined;
   }
 
-  public async apply(config: Config): Promise<void> {
+  public async apply(config: PicklistsConfig): Promise<void> {
     if (config.picklistValues) {
       const fileProperties = await listMetadata(
         this.browserforce.connection,

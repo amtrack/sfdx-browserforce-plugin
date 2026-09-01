@@ -1,82 +1,1389 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://github.com/amtrack/sfdx-browserforce-plugin/src/plugins/schema.json",
-  "title": "Browserforce Configuration",
-  "description": "The browserforce config file contains the configuration values that defines browser automation tasks for Salesforce orgs.",
   "type": "object",
   "properties": {
     "settings": {
+      "type": "object",
       "properties": {
+        "activitySettings": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/activitySettings"
+            }
+          ]
+        },
         "authProviders": {
-          "$ref": "./auth-providers/schema.json"
-        },
-        "userAccessPolicies": {
-          "$ref": "./user-access-policies/schema.json"
-        },
-        "salesforceCpqConfig": {
-          "$ref": "./salesforce-cpq-config/schema.json"
+          "allOf": [
+            {
+              "$ref": "#/definitions/authProviders"
+            }
+          ]
         },
         "companyInformation": {
-          "$ref": "./company-information/schema.json"
-        },
-        "opportunitySplits": {
-          "$ref": "./opportunity-splits/schema.json"
-        },
-        "relateContactToMultipleAccounts": {
-          "$ref": "./relate-contact-to-multiple-accounts/schema.json"
-        },
-        "highVelocitySalesSettings": {
-          "$ref": "./high-velocity-sales-settings/schema.json"
-        },
-        "recordTypes": {
-          "$ref": "./record-types/schema.json"
-        },
-        "picklists": {
-          "$ref": "./picklists/schema.json"
-        },
-        "emailDeliverability": {
-          "$ref": "./email-deliverability/schema.json"
-        },
-        "lightningExperienceSettings": {
-          "$ref": "./lightning-experience-settings/schema.json"
-        },
-        "listViewCustomButtons": {
-          "$ref": "./list-view-custom-buttons/schema.json"
-        },
-        "activitySettings": {
-          "$ref": "./activity-settings/schema.json"
+          "allOf": [
+            {
+              "$ref": "#/definitions/companyInformation"
+            }
+          ]
         },
         "customerPortal": {
-          "$ref": "./customer-portal/schema.json"
+          "allOf": [
+            {
+              "$ref": "#/definitions/customerPortal"
+            }
+          ]
         },
         "densitySettings": {
-          "$ref": "./density-settings/schema.json"
+          "allOf": [
+            {
+              "$ref": "#/definitions/densitySettings"
+            }
+          ]
+        },
+        "emailDeliverability": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/emailDeliverability"
+            }
+          ]
+        },
+        "highVelocitySalesSettings": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/highVelocitySalesSettings"
+            }
+          ]
         },
         "historyTracking": {
-          "$ref": "./history-tracking/schema.json"
+          "default": [],
+          "title": "History Tracking",
+          "description": "This feature specifically closes a gap where you cannot enable field history tracking for custom Person Account fields via the Metadata API.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/historyTracking"
+          }
         },
         "homePageLayouts": {
-          "$ref": "./home-page-layouts/schema.json"
+          "allOf": [
+            {
+              "$ref": "#/definitions/homePageLayouts"
+            }
+          ]
+        },
+        "lightningExperienceSettings": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/lightningExperienceSettings"
+            }
+          ]
+        },
+        "listViewCustomButtons": {
+          "default": [],
+          "title": "List View Custom Buttons",
+          "description": "Manage the selected custom buttons in the list view button layout (Aloha Search Layout) for any object. Buttons are identified by their WebLink API Name (DeveloperName), with optional namespace prefix (e.g. 'AssignTask' or 'th_dev__AssignTask').",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/listViewCustomButtons"
+          }
+        },
+        "linkedInSalesNavigatorSettings": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/linkedInSalesNavigatorSettings"
+            }
+          ]
         },
         "omniChannelSettings": {
-          "$ref": "./omni-channel-settings/schema.json"
+          "allOf": [
+            {
+              "$ref": "#/definitions/omniChannelSettings"
+            }
+          ]
+        },
+        "opportunitySplits": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/opportunitySplits"
+            }
+          ]
         },
         "permissionSets": {
-          "$ref": "./permission-sets/schema.json"
+          "default": [],
+          "title": "Permission Sets",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/permissionSet"
+          }
+        },
+        "picklists": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/picklists"
+            }
+          ]
+        },
+        "recordTypes": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/recordTypes"
+            }
+          ]
+        },
+        "relateContactToMultipleAccounts": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/relateContactToMultipleAccounts"
+            }
+          ]
+        },
+        "reportsAndDashboards": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/reportsAndDashboards"
+            }
+          ]
+        },
+        "salesforceCpqConfig": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/salesforceCpqConfig"
+            }
+          ]
         },
         "salesforceToSalesforce": {
-          "$ref": "./salesforce-to-salesforce/schema.json"
+          "allOf": [
+            {
+              "$ref": "#/definitions/salesforceToSalesforce"
+            }
+          ]
         },
         "security": {
-          "$ref": "./security/schema.json"
+          "allOf": [
+            {
+              "$ref": "#/definitions/security"
+            }
+          ]
         },
         "serviceChannels": {
-          "$ref": "./service-channels/schema.json"
+          "default": [],
+          "title": "Service Channels",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/serviceChannel"
+          }
         },
         "slack": {
-          "$ref": "./slack/schema.json"
+          "allOf": [
+            {
+              "$ref": "#/definitions/slack"
+            }
+          ]
+        },
+        "userAccessPolicies": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/userAccessPolicies"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": ["settings"],
+  "title": "Browserforce Configuration",
+  "description": "The browserforce config file contains the configuration values that defines browser automation tasks for Salesforce orgs.",
+  "definitions": {
+    "activitySettings": {
+      "type": "object",
+      "properties": {
+        "allowUsersToRelateMultipleContactsToTasksAndEvents": {
+          "type": "boolean",
+          "title": "Allow Users to Relate Multiple Contacts to Tasks and Events",
+          "description": "Although the Metadata API has a ActivitiesSettings.allowUsersToRelateMultipleContactsToTasksAndEvents field, it is not possible to enable this setting using an API. Warning: can only be disabled with help of the salesforce.com Support team. https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_activitiessettings.htm"
+        }
+      },
+      "title": "Activity Settings"
+    },
+    "authProviders": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[a-zA-Z0-9_]+$"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "consumerSecret": {
+            "type": "string",
+            "title": "Consumer Secret",
+            "description": "The Consumer Secret value for the Auth Provider",
+            "x-password": true
+          },
+          "consumerKey": {
+            "type": "string",
+            "title": "Consumer Key",
+            "description": "The Consumer Key value for the Auth Provider"
+          }
+        }
+      },
+      "description": "Configuration for updating Auth Provider Consumer Key and Consumer Secret",
+      "title": "Auth Providers"
+    },
+    "companyInformation": {
+      "type": "object",
+      "properties": {
+        "defaultCurrencyIsoCode": {
+          "type": "string",
+          "title": "Default Currency"
+        }
+      },
+      "description": "",
+      "title": "Company Information"
+    },
+    "customerPortal": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable Customer Portal",
+          "description": "Although the Metadata API has a OrgSettings.enableCustomerSuccessPortal field, enabling this via the browser can be handy because it automatically creates a Portal named 'Customer Portal', where the admin and emailSenderAddress are set to the current user. Warning: cannot be disabled once enabled"
+        },
+        "portals": {
+          "default": [],
+          "title": "Portals",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/portal"
+          }
+        },
+        "availableCustomObjects": {
+          "default": [],
+          "title": "Custom Objects available for Customer Portal",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/availableCustomObject"
+          }
+        }
+      },
+      "description": "Only available in Salesforce Classic UI",
+      "title": "Customer Portal Settings"
+    },
+    "portal": {
+      "type": "object",
+      "properties": {
+        "adminUser": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "isSelfRegistrationActivated": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string"
+        },
+        "oldName": {
+          "type": "string"
+        },
+        "selfRegUserDefaultLicense": {
+          "type": "string"
+        },
+        "selfRegUserDefaultProfile": {
+          "type": "string"
+        },
+        "selfRegUserDefaultRole": {
+          "type": "string"
+        },
+        "portalProfileMemberships": {
+          "default": [],
+          "description": "Profiles for which this portal should be activated or deactivated",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/portalProfileMembership"
+          }
+        }
+      },
+      "required": ["name"]
+    },
+    "portalProfileMembership": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "active": {
+          "type": "boolean"
         }
       }
+    },
+    "availableCustomObject": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "namespacePrefix": {
+          "type": "string"
+        },
+        "available": {
+          "type": "boolean"
+        }
+      },
+      "required": ["name", "available"]
+    },
+    "densitySettings": {
+      "type": "object",
+      "properties": {
+        "density": {
+          "type": "string",
+          "enum": ["Comfy", "Compact"],
+          "title": "Density",
+          "description": "Choose the default display setting for your org"
+        }
+      },
+      "title": "Density Settings"
+    },
+    "emailDeliverability": {
+      "type": "object",
+      "properties": {
+        "accessLevel": {
+          "type": "string",
+          "enum": ["No access", "System email only", "All email"],
+          "title": "Access Level",
+          "description": "Choose the email Deliverability Access Level required"
+        }
+      },
+      "title": "Email Deliverability Settings"
+    },
+    "highVelocitySalesSettings": {
+      "type": "object",
+      "properties": {
+        "setUpAndEnable": {
+          "type": "boolean",
+          "title": "Set Up and Enable High Velocity Sales"
+        }
+      },
+      "description": "Due to a bug, High Velocity Sales needs to be set up and enabled initially using the UI.\nOnce set up, it can be configured using HighVelocitySalesSettings Metadata https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_highvelocitysalessettings.htm",
+      "title": "HighVelocitySalesSettings"
+    },
+    "historyTracking": {
+      "type": "object",
+      "properties": {
+        "objectApiName": {
+          "type": "string",
+          "title": "Object API Name",
+          "description": "The API name of the object to manage history tracking for."
+        },
+        "enableHistoryTracking": {
+          "type": "boolean",
+          "title": "Enable History Tracking",
+          "description": "If history tracking should be enabled."
+        },
+        "fieldHistoryTracking": {
+          "default": [],
+          "title": "Field History Tracking",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/fieldHistory"
+          }
+        }
+      },
+      "required": ["objectApiName"]
+    },
+    "fieldHistory": {
+      "type": "object",
+      "properties": {
+        "fieldApiName": {
+          "type": "string",
+          "title": "Field API Name",
+          "description": "The API name of the field to manage history tracking for."
+        },
+        "enableHistoryTracking": {
+          "type": "boolean",
+          "title": "Enable History Tracking",
+          "description": "If history tracking should be enabled."
+        }
+      },
+      "required": ["fieldApiName", "enableHistoryTracking"]
+    },
+    "homePageLayouts": {
+      "type": "object",
+      "properties": {
+        "homePageLayoutAssignments": {
+          "default": [],
+          "title": "Home Page Layout Assignment",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/homePageLayoutAssignment"
+          }
+        }
+      },
+      "description": "Assign Home Page Layouts for Profiles. Only available in Salesforce Classic UI",
+      "title": "Home Page Layouts"
+    },
+    "homePageLayoutAssignment": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "type": "string",
+          "description": "Developer Name of Profile"
+        },
+        "layout": {
+          "type": "string",
+          "description": "Developer Name of the HomePageLayout or empty string for default layout"
+        }
+      },
+      "required": ["profile", "layout"]
+    },
+    "lightningExperienceSettings": {
+      "type": "object",
+      "properties": {
+        "activeThemeName": {
+          "type": "string",
+          "title": "The active Lightning Experience Theme",
+          "description": "The API Name of the Lightning Experience Theme to be activated"
+        }
+      },
+      "description": "Although the Metadata API has a field activeThemeName in LightningExperienceSettings it's not possible to activate any of the standard themes like Lightning and LightningLite or SalesforceCosmos.",
+      "title": "LightningExperienceSettings"
+    },
+    "listViewCustomButtons": {
+      "type": "object",
+      "properties": {
+        "objectApiName": {
+          "type": "string",
+          "title": "Object API Name",
+          "description": "The API name of the object whose list view custom buttons to manage (e.g. Activity, Account, Contact)."
+        },
+        "buttons": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "description": "WebLink API Name (DeveloperName) of the custom button, optionally prefixed with namespace (e.g. 'AssignTask' or 'th_dev__AssignTask')."
+          },
+          "title": "Buttons",
+          "description": "WebLink API Names (DeveloperName) of the custom buttons to select. Use namespace__Name for namespaced buttons (e.g. 'th_dev__AssignTask') or just Name for unpackaged buttons (e.g. 'AssignTask').",
+          "default": []
+        },
+        "removeOtherButtons": {
+          "title": "Remove Other Buttons",
+          "description": "Whether to remove other buttons from the list view. If true, all buttons except the ones specified in the buttons array will be removed.",
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": ["objectApiName", "buttons"]
+    },
+    "linkedInSalesNavigatorSettings": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable LinkedIn Sales Navigator Integration"
+        }
+      },
+      "title": "LinkedIn Sales Navigator Settings"
+    },
+    "omniChannelSettings": {
+      "type": "object",
+      "properties": {
+        "enableStatusBasedCapacityModel": {
+          "type": "boolean",
+          "title": "Enable Status-Based Capacity Model",
+          "description": "Route and track work based on changes to work status and ownership."
+        }
+      },
+      "title": "Omni-Channel Settings"
+    },
+    "opportunitySplits": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable Opportunity Splits",
+          "description": "Prerequisite: Opportunity Teams must be enabled e.g. by deploying 'Settings:Opportunity' containing `<enableOpportunityTeam>true</enableOpportunityTeam>`."
+        }
+      },
+      "title": "OpportunitySplits Settings"
+    },
+    "permissionSet": {
+      "type": "object",
+      "properties": {
+        "permissionSetName": {
+          "type": "string",
+          "title": "Permission Set",
+          "description": "The name of the Permission Set to modify"
+        },
+        "servicePresenceStatuses": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/servicePresenceStatuses"
+            }
+          ]
+        }
+      },
+      "required": ["permissionSetName"]
+    },
+    "servicePresenceStatuses": {
+      "default": [],
+      "title": "Service Presence Statuses",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "picklists": {
+      "type": "object",
+      "properties": {
+        "picklistValues": {
+          "default": [],
+          "title": "Picklist Values",
+          "description": "Replace (and delete) picklist values",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/picklistAction"
+          }
+        },
+        "fieldDependencies": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/fieldDependencies"
+            }
+          ]
+        }
+      },
+      "title": "Picklists"
+    },
+    "picklistAction": {
+      "type": "object",
+      "properties": {
+        "metadataType": {
+          "type": "string",
+          "enum": ["CustomField", "GlobalValueSet", "StandardValueSet"],
+          "description": "the metadata type"
+        },
+        "metadataFullName": {
+          "type": "string",
+          "description": "the API name of the CustomField/GlobalValueSet/StandardValueSet"
+        },
+        "value": {
+          "type": "string",
+          "description": "the API name of the value"
+        },
+        "newValue": {
+          "type": "string",
+          "description": "the API name of the new value, otherwise blank"
+        },
+        "statusCategory": {
+          "type": "string",
+          "description": "the Status Category of a new picklist value"
+        },
+        "replaceAllBlankValues": {
+          "type": "boolean",
+          "description": "replace all blank values (mutually exclusive to replacing an old value)"
+        },
+        "active": {
+          "type": "boolean",
+          "description": "ensure the picklist value is active/inactive"
+        },
+        "absent": {
+          "type": "boolean",
+          "description": "ensure the picklist value is absent/deleted"
+        }
+      },
+      "required": ["metadataType", "metadataFullName"]
+    },
+    "fieldDependencies": {
+      "default": [],
+      "description": "Manage (create/modify/delete) Field Dependencies on CustomFields.\nIf a Field Dependency already exists for the dependent field, it will be deleted.",
+      "title": "Field Dependencies",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/fieldDependency"
+      }
+    },
+    "fieldDependency": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "type": "string",
+          "title": "the API name of the CustomObject",
+          "examples": ["Account", "Vehicle__c", "ACME__Vehicle__c"]
+        },
+        "dependentField": {
+          "type": "string",
+          "title": "the API name of the CustomField that has its values filtered",
+          "examples": ["Gears__c", "ACME__Gears__c"]
+        },
+        "controllingField": {
+          "title": "the API name of the CustomField that drives filtering",
+          "description": "If this value is null or not set, the Field Dependency will be deleted.",
+          "examples": ["Transmission__c", "ACME__Transmission__c", null],
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "recordTypes": {
+      "type": "object",
+      "properties": {
+        "deletions": {
+          "default": [],
+          "title": "Record Type Deletions",
+          "description": "Delete inactive record types",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/recordTypeAction"
+          }
+        }
+      },
+      "title": "RecordTypes"
+    },
+    "recordTypeAction": {
+      "type": "object",
+      "properties": {
+        "fullName": {
+          "type": "string",
+          "description": "the API name of the RecordType"
+        },
+        "replacement": {
+          "type": "string",
+          "description": "optional API name of the replacement RecordType"
+        }
+      },
+      "required": ["fullName"]
+    },
+    "relateContactToMultipleAccounts": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable RelateContactToMultipleAccounts",
+          "description": "This allows you to enable the 'Relate contact to multiple Accounts' in the Account settings. Doing this through the metadata API will not always make the AccountContactRelation object available. Enabling the feature using the setup does always work, therefore this plugin."
+        }
+      },
+      "title": "RelateContactToMultipleAccounts Settings"
+    },
+    "reportsAndDashboards": {
+      "type": "object",
+      "properties": {
+        "folderSharing": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/folderSharing"
+            }
+          ]
+        }
+      },
+      "title": "Reports & Dashboards"
+    },
+    "folderSharing": {
+      "type": "object",
+      "properties": {
+        "enableEnhancedFolderSharing": {
+          "type": "boolean",
+          "title": "Enable access levels for sharing report and dashboard folders",
+          "$comment": "If your organization was created after the Summer ’13 Salesforce release, you already have enhanced folder sharing"
+        }
+      },
+      "title": "Folder Sharing"
+    },
+    "salesforceCpqConfig": {
+      "type": "object",
+      "properties": {
+        "documents": {
+          "type": "object",
+          "properties": {
+            "documentFolder": {
+              "type": "string",
+              "title": "Document Folder"
+            },
+            "hideDocumentName": {
+              "type": "boolean",
+              "title": "Hide Document Name"
+            },
+            "fullPagePreview": {
+              "type": "boolean",
+              "title": "Full Page Preview"
+            },
+            "excludeHiddenLinesInGroupTotals": {
+              "type": "boolean",
+              "title": "Exclude Hidden Lines In Group Totals"
+            },
+            "attachmentTarget": {
+              "type": "string",
+              "title": "Attachment Target"
+            },
+            "postToFeed": {
+              "type": "boolean",
+              "title": "Post to Feed?"
+            },
+            "enableMultiLanguageTranslations": {
+              "type": "boolean",
+              "title": "Enable Multi-Language Translations"
+            }
+          },
+          "title": "Documents"
+        },
+        "groups": {
+          "type": "object",
+          "properties": {
+            "solutionGroupsEnabled": {
+              "type": "boolean",
+              "title": "Solution Groups Enabled"
+            },
+            "object": {
+              "type": "string",
+              "title": "Object"
+            },
+            "nameField": {
+              "type": "string",
+              "title": "Name Field"
+            },
+            "descriptionField": {
+              "type": "string",
+              "title": "Description Field"
+            },
+            "requireGroupName": {
+              "type": "boolean",
+              "title": "Require Group Name"
+            }
+          },
+          "title": "Groups"
+        },
+        "lineEditor": {
+          "type": "object",
+          "properties": {
+            "hideRenewedAssetsWhenEditing": {
+              "type": "boolean",
+              "title": "Hide Renewed Assets When Editing"
+            },
+            "visualizeProductHierarchy": {
+              "type": "boolean",
+              "title": "Visualize Product Hierarchy"
+            },
+            "preserveBundleStructure": {
+              "type": "boolean",
+              "title": "Preserve Bundle Structure"
+            },
+            "keepBundleTogether": {
+              "type": "boolean",
+              "title": "Keep Bundle Together"
+            },
+            "totalsField": {
+              "type": "string",
+              "title": "Totals Field"
+            },
+            "lineSubtotalsTotalField": {
+              "type": "string",
+              "title": "Line Subtotals Total Field"
+            },
+            "largeQuoteThreshold": {
+              "type": "number",
+              "title": "Large Quote Threshold"
+            },
+            "quoteBatchSize": {
+              "type": "number",
+              "title": "Quote Batch Size"
+            },
+            "enableExpandCollapseBundles": {
+              "type": "boolean",
+              "title": "Enable Expand/Collapse Bundles"
+            },
+            "defaultBundleSetting": {
+              "type": "string",
+              "title": "Default Bundle Setting"
+            },
+            "actionsColumnPlacement": {
+              "type": "string",
+              "title": "Actions Column Placement"
+            },
+            "enableMultiLineDelete": {
+              "type": "boolean",
+              "title": "Enable Multi Line Delete"
+            },
+            "productConfigurationInitializer": {
+              "type": "string",
+              "title": "Product Configuration Initializer"
+            },
+            "enableAssetUpgrades": {
+              "type": "boolean",
+              "title": "Enable Asset Upgrades"
+            },
+            "groupSubtotalsField": {
+              "type": "string",
+              "title": "Group Subtotals Field"
+            },
+            "wrapButtons": {
+              "type": "boolean",
+              "title": "Wrap Buttons"
+            },
+            "validateLargeQuotes": {
+              "type": "boolean",
+              "title": "Validate Large Quotes"
+            },
+            "enableCompactMode": {
+              "type": "boolean",
+              "title": "Enable Compact Mode"
+            },
+            "enableLargeQuoteExperience": {
+              "type": "boolean",
+              "title": "Enable Large Quote Experience"
+            },
+            "enableColumnResizing": {
+              "type": "boolean",
+              "title": "Enable Column Resizing"
+            }
+          },
+          "title": "Line Editor"
+        },
+        "plugins": {
+          "type": "object",
+          "properties": {
+            "legacyPageSecurityPlugin": {
+              "type": "string",
+              "title": "Legacy Page Security Plugin"
+            },
+            "electronicSignaturePlugin": {
+              "type": "string",
+              "title": "Electronic Signature Plugin"
+            },
+            "billingPlugin": {
+              "type": "string",
+              "title": "Billing Plugin"
+            },
+            "productSearchPlugin": {
+              "type": "string",
+              "title": "Product Search Plugin"
+            },
+            "recommendedProductsPlugin": {
+              "type": "string",
+              "title": "Recommended Products Plugin"
+            },
+            "legacyQuoteCalculatorPlugin": {
+              "type": "string",
+              "title": "Legacy Quote Calculator Plugin"
+            },
+            "documentStorePlugin": {
+              "type": "string",
+              "title": "Document Store Plugin"
+            },
+            "quoteCalculatorPlugin": {
+              "type": "string",
+              "title": "Quote Calculator Plugin"
+            },
+            "orderManagementPlugin": {
+              "type": "string",
+              "title": "Order Management Plugin"
+            },
+            "qleCustomActionPlugin": {
+              "type": "string",
+              "title": "QLE Custom Action Plugin"
+            }
+          },
+          "title": "Plugins"
+        },
+        "pricingAndCalculation": {
+          "type": "object",
+          "properties": {
+            "currencySymbol": {
+              "type": "string",
+              "title": "Currency Symbol"
+            },
+            "useInactivePrices": {
+              "type": "boolean",
+              "title": "Use Inactive Prices"
+            },
+            "unitPriceScale": {
+              "type": "number",
+              "title": "Unit Price Scale"
+            },
+            "calculateImmediately": {
+              "type": "boolean",
+              "title": "Calculate Immediately"
+            },
+            "enableQuickCalculate": {
+              "type": "boolean",
+              "title": "Enable Quick Calculate"
+            },
+            "allowNonConsecutiveCustomSegments": {
+              "type": "boolean",
+              "title": "Allow Non-Consecutive Custom Segments"
+            },
+            "enablePricingGuidance": {
+              "type": "boolean",
+              "title": "Enable Pricing Guidance"
+            },
+            "quoteLineEditsForUsageBasedPricing": {
+              "type": "boolean",
+              "title": "Quote Line Edits for Usage Based Pricing"
+            },
+            "useLegacyCalculator": {
+              "type": "boolean",
+              "title": "Use Legacy Calculator"
+            },
+            "disableBackgroundCalculationRefresh": {
+              "type": "boolean",
+              "title": "Disable Background Calculation Refresh"
+            },
+            "enableUsageBasedPricing": {
+              "type": "boolean",
+              "title": "Enable Usage Based Pricing"
+            },
+            "hideUncalculatedQuoteWarning": {
+              "type": "boolean",
+              "title": "Hide Uncalculated Quote Warning"
+            },
+            "useIntegrationUserForCalculations": {
+              "type": "boolean",
+              "title": "Use Integration User for Calculations"
+            }
+          },
+          "title": "Pricing and Calculation"
+        },
+        "subscriptionsAndRenewals": {
+          "type": "object",
+          "properties": {
+            "renewalModel": {
+              "type": "string",
+              "title": "Renewal Model"
+            },
+            "disableAddSubscriptions": {
+              "type": "boolean",
+              "title": "Disable Add Subscriptions"
+            },
+            "allowRenewalQuotesWithoutAssets": {
+              "type": "boolean",
+              "title": "Allow Renewal Quotes Without Assets"
+            },
+            "subscriptionProratePrecision": {
+              "type": "string",
+              "title": "Subscription Prorate Precision"
+            },
+            "includeNetNewProductsInMaintenance": {
+              "type": "boolean",
+              "title": "Include Net-new Products in Maintenance"
+            },
+            "contractInForeground": {
+              "type": "boolean",
+              "title": "Contract In Foreground"
+            },
+            "enableEvergreenSubscriptions": {
+              "type": "boolean",
+              "title": "Enable Evergreen Subscriptions"
+            },
+            "legacyAmendRenewService": {
+              "type": "boolean",
+              "title": "Legacy Amend/Renew Service"
+            },
+            "amendContractsInBackground": {
+              "type": "boolean",
+              "title": "Amend Contracts in Background"
+            },
+            "bypassPreserveBundleStructure": {
+              "type": "boolean",
+              "title": "Bypass Preserve Bundle Structure"
+            },
+            "subscriptionTermUnit": {
+              "type": "string",
+              "title": "Subscription Term Unit"
+            },
+            "reEvaluateBundleLogicOnRenewals": {
+              "type": "boolean",
+              "title": "Re-evaluate Bundle Logic on Renewals"
+            },
+            "poTRenewalsContractingFromOrders": {
+              "type": "boolean",
+              "title": "PoT Renewals (Contracting from Orders)"
+            },
+            "disableProductBundleSubTypeChecks": {
+              "type": "boolean",
+              "title": "Disable Product Bundle Sub Type Checks"
+            },
+            "useCurrentSubscriptionOnAssets": {
+              "type": "boolean",
+              "title": "Use Current Subscription on Assets"
+            }
+          },
+          "title": "Subscriptions and Renewals"
+        },
+        "quote": {
+          "type": "object",
+          "properties": {
+            "disableInitialQuoteSync": {
+              "type": "boolean",
+              "title": "Disable Initial Quote Sync"
+            },
+            "disableQuoteContactDefaulting": {
+              "type": "boolean",
+              "title": "Disable Quote Contact Defaulting"
+            },
+            "allowOptionDeletion": {
+              "type": "boolean",
+              "title": "Allow Option Deletion"
+            },
+            "disableQuoteAddressDefaulting": {
+              "type": "boolean",
+              "title": "Disable Quote Address Defaulting"
+            },
+            "primaryQuoteKeepsOpportunityProducts": {
+              "type": "boolean",
+              "title": "Primary Quote Keeps Opportunity Products"
+            },
+            "defaultQuoteValidityDays": {
+              "type": "number",
+              "title": "Default Quote Validity (Days)"
+            }
+          },
+          "title": "Quote"
+        },
+        "order": {
+          "type": "object",
+          "properties": {
+            "requireApprovedQuote": {
+              "type": "boolean",
+              "title": "Require Approved Quote"
+            },
+            "defaultOrderStartDate": {
+              "type": "string",
+              "title": "Default Order Start Date"
+            },
+            "allowMultipleOrders": {
+              "type": "boolean",
+              "title": "Allow Multiple Orders"
+            },
+            "createOrdersWithoutOpportunities": {
+              "type": "boolean",
+              "title": "Create Orders Without Opportunities"
+            }
+          },
+          "title": "Order"
+        },
+        "additionalSettings": {
+          "type": "object",
+          "properties": {
+            "triggersDisabled": {
+              "type": "boolean",
+              "title": "Triggers Disabled"
+            },
+            "quantityScale": {
+              "type": "number",
+              "title": "Quantity Scale"
+            },
+            "sortProductsInMemory": {
+              "type": "boolean",
+              "title": "Sort Products In Memory"
+            },
+            "multipleBundlesView": {
+              "type": "string",
+              "title": "Multiple Bundles View"
+            },
+            "externalConfiguratorUrl": {
+              "type": "string",
+              "title": "External Configurator URL"
+            },
+            "thirdPartyConfigurator": {
+              "type": "boolean",
+              "title": "Third Party Configurator"
+            },
+            "openSearchFilterByDefault": {
+              "type": "boolean",
+              "title": "Open Search Filter By Default"
+            },
+            "hideFeaturesWithHiddenOptions": {
+              "type": "boolean",
+              "title": "Hide Features with Hidden Options"
+            },
+            "hideProductSearchBar": {
+              "type": "boolean",
+              "title": "Hide Product Search Bar"
+            },
+            "productResultsGroupFieldName": {
+              "type": "string",
+              "title": "Product Results Group Field Name"
+            },
+            "productDescriptionField": {
+              "type": "string",
+              "title": "Product Description Field"
+            },
+            "theme": {
+              "type": "string",
+              "title": "Theme"
+            },
+            "useGlobalHeaderPermission": {
+              "type": "boolean",
+              "title": "Use Global Header Permission"
+            },
+            "serviceRegion": {
+              "type": "string",
+              "title": "Service Region"
+            },
+            "enableProductOptionDrawer": {
+              "type": "boolean",
+              "title": "Enable Product Option Drawer"
+            },
+            "enableLargeConfigurations": {
+              "type": "boolean",
+              "title": "Enable Large Configurations"
+            },
+            "nestedBundlesForExternalConfigurator": {
+              "type": "boolean",
+              "title": "Nested Bundles for External Configurator"
+            }
+          },
+          "title": "Additional Settings"
+        }
+      },
+      "title": "SalesforceCpqConfig Settings"
+    },
+    "salesforceToSalesforce": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable Salesforce to Salesforce",
+          "description": "Warning: cannot be disabled once enabled"
+        }
+      },
+      "title": "Salesforce to Salesforce Settings"
+    },
+    "security": {
+      "type": "object",
+      "properties": {
+        "certificateAndKeyManagement": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/certificateAndKeyManagement"
+            }
+          ]
+        },
+        "authenticationConfiguration": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/authenticationConfiguration"
+            }
+          ]
+        }
+      },
+      "title": "Security Controls"
+    },
+    "certificateAndKeyManagement": {
+      "type": "object",
+      "properties": {
+        "certificates": {
+          "default": [],
+          "title": "Self-Signed Certificates",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/certificate"
+          }
+        },
+        "importFromKeystore": {
+          "default": [],
+          "title": "Import Certificate from Keystore",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/keystore"
+          }
+        }
+      },
+      "title": "Certificate and Key Management"
+    },
+    "certificate": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "exportable": {
+          "type": "boolean"
+        },
+        "keysize": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": ["name", "label"]
+    },
+    "keystore": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Optional new name of the certificate. WARNING: Only use this to change the case of the certificate name as the imported name is lowercase by default."
+        },
+        "filePath": {
+          "type": "string",
+          "description": "Relative path from current working directory"
+        },
+        "password": {
+          "type": "string",
+          "x-password": true
+        }
+      },
+      "required": ["name", "filePath"]
+    },
+    "authenticationConfiguration": {
+      "type": "object",
+      "properties": {
+        "services": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "type": "string",
+                "description": "The visible name of the authentication service"
+              },
+              "authProviderApiName": {
+                "type": "string",
+                "description": "The DeveloperName of the AuthProvider (alternative to label for matching)"
+              },
+              "enabled": {
+                "type": "boolean",
+                "description": "True to enable, false to disable"
+              }
+            },
+            "oneOf": [
+              {
+                "required": ["label", "enabled"]
+              },
+              {
+                "required": ["authProviderApiName", "enabled"]
+              },
+              {
+                "required": ["label", "authProviderApiName", "enabled"]
+              }
+            ]
+          },
+          "description": "List of Authentication Services to configure under My Domain, each with desired enabled state",
+          "default": []
+        }
+      },
+      "required": ["services"],
+      "title": "Authentication Configuration"
+    },
+    "serviceChannel": {
+      "type": "object",
+      "properties": {
+        "serviceChannelDeveloperName": {
+          "type": "string",
+          "title": "Service Channel",
+          "description": "The developer name of the Service Channel to modify"
+        },
+        "capacity": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/capacity"
+            }
+          ]
+        }
+      },
+      "required": ["serviceChannelDeveloperName"]
+    },
+    "capacity": {
+      "type": "object",
+      "properties": {
+        "capacityModel": {
+          "type": "string",
+          "enum": ["TabBased", "StatusBased"],
+          "title": "Capacity Model",
+          "description": "Choose the service channel Capacity Model"
+        },
+        "statusField": {
+          "type": "string",
+          "title": "Status Field",
+          "description": "API Name of the field used to track status"
+        },
+        "valuesForInProgress": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "Values for In-Progress",
+          "description": "Choose the field values for In-Progress work"
+        },
+        "checkAgentCapacityOnReopenedWorkItems": {
+          "type": "boolean",
+          "title": "Check agent capacity on reopened work items",
+          "description": "Check agent capacity on reopened work items"
+        },
+        "checkAgentCapacityOnReassignedWorkItems": {
+          "type": "boolean",
+          "title": "Check agent capacity on reassigned work items",
+          "description": "Check agent capacity on reassigned work items"
+        }
+      },
+      "title": "Capacity Settings",
+      "if": {
+        "properties": {
+          "capacityModel": {
+            "const": "Status-based"
+          }
+        }
+      },
+      "then": {
+        "required": ["statusField", "valuesForInProgress"]
+      },
+      "else": {
+        "not": {
+          "required": ["statusField", "valuesForInProgress"]
+        }
+      }
+    },
+    "slack": {
+      "type": "object",
+      "properties": {
+        "agreeToTermsAndConditions": {
+          "type": "boolean",
+          "title": "Agree to Termns and Conditions",
+          "description": "Once the terms have been accepted, this cannot be reverted."
+        },
+        "enableSalesCloudForSlack": {
+          "type": "boolean",
+          "title": "Enable the 'Sales Cloud for Slack' Slack App"
+        }
+      },
+      "title": "Slack Apps Setup"
+    },
+    "userAccessPolicies": {
+      "type": "object",
+      "properties": {
+        "accessPolicies": {
+          "default": [],
+          "title": "Access Policies",
+          "description": "List of user access policies to activate or deactivate",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/accessPolicy"
+          }
+        }
+      },
+      "title": "User Access Policies"
+    },
+    "accessPolicy": {
+      "type": "object",
+      "properties": {
+        "apiName": {
+          "type": "string",
+          "description": "The API name of the user access policy (e.g., 'Grant_Permissions')"
+        },
+        "active": {
+          "type": "boolean",
+          "description": "Whether the policy should be active (true) or inactive (false)"
+        },
+        "on": {
+          "type": "string",
+          "enum": ["Create", "Update", "CreateAndUpdate"],
+          "description": "Optional: specify when to apply the policy - 'Create', 'Update', or 'CreateAndUpdate'"
+        }
+      },
+      "required": ["apiName", "active"]
     }
   }
 }

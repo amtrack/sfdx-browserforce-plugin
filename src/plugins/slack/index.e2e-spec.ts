@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { type Config, Slack } from './index.js';
+import { type SlackConfig, Slack } from './index.js';
 
 describe(Slack.name, function () {
   let plugin: Slack;
@@ -7,15 +7,15 @@ describe(Slack.name, function () {
     plugin = new Slack(global.browserforce);
   });
 
-  const configEnable: Config = {
+  const configEnable: SlackConfig = {
     agreeToTermsAndConditions: true,
     enableSalesCloudForSlack: true,
   };
-  const configDisabledSalesCloud: Config = {
+  const configDisabledSalesCloud: SlackConfig = {
     agreeToTermsAndConditions: true,
     enableSalesCloudForSlack: false,
   };
-  const configDisabled: Config = {
+  const configDisabled: SlackConfig = {
     agreeToTermsAndConditions: false,
     enableSalesCloudForSlack: false,
   };

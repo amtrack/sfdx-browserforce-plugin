@@ -2,7 +2,7 @@ import assert from 'assert';
 import * as child from 'child_process';
 import { fileURLToPath } from 'node:url';
 import * as path from 'path';
-import { type Config, AuthProviders } from './index.js';
+import { type AuthProvidersConfig, AuthProviders } from './index.js';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
@@ -14,26 +14,26 @@ describe(AuthProviders.name, function () {
     plugin = new AuthProviders(global.browserforce);
   });
 
-  const configWithSecretAndKey: Config = {
+  const configWithSecretAndKey: AuthProvidersConfig = {
     TestAuthProvider: {
       consumerSecret: 'test-secret-12345',
       consumerKey: 'test-key-67890',
     },
   };
 
-  const configWithSecretOnly: Config = {
+  const configWithSecretOnly: AuthProvidersConfig = {
     TestAuthProvider: {
       consumerSecret: 'updated-secret-abcde',
     },
   };
 
-  const configWithKeyOnly: Config = {
+  const configWithKeyOnly: AuthProvidersConfig = {
     TestAuthProvider: {
       consumerKey: 'updated-key-fghij',
     },
   };
 
-  const configEmpty: Config = {
+  const configEmpty: AuthProvidersConfig = {
     TestAuthProvider: {},
   };
 
@@ -67,7 +67,7 @@ describe(AuthProviders.name, function () {
   });
 
   it('should throw an error when AuthProvider does not exist', async () => {
-    const configInvalid: Config = {
+    const configInvalid: AuthProvidersConfig = {
       NonExistentAuthProvider: {
         consumerSecret: 'test-secret',
         consumerKey: 'test-key',

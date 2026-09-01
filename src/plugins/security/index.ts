@@ -1,21 +1,31 @@
+import { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
 import {
   AuthenticationConfiguration,
-  Config as AuthenticationConfigurationConfig,
+  authenticationConfigurationSchema,
+  AuthenticationConfigurationConfig,
 } from './authentication-configuration/index.js';
 import {
   CertificateAndKeyManagement,
-  Config as CertificateAndKeyManagementConfig,
+  certificateAndKeyManagementSchema,
+  CertificateAndKeyManagementConfig,
 } from './certificate-and-key-management/index.js';
 
-type Config = {
+export const securitySchema = z
+  .object({
+    certificateAndKeyManagement: certificateAndKeyManagementSchema.optional(),
+    authenticationConfiguration: authenticationConfigurationSchema.optional(),
+  })
+  .meta({ id: 'security', title: 'Security Controls' });
+
+type SecurityConfig = {
   certificateAndKeyManagement?: CertificateAndKeyManagementConfig;
   authenticationConfiguration?: AuthenticationConfigurationConfig;
 };
 
 export class Security extends BrowserforcePlugin {
-  public async retrieve(definition?: Config): Promise<Config> {
-    const response: Config = {};
+  public async retrieve(definition?: SecurityConfig): Promise<SecurityConfig> {
+    const response: SecurityConfig = {};
     if (definition) {
       if (definition.certificateAndKeyManagement) {
         const pluginCKM = new CertificateAndKeyManagement(this.browserforce);
@@ -30,7 +40,7 @@ export class Security extends BrowserforcePlugin {
     return response;
   }
 
-  public diff(state: Config, definition: Config): Config | undefined {
+  public diff(state: SecurityConfig, definition: SecurityConfig): SecurityConfig | undefined {
     const certificateAndKeyManagement = new CertificateAndKeyManagement(this.browserforce).diff(
       state.certificateAndKeyManagement,
       definition.certificateAndKeyManagement,
@@ -39,7 +49,7 @@ export class Security extends BrowserforcePlugin {
       state.authenticationConfiguration,
       definition.authenticationConfiguration,
     ) as AuthenticationConfigurationConfig | undefined;
-    const response: Config = {};
+    const response: SecurityConfig = {};
     if (certificateAndKeyManagement !== undefined) {
       response.certificateAndKeyManagement = certificateAndKeyManagement;
     }
@@ -49,7 +59,7 @@ export class Security extends BrowserforcePlugin {
     return Object.keys(response).length ? response : undefined;
   }
 
-  public async apply(plan: Config): Promise<void> {
+  public async apply(plan: SecurityConfig): Promise<void> {
     if (plan.certificateAndKeyManagement) {
       const pluginCKM = new CertificateAndKeyManagement(this.browserforce);
       await pluginCKM.apply(plan.certificateAndKeyManagement);

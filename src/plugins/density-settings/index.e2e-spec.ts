@@ -1,7 +1,7 @@
 import assert from 'assert';
 import { DensitySettings } from './index.js';
 
-type Config = Awaited<ReturnType<DensitySettings['retrieve']>>;
+type DensitySettingsConfig = Awaited<ReturnType<DensitySettings['retrieve']>>;
 
 describe(DensitySettings.name, function () {
   let plugin: DensitySettings;
@@ -9,7 +9,7 @@ describe(DensitySettings.name, function () {
     plugin = new DensitySettings(global.browserforce);
   });
 
-  const configComfy: Config = {
+  const configComfy: DensitySettingsConfig = {
     density: 'Comfy',
   };
   const configCompact = { density: 'Compact' };
@@ -27,16 +27,5 @@ describe(DensitySettings.name, function () {
   it('should be set to Comfy', async () => {
     const res = await plugin.retrieve();
     assert.deepStrictEqual(res, configComfy);
-  });
-  it('should throw for invalid density', async () => {
-    let err;
-    try {
-      await plugin.run({ density: 'Foo' });
-    } catch (e) {
-      err = e;
-    }
-    assert.throws(() => {
-      throw err;
-    }, /Could not find density/);
   });
 });
