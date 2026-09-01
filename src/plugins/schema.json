@@ -621,14 +621,7 @@
           "title": "the API name of the CustomField that drives filtering",
           "description": "If this value is null or not set, the Field Dependency will be deleted.",
           "examples": ["Transmission__c", "ACME__Transmission__c", null],
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ]
+          "type": ["string", "null"]
         }
       }
     },
