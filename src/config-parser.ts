@@ -36,11 +36,15 @@ export class ConfigParser {
       }
       const rawSettings = data.settings as Record<string, unknown>;
       for (const driverName of Object.keys(rawSettings)) {
-        settings.push({
-          Driver: drivers[driverName],
-          key: driverName,
-          value: rawSettings[driverName],
-        });
+        if (drivers[driverName]) {
+          settings.push({
+            Driver: drivers[driverName],
+            key: driverName,
+            value: rawSettings[driverName],
+          });
+        } else {
+          throw new Error(`Could not find plugin named '${driverName}' in definition: ${JSON.stringify(data)}`);
+        }
       }
     } else {
       throw new Error(`Missing 'settings' attribute in definition: ${JSON.stringify(data)}`);
