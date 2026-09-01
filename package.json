@@ -56,7 +56,7 @@
     "url": "git+https://github.com/amtrack/sfdx-browserforce-plugin.git"
   },
   "scripts": {
-    "build": "npm run generate:schema && rm -rf lib && tsc -p . && oclif manifest && oclif readme",
+    "build": "rm -rf lib && tsc -p . && oclif manifest && oclif readme && npm run generate:schema",
     "develop": "bash scripts/develop.sh",
     "format": "npx prettier --write \"+(src|test)/**/*.+(ts|js|json)\"",
     "generate:plugin": "npx --yes hygen plugin new",
