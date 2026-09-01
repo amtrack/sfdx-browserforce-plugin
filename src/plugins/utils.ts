@@ -155,20 +155,11 @@ function isPasswordField(fieldPath: string, passwordFields: Set<string>): boolea
   // before comparing against the schema-derived password field paths.
   const normalizedPath = fieldPath.replace(/\[\d+\]/g, '');
 
-  // Check exact match
-  if (passwordFields.has(normalizedPath)) {
-    return true;
-  }
-
-  // Check if any password field is a suffix of the current path
+  // Check exact match, or a password field as a suffix of the current path
   // e.g., if schema has "consumerSecret" and path is "test.consumerSecret"
-  for (const passwordField of passwordFields) {
-    if (normalizedPath.endsWith(`.${passwordField}`) || normalizedPath === passwordField) {
-      return true;
-    }
-  }
-
-  return false;
+  return [...passwordFields].some(
+    (passwordField) => normalizedPath === passwordField || normalizedPath.endsWith(`.${passwordField}`),
+  );
 }
 
 /**
