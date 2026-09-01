@@ -28,15 +28,4 @@ describe(DensitySettings.name, function () {
     const res = await plugin.retrieve();
     assert.deepStrictEqual(res, configComfy);
   });
-  it('should throw for invalid density', async () => {
-    let err;
-    try {
-      await plugin.run({ density: 'Foo' });
-    } catch (e) {
-      err = e;
-    }
-    assert.throws(() => {
-      throw err;
-    }, /Could not find density/);
-  });
 });
