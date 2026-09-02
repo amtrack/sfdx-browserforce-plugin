@@ -15,7 +15,7 @@
     "zod": "4.5.2"
   },
   "devDependencies": {
-    "@salesforce/dev-scripts": "13.0.2",
+    "@salesforce/dev-scripts": "14.0.0",
     "oclif": "4.23.30",
     "prettier": "3.9.6",
     "typescript": "*"
