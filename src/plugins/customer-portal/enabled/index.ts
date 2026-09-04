@@ -1,4 +1,4 @@
-import { waitForPageErrors } from '../../../browserforce.js';
+import { waitForPageErrors } from '../../../page-errors.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
 
 const BASE_PATH = '/_ui/core/portal/CustomerSuccessPortalSetup/e';

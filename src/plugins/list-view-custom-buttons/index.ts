@@ -1,9 +1,10 @@
 import type { Record } from '@jsforce/jsforce-node';
 import { z } from 'zod';
-import { type SalesforceUrlPath, waitForPageErrors } from '../../browserforce.js';
+import { type SalesforceUrlPath } from '../../browserforce.js';
+import { waitForPageErrors } from '../../page-errors.js';
 import { BrowserforcePlugin } from '../../plugin.js';
 
-export const listViewCustomButtonSchema = z
+const listViewCustomButtonSchema = z
   .object({
     objectApiName: z
       .string()

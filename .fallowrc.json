@@ -1,0 +1,15 @@
+{
+  "$schema": "https://raw.githubusercontent.com/fallow-rs/fallow/main/schema.json",
+  "entry": ["bin/*.js", "src/commands/**/*.ts", "test/**/*.ts"],
+  "ignoreDependencies": [
+    "@jsforce/jsforce-node",
+    "@oclif/core",
+    "@salesforce/core",
+    "@salesforce/dev-scripts",
+    "@salesforce/prettier-config"
+  ],
+  "duplicates": {
+    "ignore": ["test/**/*.ts", "src/**/*.e2e-spec.ts"]
+  },
+  "rules": {}
+}

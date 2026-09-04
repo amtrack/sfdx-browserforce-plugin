@@ -4,10 +4,12 @@ import { type SalesforceUrlPath } from '../../browserforce.js';
 import { ensureArray } from '../../jsforce-utils.js';
 import { BrowserforcePlugin } from '../../plugin.js';
 import { FieldDependencies, FieldDependenciesConfig, fieldDependenciesSchema } from './field-dependencies/index.js';
-import { DefaultPicklistAddPage, PicklistPage, StatusPicklistAddPage } from './pages.js';
+import { PicklistPage } from './pages/picklist.js';
+import { StatusPicklistAddPage } from './pages/picklist-status.js';
+import { DefaultPicklistAddPage } from './pages/default-picklist-add.js';
 import { determineStandardValueSetEditUrl } from './standard-value-set.js';
 
-export const picklistActionSchema = z
+const picklistActionSchema = z
   .object({
     metadataType: z.enum(['CustomField', 'GlobalValueSet', 'StandardValueSet']).describe('the metadata type'),
     metadataFullName: z.string().describe('the API name of the CustomField/GlobalValueSet/StandardValueSet'),

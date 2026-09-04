@@ -1,5 +1,6 @@
 import type { Page } from 'playwright';
-import { type SalesforceUrlPath, waitForPageErrors } from '../../browserforce.js';
+import { type SalesforceUrlPath } from '../../browserforce.js';
+import { waitForPageErrors } from '../../page-errors.js';
 
 const SET_UP_AND_ENABLE_HVS_BUTTON = 'button.setupAndEnableButton';
 const ENABLE_TOGGLE = '#toggleHighVelocitySalesPref';

@@ -2,7 +2,7 @@ import assert from 'assert';
 import * as child from 'child_process';
 import { fileURLToPath } from 'node:url';
 import * as path from 'path';
-import { HistoryTracking } from './index.js';
+import { HistoryTracking, type HistoryTrackingConfig } from './index.js';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
@@ -12,7 +12,7 @@ describe(HistoryTracking.name, function () {
     plugin = new HistoryTracking(global.browserforce);
   });
 
-  const enableHistoryTracking = [
+  const enableHistoryTracking: HistoryTrackingConfig[] = [
     {
       objectApiName: 'Account',
       enableHistoryTracking: true,
@@ -52,7 +52,7 @@ describe(HistoryTracking.name, function () {
     },
   ];
 
-  const disableHistoryTracking = [
+  const disableHistoryTracking: HistoryTrackingConfig[] = [
     {
       objectApiName: 'Account',
       enableHistoryTracking: true,

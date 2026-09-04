@@ -3,7 +3,8 @@ import { existsSync } from 'fs';
 import * as path from 'path';
 import * as queryString from 'querystring';
 import { z } from 'zod';
-import { type SalesforceUrlPath, waitForPageErrors } from '../../../browserforce.js';
+import { type SalesforceUrlPath } from '../../../browserforce.js';
+import { waitForPageErrors } from '../../../page-errors.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
 import { password } from '../../utils.js';
 

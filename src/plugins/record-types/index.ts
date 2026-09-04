@@ -1,9 +1,9 @@
 import { Connection } from '@salesforce/core';
 import { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
-import { RecordTypePage } from './pages.js';
+import { RecordTypePage } from './pages/record-type.js';
 
-export const recordTypeActionSchema = z
+const recordTypeActionSchema = z
   .object({
     fullName: z.string().describe('the API name of the RecordType'),
     replacement: z.string().describe('optional API name of the replacement RecordType').optional(),

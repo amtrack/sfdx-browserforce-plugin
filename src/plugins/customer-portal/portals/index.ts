@@ -1,6 +1,6 @@
 import * as queryString from 'querystring';
 import type { z } from 'zod';
-import { waitForPageErrors } from '../../../browserforce.js';
+import { waitForPageErrors } from '../../../page-errors.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
 import { semanticallyCleanObject } from '../../utils.js';
 import type { portalProfileMembershipSchema, portalSchema } from '../index.js';

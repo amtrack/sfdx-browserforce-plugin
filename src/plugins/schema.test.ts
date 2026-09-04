@@ -1,6 +1,5 @@
 import assert from 'node:assert';
 import { readFileSync } from 'node:fs';
-import { describe, it } from 'mocha';
 import { z } from 'zod';
 import { drivers, schemas } from './index.js';
 import { rootSchema } from './schema.js';

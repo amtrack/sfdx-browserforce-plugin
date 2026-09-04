@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { waitForPageErrors } from '../../../browserforce.js';
+import { waitForPageErrors } from '../../../page-errors.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
 
 export const capacitySchema = z
