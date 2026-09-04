@@ -4,7 +4,9 @@ import { type SalesforceUrlPath } from '../../browserforce.js';
 import { ensureArray } from '../../jsforce-utils.js';
 import { BrowserforcePlugin } from '../../plugin.js';
 import { FieldDependencies, FieldDependenciesConfig, fieldDependenciesSchema } from './field-dependencies/index.js';
-import { DefaultPicklistAddPage, PicklistPage, StatusPicklistAddPage } from './pages.js';
+import { PicklistPage } from './pages/picklist.js';
+import { StatusPicklistAddPage } from './pages/picklist-status.js';
+import { DefaultPicklistAddPage } from './pages/default-picklist-add.js';
 import { determineStandardValueSetEditUrl } from './standard-value-set.js';
 
 const picklistActionSchema = z

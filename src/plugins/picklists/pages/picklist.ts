@@ -1,19 +1,21 @@
 import type { Page } from 'playwright';
-import { waitForPageErrors } from '../../page-errors.js';
+import { waitForPageErrors } from '../../../page-errors.js';
+import { PicklistReplaceAndDeletePage } from './picklist-replace-and-delete.js';
+import { PicklistReplacePage } from './picklist-replace.js';
 
-// table columns
-//    <td> (actions) | <th> (label) | <td> (API name)
-// notes:
-// - label column is a th (which is not used)
-// - xpath indices are 1 based
-
-type PicklistValue = {
+export type PicklistValue = {
   value: string;
   label?: string;
   active: boolean;
   id?: string;
   statusCategory?: string;
 };
+
+// table columns
+//    <td> (actions) | <th> (label) | <td> (API name)
+// notes:
+// - label column is a th (which is not used)
+// - xpath indices are 1 based
 
 export class PicklistPage {
   private page: Page;
@@ -111,116 +113,5 @@ export class PicklistPage {
       waitForPageErrors(this.page),
     ]);
     return new PicklistPage(this.page);
-  }
-}
-
-export class DefaultPicklistAddPage {
-  protected page: Page;
-  protected saveButton = 'input.btn[name="save"]';
-
-  constructor(page: Page) {
-    this.page = page;
-  }
-
-  async add(newValue: string): Promise<void> {
-    if (newValue !== undefined && newValue !== null) {
-      await this.page.locator('textarea').fill(newValue);
-    }
-    await this.save();
-  }
-
-  async save(): Promise<void> {
-    await this.page.locator(this.saveButton).click();
-    await Promise.race([
-      this.page.waitForURL(
-        (url) =>
-          url.pathname.startsWith('/00N') || // CustomField Definition
-          url.pathname.startsWith('/0Nt') || // SharedPicklistDefinition
-          url.pathname.startsWith('/_ui/common/config/field/StandardFieldAttributes'),
-      ),
-      waitForPageErrors(this.page),
-    ]);
-  }
-}
-
-export class StatusPicklistAddPage {
-  protected page: Page;
-  protected saveButton = 'input.btn[name="save"]';
-
-  constructor(page: Page) {
-    this.page = page;
-  }
-
-  async add(newValue: string, statusCategory: string): Promise<void> {
-    if (newValue !== undefined && newValue !== null) {
-      await this.page.locator('input#p1').describe('label').fill(newValue);
-      await this.page.locator('input#p3').describe('api name').fill(newValue);
-      await this.page.locator('select#p5').selectOption({ label: statusCategory });
-    }
-    await this.save();
-  }
-
-  async save(): Promise<void> {
-    await this.page.locator(this.saveButton).click();
-    await Promise.race([
-      this.page.waitForURL((url) => url.pathname === '/_ui/common/config/field/StandardFieldAttributes/d'),
-      waitForPageErrors(this.page),
-    ]);
-  }
-}
-
-class PicklistReplacePage {
-  protected page: Page;
-  protected saveButton = 'input[name="save"]';
-
-  constructor(page: Page) {
-    this.page = page;
-  }
-
-  async replace(value: string, newValueLabel: string, replaceAllBlankValues?: boolean): Promise<void> {
-    if (value !== undefined && value !== null) {
-      await this.page.locator('input#nf').describe('old value').fill(value);
-    }
-    if (newValueLabel !== undefined && newValueLabel !== null) {
-      await this.page.locator('select#nv').describe('new value').selectOption({ label: newValueLabel });
-    }
-    if (replaceAllBlankValues) {
-      await this.page.locator('input#fnv').describe('replace all blank values').check();
-    }
-    await this.save();
-  }
-
-  async save(): Promise<void> {
-    await this.page.locator(this.saveButton).click();
-    await Promise.race([this.page.waitForURL((url) => url.searchParams.has('msg')), waitForPageErrors(this.page)]);
-  }
-}
-
-class PicklistReplaceAndDeletePage extends PicklistReplacePage {
-  constructor(page: Page) {
-    super(page);
-    this.saveButton = 'input[name="delID"][type="submit"]';
-  }
-
-  async replaceAndDelete(newValueId?: string): Promise<void> {
-    if (newValueId !== undefined && newValueId !== null) {
-      await this.page.locator('select#p13').describe('new value').selectOption(newValueId);
-    } else {
-      await this.page.locator('input#ReplaceValueWithNullValue').check();
-    }
-  }
-
-  async save(): Promise<void> {
-    // NOTE: This sometimes takes really long
-    await this.page.locator(this.saveButton).click({ timeout: 300_000 });
-    await Promise.race([
-      this.page.waitForURL(
-        (url) =>
-          url.pathname.startsWith('/00N') || // CustomField Definition
-          url.pathname.startsWith('/0Nt') || // SharedPicklistDefinition
-          url.pathname.startsWith('/_ui/common/config/field/StandardFieldAttributes'),
-      ),
-      waitForPageErrors(this.page, 120_000), // 2 minutes
-    ]);
   }
 }

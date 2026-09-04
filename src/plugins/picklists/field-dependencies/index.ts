@@ -1,7 +1,8 @@
 import { z } from 'zod';
 import { ensureArray } from '../../../jsforce-utils.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
-import { FieldDependencyPage, NewFieldDependencyPage } from './pages.js';
+import { FieldDependencyPage } from './pages/field-dependency.js';
+import { NewFieldDependencyPage } from './pages/new-field-dependency.js';
 
 const fieldDependencySchema = z
   .object({
