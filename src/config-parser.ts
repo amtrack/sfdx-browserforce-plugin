@@ -16,7 +16,7 @@ type Config = {
   value: unknown;
 };
 
-export function formatZodError(error: z.ZodError): string {
+function formatZodError(error: z.ZodError): string {
   return error.issues
     .map((issue) => (issue.path.length ? `${issue.path.join('.')}: ${issue.message}` : issue.message))
     .join('\n');

@@ -4,6 +4,7 @@ import { OverviewPage } from './overview.js';
 const SAVE_BUTTON = 'input[id$=":save"]';
 
 export class LayoutSelectionPage {
+  // fallow-ignore-next-line unused-class-member
   static PATH = 'opp/opportunitySplitSetupLayout.apexp?setupid=OpportunitySplitSetup';
   private page: Page;
 
@@ -11,6 +12,7 @@ export class LayoutSelectionPage {
     this.page = page;
   }
 
+  // fallow-ignore-next-line unused-class-member
   public async choose(): Promise<OverviewPage> {
     await this.page.locator(SAVE_BUTTON).click();
     await this.page.waitForURL((url) => url.pathname === '/opp/opportunitySplitSetupOverview.apexp');

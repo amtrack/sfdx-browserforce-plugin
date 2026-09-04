@@ -50,7 +50,7 @@ export class HighVelocitySalesSettings extends BrowserforcePlugin {
   }
 }
 
-export async function disableHighVelocitySalesUsingMetadata(connection: Connection): Promise<void> {
+async function disableHighVelocitySalesUsingMetadata(connection: Connection): Promise<void> {
   const settings = {
     fullName: 'HighVelocitySales',
     enableHighVelocitySalesSetup: false,

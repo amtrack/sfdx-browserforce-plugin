@@ -17,3 +17,4 @@ coverage/
 
 # Playwright traces
 trace-*.zip
+.fallow/

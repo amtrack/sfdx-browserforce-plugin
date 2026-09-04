@@ -2,6 +2,7 @@ import { type Connection } from '@salesforce/core';
 import { type Ux } from '@salesforce/sf-plugins-core';
 import pRetry, { Options as RetryOptions } from 'p-retry';
 import { type BrowserContext, type FrameLocator, type Page } from 'playwright';
+import { waitForPageErrors } from './page-errors.js';
 import { LoginPage } from './pages/login.js';
 
 const VF_IFRAME_SELECTOR = 'force-aloha-page iframe[name^=vfFrameId]';
@@ -106,16 +107,5 @@ export class Browserforce {
       },
     });
     return res;
-  }
-}
-
-export async function waitForPageErrors(page: Page, timeout = 90_000): Promise<void> {
-  const anyErrorsLocator = page.locator(`#error, #errorTitle, #errorDesc, #validationError, div.errorMsg`);
-  await anyErrorsLocator.first().waitFor({ state: 'attached', timeout });
-  const errorMessages = (await anyErrorsLocator.allInnerTexts()).map((t) => t.trim()).filter(Boolean);
-  if (errorMessages.length === 1) {
-    throw new Error(errorMessages[0]);
-  } else if (errorMessages.length > 1) {
-    throw new Error(errorMessages.join('\n'));
   }
 }

@@ -1,5 +1,5 @@
 import type { Page } from 'playwright';
-import { waitForPageErrors } from '../../browserforce.js';
+import { waitForPageErrors } from '../../page-errors.js';
 
 // table columns
 //    <td> (actions) | <th> (label) | <td> (API name)
@@ -72,16 +72,6 @@ export class PicklistPage {
       waitForPageErrors(this.page),
     ]);
     return new PicklistReplacePage(this.page);
-  }
-
-  public async getPicklistIdForApiName(picklistValueApiName: string): Promise<string> {
-    const link = this.page.locator(
-      `//tr[td[2][text() = "${picklistValueApiName}"]]//td[1]//a[contains(@href, "/setup/ui/picklist_masteredit.jsp")]`,
-    );
-    const urlPath = await link.getAttribute('href');
-    const url = new URL(`http://localhost${urlPath}`);
-    const picklistId = url.searchParams.get('id');
-    return picklistId;
   }
 
   public async clickDeleteActionForValue(picklistValueApiName: string): Promise<PicklistReplaceAndDeletePage> {
@@ -179,7 +169,7 @@ export class StatusPicklistAddPage {
   }
 }
 
-export class PicklistReplacePage {
+class PicklistReplacePage {
   protected page: Page;
   protected saveButton = 'input[name="save"]';
 
@@ -206,7 +196,7 @@ export class PicklistReplacePage {
   }
 }
 
-export class PicklistReplaceAndDeletePage extends PicklistReplacePage {
+class PicklistReplaceAndDeletePage extends PicklistReplacePage {
   constructor(page: Page) {
     super(page);
     this.saveButton = 'input[name="delID"][type="submit"]';

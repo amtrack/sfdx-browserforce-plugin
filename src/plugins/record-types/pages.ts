@@ -1,5 +1,5 @@
 import type { Page } from 'playwright';
-import { waitForPageErrors } from '../../browserforce.js';
+import { waitForPageErrors } from '../../page-errors.js';
 
 export class RecordTypePage {
   private page: Page;
@@ -19,7 +19,7 @@ export class RecordTypePage {
   }
 }
 
-export class RecordTypeDeletePage {
+class RecordTypeDeletePage {
   protected page: Page;
   protected saveButton = 'input[name="save"]';
 

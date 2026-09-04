@@ -3,7 +3,7 @@ import { ensureArray } from '../../../jsforce-utils.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
 import { FieldDependencyPage, NewFieldDependencyPage } from './pages.js';
 
-export const fieldDependencySchema = z
+const fieldDependencySchema = z
   .object({
     object: z
       .string()
@@ -43,8 +43,6 @@ export const fieldDependenciesSchema = z
     id: 'fieldDependencies',
     title: 'Field Dependencies',
   });
-
-export type FieldDependencyConfig = z.infer<typeof fieldDependencySchema>;
 
 export type FieldDependenciesConfig = z.infer<typeof fieldDependenciesSchema>;
 

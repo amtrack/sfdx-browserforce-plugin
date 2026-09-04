@@ -17,6 +17,11 @@ export type CustomerPortalAvailableCustomObjectsConfig = AvailableCustomObjectCo
 
 type AvailableCustomObjectConfig = z.infer<typeof availableCustomObjectSchema> & { _id?: string };
 
+// new URLs for LEX: https://help.salesforce.com/articleView?id=FAQ-for-the-New-URL-Format-for-Lightning-Experience-and-the-Salesforce-Mobile-App&type=1
+function isLexUi(page: { url(): string }): boolean {
+  return page.url().includes('/one/one.app') || page.url().includes('/lightning/');
+}
+
 export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
   public async retrieve(
     definition: CustomerPortalAvailableCustomObjectsConfig,
@@ -40,8 +45,7 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
         }
       }
       await using page = await this.browserforce.openPage('/');
-      // new URLs for LEX: https://help.salesforce.com/articleView?id=FAQ-for-the-New-URL-Format-for-Lightning-Experience-and-the-Salesforce-Mobile-App&type=1
-      const isLEX = page.url().includes('/one/one.app') || page.url().includes('/lightning/');
+      const isLEX = isLexUi(page);
       const getObjectPageUrl = function (customObject: { _id: string }, isLexUi = true): SalesforceUrlPath {
         const classicUiPath: SalesforceUrlPath = `/${customObject._id}/e`;
         if (isLexUi) {
@@ -116,8 +120,7 @@ export class CustomerPortalAvailableCustomObjects extends BrowserforcePlugin {
   public async apply(plan: CustomerPortalAvailableCustomObjectsConfig): Promise<void> {
     if (plan && plan.length) {
       await using page = await this.browserforce.openPage('/');
-      // new URLs for LEX: https://help.salesforce.com/articleView?id=FAQ-for-the-New-URL-Format-for-Lightning-Experience-and-the-Salesforce-Mobile-App&type=1
-      const isLEX = page.url().includes('/one/one.app') || page.url().includes('/lightning/');
+      const isLEX = isLexUi(page);
       const getObjectPageUrl = function (
         customObject: { _id?: string; available: boolean },
         isLexUi = true,

@@ -1,6 +1,6 @@
 import { Org, type Connection } from '@salesforce/core';
 import { type Page } from 'playwright';
-import { waitForPageErrors } from '../browserforce.js';
+import { waitForPageErrors } from '../page-errors.js';
 
 const POST_LOGIN_PATH = '/setup/forcecomHomepage.apexp';
 

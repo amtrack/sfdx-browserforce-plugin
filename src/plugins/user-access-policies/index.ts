@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
 import { UserAccessPoliciesPage } from './page.js';
 
-export const accessPolicySchema = z
+const accessPolicySchema = z
   .object({
     apiName: z.string().describe("The API name of the user access policy (e.g., 'Grant_Permissions')"),
     active: z.boolean().describe('Whether the policy should be active (true) or inactive (false)'),
@@ -25,7 +25,7 @@ export const userAccessPoliciesSchema = z
   })
   .meta({ id: 'userAccessPolicies', title: 'User Access Policies' });
 
-export type PolicyTriggerType = 'Create' | 'Update' | 'CreateAndUpdate';
+type PolicyTriggerType = 'Create' | 'Update' | 'CreateAndUpdate';
 
 const DEFAULT_TRIGGER_TYPE: PolicyTriggerType = 'CreateAndUpdate';
 
@@ -64,6 +64,26 @@ export class UserAccessPolicies extends BrowserforcePlugin {
     return { policyStateMap, policyIdMap, policyTriggerTypeMap };
   }
 
+  private retrievePolicy(
+    policy: AccessPolicy,
+    policyStateMap: Map<string, boolean>,
+    policyTriggerTypeMap: Map<string, string | null>,
+  ): AccessPolicy {
+    const isActive = policyStateMap.get(policy.apiName) ?? false;
+    const triggerType = policyTriggerTypeMap.get(policy.apiName);
+
+    const retrievedPolicy: AccessPolicy = {
+      apiName: policy.apiName,
+      active: isActive,
+    };
+
+    if (policy.on !== undefined && isActive && triggerType && this.isValidTriggerType(triggerType)) {
+      retrievedPolicy.on = triggerType;
+    }
+
+    return retrievedPolicy;
+  }
+
   public async retrieve(definition?: UserAccessPoliciesConfig): Promise<UserAccessPoliciesConfig> {
     const response: UserAccessPoliciesConfig = {
       accessPolicies: [],
@@ -77,21 +97,7 @@ export class UserAccessPolicies extends BrowserforcePlugin {
     const { policyStateMap, policyTriggerTypeMap } = await this.queryPolicies(policyApiNames);
 
     for (const policy of definition.accessPolicies) {
-      const isActive = policyStateMap.get(policy.apiName) ?? false;
-      const triggerType = policyTriggerTypeMap.get(policy.apiName);
-
-      const retrievedPolicy: AccessPolicy = {
-        apiName: policy.apiName,
-        active: isActive,
-      };
-
-      if (policy.on !== undefined && isActive && triggerType) {
-        if (this.isValidTriggerType(triggerType)) {
-          retrievedPolicy.on = triggerType;
-        }
-      }
-
-      response.accessPolicies!.push(retrievedPolicy);
+      response.accessPolicies!.push(this.retrievePolicy(policy, policyStateMap, policyTriggerTypeMap));
     }
 
     return response;

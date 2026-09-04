@@ -7,7 +7,7 @@ import { FieldDependencies, FieldDependenciesConfig, fieldDependenciesSchema } f
 import { DefaultPicklistAddPage, PicklistPage, StatusPicklistAddPage } from './pages.js';
 import { determineStandardValueSetEditUrl } from './standard-value-set.js';
 
-export const picklistActionSchema = z
+const picklistActionSchema = z
   .object({
     metadataType: z.enum(['CustomField', 'GlobalValueSet', 'StandardValueSet']).describe('the metadata type'),
     metadataFullName: z.string().describe('the API name of the CustomField/GlobalValueSet/StandardValueSet'),

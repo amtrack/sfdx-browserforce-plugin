@@ -81,6 +81,7 @@ export abstract class BrowserforceCommand<T> extends SfCommand<T> {
   protected settings: any[];
   protected retryConfig?: { retries: number; minTimeout: number };
 
+  // fallow-ignore-next-line unused-class-member
   public async init(): Promise<void> {
     await super.init();
     const { flags } = await this.parse({
@@ -112,6 +113,7 @@ export abstract class BrowserforceCommand<T> extends SfCommand<T> {
     await this.browserforce.browserContext.tracing.groupEnd();
   }
 
+  // fallow-ignore-next-line unused-class-member, complexity
   public async finally(err?: Error): Promise<void> {
     this.spinner.stop(err?.toString());
     if (err?.cause instanceof Error) {

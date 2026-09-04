@@ -1,9 +1,10 @@
 import type { Record } from '@jsforce/jsforce-node';
 import { z } from 'zod';
-import { type SalesforceUrlPath, waitForPageErrors } from '../../browserforce.js';
+import { type SalesforceUrlPath } from '../../browserforce.js';
+import { waitForPageErrors } from '../../page-errors.js';
 import { BrowserforcePlugin } from '../../plugin.js';
 
-export const homePageLayoutAssignmentSchema = z
+const homePageLayoutAssignmentSchema = z
   .object({
     profile: z.string().describe('Developer Name of Profile'),
     layout: z.string().describe('Developer Name of the HomePageLayout or empty string for default layout'),
