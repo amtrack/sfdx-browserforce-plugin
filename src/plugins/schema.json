@@ -5,6 +5,13 @@
     "settings": {
       "type": "object",
       "properties": {
+        "accountIntelligenceView": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/accountIntelligenceView"
+            }
+          ]
+        },
         "activitySettings": {
           "allOf": [
             {
@@ -194,6 +201,16 @@
   "title": "Browserforce Configuration",
   "description": "The browserforce config file contains the configuration values that defines browser automation tasks for Salesforce orgs.",
   "definitions": {
+    "accountIntelligenceView": {
+      "type": "object",
+      "properties": {
+        "enable": {
+          "type": "boolean",
+          "title": "Enable Account Intelligence View"
+        }
+      },
+      "title": "Account Intelligence View"
+    },
     "activitySettings": {
       "type": "object",
       "properties": {

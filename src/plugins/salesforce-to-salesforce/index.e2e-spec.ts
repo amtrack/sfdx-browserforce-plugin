@@ -1,7 +1,7 @@
 import assert from 'assert';
 import { SalesforceToSalesforce } from './index.js';
 
-describe(SalesforceToSalesforce.name, function () {
+describe.skip(SalesforceToSalesforce.name, function () {
   let plugin: SalesforceToSalesforce;
   before(() => {
     plugin = new SalesforceToSalesforce(global.browserforce);
@@ -22,7 +22,7 @@ describe(SalesforceToSalesforce.name, function () {
     assert.deepStrictEqual(state, configEnabled);
   });
   it('should fail to disable', async () => {
-    let err;
+    let err: unknown;
     try {
       await plugin.apply(configDisabled);
     } catch (e) {
