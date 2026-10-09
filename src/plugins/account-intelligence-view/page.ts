@@ -1,5 +1,6 @@
 import type { Page } from 'playwright';
-import { type SalesforceUrlPath, waitForPageErrors } from '../../browserforce.js';
+import { type SalesforceUrlPath } from '../../browserforce.js';
+import { waitForPageErrors } from '../../page-errors.js';
 
 const TOGGLE = 'lightning-input.pipelineInspectionToggle lightning-primitive-input-toggle';
 const TOGGLE_INPUT = 'lightning-input.pipelineInspectionToggle input[type="checkbox"][role="switch"]';
