@@ -1,4 +1,8 @@
 import { z } from 'zod';
+import {
+  AccountIntelligenceView as accountIntelligenceView,
+  accountIntelligenceViewSchema,
+} from './account-intelligence-view/index.js';
 import { ActivitySettings as activitySettings, activitySettingsSchema } from './activity-settings/index.js';
 import { AuthProviders as authProviders, authProvidersSchema } from './auth-providers/index.js';
 import { CompanyInformation as companyInformation, companyInformationSchema } from './company-information/index.js';
@@ -53,6 +57,7 @@ import { Slack as slack, slackSchema } from './slack/index.js';
 import { UserAccessPolicies as userAccessPolicies, userAccessPoliciesSchema } from './user-access-policies/index.js';
 
 export const drivers = {
+  accountIntelligenceView,
   activitySettings,
   authProviders,
   companyInformation,
@@ -81,6 +86,7 @@ export const drivers = {
 } as const;
 
 export const schemas: Record<keyof typeof drivers, z.ZodType> = {
+  accountIntelligenceView: accountIntelligenceViewSchema,
   activitySettings: activitySettingsSchema,
   authProviders: authProvidersSchema,
   companyInformation: companyInformationSchema,
