@@ -9,6 +9,14 @@ export const handleDeprecations = (definition: { settings: unknown }) => {
 👉 Please see the instructions at https://github.com/amtrack/sfdx-browserforce-plugin/wiki/Hall-of-Fame#${driverName}.`,
       );
     }
+    if (driverName === 'salesforceToSalesforce') {
+      throw new Error(
+        `The sfdx-browserforce-plugin setting 'salesforceToSalesforce' is deprecated and has been removed.
+❌ Salesforce to Salesforce has been retired.
+👉 Use one of these alternative solutions: Partner Cloud, Data Cloud One, MuleSoft Anypoint, or MuleSoft for Flow.
+👉 Please see the instructions at https://github.com/amtrack/sfdx-browserforce-plugin/wiki/Hall-of-Fame#salesforcetosalesforce.`,
+      );
+    }
     if (driverName === 'security') {
       if (definition.settings[driverName]?.loginAccessPolicies !== undefined) {
         throw new Error(

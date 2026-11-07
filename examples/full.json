@@ -1,7 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
   "settings": {
-    "salesforceToSalesforce": { "enabled": true },
     "customerPortal": { "enabled": true },
     "highVelocitySalesSettings": {
       "setUpAndEnable": true

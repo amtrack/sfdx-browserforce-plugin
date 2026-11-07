@@ -81,7 +81,6 @@ Top settings:
 - Set Email Deliverability Access Level to "No access", "System email only" and "All email"
 - Enable the 'Sales Cloud for Slack' Slack App
 - Change active Lightning Theme
-- Enable Salesforce To Salesforce
 - Import certificates from a keystore in Java Keystore (JKS) format
 
 But there's more:

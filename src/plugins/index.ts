@@ -47,10 +47,6 @@ import {
   SalesforceCpqConfig as salesforceCpqConfig,
   salesforceCpqConfigSchema,
 } from './salesforce-cpq-config/index.js';
-import {
-  SalesforceToSalesforce as salesforceToSalesforce,
-  salesforceToSalesforceSchema,
-} from './salesforce-to-salesforce/index.js';
 import { Security as security, securitySchema } from './security/index.js';
 import { ServiceChannels as serviceChannels, serviceChannelsSchema } from './service-channels/index.js';
 import { Slack as slack, slackSchema } from './slack/index.js';
@@ -78,7 +74,6 @@ export const drivers = {
   relateContactToMultipleAccounts,
   reportsAndDashboards,
   salesforceCpqConfig,
-  salesforceToSalesforce,
   security,
   serviceChannels,
   slack,
@@ -107,7 +102,6 @@ export const schemas: Record<keyof typeof drivers, z.ZodType> = {
   relateContactToMultipleAccounts: relateContactToMultipleAccountsSchema,
   reportsAndDashboards: reportsAndDashboardsSchema,
   salesforceCpqConfig: salesforceCpqConfigSchema,
-  salesforceToSalesforce: salesforceToSalesforceSchema,
   security: securitySchema,
   serviceChannels: serviceChannelsSchema,
   slack: slackSchema,
