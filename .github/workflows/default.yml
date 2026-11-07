@@ -63,17 +63,18 @@ jobs:
     if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
+      issues: write
+      pull-requests: write
       id-token: write
     steps:
       - uses: googleapis/release-please-action@v5
         id: rp
-        with:
-          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
       - uses: actions/checkout@v7
         if: ${{ steps.rp.outputs.release_created }}
         with:
           ref: ${{ steps.rp.outputs.tag_name }}
+          persist-credentials: false
       - uses: actions/setup-node@v7
         if: ${{ steps.rp.outputs.release_created }}
         with:
