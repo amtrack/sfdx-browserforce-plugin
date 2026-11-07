@@ -1,3 +1,4 @@
+import { SfError } from '@salesforce/core';
 import { BrowserforceCommand } from '../../browserforce-command.js';
 import { getPluginJsonSchema } from '../../plugin-catalog.js';
 import { maskSensitiveValues } from '../../plugins/utils.js';
@@ -46,18 +47,19 @@ With --json, the result lists each setting in the order applied, with its planne
         state = await instance.retrieve(setting.value);
       } catch (err) {
         this.spinner.stop('failed');
-        throw err;
+        throw withSettingResults(err, { dryRun, settings, failedSetting: setting.key });
       }
       this.spinner.stop();
       const diff = instance.diff(state, setting.value);
       const action = dryRun ? 'would change' : 'changing';
       if (diff !== undefined) {
         // Mask secrets (x-password fields) and values resolved from environment variables before logging
+        const envMasking = this.envMasking.get(setting.key);
         const maskedDiff = maskSensitiveValues(
           diff,
-          '',
           getPluginJsonSchema(setting.key),
-          this.envReferencePaths.get(setting.key),
+          envMasking?.paths,
+          envMasking?.values,
         ) as typeof diff;
         this.spinner.start(
           `[${driver.name}] ${Object.keys(maskedDiff)
@@ -72,7 +74,11 @@ With --json, the result lists each setting in the order applied, with its planne
             await instance.apply(diff);
           } catch (err) {
             this.spinner.stop('failed');
-            throw err;
+            throw withSettingResults(err, {
+              dryRun,
+              settings: [...settings, buildSettingResult(setting.key, maskedDiff, false)],
+              failedSetting: setting.key,
+            });
           }
           this.spinner.stop();
           applied = true;
@@ -103,4 +109,27 @@ export function buildSettingResult(key: string, maskedDiff: unknown, applied: bo
     return { key, changes: null, applied: false };
   }
   return { key, changes: maskedDiff as Record<string, unknown>, applied };
+}
+
+/**
+ * The error of a failed setting, carrying in its `data` (shown by `--json`) the results of the settings handled before
+ * it, so a caller knows which ones were already applied. The message and the cause stay those of the original error.
+ */
+export function withSettingResults(
+  err: unknown,
+  data: { dryRun: boolean; settings: BrowserforceApplySettingResult[]; failedSetting: string },
+): SfError {
+  let sfError: SfError;
+  if (err instanceof SfError) {
+    sfError = err;
+  } else if (err instanceof Error) {
+    sfError = SfError.create({ message: err.message, name: err.name, cause: err.cause });
+    sfError.stack = err.stack;
+  } else {
+    sfError = SfError.wrap(err);
+  }
+  const existingData =
+    typeof sfError.data === 'object' && sfError.data !== null && !Array.isArray(sfError.data) ? sfError.data : {};
+  // the results are plain JSON
+  return sfError.setData({ ...existingData, ...data } as unknown as SfError['data']);
 }
