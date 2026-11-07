@@ -6,7 +6,11 @@ export const reportsAndDashboardsSchema = z
   .object({
     folderSharing: folderSharingSchema.optional(),
   })
-  .meta({ id: 'reportsAndDashboards', title: 'Reports & Dashboards' });
+  .meta({
+    id: 'reportsAndDashboards',
+    title: 'Reports & Dashboards',
+    examples: [{ folderSharing: { enableEnhancedFolderSharing: true } }],
+  });
 
 type ReportsAndDashboardsConfig = {
   folderSharing?: FolderSharingConfig;

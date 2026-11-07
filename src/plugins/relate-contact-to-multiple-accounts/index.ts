@@ -14,7 +14,11 @@ export const relateContactToMultipleAccountsSchema = z
       )
       .optional(),
   })
-  .meta({ id: 'relateContactToMultipleAccounts', title: 'RelateContactToMultipleAccounts Settings' });
+  .meta({
+    id: 'relateContactToMultipleAccounts',
+    title: 'RelateContactToMultipleAccounts Settings',
+    examples: [{ enabled: true }],
+  });
 
 const BASE_PATH = '/accounts/accountSetup.apexp';
 

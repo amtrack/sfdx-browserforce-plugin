@@ -7,13 +7,18 @@ export const activitySettingsSchema = z
       .boolean()
       .meta({
         title: 'Allow Users to Relate Multiple Contacts to Tasks and Events',
+        'x-irreversible': true,
       })
       .describe(
         'Although the Metadata API has a ActivitiesSettings.allowUsersToRelateMultipleContactsToTasksAndEvents field, it is not possible to enable this setting using an API. Warning: can only be disabled with help of the salesforce.com Support team. https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_activitiessettings.htm',
       )
       .optional(),
   })
-  .meta({ id: 'activitySettings', title: 'Activity Settings' });
+  .meta({
+    id: 'activitySettings',
+    title: 'Activity Settings',
+    examples: [{ allowUsersToRelateMultipleContactsToTasksAndEvents: true }],
+  });
 
 const BASE_PATH = '/setup/activitiesSetupPage.apexp';
 

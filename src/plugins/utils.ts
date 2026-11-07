@@ -145,15 +145,21 @@ export function password<T extends z.ZodType>(schema: T): T {
 }
 
 /**
+ * A runtime key path in the format of the schema-derived paths: array indices (e.g. "[0]") dropped,
+ * as they are not part of the schema, and no leading dot.
+ */
+function normalizeKeyPath(keyPath: string): string {
+  return keyPath.replace(/\[\d+\]/g, '').replace(/^\./, '');
+}
+
+/**
  * Checks if a field path matches any password field from the schema
  * @param fieldPath The field path to check (e.g., "consumerSecret" or "test.consumerSecret")
  * @param passwordFields Set of password field paths from schema
  * @returns True if the field should be masked
  */
 function isPasswordField(fieldPath: string, passwordFields: Set<string>): boolean {
-  // Array indices (e.g. "[0]") are runtime-only and not part of the schema path, so strip them
-  // before comparing against the schema-derived password field paths.
-  const normalizedPath = fieldPath.replace(/\[\d+\]/g, '');
+  const normalizedPath = normalizeKeyPath(fieldPath);
 
   // Check exact match, or a password field as a suffix of the current path
   // e.g., if schema has "consumerSecret" and path is "test.consumerSecret"
@@ -170,15 +176,41 @@ function isPasswordField(fieldPath: string, passwordFields: Set<string>): boolea
  * @param schema JSON schema to check for password type fields
  * @returns Masked value safe for logging
  */
-export function maskSensitiveValues(value: unknown, keyPath = '', schema?: unknown): unknown {
+export function maskSensitiveValues(
+  value: unknown,
+  keyPath = '',
+  schema?: unknown,
+  maskedPaths: string[] = [],
+): unknown {
   // Extract password fields from schema once, up front, instead of on every recursive call
   const passwordFields = schema ? extractPasswordFields(schema) : new Set<string>();
-  return maskWithPasswordFields(value, keyPath, passwordFields);
+  return maskWithPasswordFields(value, keyPath, passwordFields, maskedPaths);
 }
 
-function maskWithPasswordFields(value: unknown, keyPath: string, passwordFields: Set<string>): unknown {
+/**
+ * True when the value at keyPath is, or is inside, one of the masked paths.
+ * Masked paths use dots between keys and no array indices (e.g. 'portals.adminUser'); '' masks everything.
+ */
+function isMaskedPath(keyPath: string, maskedPaths: string[]): boolean {
+  const normalizedPath = normalizeKeyPath(keyPath);
+  return maskedPaths.some(
+    (maskedPath) => maskedPath === '' || normalizedPath === maskedPath || normalizedPath.startsWith(`${maskedPath}.`),
+  );
+}
+
+function maskWithPasswordFields(
+  value: unknown,
+  keyPath: string,
+  passwordFields: Set<string>,
+  maskedPaths: string[],
+): unknown {
   if (value === null || value === undefined) {
     return value;
+  }
+
+  // Values of the masked paths (e.g. resolved from environment variables) are masked whatever their type
+  if (typeof value !== 'object' && maskedPaths.length > 0 && isMaskedPath(keyPath, maskedPaths)) {
+    return '****';
   }
 
   // If it's a string and we're in a sensitive field context, mask it
@@ -189,7 +221,9 @@ function maskWithPasswordFields(value: unknown, keyPath: string, passwordFields:
   // If it's an object, recursively mask nested values
   if (typeof value === 'object') {
     if (Array.isArray(value)) {
-      return value.map((item, index) => maskWithPasswordFields(item, `${keyPath}[${index}]`, passwordFields));
+      return value.map((item, index) =>
+        maskWithPasswordFields(item, `${keyPath}[${index}]`, passwordFields, maskedPaths),
+      );
     } else {
       const masked: Record<string, unknown> = {};
       for (const [key, val] of Object.entries(value)) {
@@ -197,7 +231,7 @@ function maskWithPasswordFields(value: unknown, keyPath: string, passwordFields:
         if (isPasswordField(key, passwordFields) && typeof val === 'string' && val.length > 0) {
           masked[key] = '****';
         } else {
-          masked[key] = maskWithPasswordFields(val, currentPath, passwordFields);
+          masked[key] = maskWithPasswordFields(val, currentPath, passwordFields, maskedPaths);
         }
       }
       return masked;

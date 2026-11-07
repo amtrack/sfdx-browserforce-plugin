@@ -1,6 +1,5 @@
 ---
 to: src/plugins/<%= h.changeCase.paramCase(name) %>/index.ts
-sh: "npx prettier --write 'src/plugins/<%= h.changeCase.paramCase(name) %>/*' 'src/plugins/index.ts' && npm run generate:schema"
 ---
 <%
   const camelCase = h.changeCase.camelCase(name);
@@ -19,7 +18,7 @@ export const <%= camelCase %>Schema = z
       })
       .optional(),
   })
-  .meta({ id: '<%= camelCase %>', title: '<%= pascalCase %> Settings' });
+  .meta({ id: '<%= camelCase %>', title: '<%= pascalCase %> Settings', examples: [{ enabled: true }] });
 
 const BASE_PATH = '/partnerbt/loginAccessPolicies.apexp';
 

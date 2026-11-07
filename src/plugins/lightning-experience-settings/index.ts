@@ -18,6 +18,7 @@ export const lightningExperienceSettingsSchema = z
   .meta({
     id: 'lightningExperienceSettings',
     title: 'LightningExperienceSettings',
+    examples: [{ activeThemeName: 'Lightning' }],
   });
 
 const BASE_PATH = '/lightning/setup/ThemingAndBranding/home';

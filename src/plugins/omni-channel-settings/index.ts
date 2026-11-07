@@ -11,7 +11,12 @@ export const omniChannelSettingsSchema = z
       .describe('Route and track work based on changes to work status and ownership.')
       .optional(),
   })
-  .meta({ id: 'omniChannelSettings', title: 'Omni-Channel Settings' });
+  .meta({
+    id: 'omniChannelSettings',
+    title: 'Omni-Channel Settings',
+    examples: [{ enableStatusBasedCapacityModel: true }],
+    'x-prerequisites': ['Omni-Channel enabled'],
+  });
 
 const BASE_PATH = '/omnichannel/settings.apexp';
 

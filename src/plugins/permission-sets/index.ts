@@ -14,7 +14,14 @@ const permissionSetSchema = z
   })
   .meta({ id: 'permissionSet' });
 
-export const permissionSetsSchema = z.array(permissionSetSchema).default([]).meta({ title: 'Permission Sets' });
+export const permissionSetsSchema = z
+  .array(permissionSetSchema)
+  .default([])
+  .meta({
+    title: 'Permission Sets',
+    examples: [[{ permissionSetName: 'Support_Agent', servicePresenceStatuses: ['Available', 'Busy'] }]],
+    'x-prerequisites': ['Omni-Channel enabled'],
+  });
 
 type PermissionSet = {
   permissionSetName: string;

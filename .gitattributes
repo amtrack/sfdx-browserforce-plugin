@@ -1,3 +1,5 @@
 * text=auto
 *.js text eol=lf
 *.ts text eol=lf
+# oclif readme only finds its <!-- commandsstop --> marker with LF line endings
+*.md text eol=lf

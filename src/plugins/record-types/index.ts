@@ -20,7 +20,11 @@ export const recordTypesSchema = z
       })
       .describe('Delete inactive record types'),
   })
-  .meta({ id: 'recordTypes', title: 'RecordTypes' });
+  .meta({
+    id: 'recordTypes',
+    title: 'RecordTypes',
+    examples: [{ deletions: [{ fullName: 'Account.MyOldRecordType', replacement: 'Account.MyRecordType' }] }],
+  });
 
 type RecordTypesConfig = z.infer<typeof recordTypesSchema>;
 

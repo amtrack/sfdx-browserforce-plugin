@@ -13,6 +13,8 @@ export const highVelocitySalesSettingsSchema = z
   .meta({
     id: 'highVelocitySalesSettings',
     title: 'HighVelocitySalesSettings',
+    examples: [{ setUpAndEnable: true }],
+    'x-prerequisites': ['High Velocity Sales license (scratch org feature HighVelocitySales)'],
   });
 
 const MSG_NOT_AVAILABLE = `HighVelocitySales is not available in this organization.

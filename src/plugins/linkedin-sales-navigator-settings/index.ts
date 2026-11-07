@@ -6,7 +6,11 @@ export const linkedInSalesNavigatorSettingsSchema = z
   .object({
     enabled: z.boolean().meta({ title: 'Enable LinkedIn Sales Navigator Integration' }).optional(),
   })
-  .meta({ id: 'linkedInSalesNavigatorSettings', title: 'LinkedIn Sales Navigator Settings' });
+  .meta({
+    id: 'linkedInSalesNavigatorSettings',
+    title: 'LinkedIn Sales Navigator Settings',
+    examples: [{ enabled: true }, { enabled: false }],
+  });
 
 export type LinkedInSalesNavigatorSettingsConfig = z.infer<typeof linkedInSalesNavigatorSettingsSchema>;
 

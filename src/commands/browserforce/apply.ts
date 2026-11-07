@@ -1,13 +1,6 @@
-import { z } from 'zod';
 import { BrowserforceCommand } from '../../browserforce-command.js';
-import { schemas } from '../../plugins/index.js';
+import { getPluginJsonSchema } from '../../plugin-catalog.js';
 import { maskSensitiveValues } from '../../plugins/utils.js';
-
-// Convert a plugin's zod schema to a JSON schema for password-field detection
-function toJsonSchema(key: string): unknown | undefined {
-  const pluginSchema = schemas[key as keyof typeof schemas];
-  return pluginSchema ? z.toJSONSchema(pluginSchema, { target: 'draft-7', io: 'input' }) : undefined;
-}
 
 type BrowserforceApplyResponse = {
   success: boolean;
@@ -44,8 +37,13 @@ export class BrowserforceApply extends BrowserforceCommand<BrowserforceApplyResp
       const diff = instance.diff(state, setting.value);
       const action = flags['dry-run'] ? 'would change' : 'changing';
       if (diff !== undefined) {
-        // Mask sensitive values before logging (using schema if available)
-        const maskedDiff = maskSensitiveValues(diff, '', toJsonSchema(setting.key)) as typeof diff;
+        // Mask secrets (x-password fields) and values resolved from environment variables before logging
+        const maskedDiff = maskSensitiveValues(
+          diff,
+          '',
+          getPluginJsonSchema(setting.key),
+          this.envReferencePaths.get(setting.key),
+        ) as typeof diff;
         this.spinner.start(
           `[${driver.name}] ${Object.keys(maskedDiff)
             .map((key) => {

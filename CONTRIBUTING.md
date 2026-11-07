@@ -112,7 +112,11 @@ export const adminsCanLogInAsAnyUserSchema = z
       })
       .optional(),
   })
-  .meta({ id: 'adminsCanLogInAsAnyUser', title: 'Administrators Can Log in as Any User Settings' });
+  .meta({
+    id: 'adminsCanLogInAsAnyUser',
+    title: 'Administrators Can Log in as Any User Settings',
+    examples: [{ enabled: true }],
+  });
 ```
 
 **config/setup-admin-login-as-any.json**
@@ -138,6 +142,18 @@ committed file differs from the generated one.
 If your plugin has a secret configuration field (e.g. an API key or password), wrap it with the `password()`
 helper exported from `src/plugins/utils.ts`, e.g. `consumerSecret: password(z.string()).optional()`. Its value is
 then masked in `browserforce apply` output.
+
+`sf browserforce plugins list` describes every plugin to tools that build Browserforce configurations (like
+sfdx-hardis deployment actions), from the JSON Schema of the plugin. Besides `title` and `description`, add these
+keys to `.meta()`:
+
+- `examples` (on the plugin schema): at least one ready-to-use value of `settings.<key>`. Unit tests validate them
+  against the schema. Unlike the JSON files of the plugin folder, they are shown to users, so keep test fixtures out
+  of them.
+- `'x-irreversible': true` (on a field): the value cannot be changed back once applied (e.g. a feature that cannot be
+  disabled). Explain it in the field's description.
+- `'x-user-interface': 'classic'` (on the plugin schema): the feature only exists in Salesforce Classic.
+- `'x-prerequisites'` (on the plugin schema): what the org needs first (managed package, license, feature).
 
 #### Implementation (`index.ts`)
 

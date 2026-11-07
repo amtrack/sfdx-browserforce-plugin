@@ -44,6 +44,19 @@ export const historyTrackingSchema = z
   .default([])
   .meta({
     title: 'History Tracking',
+    examples: [
+      [
+        {
+          objectApiName: 'Account',
+          enableHistoryTracking: true,
+          fieldHistoryTracking: [
+            { fieldApiName: 'Industry', enableHistoryTracking: true },
+            { fieldApiName: 'Rating', enableHistoryTracking: true },
+          ],
+        },
+      ],
+    ],
+    'x-prerequisites': ['Person Accounts enabled, to track Person Account fields'],
   })
   .describe(
     'This feature specifically closes a gap where you cannot enable field history tracking for custom Person Account fields via the Metadata API.',

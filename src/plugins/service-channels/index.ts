@@ -14,7 +14,21 @@ const serviceChannelSchema = z
   })
   .meta({ id: 'serviceChannel' });
 
-export const serviceChannelsSchema = z.array(serviceChannelSchema).default([]).meta({ title: 'Service Channels' });
+export const serviceChannelsSchema = z
+  .array(serviceChannelSchema)
+  .default([])
+  .meta({
+    title: 'Service Channels',
+    examples: [
+      [
+        {
+          serviceChannelDeveloperName: 'Case',
+          capacity: { capacityModel: 'StatusBased', statusField: 'Case.Status', valuesForInProgress: ['Working'] },
+        },
+      ],
+    ],
+    'x-prerequisites': ['Omni-Channel enabled, with the status-based capacity model (omniChannelSettings)'],
+  });
 
 type ServiceChannel = {
   serviceChannelDeveloperName: string;

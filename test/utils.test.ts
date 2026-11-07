@@ -155,6 +155,52 @@ describe('maskSensitiveValues', () => {
     const result = maskSensitiveValues({ apiToken: 'shh' }, '', schema) as { apiToken: string };
     assert.strictEqual(result.apiToken, 'shh');
   });
+
+  it('should mask the values of the masked paths whatever their type, in every array item', async () => {
+    const result = maskSensitiveValues(
+      {
+        enabled: true,
+        portals: [
+          { name: 'a', adminUser: 'u1' },
+          { name: 'b', adminUser: 'u2' },
+        ],
+        keysize: 2048,
+      },
+      '',
+      undefined,
+      ['enabled', 'portals.adminUser', 'keysize'],
+    );
+    assert.deepStrictEqual(result, {
+      enabled: '****',
+      portals: [
+        { name: 'a', adminUser: '****' },
+        { name: 'b', adminUser: '****' },
+      ],
+      keysize: '****',
+    });
+  });
+
+  it('should mask everything below a masked path, and everything for an empty path', async () => {
+    assert.deepStrictEqual(
+      maskSensitiveValues({ documents: { a: 'x', b: false }, c: 'y' }, '', undefined, ['documents']),
+      {
+        documents: { a: '****', b: '****' },
+        c: 'y',
+      },
+    );
+    assert.deepStrictEqual(maskSensitiveValues([{ objectApiName: 'Account' }], '', undefined, ['']), [
+      { objectApiName: '****' },
+    ]);
+  });
+
+  it('should mask a field of a setting that is an array', async () => {
+    assert.deepStrictEqual(
+      maskSensitiveValues([{ objectApiName: 'Account', enableHistoryTracking: true }], '', undefined, [
+        'enableHistoryTracking',
+      ]),
+      [{ objectApiName: 'Account', enableHistoryTracking: '****' }],
+    );
+  });
 });
 
 describe('password', () => {

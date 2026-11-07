@@ -64,6 +64,34 @@ $ sf browserforce apply -f ./config/currency.json --target-org myOrg@example.com
   logging out... done
 ```
 
+## Environment variables in config files
+
+A value written exactly as `"${VARIABLE_NAME}"` is read from the environment variable `VARIABLE_NAME` when running `sf browserforce apply`. Use it to keep secrets out of config files, for example in a CI pipeline:
+
+```json
+{
+  "settings": {
+    "authProviders": {
+      "MyAuthProvider": {
+        "consumerKey": "my-consumer-key",
+        "consumerSecret": "${MY_AUTH_PROVIDER_SECRET}"
+      }
+    }
+  }
+}
+```
+
+- The value is converted to the type the setting expects: `true`/`false` for a checkbox, a number, or JSON for a list or an object.
+- A variable that is not set, or empty, stops the command before logging in, naming the setting and the variable.
+- Values coming from environment variables are shown as `****` in the output.
+- Only a value that is exactly `${NAME}` is replaced: `"prefix-${NAME}"` stays as written.
+- To keep the literal text `${NAME}` as a value, write `$${NAME}`.
+
+## Describe and validate settings without an org
+
+- `sf browserforce plugins list --json` describes every setting: its JSON Schema, its fields, examples, and warnings (irreversible changes, Classic-only features, org prerequisites). Tools building Browserforce configurations, like [sfdx-hardis](https://sfdx-hardis.cloudity.com/) deployment actions, read it.
+- `sf browserforce plugins validate -f ./config/currency.json` checks a config file and reports each error with its path. Environment variable references are accepted and listed.
+
 ## Key Concepts
 
 - 🔧 configuration using JSON Schema (similar to the [Scratch Org Definition Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_scratch_orgs_def_file.htm))
@@ -128,6 +156,8 @@ CHROME_BIN="/usr/bin/google-chrome"
 <!-- commands -->
 * [`sf browserforce apply`](#sf-browserforce-apply)
 * [`sf browserforce playwright`](#sf-browserforce-playwright)
+* [`sf browserforce plugins list`](#sf-browserforce-plugins-list)
+* [`sf browserforce plugins validate`](#sf-browserforce-plugins-validate)
 
 ## `sf browserforce apply`
 
@@ -219,6 +249,75 @@ EXAMPLES
 ```
 
 _See code: [src/commands/browserforce/playwright.ts](https://github.com/amtrack/sfdx-browserforce-plugin/blob/main/src/commands/browserforce/playwright.ts)_
+
+## `sf browserforce plugins list`
+
+list the settings Browserforce can apply
+
+```
+USAGE
+  $ sf browserforce plugins list [--json] [--flags-dir <value>]
+
+GLOBAL FLAGS
+  --flags-dir=<value>  Import flag values from a directory.
+  --json               Format output as json.
+
+DESCRIPTION
+  list the settings Browserforce can apply
+
+  Describe every setting (plugin) that can be used under "settings" in a Browserforce config file, without connecting to
+  an org.
+
+  With --json, each setting comes with its JSON Schema, a flat list of its fields ready to be prompted, examples, and
+  warnings (irreversible changes, Classic-only features, org prerequisites). The settings that have been removed are
+  listed with their migration instructions.
+
+  This output is meant for tools building Browserforce configurations, like sfdx-hardis deployment actions. Its
+  "formatVersion" only changes when a field is removed or renamed.
+
+EXAMPLES
+  $ sf browserforce plugins list
+
+  $ sf browserforce plugins list --json
+```
+
+_See code: [src/commands/browserforce/plugins/list.ts](https://github.com/amtrack/sfdx-browserforce-plugin/blob/main/src/commands/browserforce/plugins/list.ts)_
+
+## `sf browserforce plugins validate`
+
+validate a Browserforce config without connecting to an org
+
+```
+USAGE
+  $ sf browserforce plugins validate [--json] [--flags-dir <value>] [-f <value>] [--config <value>]
+
+FLAGS
+  -f, --definitionfile=<value>  path to a browserforce config file
+      --config=<value>          browserforce config as a JSON string
+
+GLOBAL FLAGS
+  --flags-dir=<value>  Import flag values from a directory.
+  --json               Format output as json.
+
+DESCRIPTION
+  validate a Browserforce config without connecting to an org
+
+  Check a config file, or inline JSON, against the schemas of all settings and report every error with its path. Removed
+  settings are reported with their migration instructions.
+
+  Values written as "${VAR}" are accepted in place of any value: they are environment variable references that
+  "browserforce apply" resolves and checks before logging in. They are listed in the result. Write "${VAR}" to keep the
+  literal text "${VAR}".
+
+  The command exits with code 1 when the config is invalid; with --json, the result still lists the errors.
+
+EXAMPLES
+  $ sf browserforce plugins validate -f ./config/currency.json
+
+  $ sf browserforce plugins validate --config '{"settings":{"densitySettings":{"density":"Compact"}}}' --json
+```
+
+_See code: [src/commands/browserforce/plugins/validate.ts](https://github.com/amtrack/sfdx-browserforce-plugin/blob/main/src/commands/browserforce/plugins/validate.ts)_
 <!-- commandsstop -->
 
 ## Playwright

@@ -21,6 +21,7 @@ export const authProvidersSchema = z
   .meta({
     id: 'authProviders',
     title: 'Auth Providers',
+    examples: [{ MyAuthProvider: { consumerKey: 'my-consumer-key', consumerSecret: '${MY_AUTH_PROVIDER_SECRET}' } }],
   });
 
 const CONSUMER_SECRET_SELECTOR = '#ConsumerSecret';

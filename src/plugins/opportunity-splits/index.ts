@@ -15,7 +15,11 @@ export const opportunitySplitsSchema = z
       )
       .optional(),
   })
-  .meta({ id: 'opportunitySplits', title: 'OpportunitySplits Settings' });
+  .meta({
+    id: 'opportunitySplits',
+    title: 'OpportunitySplits Settings',
+    examples: [{ enabled: true }, { enabled: false }],
+  });
 
 export type OpportunitySplitsConfig = z.infer<typeof opportunitySplitsSchema>;
 

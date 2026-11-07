@@ -23,7 +23,12 @@ export const userAccessPoliciesSchema = z
       })
       .describe('List of user access policies to activate or deactivate'),
   })
-  .meta({ id: 'userAccessPolicies', title: 'User Access Policies' });
+  .meta({
+    id: 'userAccessPolicies',
+    title: 'User Access Policies',
+    examples: [{ accessPolicies: [{ apiName: 'Grant_Permissions', active: true, on: 'Create' }] }],
+    'x-prerequisites': ['User Access Policies enabled (User Management Settings)'],
+  });
 
 type PolicyTriggerType = 'Create' | 'Update' | 'CreateAndUpdate';
 

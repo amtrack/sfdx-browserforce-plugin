@@ -9,7 +9,11 @@ export const emailDeliverabilitySchema = z
       .describe('Choose the email Deliverability Access Level required')
       .optional(),
   })
-  .meta({ id: 'emailDeliverability', title: 'Email Deliverability Settings' });
+  .meta({
+    id: 'emailDeliverability',
+    title: 'Email Deliverability Settings',
+    examples: [{ accessLevel: 'All email' }, { accessLevel: 'System email only' }, { accessLevel: 'No access' }],
+  });
 
 const BASE_PATH = '/email-admin/editOrgEmailSettings.apexp';
 
