@@ -21,6 +21,7 @@ describe(UserAccessPolicies.name, function () {
   const configDeactivate = readJsonFile('./deactivate.json').settings.userAccessPolicies;
   const multiConfig = readJsonFile('./multiple-policies.json').settings.userAccessPolicies;
   const changeTriggerConfig = readJsonFile('./change-trigger-type.json').settings.userAccessPolicies;
+  const applyToAllConfig = readJsonFile('./apply-to-all.json').settings.userAccessPolicies;
 
   it('should deploy a CustomObject for testing', () => {
     const sourceDeployCmd = child.spawnSync('sf', [
@@ -67,6 +68,15 @@ describe(UserAccessPolicies.name, function () {
 
   it('should already be activated with the new trigger type', async () => {
     const res = await plugin.run(changeTriggerConfig);
+    assert.deepStrictEqual(res, { message: 'no action necessary' });
+  });
+
+  it('should apply the policy to all users', async () => {
+    await plugin.run(applyToAllConfig);
+  });
+
+  it('should already have applied the policy to all users', async () => {
+    const res = await plugin.run(applyToAllConfig);
     assert.deepStrictEqual(res, { message: 'no action necessary' });
   });
 });

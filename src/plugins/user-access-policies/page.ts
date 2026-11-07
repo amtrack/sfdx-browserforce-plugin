@@ -1,5 +1,6 @@
 import type { Page } from 'playwright';
 import type { SalesforceUrlPath } from '../../browserforce.js';
+import { waitForPageErrors } from '../../page-errors.js';
 
 export class UserAccessPoliciesPage {
   private page: Page;
@@ -10,6 +11,32 @@ export class UserAccessPoliciesPage {
 
   public static getPolicyUrl(policyId: string): SalesforceUrlPath {
     return `/lightning/setup/UserAccessPolicies/${policyId}/view`;
+  }
+
+  /**
+   * Classic page listing the users of a policy, with its Apply To All button
+   */
+  public static getApplyToAllUrl(policyId: string): SalesforceUrlPath {
+    return `/005?id=${policyId.substring(0, 15)}&isUserEntityOverride=1`;
+  }
+
+  /**
+   * Click Apply To All on the page of getApplyToAllUrl()
+   */
+  public async applyToAll(): Promise<void> {
+    // Apply To All asks no confirmation today: accept one if Salesforce adds it
+    this.page.on('dialog', (dialog) => dialog.accept().catch(() => undefined));
+    // the id stays the same whatever the language of the user
+    const applyButton = this.page.locator('#apply_policy_btn');
+    // The page usually reloads after the click, but the proof that Salesforce ran the policy is the
+    // UserAccessChange row the plugin waits for next: a page that does not reload is not a failure
+    await Promise.all([
+      Promise.race([
+        waitForPageErrors(this.page),
+        this.page.waitForEvent('load', { timeout: 30_000 }).catch(() => undefined),
+      ]),
+      applyButton.click(),
+    ]);
   }
 
   /**
