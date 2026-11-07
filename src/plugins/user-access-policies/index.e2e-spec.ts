@@ -75,8 +75,9 @@ describe(UserAccessPolicies.name, function () {
     await plugin.run(applyToAllConfig);
   });
 
-  it('should already have applied the policy to all users', async () => {
+  it('should apply the policy to all users again at each run', async () => {
+    // Apply To All is an action, not a state: Salesforce keeps nothing that tells it already ran
     const res = await plugin.run(applyToAllConfig);
-    assert.deepStrictEqual(res, { message: 'no action necessary' });
+    assert.notDeepStrictEqual(res, { message: 'no action necessary' });
   });
 });

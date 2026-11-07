@@ -25,7 +25,7 @@ const accessPolicySchema = z
         'x-irreversible': true,
       })
       .describe(
-        'Run Apply To All once the policy is set: assigns its access to every user matching its criteria. It runs again when the policy changed after its last run. A run cannot be undone.',
+        'Run Apply To All once the policy is set: assigns its access to every user matching its criteria. Runs Apply To All at each apply: Salesforce keeps no state that tells it already ran. A run cannot be undone.',
       )
       .optional(),
   })
@@ -58,7 +58,7 @@ const DEFAULT_TRIGGER_TYPE: PolicyTriggerType = 'CreateAndUpdate';
 
 // Salesforce writes a UserAccessChange row once Apply To All has run for the users
 const APPLY_TO_ALL_POLL_INTERVAL_MS = 10_000;
-const APPLY_TO_ALL_TIMEOUT_MINUTES = 5;
+const APPLY_TO_ALL_TIMEOUT_MINUTES = 2;
 
 type AccessPolicy = z.infer<typeof accessPolicySchema>;
 
@@ -67,7 +67,6 @@ type PolicyRecord = {
   DeveloperName: string;
   Status: string;
   TriggerType: string | null;
-  LastModifiedDate: string;
 };
 
 export type UserAccessPoliciesConfig = z.infer<typeof userAccessPoliciesSchema>;
@@ -85,7 +84,7 @@ export class UserAccessPolicies extends BrowserforcePlugin {
     const policyRecords = await this.queryPolicies(definition.accessPolicies.map((policy) => policy.apiName));
 
     for (const policy of definition.accessPolicies) {
-      response.accessPolicies.push(await this.retrievePolicy(policy, policyRecords.get(policy.apiName)));
+      response.accessPolicies.push(this.retrievePolicy(policy, policyRecords.get(policy.apiName)));
     }
 
     return response;
@@ -94,7 +93,7 @@ export class UserAccessPolicies extends BrowserforcePlugin {
   /**
    * Compares only what each policy asks for:
    * - its status (active, on) only when active is set,
-   * - Apply To All only when it is true and has not run since the policy last changed.
+   * - Apply To All every time it is true: Salesforce keeps no state that tells it already ran.
    *   false never produces a change: a run cannot be undone.
    * @returns undefined when there is no change
    */
@@ -148,7 +147,7 @@ export class UserAccessPolicies extends BrowserforcePlugin {
 
   private async queryPolicies(policyApiNames: string[]): Promise<Map<string, PolicyRecord>> {
     const quotedNames = policyApiNames.map((name) => `'${name}'`);
-    const query = `SELECT Id, DeveloperName, Status, TriggerType, LastModifiedDate FROM UserAccessPolicy WHERE DeveloperName IN (${quotedNames.join(
+    const query = `SELECT Id, DeveloperName, Status, TriggerType FROM UserAccessPolicy WHERE DeveloperName IN (${quotedNames.join(
       ',',
     )})`;
 
@@ -157,7 +156,7 @@ export class UserAccessPolicies extends BrowserforcePlugin {
     return new Map(queryResult.records.map((record) => [record.DeveloperName, record]));
   }
 
-  private async retrievePolicy(policy: AccessPolicy, record: PolicyRecord | undefined): Promise<AccessPolicy> {
+  private retrievePolicy(policy: AccessPolicy, record: PolicyRecord | undefined): AccessPolicy {
     const retrievedPolicy: AccessPolicy = {
       apiName: policy.apiName,
     };
@@ -171,36 +170,9 @@ export class UserAccessPolicies extends BrowserforcePlugin {
       }
     }
 
-    if (policy.applyToAll === true) {
-      retrievedPolicy.applyToAll = record ? await this.isAppliedToAll(record) : false;
-    }
+    // applyToAll is left out: Apply To All is an action, not a state, so diff() plans it at each apply
 
     return retrievedPolicy;
-  }
-
-  /**
-   * Apply To All ran after the last change of the policy
-   */
-  private async isAppliedToAll(record: PolicyRecord): Promise<boolean> {
-    let lastRunDate: string | null;
-    try {
-      lastRunDate = await this.queryLastApplyToAllDate(record.Id);
-    } catch {
-      // UserAccessChange is not available in this org
-      return false;
-    }
-    return lastRunDate !== null && Date.parse(lastRunDate) >= Date.parse(record.LastModifiedDate);
-  }
-
-  /**
-   * @returns the CreatedDate of the latest UserAccessChange row of the policy, or null when there is none
-   */
-  private async queryLastApplyToAllDate(policyId: string): Promise<string | null> {
-    const ids = [policyId.substring(0, 15), policyId].map((id) => `'${id}'`).join(',');
-    const result = await this.browserforce.connection.query<{ CreatedDate: string }>(
-      `SELECT CreatedDate FROM UserAccessChange WHERE Source IN (${ids}) ORDER BY CreatedDate DESC LIMIT 1`,
-    );
-    return result.records[0]?.CreatedDate ?? null;
   }
 
   private needsStatusChange(desired: AccessPolicy, current: AccessPolicy | undefined): boolean {
@@ -270,26 +242,62 @@ export class UserAccessPolicies extends BrowserforcePlugin {
   }
 
   /**
-   * Clicks Apply To All, then waits until Salesforce records the run in UserAccessChange
+   * Clicks Apply To All, then waits until Salesforce records the run in UserAccessChange.
+   * A policy that matches no user records nothing, so a missing row only gives a warning.
    */
   private async applyToAllUsers(apiName: string, policyId: string): Promise<void> {
-    const previousRunDate = await this.queryLastApplyToAllDate(policyId);
+    let previousRunDate: string | null = null;
+    let canConfirm = true;
+    try {
+      previousRunDate = await this.queryLastApplyToAllDate(policyId);
+    } catch (error) {
+      canConfirm = false;
+      this.warnUnconfirmedApplyToAll(apiName, error);
+    }
     await this.clickApplyToAll(policyId);
+    if (!canConfirm) {
+      return;
+    }
     const deadline = Date.now() + APPLY_TO_ALL_TIMEOUT_MINUTES * 60_000;
     while (Date.now() < deadline) {
-      const lastRunDate = await this.queryLastApplyToAllDate(policyId);
+      let lastRunDate: string | null;
+      try {
+        lastRunDate = await this.queryLastApplyToAllDate(policyId);
+      } catch (error) {
+        // the click already happened: a failing check must not fail the apply
+        this.warnUnconfirmedApplyToAll(apiName, error);
+        return;
+      }
       if (lastRunDate !== null && (previousRunDate === null || Date.parse(lastRunDate) > Date.parse(previousRunDate))) {
         return;
       }
       await sleep(APPLY_TO_ALL_POLL_INTERVAL_MS);
     }
-    throw new Error(
-      `Salesforce did not record the Apply To All of ${apiName} within ${APPLY_TO_ALL_TIMEOUT_MINUTES} minutes`,
+    this.browserforce.logger?.warn(
+      `Salesforce recorded no access change for ${apiName} within ${APPLY_TO_ALL_TIMEOUT_MINUTES} minutes: the policy may match no user`,
     );
   }
 
   private async clickApplyToAll(policyId: string): Promise<void> {
     await using page = await this.browserforce.openPage(UserAccessPoliciesPage.getApplyToAllUrl(policyId));
     await new UserAccessPoliciesPage(page).applyToAll();
+  }
+
+  /**
+   * @returns the CreatedDate of the latest UserAccessChange row of the policy, or null when there is none
+   */
+  private async queryLastApplyToAllDate(policyId: string): Promise<string | null> {
+    const ids = [policyId.substring(0, 15), policyId].map((id) => `'${id}'`).join(',');
+    const result = await this.browserforce.connection.query<{ CreatedDate: string }>(
+      `SELECT CreatedDate FROM UserAccessChange WHERE Source IN (${ids}) ORDER BY CreatedDate DESC LIMIT 1`,
+    );
+    return result.records[0]?.CreatedDate ?? null;
+  }
+
+  private warnUnconfirmedApplyToAll(apiName: string, error: unknown): void {
+    const message = error instanceof Error ? error.message : String(error);
+    this.browserforce.logger?.warn(
+      `Apply To All of ${apiName} was clicked but could not be confirmed: querying UserAccessChange failed (${message})`,
+    );
   }
 }

@@ -1681,7 +1681,7 @@
           "type": "boolean",
           "title": "Apply To All",
           "x-irreversible": true,
-          "description": "Run Apply To All once the policy is set: assigns its access to every user matching its criteria. It runs again when the policy changed after its last run. A run cannot be undone."
+          "description": "Run Apply To All once the policy is set: assigns its access to every user matching its criteria. Runs Apply To All at each apply: Salesforce keeps no state that tells it already ran. A run cannot be undone."
         }
       },
       "required": ["apiName"]

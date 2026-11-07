@@ -1,6 +1,6 @@
 import type { Page } from 'playwright';
 import type { SalesforceUrlPath } from '../../browserforce.js';
-import { waitForPageErrors } from '../../page-errors.js';
+import { throwPageErrors, waitForPageErrors } from '../../page-errors.js';
 
 export class UserAccessPoliciesPage {
   private page: Page;
@@ -37,6 +37,8 @@ export class UserAccessPoliciesPage {
       ]),
       applyButton.click(),
     ]);
+    // the race resolves on load: an error shown by the reloaded page is only seen by checking again
+    await throwPageErrors(this.page);
   }
 
   /**

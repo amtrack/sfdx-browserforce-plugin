@@ -8,16 +8,16 @@ const tests: {
   expected: UserAccessPoliciesConfig | undefined;
 }[] = [
   {
-    description: 'should run Apply To All when it has not run since the policy changed',
-    state: { accessPolicies: [{ apiName: 'Grant_Permissions', applyToAll: false }] },
+    description: 'should run Apply To All when it is true',
+    state: { accessPolicies: [{ apiName: 'Grant_Permissions' }] },
     definition: { accessPolicies: [{ apiName: 'Grant_Permissions', applyToAll: true }] },
     expected: { accessPolicies: [{ apiName: 'Grant_Permissions', applyToAll: true }] },
   },
   {
-    description: 'should not run Apply To All again when it ran since the policy changed',
-    state: { accessPolicies: [{ apiName: 'Grant_Permissions', active: true, applyToAll: true }] },
+    description: 'should run Apply To All again at each apply, even when the status is already right',
+    state: { accessPolicies: [{ apiName: 'Grant_Permissions', active: true }] },
     definition: { accessPolicies: [{ apiName: 'Grant_Permissions', active: true, applyToAll: true }] },
-    expected: undefined,
+    expected: { accessPolicies: [{ apiName: 'Grant_Permissions', applyToAll: true }] },
   },
   {
     description: 'should never produce a change for applyToAll false',
@@ -33,21 +33,21 @@ const tests: {
   },
   {
     description: 'should run only Apply To All when active is left out',
-    state: { accessPolicies: [{ apiName: 'Grant_Permissions', applyToAll: false }] },
+    state: { accessPolicies: [{ apiName: 'Grant_Permissions' }] },
     definition: { accessPolicies: [{ apiName: 'Grant_Permissions', on: 'Create', applyToAll: true }] },
     expected: { accessPolicies: [{ apiName: 'Grant_Permissions', applyToAll: true }] },
   },
   {
     description: 'should activate then run Apply To All',
-    state: { accessPolicies: [{ apiName: 'Grant_Permissions', active: false, applyToAll: false }] },
+    state: { accessPolicies: [{ apiName: 'Grant_Permissions', active: false }] },
     definition: { accessPolicies: [{ apiName: 'Grant_Permissions', active: true, on: 'Create', applyToAll: true }] },
     expected: { accessPolicies: [{ apiName: 'Grant_Permissions', active: true, on: 'Create', applyToAll: true }] },
   },
   {
-    description: 'should change the status without Apply To All when it already ran',
-    state: { accessPolicies: [{ apiName: 'Grant_Permissions', active: true, on: 'Update', applyToAll: true }] },
+    description: 'should change the trigger type then run Apply To All',
+    state: { accessPolicies: [{ apiName: 'Grant_Permissions', active: true, on: 'Update' }] },
     definition: { accessPolicies: [{ apiName: 'Grant_Permissions', active: true, on: 'Create', applyToAll: true }] },
-    expected: { accessPolicies: [{ apiName: 'Grant_Permissions', active: true, on: 'Create' }] },
+    expected: { accessPolicies: [{ apiName: 'Grant_Permissions', active: true, on: 'Create', applyToAll: true }] },
   },
   {
     description: 'should deactivate a policy',
