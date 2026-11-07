@@ -196,7 +196,7 @@ FLAG DESCRIPTIONS
     The trace file can be viewed with "sf browserforce playwright -- show-trace trace-<date>.zip".
 ```
 
-_See code: [src/commands/browserforce/apply.ts](https://github.com/amtrack/sfdx-browserforce-plugin/blob/v0.0.0-development/src/commands/browserforce/apply.ts)_
+_See code: [src/commands/browserforce/apply.ts](https://github.com/amtrack/sfdx-browserforce-plugin/blob/main/src/commands/browserforce/apply.ts)_
 
 ## `sf browserforce playwright`
 
@@ -219,7 +219,7 @@ EXAMPLES
   $ sf browserforce playwright -- install chromium
 ```
 
-_See code: [src/commands/browserforce/playwright.ts](https://github.com/amtrack/sfdx-browserforce-plugin/blob/v0.0.0-development/src/commands/browserforce/playwright.ts)_
+_See code: [src/commands/browserforce/playwright.ts](https://github.com/amtrack/sfdx-browserforce-plugin/blob/main/src/commands/browserforce/playwright.ts)_
 <!-- commandsstop -->
 
 ## Playwright

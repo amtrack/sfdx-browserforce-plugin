@@ -4,13 +4,15 @@ on:
   push:
     branches:
       - main
-      - next
   pull_request:
     branches:
       - main
   workflow_dispatch:
   schedule:
     - cron: "0 4 * * 5" # every Friday 04:00
+
+permissions:
+  contents: read
 
 env:
   CPQ: ${{ vars.CPQ }}
@@ -58,23 +60,26 @@ jobs:
           retention-days: 14
   release:
     needs: test
-    if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/next' }}
+    if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     permissions:
-      contents: write
-      issues: write
-      pull-requests: write
+      contents: read
       id-token: write
     steps:
+      - uses: googleapis/release-please-action@v5
+        id: rp
+        with:
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
       - uses: actions/checkout@v7
+        if: ${{ steps.rp.outputs.release_created }}
+        with:
+          ref: ${{ steps.rp.outputs.tag_name }}
       - uses: actions/setup-node@v7
+        if: ${{ steps.rp.outputs.release_created }}
         with:
           node-version-file: .node-version
-      - name: Install dependencies
-        run: npm ci --ignore-scripts
-      - name: Release package
+      - name: Stage package on npm (approve on npmjs.com)
+        if: ${{ steps.rp.outputs.release_created }}
         run: |
-          npm install --ignore-scripts --global semantic-release
-          semantic-release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          npm ci --ignore-scripts
+          npm stage publish

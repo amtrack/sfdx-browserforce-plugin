@@ -1,6 +1,6 @@
 {
   "name": "sfdx-browserforce-plugin",
-  "version": "0.0.0-development",
+  "version": "6.5.0",
   "description": "sfdx plugin for browser automation",
   "author": "Matthias Rolke <mr.amtrack@gmail.com>",
   "type": "module",
@@ -37,6 +37,7 @@
     "bin": "sf",
     "topicSeparator": " ",
     "commands": "./lib/commands",
+    "repositoryPrefix": "<%- repo %>/blob/main/<%- commandPath %>",
     "topics": {
       "browserforce": {
         "description": "browser automation for Salesforce setup pages"
