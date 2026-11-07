@@ -157,13 +157,6 @@
             }
           ]
         },
-        "salesforceToSalesforce": {
-          "allOf": [
-            {
-              "$ref": "#/definitions/salesforceToSalesforce"
-            }
-          ]
-        },
         "security": {
           "allOf": [
             {
@@ -1153,17 +1146,6 @@
         }
       },
       "title": "SalesforceCpqConfig Settings"
-    },
-    "salesforceToSalesforce": {
-      "type": "object",
-      "properties": {
-        "enabled": {
-          "type": "boolean",
-          "title": "Enable Salesforce to Salesforce",
-          "description": "Warning: cannot be disabled once enabled"
-        }
-      },
-      "title": "Salesforce to Salesforce Settings"
     },
     "security": {
       "type": "object",
