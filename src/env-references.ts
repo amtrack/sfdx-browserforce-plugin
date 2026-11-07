@@ -1,4 +1,4 @@
-import { type JsonSchema, type PathSegment, schemaAtPath, schemaType } from './json-schema-utils.js';
+import { type JsonSchema, type PathSegment, schemaAtPath, schemaType, toKeyPath } from './json-schema-utils.js';
 
 /** A config value that is exactly `${NAME}` references the environment variable NAME. */
 const ENV_REFERENCE_PATTERN = /^\$\{([A-Za-z_][A-Za-z0-9_]*)\}$/;
@@ -47,37 +47,73 @@ export function findEnvReferences(value: unknown, path: PathSegment[] = []): Env
 }
 
 /**
- * The path of a value as the output masking sees it, relative to the setting:
- * keys joined with dots, array indices dropped (e.g. ['customerPortal', 'portals', 0, 'adminUser'] -> 'portals.adminUser').
+ * The path of a value as the output masking sees it, relative to the setting: keys joined with dots, array indices
+ * dropped so the field is masked in every item (e.g. ['customerPortal', 'portals', 0, 'adminUser'] -> 'portals.adminUser'),
+ * except a last index, kept so only that item is masked (e.g. ['historyTracking', 0] -> '[0]').
  */
 export function toMaskingPath(path: PathSegment[]): string {
-  return path
-    .slice(1)
-    .filter((segment) => typeof segment === 'string')
-    .join('.');
+  const pathInSetting = path.slice(1);
+  const last = pathInSetting.at(-1);
+  const keyPath = toKeyPath(pathInSetting);
+  return typeof last === 'number' ? `${keyPath}[${last}]` : keyPath;
+}
+
+/** What the output masking hides for one setting. */
+export type EnvMasking = {
+  /** paths of the values resolved from environment variables, see toMaskingPath() */
+  paths: string[];
+  /** resolved values: the strings, and the string leaves of JSON values, masked wherever the output shows them */
+  values: string[];
+};
+
+/**
+ * Per setting key, the paths and the values to mask in the output.
+ * @param resolved the result of resolveEnvReferences()
+ */
+export function buildEnvMasking(resolved: ResolvedEnvReferences): Map<string, EnvMasking> {
+  const masking = new Map<string, EnvMasking>();
+  for (const reference of resolved.references) {
+    const settingKey = String(reference.path[0]);
+    const entry = masking.get(settingKey) ?? { paths: [], values: [] };
+    entry.paths.push(toMaskingPath(reference.path));
+    for (const value of collectStringLeaves(getValueAtPath(resolved.settings, reference.path))) {
+      if (!entry.values.includes(value)) {
+        entry.values.push(value);
+      }
+    }
+    masking.set(settingKey, entry);
+  }
+  return masking;
+}
+
+function collectStringLeaves(value: unknown): string[] {
+  if (typeof value === 'string') {
+    return value === '' ? [] : [value];
+  }
+  if (typeof value === 'object' && value !== null) {
+    return Object.values(value).flatMap(collectStringLeaves);
+  }
+  return [];
 }
 
 /** `$${NAME}` is the escaped form of a value that must stay the literal text `${NAME}`. */
 const ESCAPED_ENV_REFERENCE_PATTERN = /^\$(\$\{[A-Za-z_][A-Za-z0-9_]*\})$/;
 
 /**
- * Replaces every escaped reference `$${NAME}` with the literal text `${NAME}`.
- * Returns the same value (and the same nested objects) where nothing changes.
+ * Replaces in place every escaped reference `$${NAME}` with the literal text `${NAME}`.
  */
-function unescapeEnvReferences(value: unknown): unknown {
-  if (typeof value === 'string') {
-    return ESCAPED_ENV_REFERENCE_PATTERN.exec(value)?.[1] ?? value;
+function unescapeEnvReferences(container: object): void {
+  const record = container as Record<string, unknown>;
+  for (const [key, item] of Object.entries(record)) {
+    if (typeof item === 'string') {
+      const literal = ESCAPED_ENV_REFERENCE_PATTERN.exec(item)?.[1];
+      if (literal !== undefined) {
+        record[key] = literal;
+      }
+    } else if (typeof item === 'object' && item !== null) {
+      unescapeEnvReferences(item);
+    }
   }
-  if (Array.isArray(value)) {
-    const items = value.map(unescapeEnvReferences);
-    return items.some((item, index) => item !== value[index]) ? items : value;
-  }
-  if (typeof value === 'object' && value !== null) {
-    const entries = Object.entries(value).map(([key, item]) => [key, unescapeEnvReferences(item)] as const);
-    const record = value as Record<string, unknown>;
-    return entries.some(([key, item]) => item !== record[key]) ? Object.fromEntries(entries) : value;
-  }
-  return value;
 }
 
 /** Converts the text of an environment variable to the type the schema expects at that place. */
@@ -135,12 +171,10 @@ export function resolveEnvReferences(
   env: NodeJS.ProcessEnv,
   getSchema: (settingKey: string) => JsonSchema | undefined,
 ): ResolvedEnvReferences {
-  const references = findEnvReferences(settings);
-  const unescaped = unescapeEnvReferences(settings) as Record<string, unknown>;
-  if (references.length === 0) {
-    return { settings: unescaped, references };
-  }
-  const resolved = unescaped === settings ? structuredClone(settings) : unescaped;
+  // work on a copy: the caller's object must never receive the resolved secrets
+  const resolved = structuredClone(settings);
+  const references = findEnvReferences(resolved);
+  unescapeEnvReferences(resolved);
   const errors: string[] = [];
   for (const reference of references) {
     const location = `settings.${formatPath(reference.path)}`;

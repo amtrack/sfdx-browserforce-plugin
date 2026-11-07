@@ -6,7 +6,7 @@ import * as path from 'path';
 import { chromium } from 'playwright';
 import { Browserforce, type BrowserforceOptions } from './browserforce.js';
 import { ConfigParser } from './config-parser.js';
-import { resolveEnvReferences, toMaskingPath } from './env-references.js';
+import { buildEnvMasking, type EnvMasking, resolveEnvReferences } from './env-references.js';
 import { getPluginJsonSchema } from './plugin-catalog.js';
 import { handleDeprecations } from './plugins/deprecated.js';
 import { drivers } from './plugins/index.js';
@@ -82,8 +82,8 @@ export abstract class BrowserforceCommand<T> extends SfCommand<T> {
   protected browserforce: Browserforce;
   protected settings: any[];
   protected retryConfig?: { retries: number; minTimeout: number };
-  /** per setting key, the paths of the values resolved from environment variables (masked in the output) */
-  protected envReferencePaths = new Map<string, string[]>();
+  /** per setting key, the paths and the values resolved from environment variables (masked in the output) */
+  protected envMasking = new Map<string, EnvMasking>();
 
   // fallow-ignore-next-line unused-class-member
   public async init(): Promise<void> {
@@ -104,12 +104,7 @@ export abstract class BrowserforceCommand<T> extends SfCommand<T> {
     if (definition?.settings && typeof definition.settings === 'object') {
       const resolved = resolveEnvReferences(definition.settings, process.env, getPluginJsonSchema);
       definition = { ...definition, settings: resolved.settings };
-      for (const reference of resolved.references) {
-        const settingKey = String(reference.path[0]);
-        const paths = this.envReferencePaths.get(settingKey) ?? [];
-        paths.push(toMaskingPath(reference.path));
-        this.envReferencePaths.set(settingKey, paths);
-      }
+      this.envMasking = buildEnvMasking(resolved);
       if (resolved.references.length > 0) {
         // a value resolved from an environment variable (e.g. a JSON object) may contain a removed setting
         handleDeprecations(definition);

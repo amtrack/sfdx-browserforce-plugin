@@ -1,5 +1,11 @@
 import assert from 'node:assert';
-import { findEnvReferences, getEnvReferenceName, resolveEnvReferences, toMaskingPath } from '../src/env-references.js';
+import {
+  buildEnvMasking,
+  findEnvReferences,
+  getEnvReferenceName,
+  resolveEnvReferences,
+  toMaskingPath,
+} from '../src/env-references.js';
 import { getPluginJsonSchema } from '../src/plugin-catalog.js';
 
 describe('getEnvReferenceName', () => {
@@ -34,16 +40,45 @@ describe('toMaskingPath', () => {
     assert.strictEqual(toMaskingPath(['historyTracking', 0, 'objectApiName']), 'objectApiName');
     assert.strictEqual(toMaskingPath(['picklists']), '');
   });
+
+  it('keeps the index of a reference that is a whole array item', () => {
+    assert.strictEqual(toMaskingPath(['historyTracking', 0]), '[0]');
+    assert.strictEqual(
+      toMaskingPath(['security', 'certificateAndKeyManagement', 'certificates', 1]),
+      'certificateAndKeyManagement.certificates[1]',
+    );
+  });
+});
+
+describe('buildEnvMasking', () => {
+  it('lists per setting the paths and the string values resolved from the environment', () => {
+    const resolved = resolveEnvReferences(
+      {
+        authProviders: { P: { consumerSecret: '${SECRET}' } },
+        historyTracking: ['${ITEM}'],
+      },
+      { SECRET: 's3cret', ITEM: '{"objectApiName":"Secret__c","enableHistoryTracking":true}' },
+      getPluginJsonSchema,
+    );
+    assert.deepStrictEqual(
+      buildEnvMasking(resolved),
+      new Map([
+        ['authProviders', { paths: ['P.consumerSecret'], values: ['s3cret'] }],
+        ['historyTracking', { paths: ['[0]'], values: ['Secret__c'] }],
+      ]),
+    );
+  });
 });
 
 describe('resolveEnvReferences', () => {
   const resolve = (settings: Record<string, unknown>, env: NodeJS.ProcessEnv) =>
     resolveEnvReferences(settings, env, getPluginJsonSchema);
 
-  it('returns the same settings when there is no reference', () => {
+  it('returns a copy of the settings when there is no reference', () => {
     const settings = { densitySettings: { density: 'Compact' } };
     const result = resolve(settings, {});
-    assert.strictEqual(result.settings, settings);
+    assert.deepStrictEqual(result.settings, settings);
+    assert.notStrictEqual(result.settings, settings);
     assert.deepStrictEqual(result.references, []);
   });
 
@@ -62,6 +97,8 @@ describe('resolveEnvReferences', () => {
       ['SECRET'],
     );
     assert.strictEqual(settings.authProviders.P.consumerKey, '$${NOT_A_VARIABLE}');
+    // the caller's object never receives the resolved secret
+    assert.strictEqual(settings.authProviders.P.consumerSecret, '${SECRET}');
     assert.deepStrictEqual(resolve({ companyInformation: { defaultCurrencyIsoCode: '$${X}' } }, {}).settings, {
       companyInformation: { defaultCurrencyIsoCode: '${X}' },
     });

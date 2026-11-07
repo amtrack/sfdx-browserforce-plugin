@@ -3,6 +3,14 @@ export type JsonSchema = Record<string, unknown>;
 /** A path inside a config value: object keys and array indices, as in zod issues. */
 export type PathSegment = string | number;
 
+/**
+ * The keys of a path joined with dots, array indices dropped, as the schema sees it
+ * (e.g. ['portals', 0, 'adminUser'] -> 'portals.adminUser').
+ */
+export function toKeyPath(path: PathSegment[]): string {
+  return path.filter((segment) => typeof segment === 'string').join('.');
+}
+
 export type FieldType = 'string' | 'boolean' | 'number' | 'integer' | 'string[]' | 'json';
 
 /** A repeatable part of a setting: the items of an array, or the entries of an object keyed by name. */
