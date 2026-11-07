@@ -1,3 +1,6 @@
 {
-  "extends": ["config:recommended", ":semanticCommits"]
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", ":semanticCommits"],
+  "minimumReleaseAge": "14 days",
+  "osvVulnerabilityAlerts": true
 }
