@@ -1,12 +1,12 @@
-const DEPRECATED_DRIVERS = ['communities', 'defer-sharing-calculation'];
+const DEPRECATED_DRIVERS = ['communities', 'deferSharingCalculation'];
 
-export const handleDeprecations = (definition: { settings: unknown }) => {
-  for (const driverName of Object.keys(definition.settings)) {
+export const handleDeprecations = (definition?: { settings?: unknown }) => {
+  for (const driverName of Object.keys(definition?.settings ?? {})) {
     if (DEPRECATED_DRIVERS.includes(driverName)) {
       throw new Error(
         `The sfdx-browserforce-plugin setting '${driverName}' is deprecated and has been removed.
 ✅ Salesforce now supports this setting in the Metadata API.
-👉 Please see the instructions at https://github.com/amtrack/sfdx-browserforce-plugin/wiki/Hall-of-Fame#${driverName}.`,
+👉 Please see the instructions at https://github.com/amtrack/sfdx-browserforce-plugin/wiki/Hall-of-Fame#${driverName.toLowerCase()}.`,
       );
     }
     if (driverName === 'salesforceToSalesforce') {

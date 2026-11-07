@@ -32,3 +32,18 @@ it('should throw when a setting of a plugin', () => {
     });
   }, /The sfdx-browserforce-plugin setting 'security.loginAccessPolicies' is deprecated/);
 });
+
+it('should throw for deferSharingCalculation', () => {
+  assert.throws(() => {
+    handleDeprecations({
+      settings: {
+        deferSharingCalculation: { suspend: true },
+      },
+    });
+  }, /setting 'deferSharingCalculation' is deprecated[\s\S]*Hall-of-Fame#defersharingcalculation/);
+});
+
+it('should not throw for a missing definition or settings', () => {
+  handleDeprecations(undefined);
+  handleDeprecations({});
+});
