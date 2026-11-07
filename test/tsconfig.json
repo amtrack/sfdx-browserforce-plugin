@@ -1,6 +1,6 @@
 {
   "extends": "@salesforce/dev-config/tsconfig-test-esm.json",
-  "include": ["./**/*.ts", "../src/**/*.test.ts"],
+  "include": ["./**/*.ts", "../src/**/*.test.ts", "../src/**/*.e2e-spec.ts"],
   "compilerOptions": {
     "skipLibCheck": true,
     "lib": ["ES2023", "DOM"],

@@ -5,8 +5,8 @@
     "rootDir": "src",
     "skipLibCheck": true,
     "lib": ["ES2023", "DOM"],
-    "types": ["node", "mocha"]
+    "types": ["node"]
   },
   "include": ["./src/**/*.ts"],
-  "exclude": ["./src/**/*.test.ts"]
+  "exclude": ["./src/**/*.test.ts", "./src/**/*.e2e-spec.ts"]
 }
