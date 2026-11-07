@@ -91,6 +91,7 @@ A value written exactly as `"${VARIABLE_NAME}"` is read from the environment var
 
 - `sf browserforce plugins list --json` describes every setting: its JSON Schema, its fields, examples, and warnings (irreversible changes, Classic-only features, org prerequisites). Tools building Browserforce configurations, like [sfdx-hardis](https://sfdx-hardis.cloudity.com/) deployment actions, read it.
 - `sf browserforce plugins validate -f ./config/currency.json` checks a config file and reports each error with its path. Environment variable references are accepted and listed.
+- `sf browserforce apply --json` returns the planned changes of each setting (applied, or only planned with `--dry-run`), with secrets and values from environment variables masked.
 
 ## Key Concepts
 
@@ -196,6 +197,9 @@ RETRY CONFIGURATION FLAGS
 
 DESCRIPTION
   apply a plan from a config file
+
+  With --json, the result lists each setting in the order applied, with its planned changes (secrets and values from
+  environment variables shown as ****, null when no action is necessary) and whether they were applied.
 
 EXAMPLES
   $ sf browserforce apply -f ./config/currency.json --target-org myOrg@example.com
