@@ -17,6 +17,13 @@ export const activitySettingsSchema = z
   .meta({
     id: 'activitySettings',
     title: 'Activity Settings',
+    description: [
+      'Setup: **Feature Settings → Sales → Activity Settings** (`/lightning/setup/HomeActivitiesSetupPage/home`)',
+      '',
+      'Although the Metadata API has an `ActivitiesSettings.allowUsersToRelateMultipleContactsToTasksAndEvents` field, it is read-only since API v36.0: the setting cannot be enabled through an API.',
+      '',
+      '![Activity Settings](docs/assets/settings/activity-settings.png)',
+    ].join('\n'),
     examples: [{ allowUsersToRelateMultipleContactsToTasksAndEvents: true }],
   });
 

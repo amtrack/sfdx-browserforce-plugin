@@ -44,6 +44,11 @@ export const userAccessPoliciesSchema = z
   .meta({
     id: 'userAccessPolicies',
     title: 'User Access Policies',
+    description: [
+      'Setup: **Users → User Access Policies** (`/lightning/setup/UserAccessPolicies/home`)',
+      '',
+      'Activates or deactivates User Access Policies, chooses when they run (on create, update, or both), and runs Apply To All.',
+    ].join('\n'),
     examples: [
       { accessPolicies: [{ apiName: 'Grant_Permissions', active: true, on: 'Create' }] },
       { accessPolicies: [{ apiName: 'Grant_Permissions', active: true, on: 'Create', applyToAll: true }] },

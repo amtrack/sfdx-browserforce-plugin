@@ -1,7 +1,9 @@
+import { SETTINGS_DOC_URL, settingDocUrl } from './docs.js';
 import { formatPath, getEnvReferenceName, getValueAtPath } from './env-references.js';
 import { type PathSegment } from './json-schema-utils.js';
 import { BrowserforcePlugin } from './plugin.js';
 import { deprecatedSettings, findDeprecations, formatDeprecation } from './plugins/deprecated.js';
+import { schemas } from './plugins/index.js';
 import { rootSchema } from './plugins/schema.js';
 
 type Drivers = {
@@ -22,6 +24,8 @@ type Config = {
 export type ConfigIssue = {
   path: string;
   message: string;
+  /** documentation of the setting concerned, or of the removed setting, or the list of settings */
+  docUrl: string;
 };
 
 export type ValidateOptions = {
@@ -33,6 +37,12 @@ type SettingsIssue = {
   path: PathSegment[];
   message: string;
 };
+
+/** Documentation page for an issue located at a path relative to `settings`. */
+function issueDocUrl(path: PathSegment[]): string {
+  const [key] = path;
+  return typeof key === 'string' && Object.hasOwn(schemas, key) ? settingDocUrl(key) : SETTINGS_DOC_URL;
+}
 
 /** The `settings` of a config when it is an object (keyed by setting), otherwise undefined. */
 export function getSettingsObject(data: unknown): Record<string, unknown> | undefined {
@@ -72,7 +82,10 @@ function validateSettings(settings: unknown, options: ValidateOptions = {}): Set
 
 function formatSettingsIssues(issues: SettingsIssue[]): string {
   return issues
-    .map((issue) => (issue.path.length ? `${formatPath(issue.path)}: ${issue.message}` : issue.message))
+    .map(
+      (issue) =>
+        `${issue.path.length ? `${formatPath(issue.path)}: ` : ''}${issue.message} (${issueDocUrl(issue.path)})`,
+    )
     .join('\n');
 }
 
@@ -109,15 +122,17 @@ export class ConfigParser {
   public static validate(data: unknown, options: ValidateOptions = {}): ConfigIssue[] {
     const settings = getSettingsObject(data);
     if (!settings) {
-      return [{ path: 'settings', message: "Missing 'settings' attribute" }];
+      return [{ path: 'settings', message: "Missing 'settings' attribute", docUrl: SETTINGS_DOC_URL }];
     }
     const deprecations = findDeprecations(data).map((deprecated) => ({
       path: `settings.${deprecated.path}`,
       message: formatDeprecation(deprecated),
+      docUrl: deprecated.url,
     }));
     const schemaIssues = validateSettings(settings, options).map((issue) => ({
       path: formatPath(['settings', ...issue.path]),
       message: issue.message,
+      docUrl: issueDocUrl(issue.path),
     }));
     return [...deprecations, ...schemaIssues];
   }

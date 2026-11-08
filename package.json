@@ -3,6 +3,7 @@
   "version": "7.0.0",
   "description": "sfdx plugin for browser automation",
   "author": "Matthias Rolke <mr.amtrack@gmail.com>",
+  "homepage": "https://amtrack.github.io/sfdx-browserforce-plugin/",
   "type": "module",
   "bin": {
     "sfdx-browserforce-plugin": "bin/run"

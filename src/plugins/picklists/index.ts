@@ -39,6 +39,13 @@ export const picklistsSchema = z
   .meta({
     id: 'picklists',
     title: 'Picklists',
+    description: [
+      'Changes picklist values in ways the Metadata API cannot:',
+      '',
+      '- replace a value by another one in the records using it, then deactivate or delete the old value;',
+      '- activate or deactivate values;',
+      '- manage (create, modify, delete) the field dependencies of custom fields. An existing field dependency of the dependent field is deleted first.',
+    ].join('\n'),
     examples: [
       {
         picklistValues: [

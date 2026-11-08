@@ -42,7 +42,7 @@ it('should throw with the alternatives for the retired salesforceToSalesforce se
       `The sfdx-browserforce-plugin setting 'salesforceToSalesforce' is deprecated and has been removed.
 ❌ Salesforce to Salesforce has been retired.
 👉 Use one of these alternative solutions: Partner Cloud, Data Cloud One, MuleSoft Anypoint, or MuleSoft for Flow.
-👉 Please see the instructions at https://github.com/amtrack/sfdx-browserforce-plugin/wiki/Hall-of-Fame#salesforcetosalesforce.`,
+👉 Please see the instructions at https://amtrack.github.io/sfdx-browserforce-plugin/hall-of-fame/#salesforcetosalesforce.`,
   );
 });
 

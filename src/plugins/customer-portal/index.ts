@@ -56,10 +56,18 @@ export const customerPortalSchema = z
       title: 'Custom Objects available for Customer Portal',
     }),
   })
-  .describe('Only available in Salesforce Classic UI')
   .meta({
     id: 'customerPortal',
     title: 'Customer Portal Settings',
+    description: [
+      'Salesforce Classic Setup: **Customize → Customer Portal → Customer Portal Settings** (`/_ui/core/portal/CustomerSuccessPortalSetup/e`)',
+      '',
+      'Enables the Customer Portal, configures its portals (self-registration, profiles) and the custom objects available in it.',
+      '',
+      '![Customer Portal](docs/assets/settings/customer-portal.png)',
+      '',
+      '![Customer Portal Setup](docs/assets/settings/customer-portal-setup.png)',
+    ].join('\n'),
     examples: [
       { enabled: true },
       { portals: [{ name: 'Customer Portal', isSelfRegistrationActivated: true }] },

@@ -51,11 +51,13 @@ export const listViewCustomButtonsSchema = z
   .default([])
   .meta({
     title: 'List View Custom Buttons',
+    description: [
+      'Object Manager: **(object) → Search Layouts for Salesforce Classic → List View**',
+      '',
+      'Manages the custom buttons selected in the list view button layout of any object. Buttons are identified by the API name of their WebLink, with an optional namespace prefix (`AssignTask` or `th_dev__AssignTask`).',
+    ].join('\n'),
     examples: [[{ objectApiName: 'Task', buttons: ['MyListButton', 'MyOtherListButton'], removeOtherButtons: true }]],
-  })
-  .describe(
-    "Manage the selected custom buttons in the list view button layout (Aloha Search Layout) for any object. Buttons are identified by their WebLink API Name (DeveloperName), with optional namespace prefix (e.g. 'AssignTask' or 'th_dev__AssignTask').",
-  );
+  });
 
 const AVAILABLE_LISTBOX_NAME = 'Available Buttons';
 const SELECTED_LISTBOX_NAME = 'Selected Buttons';
