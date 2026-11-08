@@ -58,28 +58,36 @@ jobs:
           compression-level: 0
           if-no-files-found: ignore
           retention-days: 14
-  release:
+  release-please:
     needs: test
     if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    outputs:
+      release_created: ${{ steps.rp.outputs.release_created }}
+      tag_name: ${{ steps.rp.outputs.tag_name }}
+    steps:
+      - uses: googleapis/release-please-action@v5
+        id: rp
+  publish:
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write
     steps:
-      - uses: googleapis/release-please-action@v5
-        id: rp
-        with:
-          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
       - uses: actions/checkout@v7
-        if: ${{ steps.rp.outputs.release_created }}
         with:
-          ref: ${{ steps.rp.outputs.tag_name }}
+          ref: ${{ needs.release-please.outputs.tag_name }}
+          persist-credentials: false
       - uses: actions/setup-node@v7
-        if: ${{ steps.rp.outputs.release_created }}
         with:
           node-version-file: .node-version
       - name: Stage package on npm (approve on npmjs.com)
-        if: ${{ steps.rp.outputs.release_created }}
         run: |
           npm ci --ignore-scripts
           npm stage publish
