@@ -1,4 +1,4 @@
-import { parseDocument, stringify, YAMLMap, YAMLSeq } from 'yaml';
+import { parse, parseDocument, stringify, YAMLMap, YAMLSeq } from 'yaml';
 import { rawFileUrl, repositoryPath, rewriteMarkdownImages } from '../src/docs.js';
 import type { Field } from '../src/json-schema-utils.js';
 import type { PluginCatalogEntry } from '../src/plugin-catalog.js';
@@ -44,7 +44,8 @@ export function summarize(text: string, maxLength = MAX_DESCRIPTION_LENGTH): str
   if (text.length <= maxLength) {
     return text;
   }
-  const sentences = text.match(/[^.!?]+[.!?]+(?=\s|$)/g) ?? [];
+  // a sentence ends with . ! or ? followed by a space: not inside "v36.0" or "AccountSettings.enableX"
+  const sentences = text.split(/(?<=[.!?])\s+/).map((sentence) => `${sentence} `);
   let summary = '';
   for (const sentence of sentences) {
     if ((summary + sentence).trim().length > maxLength) {
@@ -309,6 +310,7 @@ const HOME_PAGE_LINKS = [
     '- [Settings](settings/index.md): every setting Browserforce can apply, with examples.',
     '- [Commands](commands.md): the flags of each command.',
     '- [Troubleshooting](troubleshooting.md): watch or record what the browser does.',
+    '- [llms.txt](llms.txt): every page of this documentation with a one-line description, for a coding agent to read.',
   ].join('\n'),
 ].join('\n\n');
 
@@ -340,6 +342,112 @@ export const PAGE_META: Record<string, { title: string; description: string }> =
       'Browserforce (sfdx-browserforce-plugin) is an sf CLI plugin applying Salesforce Setup settings the Metadata API lacks, idempotently, with Playwright.',
   },
 };
+
+/** A page of the site as llms.txt lists it: its front matter, and the file of the repository it is written in. */
+export type LlmsPage = {
+  frontMatter: { title?: string; description?: string };
+  /** path in the repository: the page itself, or the file it only includes (`--8<-- "../CONTRIBUTING.md"`) */
+  sourcePath: string;
+};
+
+/** Front matter and source file of the page `docs/<target>`, from its content. */
+export function readLlmsPage(target: string, markdown: string): LlmsPage {
+  const frontMatterText = /^---\r?\n([\s\S]*?)\r?\n---\r?\n/.exec(markdown)?.[1];
+  const frontMatter = (frontMatterText ? parse(frontMatterText) : undefined) ?? {};
+  const body = removeFrontMatter(markdown)
+    .replace(/<!--[\s\S]*?-->/g, '')
+    .trim();
+  const include = /^--8<-- "\.\.\/([^"]+)"$/.exec(body)?.[1];
+  return { frontMatter: frontMatter as LlmsPage['frontMatter'], sourcePath: include ?? `docs/${target}` };
+}
+
+const LLMS_SUMMARY =
+  'Browserforce (sfdx-browserforce-plugin) is a Salesforce CLI plugin that applies Salesforce Setup settings missing from the Metadata API, through browser automation with Playwright, from a JSON config file. It only changes what differs from the current state of the org.';
+
+const LLMS_INTRO = [
+  'A config file holds one key per setting under `settings`: `{ "settings": { "<key>": { ... } } }`. Each setting page gives its config key, Setup page, warnings, examples and fields; the JSON Schema of config files has them all.',
+  '',
+  'Apply a config with `sf browserforce apply -f config.json -o <org>` (`--dry-run` lists the changes without applying them). Without an org, `sf browserforce plugins list --json` describes every setting and `sf browserforce plugins validate -f config.json` checks a config.',
+  '',
+  'Each link is the Markdown source of a page: `docs/<page>.md` is published at `<site>/<page>/`, the URL to give a person.',
+];
+
+/** Sections of the navigation listed last, under "Optional": not needed to write or apply a config. */
+const LLMS_OPTIONAL = new Set(['Contributing', 'Release notes', 'License']);
+
+/**
+ * docs/llms.txt (https://llmstxt.org), served at the root of the site: the pages a coding agent should read, in the
+ * order of the navigation of mkdocs.yml, each linking its Markdown source on GitHub with the title and the description
+ * of its front matter.
+ */
+export function renderLlmsTxt(nav: unknown[], readPage: (target: string) => LlmsPage, siteUrl: string): string {
+  const listed = new Set<string>();
+  const pageLine = (label: string, target: string): string | undefined => {
+    if (/^https?:\/\//.test(target)) {
+      return `- [${label}](${target})`;
+    }
+    if (listed.has(target)) {
+      return undefined;
+    }
+    listed.add(target);
+    const { frontMatter, sourcePath } = readPage(target);
+    const description = frontMatter.description ? `: ${frontMatter.description}` : '';
+    return `- [${frontMatter.title ?? label}](${rawFileUrl(sourcePath)})${description}`;
+  };
+  const entries = (item: unknown): Array<[string, unknown]> =>
+    typeof item === 'string' ? [[item, item]] : Object.entries(item as Record<string, unknown>);
+  // the pages of a navigation folder; a folder inside it gets a ### heading, deeper ones are flattened
+  const flatten = (items: unknown[], depth = 0): Array<string | undefined> =>
+    items.flatMap((item) =>
+      entries(item).flatMap(([label, value]) => {
+        if (!Array.isArray(value)) {
+          return [pageLine(label, String(value))];
+        }
+        return depth === 0 ? ['', `### ${label}`, '', ...flatten(value, depth + 1)] : flatten(value, depth + 1);
+      }),
+    );
+
+  const startPages: Array<string | undefined> = [];
+  const optionalPages: Array<string | undefined> = [];
+  const sections: Array<{ title: string; lines: Array<string | undefined> }> = [];
+  for (const item of nav) {
+    for (const [label, value] of entries(item)) {
+      if (value === 'index.md') {
+        continue;
+      }
+      const lines = Array.isArray(value) ? flatten(value) : [pageLine(label, String(value))];
+      if (LLMS_OPTIONAL.has(label)) {
+        optionalPages.push(...lines);
+      } else if (Array.isArray(value)) {
+        sections.push({ title: label, lines });
+      } else {
+        startPages.push(...lines);
+      }
+    }
+  }
+  const settings = sections.find((section) => section.title === 'Settings');
+  settings?.lines.push(
+    `- [JSON Schema of config files](${rawFileUrl('src/plugins/schema.json')}): every setting of a Browserforce config file, with its fields, types, allowed values and description`,
+  );
+  const lines = [
+    '# Browserforce',
+    '',
+    `> ${LLMS_SUMMARY}`,
+    '',
+    ...LLMS_INTRO.map((line) => line.replace('<site>/', siteUrl)),
+    '',
+    '## Get started',
+    '',
+    ...startPages,
+    ...sections.flatMap((section) => ['', `## ${section.title}`, '', ...section.lines]),
+    '',
+    '## Optional',
+    '',
+    ...optionalPages,
+    '',
+  ];
+  return lines.filter((line): line is string => line !== undefined).join('\n');
+}
 
 /** Items of the `Settings` entry of the navigation in mkdocs.yml, by title. */
 export function settingsNav(entries: PluginCatalogEntry[]): Array<Record<string, string>> {

@@ -102,3 +102,4 @@ But there's more:
 - [Settings](settings/index.md): every setting Browserforce can apply, with examples.
 - [Commands](commands.md): the flags of each command.
 - [Troubleshooting](troubleshooting.md): watch or record what the browser does.
+- [llms.txt](llms.txt): every page of this documentation with a one-line description, for a coding agent to read.

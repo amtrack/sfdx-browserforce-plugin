@@ -5,8 +5,11 @@ import {
   GENERATED_HEADER,
   plainText,
   removeFrontMatter,
+  type LlmsPage,
+  readLlmsPage,
   renderCommandExamples,
   renderHomePage,
+  renderLlmsTxt,
   renderSettingPage,
   renderSettingsIndex,
   settingPageImage,
@@ -222,6 +225,11 @@ describe('documentation pages', () => {
       assert.strictEqual(summarize('Short.'), 'Short.');
       assert.strictEqual(summarize('First sentence. Second sentence that is too long.', 20), 'First sentence.');
       assert.strictEqual(summarize('one two three four five', 12), 'one two…');
+      // a period inside a version or an API name does not end a sentence
+      assert.strictEqual(
+        summarize('Read-only since API v36.0: no API. Uses AccountSettings.enableX instead of the page for now.', 40),
+        'Read-only since API v36.0: no API.',
+      );
     });
 
     it('describes a setting without its Setup menu path', () => {
@@ -240,6 +248,72 @@ describe('documentation pages', () => {
         settingPageMeta({ ...entry, description: undefined }).description,
         'Apply My Setting in a Salesforce org with Browserforce, using the config key settings.densitySettings.',
       );
+    });
+
+    it('reads the front matter and the source file of a page for llms.txt', () => {
+      assert.deepStrictEqual(
+        readLlmsPage('installation.md', '---\ntitle: Install\ndescription: How\n---\n\n# Install\n'),
+        {
+          frontMatter: { title: 'Install', description: 'How' },
+          sourcePath: 'docs/installation.md',
+        },
+      );
+      // a page that only includes another file points to that file
+      assert.deepStrictEqual(readLlmsPage('license.md', '---\ntitle: License\n---\n\n--8<-- "../LICENSE"\n'), {
+        frontMatter: { title: 'License' },
+        sourcePath: 'LICENSE',
+      });
+      assert.deepStrictEqual(readLlmsPage('x.md', '# X\n'), { frontMatter: {}, sourcePath: 'docs/x.md' });
+    });
+
+    it('lists the pages of the navigation in llms.txt, linking their Markdown sources', () => {
+      const pages: Record<string, LlmsPage> = {
+        'installation.md': {
+          frontMatter: { title: 'Install', description: 'How to install' },
+          sourcePath: 'docs/installation.md',
+        },
+        'settings/index.md': { frontMatter: { title: 'Settings reference' }, sourcePath: 'docs/settings/index.md' },
+        'settings/slack.md': {
+          frontMatter: { title: 'Slack', description: 'Slack apps' },
+          sourcePath: 'docs/settings/slack.md',
+        },
+        'browserforce/apply.md': {
+          frontMatter: { title: 'browserforce:apply' },
+          sourcePath: 'docs/browserforce/apply.md',
+        },
+        'license.md': { frontMatter: { title: 'License' }, sourcePath: 'LICENSE' },
+      };
+      const nav = [
+        { Home: 'index.md' },
+        { Installation: 'installation.md' },
+        { Settings: [{ Overview: 'settings/index.md' }, { Slack: 'settings/slack.md' }] },
+        { Commands: [{ browserforce: [{ apply: 'browserforce/apply.md' }] }] },
+        { 'Release notes': 'https://github.com/x/releases' },
+        { License: 'license.md' },
+      ];
+      const llms = renderLlmsTxt(nav, (target) => pages[target], 'https://example.com/docs/');
+      assert.ok(
+        llms.startsWith('# Browserforce\n\n> Browserforce (sfdx-browserforce-plugin) is a Salesforce CLI plugin'),
+      );
+      assert.ok(llms.includes('published at `https://example.com/docs/<page>/`'));
+      assert.ok(
+        llms.includes(`## Get started\n\n- [Install](${rawFileUrl('docs/installation.md')}): How to install\n`),
+      );
+      assert.ok(llms.includes(`## Settings\n\n- [Settings reference](${rawFileUrl('docs/settings/index.md')})\n`));
+      assert.ok(llms.includes(`- [Slack](${rawFileUrl('docs/settings/slack.md')}): Slack apps\n`));
+      assert.ok(llms.includes(`- [JSON Schema of config files](${rawFileUrl('src/plugins/schema.json')})`));
+      assert.ok(
+        llms.includes(
+          `## Commands\n\n\n### browserforce\n\n- [browserforce:apply](${rawFileUrl('docs/browserforce/apply.md')})`,
+        ),
+      );
+      assert.ok(
+        llms.endsWith(
+          `## Optional\n\n- [Release notes](https://github.com/x/releases)\n- [License](${rawFileUrl('LICENSE')})\n`,
+        ),
+      );
+      // the home page repeats the README: not listed
+      assert.ok(!llms.includes(rawFileUrl('docs/index.md')));
     });
 
     it('keeps on the home page only what no other page describes', () => {

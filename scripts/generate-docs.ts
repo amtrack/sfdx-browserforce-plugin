@@ -5,7 +5,8 @@
  * Run through `npm run generate:docs`, which also generates the command pages with sfdx-hardis.
  */
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
-import { listMarkdownImages, repositoryPath, sourceTreeUrl } from '../src/docs.js';
+import { parse } from 'yaml';
+import { DOCS_URL, listMarkdownImages, repositoryPath, sourceTreeUrl } from '../src/docs.js';
 import { buildPluginCatalog } from '../src/plugin-catalog.js';
 import { schemas } from '../src/plugins/index.js';
 import {
@@ -13,7 +14,9 @@ import {
   PAGE_META,
   removeFrontMatter,
   renderCommandExamples,
+  readLlmsPage,
   renderHomePage,
+  renderLlmsTxt,
   renderSettingPage,
   renderSettingsIndex,
   settingsNav,
@@ -93,4 +96,18 @@ for (const [path, meta] of Object.entries(PAGE_META)) {
   const fileUrl = new URL(`docs/${path}`, root);
   writeFileSync(fileUrl, withFrontMatter(readFileSync(fileUrl, 'utf8'), meta.title, meta.description));
 }
-console.log(`Generated the documentation of ${catalog.plugins.length} settings in docs/settings.`);
+// docs/llms.txt, from the final navigation and front matter of the pages
+const nav = (parse(readFileSync(mkdocsYml, 'utf8')) as { nav: unknown[] }).nav;
+const llmsTxt = renderLlmsTxt(
+  nav,
+  (target) => {
+    const page = new URL(`docs/${target}`, root);
+    if (!existsSync(page)) {
+      throw new Error(`mkdocs.yml lists docs/${target}, which does not exist`);
+    }
+    return readLlmsPage(target, readFileSync(page, 'utf8'));
+  },
+  DOCS_URL,
+);
+writeFileSync(new URL('docs/llms.txt', root), llmsTxt);
+console.log(`Generated the documentation of ${catalog.plugins.length} settings in docs/settings, and docs/llms.txt.`);

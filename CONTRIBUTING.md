@@ -174,7 +174,8 @@ turn them into code blocks). Then regenerate the pages and commit what changed i
 npm run generate:docs
 ```
 
-It builds the plugin, generates the command pages with [sfdx-hardis](https://sfdx-hardis.cloudity.com/) (installed
+It also writes `docs/llms.txt` ([llms.txt](https://llmstxt.org), served at the root of the site): the pages a coding
+agent should read, from the navigation and the front matter of each page. It builds the plugin, generates the command pages with [sfdx-hardis](https://sfdx-hardis.cloudity.com/) (installed
 in the `.sf-docs-tooling` folder, not in your `sf`), then the settings pages. It needs the `sf` CLI and bash (Git
 Bash on Windows). CI warns when the committed pages differ from the generated ones (the site is published from the regenerated pages anyway). To preview the site:
 

@@ -1,0 +1,64 @@
+# Browserforce
+
+> Browserforce (sfdx-browserforce-plugin) is a Salesforce CLI plugin that applies Salesforce Setup settings missing from the Metadata API, through browser automation with Playwright, from a JSON config file. It only changes what differs from the current state of the org.
+
+A config file holds one key per setting under `settings`: `{ "settings": { "<key>": { ... } } }`. Each setting page gives its config key, Setup page, warnings, examples and fields; the JSON Schema of config files has them all.
+
+Apply a config with `sf browserforce apply -f config.json -o <org>` (`--dry-run` lists the changes without applying them). Without an org, `sf browserforce plugins list --json` describes every setting and `sf browserforce plugins validate -f config.json` checks a config.
+
+Each link is the Markdown source of a page: `docs/<page>.md` is published at `https://amtrack.github.io/sfdx-browserforce-plugin/<page>/`, the URL to give a person.
+
+## Get started
+
+- [Install sfdx-browserforce-plugin for the Salesforce CLI](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/installation.md): Install the sfdx-browserforce-plugin sf CLI plugin, then a browser for Playwright or use an existing Chrome, to automate Salesforce Setup.
+- [Configuration file, environment variables and validation](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/configuration.md): Write a Browserforce JSON config file, keep secrets in environment variables, validate it without an org and apply it idempotently to a Salesforce org.
+- [Troubleshooting](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/troubleshooting.md): Fix a missing browser, watch or record what Browserforce does in Salesforce Setup with Playwright traces, and tune timeouts and retries.
+- [Hall of Fame - settings now in the Metadata API](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/hall-of-fame.md): Settings removed from Browserforce since Salesforce supports them in the Metadata API or retired them, and the deployment to use instead.
+
+## Settings
+
+- [Settings reference](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/settings/index.md): The 25 Salesforce Setup settings Browserforce can apply with their config keys and warnings, and the settings removed since the Metadata API supports them.
+- [Account Intelligence View (settings.accountIntelligenceView)](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/settings/accountIntelligenceView.md): Turns the Account Intelligence view on or off.
+- [Activity Settings (settings.activitySettings)](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/settings/activitySettings.md): Although the Metadata API has an ActivitiesSettings.allowUsersToRelateMultipleContactsToTasksAndEvents field, it is read-only since API v36.0: the setting…
+- [Auth Providers (settings.authProviders)](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/settings/authProviders.md): Updates the Consumer Key and the Consumer Secret of existing Auth Providers, keyed by their API name.
+- [Company Information (settings.companyInformation)](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/settings/companyInformation.md): Sets the Currency Locale of the org, which no Metadata API type represents.
+- [Customer Portal Settings (settings.customerPortal)](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/settings/customerPortal.md): Enables the Customer Portal, configures its portals (self-registration, profiles) and the custom objects available in it.
+- [Density Settings (settings.densitySettings)](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/settings/densitySettings.md): Chooses the default display density of the org: “Comfy” or “Compact”.
+- [Email Deliverability Settings (settings.emailDeliverability)](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/settings/emailDeliverability.md): Chooses the access level: “No access”, “System email only” or “All email”.
+- [HighVelocitySalesSettings (settings.highVelocitySalesSettings)](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/settings/highVelocitySalesSettings.md): Due to a bug, High Velocity Sales (Sales Engagement) needs to be set up and enabled initially using the user interface.
+- [History Tracking (settings.historyTracking)](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/settings/historyTracking.md): Enables or disables history tracking on objects and on their fields (Object Manager → Fields & Relationships → Set History Tracking).
+- [Home Page Layouts (settings.homePageLayouts)](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/settings/homePageLayouts.md): Assigns Home Page Layouts to profiles.
+- [LightningExperienceSettings (settings.lightningExperienceSettings)](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/settings/lightningExperienceSettings.md): Activates a Lightning Experience theme.
+- [LinkedIn Sales Navigator Settings (settings.linkedInSalesNavigatorSettings)](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/settings/linkedInSalesNavigatorSettings.md): Enables or disables the Sales Navigator integration.
+- [List View Custom Buttons (settings.listViewCustomButtons)](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/settings/listViewCustomButtons.md): Manages the custom buttons selected in the list view button layout of any object.
+- [Omni-Channel Settings (settings.omniChannelSettings)](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/settings/omniChannelSettings.md): Enables the status-based capacity model.
+- [OpportunitySplits Settings (settings.opportunitySplits)](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/settings/opportunitySplits.md): Enables and sets up Opportunity Splits.
+- [Permission Sets (settings.permissionSets)](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/settings/permissionSets.md): Gives Permission Sets access to service presence statuses (Omni-Channel), by the API names of the statuses.
+- [Picklists (settings.picklists)](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/settings/picklists.md): Changes picklist values in ways the Metadata API cannot: replace a value by another one in the records using it, then deactivate or delete the old value;…
+- [RecordTypes (settings.recordTypes)](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/settings/recordTypes.md): Deletes inactive record types, optionally replacing them by another record type where they are used.
+- [RelateContactToMultipleAccounts Settings (settings.relateContactToMultipleAccounts)](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/settings/relateContactToMultipleAccounts.md): Enabling it through the Metadata API (AccountSettings.enableRelateContactToMultipleAccounts) does not always make the AccountContactRelation object available.
+- [Reports & Dashboards (settings.reportsAndDashboards)](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/settings/reportsAndDashboards.md): Enables Enhanced Folder Sharing. Orgs created after the Summer ’13 release already have it.
+- [SalesforceCpqConfig Settings (settings.salesforceCpqConfig)](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/settings/salesforceCpqConfig.md): Sets the settings of the Salesforce CPQ package.
+- [Security Controls (settings.security)](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/settings/security.md): Certificate and Key Management: Imports certificates from a Java Keystore (JKS) and creates self-signed certificates.
+- [Service Channels (settings.serviceChannels)](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/settings/serviceChannels.md): Configures the capacity model of Service Channels (Omni-Channel): status-based capacity, the status field and its in-progress values.
+- [Slack Apps Setup (settings.slack)](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/settings/slack.md): Agrees to the terms and conditions and enables the Sales Cloud for Slack app.
+- [User Access Policies (settings.userAccessPolicies)](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/settings/userAccessPolicies.md): Activates or deactivates User Access Policies, chooses when they run (on create, update, or both), and runs Apply To All.
+- [JSON Schema of config files](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json): every setting of a Browserforce config file, with its fields, types, allowed values and description
+
+## Commands
+
+- [sfdx-browserforce-plugin commands](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/commands.md): All the commands of sfdx-browserforce-plugin, grouped by topic, with a link to the page of each one.
+
+### browserforce
+
+- [browserforce:apply](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/browserforce/apply.md): apply a plan from a config file
+- [browserforce:playwright](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/browserforce/playwright.md): access the Playwright CLI
+- [browserforce:plugins:list](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/browserforce/plugins/list.md): list the settings Browserforce can apply
+- [browserforce:plugins:validate](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/browserforce/plugins/validate.md): validate a Browserforce config without connecting to an org
+
+## Optional
+
+- [Contributing](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/CONTRIBUTING.md): Develop a new Browserforce setting - scaffold a plugin, write its zod schema, retrieve and apply with Playwright, test it end to end on a scratch org.
+- [Playwright best practices for plugins](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/PLAYWRIGHT.md): How to write reliable Browserforce plugins with Playwright - locators, language-independent selectors, save signals and page errors on Salesforce Setup pages.
+- [Release notes](https://github.com/amtrack/sfdx-browserforce-plugin/releases)
+- [License](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/LICENSE): sfdx-browserforce-plugin is open source under the MIT license.
