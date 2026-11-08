@@ -34,7 +34,7 @@ Your goal is a technical specification the user can review. Do not write code.
    - **Files to create / modify:** each with the change it gets.
    - **Retrieve / diff / apply:** the approach for each, with the pages, selectors and save signals.
    - **Testing:** unit tests (`*.test.ts`, for custom `diff()` and pure helpers) and the e2e scenario in `index.e2e-spec.ts`: apply, re-apply returns `no action necessary`, revert, re-run; fixture metadata in `sfdx-source/`; scratch org features needed.
-   - **Commit message:** the Conventional Commit subject (`feat:`, `fix:`, `feat!:` with its `BREAKING CHANGE:` footer). release-please turns it into the `CHANGELOG.md` entry, so write it for end users and name the setting by its config key.
+   - **Commit message:** the Conventional Commit subject (`feat:`, `fix:`, `feat!:` with its `BREAKING CHANGE:` footer). release-please turns it into the GitHub Release notes entry, so write it for end users and name the setting by its config key.
    - **Risks:** flaky waits, Salesforce release changes, org language, permissions, breaking changes.
 
 Ask the user to review the spec. End by suggesting `/implement` once it is approved. Do NOT implement anything.
