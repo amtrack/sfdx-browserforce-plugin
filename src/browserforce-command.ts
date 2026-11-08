@@ -88,9 +88,9 @@ export abstract class BrowserforceCommand<T> extends SfCommand<T> {
   // fallow-ignore-next-line unused-class-member
   public async init(): Promise<void> {
     await super.init();
-    const { flags } = await this.parse({
-      baseFlags: BrowserforceCommand.baseFlags,
-    });
+    // Parse with the command class itself: parsing only the base flags refused every other flag the
+    // command declares, --json included ("Nonexistent flag: --json")
+    const { flags } = (await this.parse(this.ctor)) as unknown as { flags: BrowserforceFlags };
     let definition;
     if (flags.definitionfile) {
       const definitionFileData = await promises.readFile(path.resolve(flags.definitionfile), 'utf8');
