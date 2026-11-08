@@ -26,8 +26,9 @@ export class UserAccessPoliciesPage {
   public async applyToAll(): Promise<void> {
     // Apply To All asks no confirmation today: accept one if Salesforce adds it
     this.page.on('dialog', (dialog) => dialog.accept().catch(() => undefined));
-    // the id stays the same whatever the language of the user
-    const applyButton = this.page.locator('#apply_policy_btn');
+    // the id stays the same whatever the language of the user; the classic page has the button in its
+    // top and bottom button rows
+    const applyButton = this.page.locator('#apply_policy_btn').first();
     // The page usually reloads after the click, but the proof that Salesforce ran the policy is the
     // UserAccessChange row the plugin waits for next: a page that does not reload is not a failure
     await Promise.all([
