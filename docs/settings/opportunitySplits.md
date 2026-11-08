@@ -45,9 +45,9 @@ Enables and sets up Opportunity Splits. Opportunity Teams must be enabled first,
 
 ## Fields
 
-| Field | Type | Description | Values | Default |
-| ----- | ---- | ----------- | ------ | ------- |
-| `enabled` | boolean | Enable Opportunity Splits<br>Prerequisite: Opportunity Teams must be enabled e.g. by deploying 'Settings:Opportunity' containing `<enableOpportunityTeam>true</enableOpportunityTeam>`. |  |  |
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| <code>enabled</code> | boolean | Enable Opportunity Splits<br>Prerequisite: Opportunity Teams must be enabled e.g. by deploying 'Settings:Opportunity' containing `<enableOpportunityTeam>true</enableOpportunityTeam>`. |
 
 ??? note "JSON Schema"
 

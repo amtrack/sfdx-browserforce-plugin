@@ -33,9 +33,9 @@ Although the Metadata API has an `ActivitiesSettings.allowUsersToRelateMultipleC
 
 ## Fields
 
-| Field | Type | Description | Values | Default |
-| ----- | ---- | ----------- | ------ | ------- |
-| `allowUsersToRelateMultipleContactsToTasksAndEvents` | boolean | Allow Users to Relate Multiple Contacts to Tasks and Events<br>Although the Metadata API has a ActivitiesSettings.allowUsersToRelateMultipleContactsToTasksAndEvents field, it is not possible to enable this setting using an API. Warning: can only be disabled with help of the salesforce.com Support team. https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_activitiessettings.htm<br>**Irreversible:** cannot be changed back once applied. |  |  |
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| <code>allowUsersToRelateMultipleContactsToTasksAndEvents</code> | boolean | Allow Users to Relate Multiple Contacts to Tasks and Events<br>Although the Metadata API has a ActivitiesSettings.allowUsersToRelateMultipleContactsToTasksAndEvents field, it is not possible to enable this setting using an API. Warning: can only be disabled with help of the salesforce.com Support team. https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_activitiessettings.htm<br>**Irreversible:** cannot be changed back once applied. |
 
 ??? note "JSON Schema"
 

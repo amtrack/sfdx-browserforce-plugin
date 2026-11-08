@@ -45,9 +45,9 @@ Enables or disables the Sales Navigator integration.
 
 ## Fields
 
-| Field | Type | Description | Values | Default |
-| ----- | ---- | ----------- | ------ | ------- |
-| `enabled` | boolean | Enable LinkedIn Sales Navigator Integration |  |  |
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| <code>enabled</code> | boolean | Enable LinkedIn Sales Navigator Integration |
 
 ??? note "JSON Schema"
 

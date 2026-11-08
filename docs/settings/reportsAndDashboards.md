@@ -33,9 +33,9 @@ Enables Enhanced Folder Sharing. Orgs created after the Summer ’13 release alr
 
 ## Fields
 
-| Field | Type | Description | Values | Default |
-| ----- | ---- | ----------- | ------ | ------- |
-| `folderSharing.enableEnhancedFolderSharing` | boolean | Enable access levels for sharing report and dashboard folders<br>Cannot be disabled once enabled.<br>**Irreversible:** cannot be changed back once applied. |  |  |
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| <code>folderSharing.<wbr>enableEnhancedFolderSharing</code> | boolean | Enable access levels for sharing report and dashboard folders<br>Cannot be disabled once enabled.<br>**Irreversible:** cannot be changed back once applied. |
 
 ??? note "JSON Schema"
 

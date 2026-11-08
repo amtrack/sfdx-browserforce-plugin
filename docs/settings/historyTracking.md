@@ -46,11 +46,11 @@ It closes a gap of the Metadata API, which cannot enable field history tracking 
 
 In the field paths, `[]` stands for the items of a list and `*` for the entries of an object keyed by name.
 
-| Field | Type | Description | Values | Default |
-| ----- | ---- | ----------- | ------ | ------- |
-| `[].objectApiName` | string | Object API Name<br>The API name of the object to manage history tracking for.<br>**Required.** |  |  |
-| `[].enableHistoryTracking` | boolean | Enable History Tracking<br>If history tracking should be enabled. |  |  |
-| `[].fieldHistoryTracking` | json | Field History Tracking |  | `[]` |
+| Field | Type | Description | Default |
+| ----- | ---- | ----------- | ------- |
+| <code>[].<wbr>objectApiName</code> | string | Object API Name<br>The API name of the object to manage history tracking for.<br>**Required.** |  |
+| <code>[].<wbr>enableHistoryTracking</code> | boolean | Enable History Tracking<br>If history tracking should be enabled. |  |
+| <code>[].<wbr>fieldHistoryTracking</code> | json | Field History Tracking | `[]` |
 
 ??? note "JSON Schema"
 

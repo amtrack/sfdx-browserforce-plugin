@@ -162,25 +162,44 @@ function fieldNotes(field: Field): string[] {
   ];
 }
 
+/**
+ * Path of a field as inline code that may wrap only after a dot (`picklistValues[].<wbr>metadataType`): a long path
+ * does not widen the table, and a name is never cut in the middle.
+ */
+export function fieldPath(path: string): string {
+  const escaped = path.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\|/g, '&#124;');
+  return `<code>${escaped.replace(/\./g, '.<wbr>')}</code>`;
+}
+
 function renderFields(entry: PluginCatalogEntry): string[] {
   if (entry.fields.length === 0) {
     return [];
   }
+  // the Values and Default columns only when a field has some
+  const hasValues = entry.fields.some((field) => field.enum?.length);
+  const hasDefaults = entry.fields.some((field) => field.default !== undefined);
+  const header = [
+    'Field',
+    'Type',
+    'Description',
+    ...(hasValues ? ['Values'] : []),
+    ...(hasDefaults ? ['Default'] : []),
+  ];
   const rows = entry.fields.map((field) => {
     const description = [field.title, field.description]
       .filter((text): text is string => Boolean(text))
       .filter((text, index, texts) => texts.indexOf(text) === index);
     return [
-      code(field.path),
+      fieldPath(field.path),
       field.type,
       cell([...description, ...fieldNotes(field)].join('<br>')),
-      cell((field.enum ?? []).map(code).join(', ')),
-      field.default === undefined ? '' : cell(code(field.default)),
+      ...(hasValues ? [cell((field.enum ?? []).map(code).join('<br>'))] : []),
+      ...(hasDefaults ? [field.default === undefined ? '' : cell(code(field.default))] : []),
     ];
   });
   const lines = [
-    '| Field | Type | Description | Values | Default |',
-    '| ----- | ---- | ----------- | ------ | ------- |',
+    `| ${header.join(' | ')} |`,
+    `| ${header.map((title) => '-'.repeat(title.length)).join(' | ')} |`,
     ...rows.map((row) => `| ${row.join(' | ')} |`),
   ];
   const repeated = entry.groups.length

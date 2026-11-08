@@ -36,105 +36,105 @@ Sets the settings of the Salesforce CPQ package.
 
 ## Fields
 
-| Field | Type | Description | Values | Default |
-| ----- | ---- | ----------- | ------ | ------- |
-| `documents.documentFolder` | string | Document Folder |  |  |
-| `documents.hideDocumentName` | boolean | Hide Document Name |  |  |
-| `documents.fullPagePreview` | boolean | Full Page Preview |  |  |
-| `documents.excludeHiddenLinesInGroupTotals` | boolean | Exclude Hidden Lines In Group Totals |  |  |
-| `documents.attachmentTarget` | string | Attachment Target |  |  |
-| `documents.postToFeed` | boolean | Post to Feed? |  |  |
-| `documents.enableMultiLanguageTranslations` | boolean | Enable Multi-Language Translations |  |  |
-| `groups.solutionGroupsEnabled` | boolean | Solution Groups Enabled |  |  |
-| `groups.object` | string | Object |  |  |
-| `groups.nameField` | string | Name Field |  |  |
-| `groups.descriptionField` | string | Description Field |  |  |
-| `groups.requireGroupName` | boolean | Require Group Name |  |  |
-| `lineEditor.hideRenewedAssetsWhenEditing` | boolean | Hide Renewed Assets When Editing |  |  |
-| `lineEditor.visualizeProductHierarchy` | boolean | Visualize Product Hierarchy |  |  |
-| `lineEditor.preserveBundleStructure` | boolean | Preserve Bundle Structure |  |  |
-| `lineEditor.keepBundleTogether` | boolean | Keep Bundle Together |  |  |
-| `lineEditor.totalsField` | string | Totals Field |  |  |
-| `lineEditor.lineSubtotalsTotalField` | string | Line Subtotals Total Field |  |  |
-| `lineEditor.largeQuoteThreshold` | number | Large Quote Threshold |  |  |
-| `lineEditor.quoteBatchSize` | number | Quote Batch Size |  |  |
-| `lineEditor.enableExpandCollapseBundles` | boolean | Enable Expand/Collapse Bundles |  |  |
-| `lineEditor.defaultBundleSetting` | string | Default Bundle Setting |  |  |
-| `lineEditor.actionsColumnPlacement` | string | Actions Column Placement |  |  |
-| `lineEditor.enableMultiLineDelete` | boolean | Enable Multi Line Delete |  |  |
-| `lineEditor.productConfigurationInitializer` | string | Product Configuration Initializer |  |  |
-| `lineEditor.enableAssetUpgrades` | boolean | Enable Asset Upgrades |  |  |
-| `lineEditor.groupSubtotalsField` | string | Group Subtotals Field |  |  |
-| `lineEditor.wrapButtons` | boolean | Wrap Buttons |  |  |
-| `lineEditor.validateLargeQuotes` | boolean | Validate Large Quotes |  |  |
-| `lineEditor.enableCompactMode` | boolean | Enable Compact Mode |  |  |
-| `lineEditor.enableLargeQuoteExperience` | boolean | Enable Large Quote Experience |  |  |
-| `lineEditor.enableColumnResizing` | boolean | Enable Column Resizing |  |  |
-| `plugins.legacyPageSecurityPlugin` | string | Legacy Page Security Plugin |  |  |
-| `plugins.electronicSignaturePlugin` | string | Electronic Signature Plugin |  |  |
-| `plugins.billingPlugin` | string | Billing Plugin |  |  |
-| `plugins.productSearchPlugin` | string | Product Search Plugin |  |  |
-| `plugins.recommendedProductsPlugin` | string | Recommended Products Plugin |  |  |
-| `plugins.legacyQuoteCalculatorPlugin` | string | Legacy Quote Calculator Plugin |  |  |
-| `plugins.documentStorePlugin` | string | Document Store Plugin |  |  |
-| `plugins.quoteCalculatorPlugin` | string | Quote Calculator Plugin |  |  |
-| `plugins.orderManagementPlugin` | string | Order Management Plugin |  |  |
-| `plugins.qleCustomActionPlugin` | string | QLE Custom Action Plugin |  |  |
-| `pricingAndCalculation.currencySymbol` | string | Currency Symbol |  |  |
-| `pricingAndCalculation.useInactivePrices` | boolean | Use Inactive Prices |  |  |
-| `pricingAndCalculation.unitPriceScale` | number | Unit Price Scale |  |  |
-| `pricingAndCalculation.calculateImmediately` | boolean | Calculate Immediately |  |  |
-| `pricingAndCalculation.enableQuickCalculate` | boolean | Enable Quick Calculate |  |  |
-| `pricingAndCalculation.allowNonConsecutiveCustomSegments` | boolean | Allow Non-Consecutive Custom Segments |  |  |
-| `pricingAndCalculation.enablePricingGuidance` | boolean | Enable Pricing Guidance |  |  |
-| `pricingAndCalculation.quoteLineEditsForUsageBasedPricing` | boolean | Quote Line Edits for Usage Based Pricing |  |  |
-| `pricingAndCalculation.useLegacyCalculator` | boolean | Use Legacy Calculator |  |  |
-| `pricingAndCalculation.disableBackgroundCalculationRefresh` | boolean | Disable Background Calculation Refresh |  |  |
-| `pricingAndCalculation.enableUsageBasedPricing` | boolean | Enable Usage Based Pricing |  |  |
-| `pricingAndCalculation.hideUncalculatedQuoteWarning` | boolean | Hide Uncalculated Quote Warning |  |  |
-| `pricingAndCalculation.useIntegrationUserForCalculations` | boolean | Use Integration User for Calculations |  |  |
-| `subscriptionsAndRenewals.renewalModel` | string | Renewal Model |  |  |
-| `subscriptionsAndRenewals.disableAddSubscriptions` | boolean | Disable Add Subscriptions |  |  |
-| `subscriptionsAndRenewals.allowRenewalQuotesWithoutAssets` | boolean | Allow Renewal Quotes Without Assets |  |  |
-| `subscriptionsAndRenewals.subscriptionProratePrecision` | string | Subscription Prorate Precision |  |  |
-| `subscriptionsAndRenewals.includeNetNewProductsInMaintenance` | boolean | Include Net-new Products in Maintenance |  |  |
-| `subscriptionsAndRenewals.contractInForeground` | boolean | Contract In Foreground |  |  |
-| `subscriptionsAndRenewals.enableEvergreenSubscriptions` | boolean | Enable Evergreen Subscriptions |  |  |
-| `subscriptionsAndRenewals.legacyAmendRenewService` | boolean | Legacy Amend/Renew Service |  |  |
-| `subscriptionsAndRenewals.amendContractsInBackground` | boolean | Amend Contracts in Background |  |  |
-| `subscriptionsAndRenewals.bypassPreserveBundleStructure` | boolean | Bypass Preserve Bundle Structure |  |  |
-| `subscriptionsAndRenewals.subscriptionTermUnit` | string | Subscription Term Unit |  |  |
-| `subscriptionsAndRenewals.reEvaluateBundleLogicOnRenewals` | boolean | Re-evaluate Bundle Logic on Renewals |  |  |
-| `subscriptionsAndRenewals.poTRenewalsContractingFromOrders` | boolean | PoT Renewals (Contracting from Orders) |  |  |
-| `subscriptionsAndRenewals.disableProductBundleSubTypeChecks` | boolean | Disable Product Bundle Sub Type Checks |  |  |
-| `subscriptionsAndRenewals.useCurrentSubscriptionOnAssets` | boolean | Use Current Subscription on Assets |  |  |
-| `quote.disableInitialQuoteSync` | boolean | Disable Initial Quote Sync |  |  |
-| `quote.disableQuoteContactDefaulting` | boolean | Disable Quote Contact Defaulting |  |  |
-| `quote.allowOptionDeletion` | boolean | Allow Option Deletion |  |  |
-| `quote.disableQuoteAddressDefaulting` | boolean | Disable Quote Address Defaulting |  |  |
-| `quote.primaryQuoteKeepsOpportunityProducts` | boolean | Primary Quote Keeps Opportunity Products |  |  |
-| `quote.defaultQuoteValidityDays` | number | Default Quote Validity (Days) |  |  |
-| `order.requireApprovedQuote` | boolean | Require Approved Quote |  |  |
-| `order.defaultOrderStartDate` | string | Default Order Start Date |  |  |
-| `order.allowMultipleOrders` | boolean | Allow Multiple Orders |  |  |
-| `order.createOrdersWithoutOpportunities` | boolean | Create Orders Without Opportunities |  |  |
-| `additionalSettings.triggersDisabled` | boolean | Triggers Disabled |  |  |
-| `additionalSettings.quantityScale` | number | Quantity Scale |  |  |
-| `additionalSettings.sortProductsInMemory` | boolean | Sort Products In Memory |  |  |
-| `additionalSettings.multipleBundlesView` | string | Multiple Bundles View |  |  |
-| `additionalSettings.externalConfiguratorUrl` | string | External Configurator URL |  |  |
-| `additionalSettings.thirdPartyConfigurator` | boolean | Third Party Configurator |  |  |
-| `additionalSettings.openSearchFilterByDefault` | boolean | Open Search Filter By Default |  |  |
-| `additionalSettings.hideFeaturesWithHiddenOptions` | boolean | Hide Features with Hidden Options |  |  |
-| `additionalSettings.hideProductSearchBar` | boolean | Hide Product Search Bar |  |  |
-| `additionalSettings.productResultsGroupFieldName` | string | Product Results Group Field Name |  |  |
-| `additionalSettings.productDescriptionField` | string | Product Description Field |  |  |
-| `additionalSettings.theme` | string | Theme |  |  |
-| `additionalSettings.useGlobalHeaderPermission` | boolean | Use Global Header Permission |  |  |
-| `additionalSettings.serviceRegion` | string | Service Region |  |  |
-| `additionalSettings.enableProductOptionDrawer` | boolean | Enable Product Option Drawer |  |  |
-| `additionalSettings.enableLargeConfigurations` | boolean | Enable Large Configurations |  |  |
-| `additionalSettings.nestedBundlesForExternalConfigurator` | boolean | Nested Bundles for External Configurator |  |  |
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| <code>documents.<wbr>documentFolder</code> | string | Document Folder |
+| <code>documents.<wbr>hideDocumentName</code> | boolean | Hide Document Name |
+| <code>documents.<wbr>fullPagePreview</code> | boolean | Full Page Preview |
+| <code>documents.<wbr>excludeHiddenLinesInGroupTotals</code> | boolean | Exclude Hidden Lines In Group Totals |
+| <code>documents.<wbr>attachmentTarget</code> | string | Attachment Target |
+| <code>documents.<wbr>postToFeed</code> | boolean | Post to Feed? |
+| <code>documents.<wbr>enableMultiLanguageTranslations</code> | boolean | Enable Multi-Language Translations |
+| <code>groups.<wbr>solutionGroupsEnabled</code> | boolean | Solution Groups Enabled |
+| <code>groups.<wbr>object</code> | string | Object |
+| <code>groups.<wbr>nameField</code> | string | Name Field |
+| <code>groups.<wbr>descriptionField</code> | string | Description Field |
+| <code>groups.<wbr>requireGroupName</code> | boolean | Require Group Name |
+| <code>lineEditor.<wbr>hideRenewedAssetsWhenEditing</code> | boolean | Hide Renewed Assets When Editing |
+| <code>lineEditor.<wbr>visualizeProductHierarchy</code> | boolean | Visualize Product Hierarchy |
+| <code>lineEditor.<wbr>preserveBundleStructure</code> | boolean | Preserve Bundle Structure |
+| <code>lineEditor.<wbr>keepBundleTogether</code> | boolean | Keep Bundle Together |
+| <code>lineEditor.<wbr>totalsField</code> | string | Totals Field |
+| <code>lineEditor.<wbr>lineSubtotalsTotalField</code> | string | Line Subtotals Total Field |
+| <code>lineEditor.<wbr>largeQuoteThreshold</code> | number | Large Quote Threshold |
+| <code>lineEditor.<wbr>quoteBatchSize</code> | number | Quote Batch Size |
+| <code>lineEditor.<wbr>enableExpandCollapseBundles</code> | boolean | Enable Expand/Collapse Bundles |
+| <code>lineEditor.<wbr>defaultBundleSetting</code> | string | Default Bundle Setting |
+| <code>lineEditor.<wbr>actionsColumnPlacement</code> | string | Actions Column Placement |
+| <code>lineEditor.<wbr>enableMultiLineDelete</code> | boolean | Enable Multi Line Delete |
+| <code>lineEditor.<wbr>productConfigurationInitializer</code> | string | Product Configuration Initializer |
+| <code>lineEditor.<wbr>enableAssetUpgrades</code> | boolean | Enable Asset Upgrades |
+| <code>lineEditor.<wbr>groupSubtotalsField</code> | string | Group Subtotals Field |
+| <code>lineEditor.<wbr>wrapButtons</code> | boolean | Wrap Buttons |
+| <code>lineEditor.<wbr>validateLargeQuotes</code> | boolean | Validate Large Quotes |
+| <code>lineEditor.<wbr>enableCompactMode</code> | boolean | Enable Compact Mode |
+| <code>lineEditor.<wbr>enableLargeQuoteExperience</code> | boolean | Enable Large Quote Experience |
+| <code>lineEditor.<wbr>enableColumnResizing</code> | boolean | Enable Column Resizing |
+| <code>plugins.<wbr>legacyPageSecurityPlugin</code> | string | Legacy Page Security Plugin |
+| <code>plugins.<wbr>electronicSignaturePlugin</code> | string | Electronic Signature Plugin |
+| <code>plugins.<wbr>billingPlugin</code> | string | Billing Plugin |
+| <code>plugins.<wbr>productSearchPlugin</code> | string | Product Search Plugin |
+| <code>plugins.<wbr>recommendedProductsPlugin</code> | string | Recommended Products Plugin |
+| <code>plugins.<wbr>legacyQuoteCalculatorPlugin</code> | string | Legacy Quote Calculator Plugin |
+| <code>plugins.<wbr>documentStorePlugin</code> | string | Document Store Plugin |
+| <code>plugins.<wbr>quoteCalculatorPlugin</code> | string | Quote Calculator Plugin |
+| <code>plugins.<wbr>orderManagementPlugin</code> | string | Order Management Plugin |
+| <code>plugins.<wbr>qleCustomActionPlugin</code> | string | QLE Custom Action Plugin |
+| <code>pricingAndCalculation.<wbr>currencySymbol</code> | string | Currency Symbol |
+| <code>pricingAndCalculation.<wbr>useInactivePrices</code> | boolean | Use Inactive Prices |
+| <code>pricingAndCalculation.<wbr>unitPriceScale</code> | number | Unit Price Scale |
+| <code>pricingAndCalculation.<wbr>calculateImmediately</code> | boolean | Calculate Immediately |
+| <code>pricingAndCalculation.<wbr>enableQuickCalculate</code> | boolean | Enable Quick Calculate |
+| <code>pricingAndCalculation.<wbr>allowNonConsecutiveCustomSegments</code> | boolean | Allow Non-Consecutive Custom Segments |
+| <code>pricingAndCalculation.<wbr>enablePricingGuidance</code> | boolean | Enable Pricing Guidance |
+| <code>pricingAndCalculation.<wbr>quoteLineEditsForUsageBasedPricing</code> | boolean | Quote Line Edits for Usage Based Pricing |
+| <code>pricingAndCalculation.<wbr>useLegacyCalculator</code> | boolean | Use Legacy Calculator |
+| <code>pricingAndCalculation.<wbr>disableBackgroundCalculationRefresh</code> | boolean | Disable Background Calculation Refresh |
+| <code>pricingAndCalculation.<wbr>enableUsageBasedPricing</code> | boolean | Enable Usage Based Pricing |
+| <code>pricingAndCalculation.<wbr>hideUncalculatedQuoteWarning</code> | boolean | Hide Uncalculated Quote Warning |
+| <code>pricingAndCalculation.<wbr>useIntegrationUserForCalculations</code> | boolean | Use Integration User for Calculations |
+| <code>subscriptionsAndRenewals.<wbr>renewalModel</code> | string | Renewal Model |
+| <code>subscriptionsAndRenewals.<wbr>disableAddSubscriptions</code> | boolean | Disable Add Subscriptions |
+| <code>subscriptionsAndRenewals.<wbr>allowRenewalQuotesWithoutAssets</code> | boolean | Allow Renewal Quotes Without Assets |
+| <code>subscriptionsAndRenewals.<wbr>subscriptionProratePrecision</code> | string | Subscription Prorate Precision |
+| <code>subscriptionsAndRenewals.<wbr>includeNetNewProductsInMaintenance</code> | boolean | Include Net-new Products in Maintenance |
+| <code>subscriptionsAndRenewals.<wbr>contractInForeground</code> | boolean | Contract In Foreground |
+| <code>subscriptionsAndRenewals.<wbr>enableEvergreenSubscriptions</code> | boolean | Enable Evergreen Subscriptions |
+| <code>subscriptionsAndRenewals.<wbr>legacyAmendRenewService</code> | boolean | Legacy Amend/Renew Service |
+| <code>subscriptionsAndRenewals.<wbr>amendContractsInBackground</code> | boolean | Amend Contracts in Background |
+| <code>subscriptionsAndRenewals.<wbr>bypassPreserveBundleStructure</code> | boolean | Bypass Preserve Bundle Structure |
+| <code>subscriptionsAndRenewals.<wbr>subscriptionTermUnit</code> | string | Subscription Term Unit |
+| <code>subscriptionsAndRenewals.<wbr>reEvaluateBundleLogicOnRenewals</code> | boolean | Re-evaluate Bundle Logic on Renewals |
+| <code>subscriptionsAndRenewals.<wbr>poTRenewalsContractingFromOrders</code> | boolean | PoT Renewals (Contracting from Orders) |
+| <code>subscriptionsAndRenewals.<wbr>disableProductBundleSubTypeChecks</code> | boolean | Disable Product Bundle Sub Type Checks |
+| <code>subscriptionsAndRenewals.<wbr>useCurrentSubscriptionOnAssets</code> | boolean | Use Current Subscription on Assets |
+| <code>quote.<wbr>disableInitialQuoteSync</code> | boolean | Disable Initial Quote Sync |
+| <code>quote.<wbr>disableQuoteContactDefaulting</code> | boolean | Disable Quote Contact Defaulting |
+| <code>quote.<wbr>allowOptionDeletion</code> | boolean | Allow Option Deletion |
+| <code>quote.<wbr>disableQuoteAddressDefaulting</code> | boolean | Disable Quote Address Defaulting |
+| <code>quote.<wbr>primaryQuoteKeepsOpportunityProducts</code> | boolean | Primary Quote Keeps Opportunity Products |
+| <code>quote.<wbr>defaultQuoteValidityDays</code> | number | Default Quote Validity (Days) |
+| <code>order.<wbr>requireApprovedQuote</code> | boolean | Require Approved Quote |
+| <code>order.<wbr>defaultOrderStartDate</code> | string | Default Order Start Date |
+| <code>order.<wbr>allowMultipleOrders</code> | boolean | Allow Multiple Orders |
+| <code>order.<wbr>createOrdersWithoutOpportunities</code> | boolean | Create Orders Without Opportunities |
+| <code>additionalSettings.<wbr>triggersDisabled</code> | boolean | Triggers Disabled |
+| <code>additionalSettings.<wbr>quantityScale</code> | number | Quantity Scale |
+| <code>additionalSettings.<wbr>sortProductsInMemory</code> | boolean | Sort Products In Memory |
+| <code>additionalSettings.<wbr>multipleBundlesView</code> | string | Multiple Bundles View |
+| <code>additionalSettings.<wbr>externalConfiguratorUrl</code> | string | External Configurator URL |
+| <code>additionalSettings.<wbr>thirdPartyConfigurator</code> | boolean | Third Party Configurator |
+| <code>additionalSettings.<wbr>openSearchFilterByDefault</code> | boolean | Open Search Filter By Default |
+| <code>additionalSettings.<wbr>hideFeaturesWithHiddenOptions</code> | boolean | Hide Features with Hidden Options |
+| <code>additionalSettings.<wbr>hideProductSearchBar</code> | boolean | Hide Product Search Bar |
+| <code>additionalSettings.<wbr>productResultsGroupFieldName</code> | string | Product Results Group Field Name |
+| <code>additionalSettings.<wbr>productDescriptionField</code> | string | Product Description Field |
+| <code>additionalSettings.<wbr>theme</code> | string | Theme |
+| <code>additionalSettings.<wbr>useGlobalHeaderPermission</code> | boolean | Use Global Header Permission |
+| <code>additionalSettings.<wbr>serviceRegion</code> | string | Service Region |
+| <code>additionalSettings.<wbr>enableProductOptionDrawer</code> | boolean | Enable Product Option Drawer |
+| <code>additionalSettings.<wbr>enableLargeConfigurations</code> | boolean | Enable Large Configurations |
+| <code>additionalSettings.<wbr>nestedBundlesForExternalConfigurator</code> | boolean | Nested Bundles for External Configurator |
 
 ??? note "JSON Schema"
 

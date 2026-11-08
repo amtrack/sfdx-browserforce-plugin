@@ -78,21 +78,21 @@ Enables the Customer Portal, configures its portals (self-registration, profiles
 
 In the field paths, `[]` stands for the items of a list and `*` for the entries of an object keyed by name.
 
-| Field | Type | Description | Values | Default |
-| ----- | ---- | ----------- | ------ | ------- |
-| `enabled` | boolean | Enable Customer Portal<br>Although the Metadata API has a OrgSettings.enableCustomerSuccessPortal field, enabling this via the browser can be handy because it automatically creates a Portal named 'Customer Portal', where the admin and emailSenderAddress are set to the current user. Warning: cannot be disabled once enabled<br>**Irreversible:** cannot be changed back once applied. |  |  |
-| `portals[].adminUser` | string |  |  |  |
-| `portals[].description` | string |  |  |  |
-| `portals[].isSelfRegistrationActivated` | boolean |  |  |  |
-| `portals[].name` | string | **Required.** |  |  |
-| `portals[].oldName` | string |  |  |  |
-| `portals[].selfRegUserDefaultLicense` | string |  |  |  |
-| `portals[].selfRegUserDefaultProfile` | string |  |  |  |
-| `portals[].selfRegUserDefaultRole` | string |  |  |  |
-| `portals[].portalProfileMemberships` | json | Profiles for which this portal should be activated or deactivated |  | `[]` |
-| `availableCustomObjects[].name` | string | **Required.** |  |  |
-| `availableCustomObjects[].namespacePrefix` | string |  |  |  |
-| `availableCustomObjects[].available` | boolean | **Required.** |  |  |
+| Field | Type | Description | Default |
+| ----- | ---- | ----------- | ------- |
+| <code>enabled</code> | boolean | Enable Customer Portal<br>Although the Metadata API has a OrgSettings.enableCustomerSuccessPortal field, enabling this via the browser can be handy because it automatically creates a Portal named 'Customer Portal', where the admin and emailSenderAddress are set to the current user. Warning: cannot be disabled once enabled<br>**Irreversible:** cannot be changed back once applied. |  |
+| <code>portals[].<wbr>adminUser</code> | string |  |  |
+| <code>portals[].<wbr>description</code> | string |  |  |
+| <code>portals[].<wbr>isSelfRegistrationActivated</code> | boolean |  |  |
+| <code>portals[].<wbr>name</code> | string | **Required.** |  |
+| <code>portals[].<wbr>oldName</code> | string |  |  |
+| <code>portals[].<wbr>selfRegUserDefaultLicense</code> | string |  |  |
+| <code>portals[].<wbr>selfRegUserDefaultProfile</code> | string |  |  |
+| <code>portals[].<wbr>selfRegUserDefaultRole</code> | string |  |  |
+| <code>portals[].<wbr>portalProfileMemberships</code> | json | Profiles for which this portal should be activated or deactivated | `[]` |
+| <code>availableCustomObjects[].<wbr>name</code> | string | **Required.** |  |
+| <code>availableCustomObjects[].<wbr>namespacePrefix</code> | string |  |  |
+| <code>availableCustomObjects[].<wbr>available</code> | boolean | **Required.** |  |
 
 ??? note "JSON Schema"
 

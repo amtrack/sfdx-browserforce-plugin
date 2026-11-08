@@ -44,10 +44,10 @@ Assigns Home Page Layouts to profiles.
 
 In the field paths, `[]` stands for the items of a list and `*` for the entries of an object keyed by name.
 
-| Field | Type | Description | Values | Default |
-| ----- | ---- | ----------- | ------ | ------- |
-| `homePageLayoutAssignments[].profile` | string | Developer Name of Profile<br>**Required.** |  |  |
-| `homePageLayoutAssignments[].layout` | string | Developer Name of the HomePageLayout or empty string for default layout<br>**Required.** |  |  |
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| <code>homePageLayoutAssignments[].<wbr>profile</code> | string | Developer Name of Profile<br>**Required.** |
+| <code>homePageLayoutAssignments[].<wbr>layout</code> | string | Developer Name of the HomePageLayout or empty string for default layout<br>**Required.** |
 
 ??? note "JSON Schema"
 

@@ -33,10 +33,10 @@ Updates the Consumer Key and the Consumer Secret of existing Auth Providers, key
 
 In the field paths, `[]` stands for the items of a list and `*` for the entries of an object keyed by name.
 
-| Field | Type | Description | Values | Default |
-| ----- | ---- | ----------- | ------ | ------- |
-| `*.consumerSecret` | string | Consumer Secret<br>The Consumer Secret value for the Auth Provider<br>**Secret:** masked in the output of `apply`. |  |  |
-| `*.consumerKey` | string | Consumer Key<br>The Consumer Key value for the Auth Provider |  |  |
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| <code>*.<wbr>consumerSecret</code> | string | Consumer Secret<br>The Consumer Secret value for the Auth Provider<br>**Secret:** masked in the output of `apply`. |
+| <code>*.<wbr>consumerKey</code> | string | Consumer Key<br>The Consumer Key value for the Auth Provider |
 
 ??? note "JSON Schema"
 

@@ -33,9 +33,9 @@ Enables the status-based capacity model.
 
 ## Fields
 
-| Field | Type | Description | Values | Default |
-| ----- | ---- | ----------- | ------ | ------- |
-| `enableStatusBasedCapacityModel` | boolean | Enable Status-Based Capacity Model<br>Route and track work based on changes to work status and ownership. |  |  |
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| <code>enableStatusBasedCapacityModel</code> | boolean | Enable Status-Based Capacity Model<br>Route and track work based on changes to work status and ownership. |
 
 ??? note "JSON Schema"
 

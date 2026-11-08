@@ -33,9 +33,9 @@ Due to a bug, High Velocity Sales (Sales Engagement) needs to be set up and enab
 
 ## Fields
 
-| Field | Type | Description | Values | Default |
-| ----- | ---- | ----------- | ------ | ------- |
-| `setUpAndEnable` | boolean | Set Up and Enable High Velocity Sales |  |  |
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| <code>setUpAndEnable</code> | boolean | Set Up and Enable High Velocity Sales |
 
 ??? note "JSON Schema"
 

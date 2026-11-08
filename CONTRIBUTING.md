@@ -183,6 +183,10 @@ pip install -r docs/requirements.txt
 zensical serve
 ```
 
+The site looks like the Salesforce Lightning Design System, as [SF Plugin Explorer](https://amtrack.github.io/sf-plugin-explorer/):
+its colors are the `--bf-*` variables at the top of `docs/stylesheets/extra.css`, and `mkdocs.yml` sets the palettes
+(`primary: custom`, `accent: custom`, light and dark) and system fonts (`font: false`).
+
 The other pages of `docs/` (installation, configuration, troubleshooting, Hall of Fame) are written by hand. Do not
 edit the generated ones: they start with a comment saying so. Every page starts with a YAML front matter giving its
 `title` and its `description` (160 characters at most) for search engines; the generators write it for the generated

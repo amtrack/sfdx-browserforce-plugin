@@ -45,9 +45,9 @@ Chooses the default display density of the org: "Comfy" or "Compact".
 
 ## Fields
 
-| Field | Type | Description | Values | Default |
-| ----- | ---- | ----------- | ------ | ------- |
-| `density` | string | Density<br>Choose the default display setting for your org | `Comfy`, `Compact` |  |
+| Field | Type | Description | Values |
+| ----- | ---- | ----------- | ------ |
+| <code>density</code> | string | Density<br>Choose the default display setting for your org | `Comfy`<br>`Compact` |
 
 ??? note "JSON Schema"
 

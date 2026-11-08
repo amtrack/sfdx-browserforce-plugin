@@ -30,9 +30,9 @@ Activates a Lightning Experience theme. Although the Metadata API has an `active
 
 ## Fields
 
-| Field | Type | Description | Values | Default |
-| ----- | ---- | ----------- | ------ | ------- |
-| `activeThemeName` | string | The active Lightning Experience Theme<br>The API Name of the Lightning Experience Theme to be activated |  |  |
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| <code>activeThemeName</code> | string | The active Lightning Experience Theme<br>The API Name of the Lightning Experience Theme to be activated |
 
 ??? note "JSON Schema"
 

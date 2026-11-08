@@ -40,14 +40,14 @@ Configures the capacity model of Service Channels (Omni-Channel): status-based c
 
 In the field paths, `[]` stands for the items of a list and `*` for the entries of an object keyed by name.
 
-| Field | Type | Description | Values | Default |
-| ----- | ---- | ----------- | ------ | ------- |
-| `[].serviceChannelDeveloperName` | string | Service Channel<br>The developer name of the Service Channel to modify<br>**Required.** |  |  |
-| `[].capacity.capacityModel` | string | Capacity Model<br>Choose the service channel Capacity Model | `TabBased`, `StatusBased` |  |
-| `[].capacity.statusField` | string | Status Field<br>API Name of the field used to track status |  |  |
-| `[].capacity.valuesForInProgress` | string[] | Values for In-Progress<br>Choose the field values for In-Progress work |  |  |
-| `[].capacity.checkAgentCapacityOnReopenedWorkItems` | boolean | Check agent capacity on reopened work items |  |  |
-| `[].capacity.checkAgentCapacityOnReassignedWorkItems` | boolean | Check agent capacity on reassigned work items |  |  |
+| Field | Type | Description | Values |
+| ----- | ---- | ----------- | ------ |
+| <code>[].<wbr>serviceChannelDeveloperName</code> | string | Service Channel<br>The developer name of the Service Channel to modify<br>**Required.** |  |
+| <code>[].<wbr>capacity.<wbr>capacityModel</code> | string | Capacity Model<br>Choose the service channel Capacity Model | `TabBased`<br>`StatusBased` |
+| <code>[].<wbr>capacity.<wbr>statusField</code> | string | Status Field<br>API Name of the field used to track status |  |
+| <code>[].<wbr>capacity.<wbr>valuesForInProgress</code> | string[] | Values for In-Progress<br>Choose the field values for In-Progress work |  |
+| <code>[].<wbr>capacity.<wbr>checkAgentCapacityOnReopenedWorkItems</code> | boolean | Check agent capacity on reopened work items |  |
+| <code>[].<wbr>capacity.<wbr>checkAgentCapacityOnReassignedWorkItems</code> | boolean | Check agent capacity on reassigned work items |  |
 
 ??? note "JSON Schema"
 

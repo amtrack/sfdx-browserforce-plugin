@@ -66,18 +66,18 @@ Config key: `settings.security`
 
 In the field paths, `[]` stands for the items of a list and `*` for the entries of an object keyed by name.
 
-| Field | Type | Description | Values | Default |
-| ----- | ---- | ----------- | ------ | ------- |
-| `certificateAndKeyManagement.certificates[].name` | string | **Required.** |  |  |
-| `certificateAndKeyManagement.certificates[].label` | string | **Required.** |  |  |
-| `certificateAndKeyManagement.certificates[].exportable` | boolean |  |  |  |
-| `certificateAndKeyManagement.certificates[].keysize` | integer |  |  |  |
-| `certificateAndKeyManagement.importFromKeystore[].name` | string | Optional new name of the certificate. WARNING: Only use this to change the case of the certificate name as the imported name is lowercase by default.<br>**Required.** |  |  |
-| `certificateAndKeyManagement.importFromKeystore[].filePath` | string | Relative path from current working directory<br>**Required.** |  |  |
-| `certificateAndKeyManagement.importFromKeystore[].password` | string | **Secret:** masked in the output of `apply`. |  |  |
-| `authenticationConfiguration.services[].label` | string | The visible name of the authentication service |  |  |
-| `authenticationConfiguration.services[].authProviderApiName` | string | The DeveloperName of the AuthProvider (alternative to label for matching) |  |  |
-| `authenticationConfiguration.services[].enabled` | boolean | True to enable, false to disable |  |  |
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| <code>certificateAndKeyManagement.<wbr>certificates[].<wbr>name</code> | string | **Required.** |
+| <code>certificateAndKeyManagement.<wbr>certificates[].<wbr>label</code> | string | **Required.** |
+| <code>certificateAndKeyManagement.<wbr>certificates[].<wbr>exportable</code> | boolean |  |
+| <code>certificateAndKeyManagement.<wbr>certificates[].<wbr>keysize</code> | integer |  |
+| <code>certificateAndKeyManagement.<wbr>importFromKeystore[].<wbr>name</code> | string | Optional new name of the certificate. WARNING: Only use this to change the case of the certificate name as the imported name is lowercase by default.<br>**Required.** |
+| <code>certificateAndKeyManagement.<wbr>importFromKeystore[].<wbr>filePath</code> | string | Relative path from current working directory<br>**Required.** |
+| <code>certificateAndKeyManagement.<wbr>importFromKeystore[].<wbr>password</code> | string | **Secret:** masked in the output of `apply`. |
+| <code>authenticationConfiguration.<wbr>services[].<wbr>label</code> | string | The visible name of the authentication service |
+| <code>authenticationConfiguration.<wbr>services[].<wbr>authProviderApiName</code> | string | The DeveloperName of the AuthProvider (alternative to label for matching) |
+| <code>authenticationConfiguration.<wbr>services[].<wbr>enabled</code> | boolean | True to enable, false to disable |
 
 ??? note "JSON Schema"
 

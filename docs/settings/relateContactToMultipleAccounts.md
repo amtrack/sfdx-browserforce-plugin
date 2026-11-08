@@ -28,9 +28,9 @@ Enabling it through the Metadata API (`AccountSettings.enableRelateContactToMult
 
 ## Fields
 
-| Field | Type | Description | Values | Default |
-| ----- | ---- | ----------- | ------ | ------- |
-| `enabled` | boolean | Enable RelateContactToMultipleAccounts<br>This allows you to enable the 'Relate contact to multiple Accounts' in the Account settings. Doing this through the metadata API will not always make the AccountContactRelation object available. Enabling the feature using the setup does always work, therefore this plugin. |  |  |
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| <code>enabled</code> | boolean | Enable RelateContactToMultipleAccounts<br>This allows you to enable the 'Relate contact to multiple Accounts' in the Account settings. Doing this through the metadata API will not always make the AccountContactRelation object available. Enabling the feature using the setup does always work, therefore this plugin. |
 
 ??? note "JSON Schema"
 

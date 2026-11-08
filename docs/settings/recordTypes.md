@@ -33,10 +33,10 @@ Deletes inactive record types, optionally replacing them by another record type 
 
 In the field paths, `[]` stands for the items of a list and `*` for the entries of an object keyed by name.
 
-| Field | Type | Description | Values | Default |
-| ----- | ---- | ----------- | ------ | ------- |
-| `deletions[].fullName` | string | the API name of the RecordType<br>**Required.** |  |  |
-| `deletions[].replacement` | string | optional API name of the replacement RecordType |  |  |
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| <code>deletions[].<wbr>fullName</code> | string | the API name of the RecordType<br>**Required.** |
+| <code>deletions[].<wbr>replacement</code> | string | optional API name of the replacement RecordType |
 
 ??? note "JSON Schema"
 

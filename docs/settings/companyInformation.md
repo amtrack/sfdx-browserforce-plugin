@@ -30,9 +30,9 @@ Sets the Currency Locale of the org, which no Metadata API type represents.
 
 ## Fields
 
-| Field | Type | Description | Values | Default |
-| ----- | ---- | ----------- | ------ | ------- |
-| `defaultCurrencyIsoCode` | string | Default Currency |  |  |
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| <code>defaultCurrencyIsoCode</code> | string | Default Currency |
 
 ??? note "JSON Schema"
 

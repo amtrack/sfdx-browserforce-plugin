@@ -34,10 +34,10 @@ Agrees to the terms and conditions and enables the Sales Cloud for Slack app.
 
 ## Fields
 
-| Field | Type | Description | Values | Default |
-| ----- | ---- | ----------- | ------ | ------- |
-| `agreeToTermsAndConditions` | boolean | Agree to Termns and Conditions<br>Once the terms have been accepted, this cannot be reverted.<br>**Irreversible:** cannot be changed back once applied. |  |  |
-| `enableSalesCloudForSlack` | boolean | Enable the 'Sales Cloud for Slack' Slack App |  |  |
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| <code>agreeToTermsAndConditions</code> | boolean | Agree to Termns and Conditions<br>Once the terms have been accepted, this cannot be reverted.<br>**Irreversible:** cannot be changed back once applied. |
+| <code>enableSalesCloudForSlack</code> | boolean | Enable the 'Sales Cloud for Slack' Slack App |
 
 ??? note "JSON Schema"
 

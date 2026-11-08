@@ -96,9 +96,13 @@ describe('documentation pages', () => {
     });
 
     it('lists the fields in a table', () => {
+      assert.ok(page.includes('| Field | Type | Description | Values | Default |'));
       assert.ok(
-        page.includes('| `level` | string | Level<br>The \\| level<br>**Required.** | `Low`, `High` | `Low` |'),
+        page.includes(
+          '| <code>level</code> | string | Level<br>The \\| level<br>**Required.** | `Low`<br>`High` | `Low` |',
+        ),
       );
+      assert.ok(page.includes('| <code>items[].<wbr>secret</code> | string |'));
       assert.ok(page.includes('**Secret:** masked in the output of `apply`.'));
       assert.ok(page.includes('`[]` stands for the items of a list'));
     });
@@ -108,6 +112,14 @@ describe('documentation pages', () => {
       assert.ok(
         page.endsWith('[Source code of this setting](https://github.com/x/tree/main/src/plugins/my-setting)\n'),
       );
+    });
+
+    it('leaves out the Values and Default columns when no field has any', () => {
+      const plain = renderSettingPage({
+        ...entry,
+        fields: entry.fields.map(({ enum: _enum, default: _default, ...field }) => field),
+      });
+      assert.ok(plain.includes('| Field | Type | Description |\n| ----- | ---- | ----------- |'));
     });
 
     it('shows a single example without tabs', () => {

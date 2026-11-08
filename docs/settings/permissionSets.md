@@ -37,10 +37,10 @@ Gives Permission Sets access to service presence statuses (Omni-Channel), by the
 
 In the field paths, `[]` stands for the items of a list and `*` for the entries of an object keyed by name.
 
-| Field | Type | Description | Values | Default |
-| ----- | ---- | ----------- | ------ | ------- |
-| `[].permissionSetName` | string | Permission Set<br>The name of the Permission Set to modify<br>**Required.** |  |  |
-| `[].servicePresenceStatuses` | string[] | Service Presence Statuses |  | `[]` |
+| Field | Type | Description | Default |
+| ----- | ---- | ----------- | ------- |
+| <code>[].<wbr>permissionSetName</code> | string | Permission Set<br>The name of the Permission Set to modify<br>**Required.** |  |
+| <code>[].<wbr>servicePresenceStatuses</code> | string[] | Service Presence Statuses | `[]` |
 
 ??? note "JSON Schema"
 

@@ -46,9 +46,9 @@ Turns the Account Intelligence view on or off.
 
 ## Fields
 
-| Field | Type | Description | Values | Default |
-| ----- | ---- | ----------- | ------ | ------- |
-| `enable` | boolean | Enable Account Intelligence View |  |  |
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| <code>enable</code> | boolean | Enable Account Intelligence View |
 
 ??? note "JSON Schema"
 

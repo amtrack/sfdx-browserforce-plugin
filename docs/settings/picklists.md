@@ -82,19 +82,19 @@ Changes picklist values in ways the Metadata API cannot:
 
 In the field paths, `[]` stands for the items of a list and `*` for the entries of an object keyed by name.
 
-| Field | Type | Description | Values | Default |
-| ----- | ---- | ----------- | ------ | ------- |
-| `picklistValues[].metadataType` | string | the metadata type<br>**Required.** | `CustomField`, `GlobalValueSet`, `StandardValueSet` |  |
-| `picklistValues[].metadataFullName` | string | the API name of the CustomField/GlobalValueSet/StandardValueSet<br>**Required.** |  |  |
-| `picklistValues[].value` | string | the API name of the value |  |  |
-| `picklistValues[].newValue` | string | the API name of the new value, otherwise blank |  |  |
-| `picklistValues[].statusCategory` | string | the Status Category of a new picklist value |  |  |
-| `picklistValues[].replaceAllBlankValues` | boolean | replace all blank values (mutually exclusive to replacing an old value) |  |  |
-| `picklistValues[].active` | boolean | ensure the picklist value is active/inactive |  |  |
-| `picklistValues[].absent` | boolean | ensure the picklist value is absent/deleted |  |  |
-| `fieldDependencies[].object` | string | the API name of the CustomObject |  |  |
-| `fieldDependencies[].dependentField` | string | the API name of the CustomField that has its values filtered |  |  |
-| `fieldDependencies[].controllingField` | json | the API name of the CustomField that drives filtering<br>If this value is null or not set, the Field Dependency will be deleted. |  |  |
+| Field | Type | Description | Values |
+| ----- | ---- | ----------- | ------ |
+| <code>picklistValues[].<wbr>metadataType</code> | string | the metadata type<br>**Required.** | `CustomField`<br>`GlobalValueSet`<br>`StandardValueSet` |
+| <code>picklistValues[].<wbr>metadataFullName</code> | string | the API name of the CustomField/GlobalValueSet/StandardValueSet<br>**Required.** |  |
+| <code>picklistValues[].<wbr>value</code> | string | the API name of the value |  |
+| <code>picklistValues[].<wbr>newValue</code> | string | the API name of the new value, otherwise blank |  |
+| <code>picklistValues[].<wbr>statusCategory</code> | string | the Status Category of a new picklist value |  |
+| <code>picklistValues[].<wbr>replaceAllBlankValues</code> | boolean | replace all blank values (mutually exclusive to replacing an old value) |  |
+| <code>picklistValues[].<wbr>active</code> | boolean | ensure the picklist value is active/inactive |  |
+| <code>picklistValues[].<wbr>absent</code> | boolean | ensure the picklist value is absent/deleted |  |
+| <code>fieldDependencies[].<wbr>object</code> | string | the API name of the CustomObject |  |
+| <code>fieldDependencies[].<wbr>dependentField</code> | string | the API name of the CustomField that has its values filtered |  |
+| <code>fieldDependencies[].<wbr>controllingField</code> | json | the API name of the CustomField that drives filtering<br>If this value is null or not set, the Field Dependency will be deleted. |  |
 
 ??? note "JSON Schema"
 

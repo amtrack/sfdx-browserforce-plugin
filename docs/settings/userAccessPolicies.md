@@ -82,12 +82,12 @@ Activates or deactivates User Access Policies, chooses when they run (on create,
 
 In the field paths, `[]` stands for the items of a list and `*` for the entries of an object keyed by name.
 
-| Field | Type | Description | Values | Default |
-| ----- | ---- | ----------- | ------ | ------- |
-| `accessPolicies[].apiName` | string | The API name of the user access policy (e.g., 'Grant_Permissions')<br>**Required.** |  |  |
-| `accessPolicies[].active` | boolean | Whether the policy should be active (true) or inactive (false). Leave it out to keep the current status of the policy. |  |  |
-| `accessPolicies[].on` | string | Optional: specify when to apply the policy - 'Create', 'Update', or 'CreateAndUpdate'. Only used when active is true. | `Create`, `Update`, `CreateAndUpdate` |  |
-| `accessPolicies[].applyToAll` | boolean | Apply To All<br>Run Apply To All once the policy is set: assigns its access to every user matching its criteria. Runs Apply To All at each apply: Salesforce keeps no state that tells it already ran. A run cannot be undone.<br>**Irreversible:** cannot be changed back once applied. |  |  |
+| Field | Type | Description | Values |
+| ----- | ---- | ----------- | ------ |
+| <code>accessPolicies[].<wbr>apiName</code> | string | The API name of the user access policy (e.g., 'Grant_Permissions')<br>**Required.** |  |
+| <code>accessPolicies[].<wbr>active</code> | boolean | Whether the policy should be active (true) or inactive (false). Leave it out to keep the current status of the policy. |  |
+| <code>accessPolicies[].<wbr>on</code> | string | Optional: specify when to apply the policy - 'Create', 'Update', or 'CreateAndUpdate'. Only used when active is true. | `Create`<br>`Update`<br>`CreateAndUpdate` |
+| <code>accessPolicies[].<wbr>applyToAll</code> | boolean | Apply To All<br>Run Apply To All once the policy is set: assigns its access to every user matching its criteria. Runs Apply To All at each apply: Salesforce keeps no state that tells it already ran. A run cannot be undone.<br>**Irreversible:** cannot be changed back once applied. |  |
 
 ??? note "JSON Schema"
 

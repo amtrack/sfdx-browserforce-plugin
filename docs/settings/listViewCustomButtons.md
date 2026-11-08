@@ -37,11 +37,11 @@ Manages the custom buttons selected in the list view button layout of any object
 
 In the field paths, `[]` stands for the items of a list and `*` for the entries of an object keyed by name.
 
-| Field | Type | Description | Values | Default |
-| ----- | ---- | ----------- | ------ | ------- |
-| `[].objectApiName` | string | Object API Name<br>The API name of the object whose list view custom buttons to manage (e.g. Activity, Account, Contact).<br>**Required.** |  |  |
-| `[].buttons` | string[] | Buttons<br>WebLink API Names (DeveloperName) of the custom buttons to select. Use namespace__Name for namespaced buttons (e.g. 'th_dev__AssignTask') or just Name for unpackaged buttons (e.g. 'AssignTask').<br>**Required.** |  | `[]` |
-| `[].removeOtherButtons` | boolean | Remove Other Buttons<br>Whether to remove other buttons from the list view. If true, all buttons except the ones specified in the buttons array will be removed. |  | `false` |
+| Field | Type | Description | Default |
+| ----- | ---- | ----------- | ------- |
+| <code>[].<wbr>objectApiName</code> | string | Object API Name<br>The API name of the object whose list view custom buttons to manage (e.g. Activity, Account, Contact).<br>**Required.** |  |
+| <code>[].<wbr>buttons</code> | string[] | Buttons<br>WebLink API Names (DeveloperName) of the custom buttons to select. Use namespace__Name for namespaced buttons (e.g. 'th_dev__AssignTask') or just Name for unpackaged buttons (e.g. 'AssignTask').<br>**Required.** | `[]` |
+| <code>[].<wbr>removeOtherButtons</code> | boolean | Remove Other Buttons<br>Whether to remove other buttons from the list view. If true, all buttons except the ones specified in the buttons array will be removed. | `false` |
 
 ??? note "JSON Schema"
 

@@ -58,9 +58,9 @@ Chooses the access level: "No access", "System email only" or "All email".
 
 ## Fields
 
-| Field | Type | Description | Values | Default |
-| ----- | ---- | ----------- | ------ | ------- |
-| `accessLevel` | string | Access Level<br>Choose the email Deliverability Access Level required | `No access`, `System email only`, `All email` |  |
+| Field | Type | Description | Values |
+| ----- | ---- | ----------- | ------ |
+| <code>accessLevel</code> | string | Access Level<br>Choose the email Deliverability Access Level required | `No access`<br>`System email only`<br>`All email` |
 
 ??? note "JSON Schema"
 
