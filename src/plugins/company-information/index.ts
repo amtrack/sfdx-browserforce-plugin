@@ -7,7 +7,11 @@ export const companyInformationSchema = z
     defaultCurrencyIsoCode: z.string().meta({ title: 'Default Currency' }).optional(),
   })
   .describe('')
-  .meta({ id: 'companyInformation', title: 'Company Information' });
+  .meta({
+    id: 'companyInformation',
+    title: 'Company Information',
+    examples: [{ defaultCurrencyIsoCode: 'English (South Africa) - ZAR' }],
+  });
 
 const getUrl = (orgId: string): SalesforceUrlPath => `/${orgId}/e`;
 

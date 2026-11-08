@@ -16,7 +16,22 @@ export const securitySchema = z
     certificateAndKeyManagement: certificateAndKeyManagementSchema.optional(),
     authenticationConfiguration: authenticationConfigurationSchema.optional(),
   })
-  .meta({ id: 'security', title: 'Security Controls' });
+  .meta({
+    id: 'security',
+    title: 'Security Controls',
+    examples: [
+      {
+        certificateAndKeyManagement: {
+          certificates: [{ name: 'MySelfSignedCert', label: 'My Self Signed Cert', keysize: 2048, exportable: true }],
+        },
+      },
+      {
+        certificateAndKeyManagement: {
+          importFromKeystore: [{ name: 'MyCert', filePath: 'certs/keystore.jks', password: '${KEYSTORE_PASSWORD}' }],
+        },
+      },
+    ],
+  });
 
 type SecurityConfig = {
   certificateAndKeyManagement?: CertificateAndKeyManagementConfig;

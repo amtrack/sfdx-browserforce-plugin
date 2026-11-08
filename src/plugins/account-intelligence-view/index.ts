@@ -6,7 +6,12 @@ export const accountIntelligenceViewSchema = z
   .object({
     enable: z.boolean().meta({ title: 'Enable Account Intelligence View' }).optional(),
   })
-  .meta({ id: 'accountIntelligenceView', title: 'Account Intelligence View' });
+  .meta({
+    id: 'accountIntelligenceView',
+    title: 'Account Intelligence View',
+    examples: [{ enable: true }, { enable: false }],
+    'x-prerequisites': ['Account Intelligence available in the org (scratch org feature AccountInspection)'],
+  });
 
 export type AccountIntelligenceViewConfig = z.infer<typeof accountIntelligenceViewSchema>;
 

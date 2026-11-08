@@ -36,7 +36,43 @@ export const picklistsSchema = z
       .describe('Replace (and delete) picklist values'),
     fieldDependencies: fieldDependenciesSchema.optional(),
   })
-  .meta({ id: 'picklists', title: 'Picklists' });
+  .meta({
+    id: 'picklists',
+    title: 'Picklists',
+    examples: [
+      {
+        picklistValues: [
+          {
+            metadataType: 'StandardValueSet',
+            metadataFullName: 'LeadSource',
+            value: 'Phone Inquiry',
+            newValue: 'Other',
+          },
+        ],
+      },
+      {
+        picklistValues: [
+          {
+            metadataType: 'StandardValueSet',
+            metadataFullName: 'LeadSource',
+            value: 'Purchased List',
+            newValue: 'Other',
+            absent: true,
+          },
+        ],
+      },
+      {
+        picklistValues: [
+          {
+            metadataType: 'CustomField',
+            metadataFullName: 'Account.MyPicklist__c',
+            value: 'MyOldValue',
+            active: false,
+          },
+        ],
+      },
+    ],
+  });
 
 export type PicklistsConfig = z.infer<typeof picklistsSchema>;
 

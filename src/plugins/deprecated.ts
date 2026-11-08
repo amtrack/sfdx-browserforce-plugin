@@ -1,44 +1,61 @@
-const DEPRECATED_DRIVERS = ['communities', 'defer-sharing-calculation'];
+import { getValueAtPath } from '../env-references.js';
 
-export const handleDeprecations = (definition: { settings: unknown }) => {
-  for (const driverName of Object.keys(definition.settings)) {
-    if (DEPRECATED_DRIVERS.includes(driverName)) {
-      throw new Error(
-        `The sfdx-browserforce-plugin setting '${driverName}' is deprecated and has been removed.
-✅ Salesforce now supports this setting in the Metadata API.
-👉 Please see the instructions at https://github.com/amtrack/sfdx-browserforce-plugin/wiki/Hall-of-Fame#${driverName}.`,
-      );
-    }
-    if (driverName === 'salesforceToSalesforce') {
-      throw new Error(
-        `The sfdx-browserforce-plugin setting 'salesforceToSalesforce' is deprecated and has been removed.
-❌ Salesforce to Salesforce has been retired.
-👉 Use one of these alternative solutions: Partner Cloud, Data Cloud One, MuleSoft Anypoint, or MuleSoft for Flow.
-👉 Please see the instructions at https://github.com/amtrack/sfdx-browserforce-plugin/wiki/Hall-of-Fame#salesforcetosalesforce.`,
-      );
-    }
-    if (driverName === 'security') {
-      if (definition.settings[driverName]?.loginAccessPolicies !== undefined) {
-        throw new Error(
-          `The sfdx-browserforce-plugin setting 'security.loginAccessPolicies' is deprecated and has been removed.
-✅ Salesforce now supports this setting in the Metadata API.
-👉 Please see the instructions at https://github.com/amtrack/sfdx-browserforce-plugin/wiki/Hall-of-Fame#security-loginaccesspolicies-administratorscanloginasanyuser.`,
-        );
-      }
-      if (definition.settings[driverName]?.identityProvider !== undefined) {
-        throw new Error(
-          `The sfdx-browserforce-plugin setting 'security.identityProvider' is deprecated and has been removed.
-✅ Salesforce now supports this setting in the Metadata API.
-👉 Please see the instructions at https://github.com/amtrack/sfdx-browserforce-plugin/wiki/Hall-of-Fame#security-identityprovider.`,
-        );
-      }
-      if (definition.settings[driverName]?.sharing !== undefined) {
-        throw new Error(
-          `The sfdx-browserforce-plugin setting 'security.sharing' is deprecated and has been removed.
-✅ Salesforce now supports this setting in the Metadata API.
-👉 Please see the instructions at https://github.com/amtrack/sfdx-browserforce-plugin/wiki/Hall-of-Fame#security-sharing.`,
-        );
-      }
-    }
+const HALL_OF_FAME_URL = 'https://github.com/amtrack/sfdx-browserforce-plugin/wiki/Hall-of-Fame';
+
+export type DeprecatedSetting = {
+  /** dot path under `settings` */
+  path: string;
+  /** why it was removed: Salesforce now supports it in the Metadata API, or the feature was retired */
+  reason: 'metadata-api' | 'retired';
+  message: string;
+  /** what to use instead, when it is not the Metadata API */
+  alternatives?: string;
+  /** migration instructions */
+  url: string;
+};
+
+const METADATA_API_MESSAGE = 'Salesforce now supports this setting in the Metadata API.';
+
+const metadataApi = (path: string, anchor: string): DeprecatedSetting => ({
+  path,
+  reason: 'metadata-api',
+  message: METADATA_API_MESSAGE,
+  url: `${HALL_OF_FAME_URL}#${anchor}`,
+});
+
+export const deprecatedSettings: DeprecatedSetting[] = [
+  metadataApi('communities', 'communities'),
+  metadataApi('deferSharingCalculation', 'defersharingcalculation'),
+  {
+    path: 'salesforceToSalesforce',
+    reason: 'retired',
+    message: 'Salesforce to Salesforce has been retired.',
+    alternatives: 'Partner Cloud, Data Cloud One, MuleSoft Anypoint, or MuleSoft for Flow',
+    url: `${HALL_OF_FAME_URL}#salesforcetosalesforce`,
+  },
+  metadataApi('security.loginAccessPolicies', 'security-loginaccesspolicies-administratorscanloginasanyuser'),
+  metadataApi('security.identityProvider', 'security-identityprovider'),
+  metadataApi('security.sharing', 'security-sharing'),
+];
+
+/** The deprecated settings used in a config. */
+export function findDeprecations(definition: unknown): DeprecatedSetting[] {
+  const settings = (definition as { settings?: unknown } | undefined)?.settings;
+  return deprecatedSettings.filter((deprecated) => getValueAtPath(settings, deprecated.path.split('.')) !== undefined);
+}
+
+export function formatDeprecation(deprecated: DeprecatedSetting): string {
+  return [
+    `The sfdx-browserforce-plugin setting '${deprecated.path}' is deprecated and has been removed.`,
+    `${deprecated.reason === 'retired' ? '❌' : '✅'} ${deprecated.message}`,
+    ...(deprecated.alternatives ? [`👉 Use one of these alternative solutions: ${deprecated.alternatives}.`] : []),
+    `👉 Please see the instructions at ${deprecated.url}.`,
+  ].join('\n');
+}
+
+export const handleDeprecations = (definition: unknown): void => {
+  const [deprecated] = findDeprecations(definition);
+  if (deprecated) {
+    throw new Error(formatDeprecation(deprecated));
   }
 };

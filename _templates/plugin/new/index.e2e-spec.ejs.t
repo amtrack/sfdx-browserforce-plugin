@@ -17,7 +17,7 @@ describe(<%= pascalCase %>.name, function() {
     enabled: true
   };
   const configDisabled: <%= pascalCase %>Config = {
-    enabled: true
+    enabled: false
   };
   it('should enable', async () => {
     await plugin.run(configEnabled);

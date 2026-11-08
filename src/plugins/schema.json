@@ -64,6 +64,25 @@
         "historyTracking": {
           "default": [],
           "title": "History Tracking",
+          "examples": [
+            [
+              {
+                "objectApiName": "Account",
+                "enableHistoryTracking": true,
+                "fieldHistoryTracking": [
+                  {
+                    "fieldApiName": "Industry",
+                    "enableHistoryTracking": true
+                  },
+                  {
+                    "fieldApiName": "Rating",
+                    "enableHistoryTracking": true
+                  }
+                ]
+              }
+            ]
+          ],
+          "x-prerequisites": ["Person Accounts enabled, to track Person Account fields"],
           "description": "This feature specifically closes a gap where you cannot enable field history tracking for custom Person Account fields via the Metadata API.",
           "type": "array",
           "items": {
@@ -87,6 +106,15 @@
         "listViewCustomButtons": {
           "default": [],
           "title": "List View Custom Buttons",
+          "examples": [
+            [
+              {
+                "objectApiName": "Task",
+                "buttons": ["MyListButton", "MyOtherListButton"],
+                "removeOtherButtons": true
+              }
+            ]
+          ],
           "description": "Manage the selected custom buttons in the list view button layout (Aloha Search Layout) for any object. Buttons are identified by their WebLink API Name (DeveloperName), with optional namespace prefix (e.g. 'AssignTask' or 'th_dev__AssignTask').",
           "type": "array",
           "items": {
@@ -117,6 +145,15 @@
         "permissionSets": {
           "default": [],
           "title": "Permission Sets",
+          "examples": [
+            [
+              {
+                "permissionSetName": "Support_Agent",
+                "servicePresenceStatuses": ["Available", "Busy"]
+              }
+            ]
+          ],
+          "x-prerequisites": ["Omni-Channel enabled"],
           "type": "array",
           "items": {
             "$ref": "#/definitions/permissionSet"
@@ -167,6 +204,19 @@
         "serviceChannels": {
           "default": [],
           "title": "Service Channels",
+          "examples": [
+            [
+              {
+                "serviceChannelDeveloperName": "Case",
+                "capacity": {
+                  "capacityModel": "StatusBased",
+                  "statusField": "Case.Status",
+                  "valuesForInProgress": ["Working"]
+                }
+              }
+            ]
+          ],
+          "x-prerequisites": ["Omni-Channel enabled, with the status-based capacity model (omniChannelSettings)"],
           "type": "array",
           "items": {
             "$ref": "#/definitions/serviceChannel"
@@ -202,7 +252,16 @@
           "title": "Enable Account Intelligence View"
         }
       },
-      "title": "Account Intelligence View"
+      "title": "Account Intelligence View",
+      "examples": [
+        {
+          "enable": true
+        },
+        {
+          "enable": false
+        }
+      ],
+      "x-prerequisites": ["Account Intelligence available in the org (scratch org feature AccountInspection)"]
     },
     "activitySettings": {
       "type": "object",
@@ -210,10 +269,16 @@
         "allowUsersToRelateMultipleContactsToTasksAndEvents": {
           "type": "boolean",
           "title": "Allow Users to Relate Multiple Contacts to Tasks and Events",
+          "x-irreversible": true,
           "description": "Although the Metadata API has a ActivitiesSettings.allowUsersToRelateMultipleContactsToTasksAndEvents field, it is not possible to enable this setting using an API. Warning: can only be disabled with help of the salesforce.com Support team. https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_activitiessettings.htm"
         }
       },
-      "title": "Activity Settings"
+      "title": "Activity Settings",
+      "examples": [
+        {
+          "allowUsersToRelateMultipleContactsToTasksAndEvents": true
+        }
+      ]
     },
     "authProviders": {
       "type": "object",
@@ -238,7 +303,15 @@
         }
       },
       "description": "Configuration for updating Auth Provider Consumer Key and Consumer Secret",
-      "title": "Auth Providers"
+      "title": "Auth Providers",
+      "examples": [
+        {
+          "MyAuthProvider": {
+            "consumerKey": "my-consumer-key",
+            "consumerSecret": "${MY_AUTH_PROVIDER_SECRET}"
+          }
+        }
+      ]
     },
     "companyInformation": {
       "type": "object",
@@ -249,7 +322,12 @@
         }
       },
       "description": "",
-      "title": "Company Information"
+      "title": "Company Information",
+      "examples": [
+        {
+          "defaultCurrencyIsoCode": "English (South Africa) - ZAR"
+        }
+      ]
     },
     "customerPortal": {
       "type": "object",
@@ -257,6 +335,7 @@
         "enabled": {
           "type": "boolean",
           "title": "Enable Customer Portal",
+          "x-irreversible": true,
           "description": "Although the Metadata API has a OrgSettings.enableCustomerSuccessPortal field, enabling this via the browser can be handy because it automatically creates a Portal named 'Customer Portal', where the admin and emailSenderAddress are set to the current user. Warning: cannot be disabled once enabled"
         },
         "portals": {
@@ -277,7 +356,29 @@
         }
       },
       "description": "Only available in Salesforce Classic UI",
-      "title": "Customer Portal Settings"
+      "title": "Customer Portal Settings",
+      "examples": [
+        {
+          "enabled": true
+        },
+        {
+          "portals": [
+            {
+              "name": "Customer Portal",
+              "isSelfRegistrationActivated": true
+            }
+          ]
+        },
+        {
+          "availableCustomObjects": [
+            {
+              "name": "MyObject",
+              "available": true
+            }
+          ]
+        }
+      ],
+      "x-user-interface": "classic"
     },
     "portal": {
       "type": "object",
@@ -353,7 +454,15 @@
           "description": "Choose the default display setting for your org"
         }
       },
-      "title": "Density Settings"
+      "title": "Density Settings",
+      "examples": [
+        {
+          "density": "Compact"
+        },
+        {
+          "density": "Comfy"
+        }
+      ]
     },
     "emailDeliverability": {
       "type": "object",
@@ -365,7 +474,18 @@
           "description": "Choose the email Deliverability Access Level required"
         }
       },
-      "title": "Email Deliverability Settings"
+      "title": "Email Deliverability Settings",
+      "examples": [
+        {
+          "accessLevel": "All email"
+        },
+        {
+          "accessLevel": "System email only"
+        },
+        {
+          "accessLevel": "No access"
+        }
+      ]
     },
     "highVelocitySalesSettings": {
       "type": "object",
@@ -376,7 +496,13 @@
         }
       },
       "description": "Due to a bug, High Velocity Sales needs to be set up and enabled initially using the UI.\nOnce set up, it can be configured using HighVelocitySalesSettings Metadata https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_highvelocitysalessettings.htm",
-      "title": "HighVelocitySalesSettings"
+      "title": "HighVelocitySalesSettings",
+      "examples": [
+        {
+          "setUpAndEnable": true
+        }
+      ],
+      "x-prerequisites": ["High Velocity Sales license (scratch org feature HighVelocitySales)"]
     },
     "historyTracking": {
       "type": "object",
@@ -431,7 +557,22 @@
         }
       },
       "description": "Assign Home Page Layouts for Profiles. Only available in Salesforce Classic UI",
-      "title": "Home Page Layouts"
+      "title": "Home Page Layouts",
+      "examples": [
+        {
+          "homePageLayoutAssignments": [
+            {
+              "profile": "StandardUser",
+              "layout": "MyHomePageLayout"
+            },
+            {
+              "profile": "SystemAdministrator",
+              "layout": ""
+            }
+          ]
+        }
+      ],
+      "x-user-interface": "classic"
     },
     "homePageLayoutAssignment": {
       "type": "object",
@@ -457,7 +598,12 @@
         }
       },
       "description": "Although the Metadata API has a field activeThemeName in LightningExperienceSettings it's not possible to activate any of the standard themes like Lightning and LightningLite or SalesforceCosmos.",
-      "title": "LightningExperienceSettings"
+      "title": "LightningExperienceSettings",
+      "examples": [
+        {
+          "activeThemeName": "Lightning"
+        }
+      ]
     },
     "listViewCustomButtons": {
       "type": "object",
@@ -494,7 +640,15 @@
           "title": "Enable LinkedIn Sales Navigator Integration"
         }
       },
-      "title": "LinkedIn Sales Navigator Settings"
+      "title": "LinkedIn Sales Navigator Settings",
+      "examples": [
+        {
+          "enabled": true
+        },
+        {
+          "enabled": false
+        }
+      ]
     },
     "omniChannelSettings": {
       "type": "object",
@@ -505,7 +659,13 @@
           "description": "Route and track work based on changes to work status and ownership."
         }
       },
-      "title": "Omni-Channel Settings"
+      "title": "Omni-Channel Settings",
+      "examples": [
+        {
+          "enableStatusBasedCapacityModel": true
+        }
+      ],
+      "x-prerequisites": ["Omni-Channel enabled"]
     },
     "opportunitySplits": {
       "type": "object",
@@ -516,7 +676,15 @@
           "description": "Prerequisite: Opportunity Teams must be enabled e.g. by deploying 'Settings:Opportunity' containing `<enableOpportunityTeam>true</enableOpportunityTeam>`."
         }
       },
-      "title": "OpportunitySplits Settings"
+      "title": "OpportunitySplits Settings",
+      "examples": [
+        {
+          "enabled": true
+        },
+        {
+          "enabled": false
+        }
+      ]
     },
     "permissionSet": {
       "type": "object",
@@ -564,7 +732,40 @@
           ]
         }
       },
-      "title": "Picklists"
+      "title": "Picklists",
+      "examples": [
+        {
+          "picklistValues": [
+            {
+              "metadataType": "StandardValueSet",
+              "metadataFullName": "LeadSource",
+              "value": "Phone Inquiry",
+              "newValue": "Other"
+            }
+          ]
+        },
+        {
+          "picklistValues": [
+            {
+              "metadataType": "StandardValueSet",
+              "metadataFullName": "LeadSource",
+              "value": "Purchased List",
+              "newValue": "Other",
+              "absent": true
+            }
+          ]
+        },
+        {
+          "picklistValues": [
+            {
+              "metadataType": "CustomField",
+              "metadataFullName": "Account.MyPicklist__c",
+              "value": "MyOldValue",
+              "active": false
+            }
+          ]
+        }
+      ]
     },
     "picklistAction": {
       "type": "object",
@@ -648,7 +849,17 @@
           }
         }
       },
-      "title": "RecordTypes"
+      "title": "RecordTypes",
+      "examples": [
+        {
+          "deletions": [
+            {
+              "fullName": "Account.MyOldRecordType",
+              "replacement": "Account.MyRecordType"
+            }
+          ]
+        }
+      ]
     },
     "recordTypeAction": {
       "type": "object",
@@ -673,7 +884,12 @@
           "description": "This allows you to enable the 'Relate contact to multiple Accounts' in the Account settings. Doing this through the metadata API will not always make the AccountContactRelation object available. Enabling the feature using the setup does always work, therefore this plugin."
         }
       },
-      "title": "RelateContactToMultipleAccounts Settings"
+      "title": "RelateContactToMultipleAccounts Settings",
+      "examples": [
+        {
+          "enabled": true
+        }
+      ]
     },
     "reportsAndDashboards": {
       "type": "object",
@@ -686,7 +902,14 @@
           ]
         }
       },
-      "title": "Reports & Dashboards"
+      "title": "Reports & Dashboards",
+      "examples": [
+        {
+          "folderSharing": {
+            "enableEnhancedFolderSharing": true
+          }
+        }
+      ]
     },
     "folderSharing": {
       "type": "object",
@@ -694,7 +917,9 @@
         "enableEnhancedFolderSharing": {
           "type": "boolean",
           "title": "Enable access levels for sharing report and dashboard folders",
-          "$comment": "If your organization was created after the Summer ’13 Salesforce release, you already have enhanced folder sharing"
+          "x-irreversible": true,
+          "$comment": "If your organization was created after the Summer ’13 Salesforce release, you already have enhanced folder sharing",
+          "description": "Cannot be disabled once enabled."
         }
       },
       "title": "Folder Sharing"
@@ -1145,7 +1370,16 @@
           "title": "Additional Settings"
         }
       },
-      "title": "SalesforceCpqConfig Settings"
+      "title": "SalesforceCpqConfig Settings",
+      "examples": [
+        {
+          "documents": {
+            "documentFolder": "UserPersonalDocuments",
+            "postToFeed": false
+          }
+        }
+      ],
+      "x-prerequisites": ["Salesforce CPQ managed package (SBQQ) installed"]
     },
     "security": {
       "type": "object",
@@ -1165,7 +1399,32 @@
           ]
         }
       },
-      "title": "Security Controls"
+      "title": "Security Controls",
+      "examples": [
+        {
+          "certificateAndKeyManagement": {
+            "certificates": [
+              {
+                "name": "MySelfSignedCert",
+                "label": "My Self Signed Cert",
+                "keysize": 2048,
+                "exportable": true
+              }
+            ]
+          }
+        },
+        {
+          "certificateAndKeyManagement": {
+            "importFromKeystore": [
+              {
+                "name": "MyCert",
+                "filePath": "certs/keystore.jks",
+                "password": "${KEYSTORE_PASSWORD}"
+              }
+            ]
+          }
+        }
+      ]
     },
     "certificateAndKeyManagement": {
       "type": "object",
@@ -1341,6 +1600,7 @@
         "agreeToTermsAndConditions": {
           "type": "boolean",
           "title": "Agree to Termns and Conditions",
+          "x-irreversible": true,
           "description": "Once the terms have been accepted, this cannot be reverted."
         },
         "enableSalesCloudForSlack": {
@@ -1348,7 +1608,13 @@
           "title": "Enable the 'Sales Cloud for Slack' Slack App"
         }
       },
-      "title": "Slack Apps Setup"
+      "title": "Slack Apps Setup",
+      "examples": [
+        {
+          "agreeToTermsAndConditions": true,
+          "enableSalesCloudForSlack": true
+        }
+      ]
     },
     "userAccessPolicies": {
       "type": "object",
@@ -1356,14 +1622,44 @@
         "accessPolicies": {
           "default": [],
           "title": "Access Policies",
-          "description": "List of user access policies to activate or deactivate",
+          "description": "List of user access policies to activate, deactivate or apply to all users",
           "type": "array",
           "items": {
             "$ref": "#/definitions/accessPolicy"
           }
         }
       },
-      "title": "User Access Policies"
+      "title": "User Access Policies",
+      "examples": [
+        {
+          "accessPolicies": [
+            {
+              "apiName": "Grant_Permissions",
+              "active": true,
+              "on": "Create"
+            }
+          ]
+        },
+        {
+          "accessPolicies": [
+            {
+              "apiName": "Grant_Permissions",
+              "active": true,
+              "on": "Create",
+              "applyToAll": true
+            }
+          ]
+        },
+        {
+          "accessPolicies": [
+            {
+              "apiName": "Grant_Permissions",
+              "applyToAll": true
+            }
+          ]
+        }
+      ],
+      "x-prerequisites": ["User Access Policies enabled (User Management Settings)"]
     },
     "accessPolicy": {
       "type": "object",
@@ -1374,15 +1670,21 @@
         },
         "active": {
           "type": "boolean",
-          "description": "Whether the policy should be active (true) or inactive (false)"
+          "description": "Whether the policy should be active (true) or inactive (false). Leave it out to keep the current status of the policy."
         },
         "on": {
           "type": "string",
           "enum": ["Create", "Update", "CreateAndUpdate"],
-          "description": "Optional: specify when to apply the policy - 'Create', 'Update', or 'CreateAndUpdate'"
+          "description": "Optional: specify when to apply the policy - 'Create', 'Update', or 'CreateAndUpdate'. Only used when active is true."
+        },
+        "applyToAll": {
+          "type": "boolean",
+          "title": "Apply To All",
+          "x-irreversible": true,
+          "description": "Run Apply To All once the policy is set: assigns its access to every user matching its criteria. Runs Apply To All at each apply: Salesforce keeps no state that tells it already ran. A run cannot be undone."
         }
       },
-      "required": ["apiName", "active"]
+      "required": ["apiName"]
     }
   }
 }

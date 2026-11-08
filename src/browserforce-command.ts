@@ -6,6 +6,8 @@ import * as path from 'path';
 import { chromium } from 'playwright';
 import { Browserforce, type BrowserforceOptions } from './browserforce.js';
 import { ConfigParser } from './config-parser.js';
+import { buildEnvMasking, type EnvMasking, resolveEnvReferences } from './env-references.js';
+import { getPluginJsonSchema } from './plugin-catalog.js';
 import { handleDeprecations } from './plugins/deprecated.js';
 import { drivers } from './plugins/index.js';
 
@@ -80,13 +82,15 @@ export abstract class BrowserforceCommand<T> extends SfCommand<T> {
   protected browserforce: Browserforce;
   protected settings: any[];
   protected retryConfig?: { retries: number; minTimeout: number };
+  /** per setting key, the paths and the values resolved from environment variables (masked in the output) */
+  protected envMasking = new Map<string, EnvMasking>();
 
   // fallow-ignore-next-line unused-class-member
   public async init(): Promise<void> {
     await super.init();
-    const { flags } = await this.parse({
-      baseFlags: BrowserforceCommand.baseFlags,
-    });
+    // Parse with the command class itself: parsing only the base flags refused every other flag the
+    // command declares, --json included ("Nonexistent flag: --json")
+    const { flags } = (await this.parse(this.ctor)) as unknown as { flags: BrowserforceFlags };
     let definition;
     if (flags.definitionfile) {
       const definitionFileData = await promises.readFile(path.resolve(flags.definitionfile), 'utf8');
@@ -97,6 +101,15 @@ export abstract class BrowserforceCommand<T> extends SfCommand<T> {
       }
     }
     handleDeprecations(definition);
+    if (definition?.settings && typeof definition.settings === 'object') {
+      const resolved = resolveEnvReferences(definition.settings, process.env, getPluginJsonSchema);
+      definition = { ...definition, settings: resolved.settings };
+      this.envMasking = buildEnvMasking(resolved);
+      if (resolved.references.length > 0) {
+        // a value resolved from an environment variable (e.g. a JSON object) may contain a removed setting
+        handleDeprecations(definition);
+      }
+    }
     this.settings = ConfigParser.parse(drivers, definition);
     const connection = flags['target-org'].getConnection();
     const browserContext = await createBrowserContextFromFlags(flags);

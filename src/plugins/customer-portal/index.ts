@@ -45,6 +45,7 @@ export const customerPortalSchema = z
       .boolean()
       .meta({
         title: 'Enable Customer Portal',
+        'x-irreversible': true,
       })
       .describe(
         "Although the Metadata API has a OrgSettings.enableCustomerSuccessPortal field, enabling this via the browser can be handy because it automatically creates a Portal named 'Customer Portal', where the admin and emailSenderAddress are set to the current user. Warning: cannot be disabled once enabled",
@@ -59,6 +60,12 @@ export const customerPortalSchema = z
   .meta({
     id: 'customerPortal',
     title: 'Customer Portal Settings',
+    examples: [
+      { enabled: true },
+      { portals: [{ name: 'Customer Portal', isSelfRegistrationActivated: true }] },
+      { availableCustomObjects: [{ name: 'MyObject', available: true }] },
+    ],
+    'x-user-interface': 'classic',
   });
 
 // `portals`/`availableCustomObjects` use the sub-plugins' own `Config` types (decision C: they carry

@@ -18,3 +18,6 @@ coverage/
 # Playwright traces
 trace-*.zip
 .fallow/
+
+# Claude Code personal settings
+.claude/settings.local.json

@@ -21,6 +21,15 @@ export const homePageLayoutsSchema = z
   .meta({
     id: 'homePageLayouts',
     title: 'Home Page Layouts',
+    examples: [
+      {
+        homePageLayoutAssignments: [
+          { profile: 'StandardUser', layout: 'MyHomePageLayout' },
+          { profile: 'SystemAdministrator', layout: '' },
+        ],
+      },
+    ],
+    'x-user-interface': 'classic',
   });
 
 const BASE_PATH: SalesforceUrlPath = `/setup/ui/assignhomelayoutedit.jsp?retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`;

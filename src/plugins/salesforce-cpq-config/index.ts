@@ -151,7 +151,12 @@ export const salesforceCpqConfigSchema = z
       .meta({ title: 'Additional Settings' })
       .optional(),
   })
-  .meta({ id: 'salesforceCpqConfig', title: 'SalesforceCpqConfig Settings' });
+  .meta({
+    id: 'salesforceCpqConfig',
+    title: 'SalesforceCpqConfig Settings',
+    examples: [{ documents: { documentFolder: 'UserPersonalDocuments', postToFeed: false } }],
+    'x-prerequisites': ['Salesforce CPQ managed package (SBQQ) installed'],
+  });
 
 const BASE_PATH = '/0A3?setupid=ImportedPackage&retURL=%2Fui%2Fsetup%2FSetup%3Fsetupid%3DStudio';
 const AUTH_PATH = '/setup/secur/RemoteAccessAuthorizationPage.apexp';

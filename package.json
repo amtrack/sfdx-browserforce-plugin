@@ -40,7 +40,12 @@
     "repositoryPrefix": "<%- repo %>/blob/main/<%- commandPath %>",
     "topics": {
       "browserforce": {
-        "description": "browser automation for Salesforce setup pages"
+        "description": "browser automation for Salesforce setup pages",
+        "subtopics": {
+          "plugins": {
+            "description": "describe and validate the settings Browserforce can apply"
+          }
+        }
       }
     },
     "additionalHelpFlags": [

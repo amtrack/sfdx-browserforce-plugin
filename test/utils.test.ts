@@ -1,5 +1,7 @@
 import assert from 'assert';
 import { z } from 'zod';
+import { inlineRefs, type JsonSchema } from '../src/json-schema-utils.js';
+import { getPluginJsonSchema } from '../src/plugin-catalog.js';
 import { schemas } from '../src/plugins/index.js';
 import { isEmptyObjectOrArray, maskSensitiveValues, password, semanticallyCleanObject } from '../src/plugins/utils.js';
 
@@ -47,27 +49,27 @@ describe('maskSensitiveValues', () => {
         },
       },
     };
-    const result = maskSensitiveValues({ myProvider: { consumerSecret: 's3cret', consumerKey: 'ck' } }, '', schema) as {
+    const result = maskSensitiveValues({ myProvider: { consumerSecret: 's3cret', consumerKey: 'ck' } }, schema) as {
       myProvider: { consumerSecret: string; consumerKey: string };
     };
     assert.strictEqual(result.myProvider.consumerSecret, '****');
     assert.strictEqual(result.myProvider.consumerKey, 'ck');
   });
 
-  it('should mask fields reached through a $ref', async () => {
+  it('should mask fields reached through an inlined $ref', async () => {
     const schema = {
       definitions: {
         provider: { properties: { consumerSecret: { 'x-password': true } } },
       },
       additionalProperties: { $ref: '#/definitions/provider' },
     };
-    const result = maskSensitiveValues({ myProvider: { consumerSecret: 's3cret' } }, '', schema) as {
+    const result = maskSensitiveValues({ myProvider: { consumerSecret: 's3cret' } }, inlineRefs(schema)) as {
       myProvider: { consumerSecret: string };
     };
     assert.strictEqual(result.myProvider.consumerSecret, '****');
   });
 
-  it('should mask fields reached through an allOf-wrapped ref', async () => {
+  it('should mask fields reached through an inlined allOf-wrapped ref', async () => {
     const schema = {
       properties: {
         security: { allOf: [{ $ref: '#/definitions/security' }] },
@@ -82,44 +84,40 @@ describe('maskSensitiveValues', () => {
         },
       },
     };
-    const result = maskSensitiveValues({ security: { certificates: { password: 's3cret' } } }, '', schema) as {
+    const result = maskSensitiveValues({ security: { certificates: { password: 's3cret' } } }, inlineRefs(schema)) as {
       security: { certificates: { password: string } };
     };
     assert.strictEqual(result.security.certificates.password, '****');
   });
 
-  it('should mask consumerSecret and not consumerKey when given the real converted auth-providers schema', async () => {
-    const { authProvidersSchema } = await import('../src/plugins/auth-providers/index.js');
-    const jsonSchema = z.toJSONSchema(authProvidersSchema, { target: 'draft-7', io: 'input' });
-    const result = maskSensitiveValues(
-      { myProvider: { consumerSecret: 's3cret', consumerKey: 'ck' } },
-      '',
-      jsonSchema,
-    ) as { myProvider: { consumerSecret: string; consumerKey: string } };
+  it('should mask consumerSecret and not consumerKey with the auth-providers schema used by apply', async () => {
+    const jsonSchema = getPluginJsonSchema('authProviders');
+    const result = maskSensitiveValues({ myProvider: { consumerSecret: 's3cret', consumerKey: 'ck' } }, jsonSchema) as {
+      myProvider: { consumerSecret: string; consumerKey: string };
+    };
     assert.strictEqual(result.myProvider.consumerSecret, '****');
     assert.strictEqual(result.myProvider.consumerKey, 'ck');
   });
 
-  it('should mask consumerSecret and not consumerKey when converted from the schemas map', async () => {
-    const jsonSchema = z.toJSONSchema(schemas.authProviders, { target: 'draft-7', io: 'input' });
-    const result = maskSensitiveValues(
-      { myProvider: { consumerSecret: 's3cret', consumerKey: 'ck' } },
-      '',
-      jsonSchema,
-    ) as { myProvider: { consumerSecret: string; consumerKey: string } };
+  it('should mask consumerSecret and not consumerKey when converted from the schemas map and inlined', async () => {
+    const jsonSchema = inlineRefs(
+      z.toJSONSchema(schemas.authProviders, { target: 'draft-7', io: 'input' }) as JsonSchema,
+    );
+    const result = maskSensitiveValues({ myProvider: { consumerSecret: 's3cret', consumerKey: 'ck' } }, jsonSchema) as {
+      myProvider: { consumerSecret: string; consumerKey: string };
+    };
     assert.strictEqual(result.myProvider.consumerSecret, '****');
     assert.strictEqual(result.myProvider.consumerKey, 'ck');
   });
 
-  it('should mask a password nested behind a definitions-local $ref when converted from the schemas map', async () => {
-    const jsonSchema = z.toJSONSchema(schemas.security, { target: 'draft-7', io: 'input' });
+  it('should mask a password nested behind a definitions-local $ref once the schema is inlined', async () => {
+    const jsonSchema = getPluginJsonSchema('security');
     const result = maskSensitiveValues(
       {
         certificateAndKeyManagement: {
           importFromKeystore: [{ name: 'n', filePath: '/tmp/keystore.p12', password: 's3cret' }],
         },
       },
-      '',
       jsonSchema,
     ) as {
       certificateAndKeyManagement: {
@@ -140,7 +138,7 @@ describe('maskSensitiveValues', () => {
         b: { $ref: '#/definitions/keystore' },
       },
     };
-    const result = maskSensitiveValues({ a: { password: 'p1' }, b: { password: 'p2' } }, '', schema) as {
+    const result = maskSensitiveValues({ a: { password: 'p1' }, b: { password: 'p2' } }, inlineRefs(schema)) as {
       a: { password: string };
       b: { password: string };
     };
@@ -152,8 +150,87 @@ describe('maskSensitiveValues', () => {
     // Intentional: once a schema is passed, the regex fallback is not consulted — pinned here so a
     // future author cannot rely on the fallback as a safety net for a forgotten password() marker.
     const schema = { properties: { apiToken: { type: 'string' } } };
-    const result = maskSensitiveValues({ apiToken: 'shh' }, '', schema) as { apiToken: string };
+    const result = maskSensitiveValues({ apiToken: 'shh' }, schema) as { apiToken: string };
     assert.strictEqual(result.apiToken, 'shh');
+  });
+
+  it('should mask the values of the masked paths whatever their type, in every array item', async () => {
+    const result = maskSensitiveValues(
+      {
+        enabled: true,
+        portals: [
+          { name: 'a', adminUser: 'u1' },
+          { name: 'b', adminUser: 'u2' },
+        ],
+        keysize: 2048,
+      },
+      undefined,
+      ['enabled', 'portals.adminUser', 'keysize'],
+    );
+    assert.deepStrictEqual(result, {
+      enabled: '****',
+      portals: [
+        { name: 'a', adminUser: '****' },
+        { name: 'b', adminUser: '****' },
+      ],
+      keysize: '****',
+    });
+  });
+
+  it('should mask everything below a masked path, and everything for an empty path', async () => {
+    assert.deepStrictEqual(maskSensitiveValues({ documents: { a: 'x', b: false }, c: 'y' }, undefined, ['documents']), {
+      documents: { a: '****', b: '****' },
+      c: 'y',
+    });
+    assert.deepStrictEqual(maskSensitiveValues([{ objectApiName: 'Account' }], undefined, ['']), [
+      { objectApiName: '****' },
+    ]);
+  });
+
+  it('should mask only the item of an array item path', async () => {
+    assert.deepStrictEqual(
+      maskSensitiveValues(
+        [
+          { objectApiName: 'Account', enableHistoryTracking: true },
+          { objectApiName: 'Contact', enableHistoryTracking: false },
+        ],
+        undefined,
+        ['[1]'],
+      ),
+      [
+        { objectApiName: 'Account', enableHistoryTracking: true },
+        { objectApiName: '****', enableHistoryTracking: '****' },
+      ],
+    );
+    assert.deepStrictEqual(
+      maskSensitiveValues(
+        { enabled: true, certificates: [{ name: 'a' }, { name: 'b' }], other: [{ name: 'c' }] },
+        undefined,
+        ['certificates[0]'],
+      ),
+      { enabled: true, certificates: [{ name: '****' }, { name: 'b' }], other: [{ name: 'c' }] },
+    );
+  });
+
+  it('should mask the masked values wherever they are, whatever the shape of the diff', async () => {
+    assert.deepStrictEqual(
+      maskSensitiveValues(
+        { changes: [{ apiName: 'Secret_Policy', applyToAll: true }], label: 'Secret_Policy suffix', other: 'x' },
+        undefined,
+        ['accessPolicies.apiName'],
+        ['Secret_Policy'],
+      ),
+      { changes: [{ apiName: '****', applyToAll: true }], label: 'Secret_Policy suffix', other: 'x' },
+    );
+  });
+
+  it('should mask a field of a setting that is an array', async () => {
+    assert.deepStrictEqual(
+      maskSensitiveValues([{ objectApiName: 'Account', enableHistoryTracking: true }], undefined, [
+        'enableHistoryTracking',
+      ]),
+      [{ objectApiName: 'Account', enableHistoryTracking: '****' }],
+    );
   });
 });
 
@@ -164,16 +241,5 @@ describe('password', () => {
       io: 'input',
     }) as unknown as { properties: { s: Record<string, unknown> } };
     assert.deepStrictEqual(jsonSchema.properties.s, { type: 'string', title: 'T', 'x-password': true });
-  });
-
-  it('should terminate on a $ref cycle instead of recursing forever', async () => {
-    const schema = {
-      definitions: {
-        a: { properties: { b: { $ref: '#/definitions/a' } } },
-      },
-      $ref: '#/definitions/a',
-    };
-    const result = maskSensitiveValues({ b: { b: 'x' } }, '', schema);
-    assert.ok(result);
   });
 });

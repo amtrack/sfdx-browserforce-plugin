@@ -74,6 +74,72 @@ describe('ConfigParser', () => {
     });
   });
 
+  describe('validate()', () => {
+    it('returns no issue for a valid config', () => {
+      assert.deepStrictEqual(ConfigParser.validate({ settings: { densitySettings: { density: 'Compact' } } }), []);
+    });
+    it('reports a missing settings attribute', () => {
+      assert.deepStrictEqual(ConfigParser.validate({}), [
+        { path: 'settings', message: "Missing 'settings' attribute" },
+      ]);
+      assert.deepStrictEqual(ConfigParser.validate(undefined)[0].path, 'settings');
+    });
+    it('reports every invalid value with its path', () => {
+      const issues = ConfigParser.validate({
+        settings: {
+          densitySettings: { density: 'Roomy' },
+          picklists: { picklistValues: [{ metadataType: 'CustomField' }] },
+        },
+      });
+      assert.deepStrictEqual(
+        issues.map((issue) => issue.path),
+        ['settings.densitySettings.density', 'settings.picklists.picklistValues.0.metadataFullName'],
+      );
+    });
+    it('reports an unknown setting', () => {
+      const issues = ConfigParser.validate({ settings: { foo: {} } });
+      assert.strictEqual(issues.length, 1);
+      assert.match(issues[0].message, /foo/);
+    });
+    it('reports a removed setting once, with its migration instructions', () => {
+      const issues = ConfigParser.validate({ settings: { deferSharingCalculation: { suspend: true } } });
+      assert.deepStrictEqual(
+        issues.map((issue) => issue.path),
+        ['settings.deferSharingCalculation'],
+      );
+      assert.match(issues[0].message, /Hall-of-Fame#defersharingcalculation/);
+    });
+    it('reports an unknown setting next to a removed one without repeating the removed one', () => {
+      const issues = ConfigParser.validate({ settings: { communities: {}, foo: {} } });
+      assert.deepStrictEqual(
+        issues.map((issue) => issue.path),
+        ['settings.communities', 'settings'],
+      );
+      assert.strictEqual(issues[1].message, 'Unrecognized key: "foo"');
+    });
+    it('accepts environment variable references in place of any value only when allowed', () => {
+      const definition = {
+        settings: {
+          accountIntelligenceView: { enable: '${AIV_ENABLED}' },
+          densitySettings: { density: '${DENSITY}' },
+          historyTracking: '${TRACKING}',
+        },
+      };
+      assert.deepStrictEqual(ConfigParser.validate(definition, { allowEnvReferences: true }), []);
+      assert.strictEqual(ConfigParser.validate(definition).length, 3);
+    });
+    it('still reports other errors when references are allowed', () => {
+      const issues = ConfigParser.validate(
+        { settings: { accountIntelligenceView: { enable: '${AIV_ENABLED}' }, densitySettings: { density: 'Roomy' } } },
+        { allowEnvReferences: true },
+      );
+      assert.deepStrictEqual(
+        issues.map((issue) => issue.path),
+        ['settings.densitySettings.density'],
+      );
+    });
+  });
+
   describe('fixtures', () => {
     // intentionally invalid fixtures used by e2e negative tests; excluded from the "must parse" sweep
     const EXCLUDED_FIXTURES = [

@@ -7,12 +7,17 @@ export const slackSchema = z
       .boolean()
       .meta({
         title: 'Agree to Termns and Conditions',
+        'x-irreversible': true,
       })
       .describe('Once the terms have been accepted, this cannot be reverted.')
       .optional(),
     enableSalesCloudForSlack: z.boolean().meta({ title: "Enable the 'Sales Cloud for Slack' Slack App" }).optional(),
   })
-  .meta({ id: 'slack', title: 'Slack Apps Setup' });
+  .meta({
+    id: 'slack',
+    title: 'Slack Apps Setup',
+    examples: [{ agreeToTermsAndConditions: true, enableSalesCloudForSlack: true }],
+  });
 
 const BASE_PATH = '/lightning/setup/SlackSetupAssistant/home';
 
