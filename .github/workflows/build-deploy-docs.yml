@@ -1,0 +1,72 @@
+# Builds the documentation site with Zensical and deploys it to GitHub Pages:
+# https://amtrack.github.io/sfdx-browserforce-plugin/
+# The pages are regenerated first: the site always shows the current code, and stale committed pages only raise a
+# warning. Pull Requests build the site without deploying it.
+# This file name is also the one `sf hardis:doc:plugin:generate` creates when it is missing: keep it.
+name: Documentation
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+      - name: Install dependencies
+        run: |
+          npm ci --ignore-scripts
+          npm install --ignore-scripts --global @salesforce/cli@${SF_CLI_VERSION:-"latest"}
+      - name: Generate the documentation pages
+        run: npm run generate:docs
+      # The site is built from the pages regenerated above, so it is published even when the committed ones are stale
+      - name: Check that the generated pages are committed
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            git status --porcelain
+            git --no-pager diff --stat
+            echo "::warning::The committed documentation is out of date: run 'npm run generate:docs' and commit the result. The site is built from the regenerated pages anyway."
+          fi
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: docs/requirements.txt
+      - name: Build the site
+        run: |
+          pip install -r docs/requirements.txt
+          zensical build --strict
+      - uses: actions/upload-pages-artifact@v5
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
