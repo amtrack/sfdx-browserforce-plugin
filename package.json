@@ -19,7 +19,8 @@
     "@salesforce/dev-scripts": "13.0.2",
     "oclif": "4.23.30",
     "prettier": "3.9.6",
-    "typescript": "*"
+    "typescript": "*",
+    "yaml": "2.9.0"
   },
   "files": [
     "/bin",
@@ -66,6 +67,7 @@
     "build": "rm -rf lib && tsc -p . && oclif manifest && oclif readme && npm run generate:schema",
     "develop": "bash scripts/develop.sh",
     "format": "npx prettier --write \"+(src|test)/**/*.+(ts|js|json)\"",
+    "generate:docs": "npm run build && bash scripts/generate-docs.sh",
     "generate:plugin": "npx --yes hygen plugin new",
     "generate:schema": "node --loader ts-node/esm --no-warnings=ExperimentalWarning scripts/generate-schema.ts",
     "prepack": "npm run build",

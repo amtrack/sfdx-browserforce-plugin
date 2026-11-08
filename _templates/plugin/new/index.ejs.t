@@ -18,7 +18,19 @@ export const <%= camelCase %>Schema = z
       })
       .optional(),
   })
-  .meta({ id: '<%= camelCase %>', title: '<%= pascalCase %> Settings', examples: [{ enabled: true }] });
+  .meta({
+    id: '<%= camelCase %>',
+    title: '<%= pascalCase %> Settings',
+    // Markdown shown on the documentation page of the setting (npm run generate:docs), in IDEs and in plugins list.
+    // Add a screenshot of the Setup page in docs/assets/settings/ and a line like
+    // '![<%= pascalCase %>](docs/assets/settings/<%= h.changeCase.paramCase(name) %>.png)'
+    description: [
+      'Setup: **Security → Login Access Policies** (`/partnerbt/loginAccessPolicies.apexp`)',
+      '',
+      'What the setting does, and why the Metadata API cannot do it.',
+    ].join('\n'),
+    examples: [{ enabled: true }],
+  });
 
 const BASE_PATH = '/partnerbt/loginAccessPolicies.apexp';
 

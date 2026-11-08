@@ -1,0 +1,2 @@
+# Python packages to build the documentation site (zensical build). Renovate keeps them up to date.
+zensical==0.0.72

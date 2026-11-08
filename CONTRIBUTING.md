@@ -155,12 +155,52 @@ keys to `.meta()`:
 - `'x-user-interface': 'classic'` (on the plugin schema): the feature only exists in Salesforce Classic.
 - `'x-prerequisites'` (on the plugin schema): what the org needs first (managed package, license, feature).
 
+#### Documentation page
+
+Each plugin gets a page on the [documentation site](https://amtrack.github.io/sfdx-browserforce-plugin/settings/),
+generated from its schema. Write its `description` in the `.meta()` of the plugin schema, in Markdown:
+
+- the Setup menu path and the URL of the page, e.g. ``Setup: **Email → Deliverability** (`/lightning/setup/OrgEmailSettings/home`)``;
+- what the setting does, and why the Metadata API cannot do it;
+- a screenshot of the Setup page, saved in `docs/assets/settings/` and referenced by its path from the repository
+  root: `![Deliverability](docs/assets/settings/email-deliverability.png)`. The documentation site shows it from
+  `docs/`, while `sf browserforce plugins list` and `schema.json` point it to its raw URL on GitHub.
+
+Multi-line descriptions are written as an array of lines joined with `'\n'` (an indented template literal would
+turn them into code blocks). Then regenerate the pages and commit what changed in `docs/`, `mkdocs.yml` and
+`README.md`:
+
+```shell
+npm run generate:docs
+```
+
+It builds the plugin, generates the command pages with [sfdx-hardis](https://sfdx-hardis.cloudity.com/) (installed
+in the `.sf-docs-tooling` folder, not in your `sf`), then the settings pages. It needs the `sf` CLI and bash (Git
+Bash on Windows). CI warns when the committed pages differ from the generated ones (the site is published from the regenerated pages anyway). To preview the site:
+
+```shell
+pip install -r docs/requirements.txt
+zensical serve
+```
+
+The other pages of `docs/` (installation, configuration, troubleshooting, Hall of Fame) are written by hand. Do not
+edit the generated ones: they start with a comment saying so. Every page starts with a YAML front matter giving its
+`title` and its `description` (160 characters at most) for search engines; the generators write it for the generated
+pages, and a unit test fails when a hand-written page has none:
+
+```markdown
+---
+title: Troubleshooting
+description: Fix a missing browser, watch or record what Browserforce does in Salesforce Setup with Playwright traces.
+---
+```
+
 #### Implementation (`index.ts`)
 
 Plugins are written in [Typescript](https://www.typescriptlang.org), just like `sf` and most of the available sf plugins.
 
 [Playwright](https://playwright.dev) is being used as a library for browser automation.
-If you need more inspiration regarding Playwright, checkout the [official documentation](https://playwright.dev/docs/intro) and our [best practices guide](./docs/PLAYWRIGHT.md).
+If you need more inspiration regarding Playwright, checkout the [official documentation](https://playwright.dev/docs/intro) and our [best practices guide](https://github.com/amtrack/sfdx-browserforce-plugin/blob/main/docs/PLAYWRIGHT.md).
 
 The simplified browserforce plugin lifecycle can be described as follows
 
