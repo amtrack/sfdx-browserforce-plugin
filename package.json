@@ -1,6 +1,6 @@
 {
   "name": "sfdx-browserforce-plugin",
-  "version": "6.5.0",
+  "version": "7.0.0",
   "description": "sfdx plugin for browser automation",
   "author": "Matthias Rolke <mr.amtrack@gmail.com>",
   "type": "module",
