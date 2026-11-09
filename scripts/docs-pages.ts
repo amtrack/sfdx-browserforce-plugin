@@ -317,7 +317,7 @@ const HOME_PAGE_LINKS = [
 /**
  * Home page of the site from the index.md sfdx-hardis builds out of the README: the README keeps everything, the home
  * page only the introduction and what no other page has, then links to the other pages. A line linking to the site
- * itself is removed too.
+ * itself is removed too, and the README's images in docs/ point to their copy on the site.
  */
 export function renderHomePage(indexMarkdown: string): string {
   const [intro, ...sections] = indexMarkdown.split(/^(?=## )/m);
@@ -327,7 +327,11 @@ export function renderHomePage(indexMarkdown: string): string {
     return !HOME_PAGE_SECTIONS_ELSEWHERE.has(title) && title !== 'Learn more';
   });
   const introWithoutSiteLink = intro.replace(/^📖 \*\*Documentation:.*\r?\n(\r?\n)?/m, '');
-  return `${[introWithoutSiteLink, ...kept].map((part) => part.trimEnd()).join('\n\n')}\n\n${HOME_PAGE_LINKS}\n`;
+  const home = `${[introWithoutSiteLink, ...kept].map((part) => part.trimEnd()).join('\n\n')}\n\n${HOME_PAGE_LINKS}\n`;
+  return rewriteMarkdownImages(home, (target) => {
+    const path = repositoryPath(target);
+    return path.startsWith('docs/') ? path.slice('docs/'.length) : target;
+  });
 }
 
 /**

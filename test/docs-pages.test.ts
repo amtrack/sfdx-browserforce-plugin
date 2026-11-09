@@ -338,6 +338,12 @@ describe('documentation pages', () => {
       assert.strictEqual(renderHomePage(home), home);
     });
 
+    it('shows the README images of docs/ from the site on the home page', () => {
+      const home = renderHomePage('# B\n\n![A](./docs/assets/a.png) ![B](docs/b.png) ![C](https://x.io/c.png)\n');
+      assert.ok(home.includes('![A](assets/a.png) ![B](b.png) ![C](https://x.io/c.png)'));
+      assert.strictEqual(renderHomePage(home), home);
+    });
+
     it('keeps the front matter of a command page while rendering its examples', () => {
       const page =
         '---\ntitle: "browserforce:apply"\n---\n\n# browserforce:apply\n\n$ <%= config.bin %> <%= command.id %>\n';

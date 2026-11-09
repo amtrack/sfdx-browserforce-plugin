@@ -22,7 +22,7 @@ For example, the highlighted checkbox "Show View Hierarchy link on account pages
 
 |                                                                                   |                                                                   |
 | --------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| ![Account Settings in the Salesforce Setup Menu](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/images/account-settings.png) | ![AccountSettings Metadata](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/images/account-settings-meta.png) |
+| ![Account Settings in the Salesforce Setup Menu](./docs/assets/images/account-settings.png) | ![AccountSettings Metadata](./docs/assets/images/account-settings-meta.png) |
 
 ⚡ **BUT**
 
@@ -32,7 +32,7 @@ For example, the highlighted checkbox "Show View Hierarchy link on account pages
 
 For example, the Currency Locale in `Setup -> Company Settings -> Company Information` is not represented in any Metadata.
 
-![unsupported setting for currency locale](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/images/unsupported-currency-locale.png)
+![unsupported setting for currency locale](./docs/assets/images/unsupported-currency-locale.png)
 
 👉 This is where Browserforce (sfdx-browserforce-plugin) comes to the rescue. It fills this gap by applying these unsupported settings through browser automation!
 
