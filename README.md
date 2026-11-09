@@ -315,9 +315,10 @@ DESCRIPTION
   Check a config file, or inline JSON, against the schemas of all settings and report every error with its path and the
   documentation page of the setting. Removed settings are reported with their migration instructions.
 
-  Values written as "${VAR}" are accepted in place of any value: they are environment variable references that
-  "browserforce apply" resolves and checks before logging in. They are listed in the result. Write "${VAR}" to keep the
-  literal text "${VAR}".
+  Values written with a dollar sign followed by a variable name in braces (the shell style reference to an environment
+  variable, for example API_KEY) are accepted in place of any value: they are environment variable references that
+  "browserforce apply" resolves and checks before logging in. They are listed in the result. Write two dollar signs in
+  front of the opening brace to keep the literal text.
 
   The command exits with code 1 when the config is invalid; with --json, the result still lists the errors.
 
