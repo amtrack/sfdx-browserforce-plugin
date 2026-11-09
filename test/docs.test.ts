@@ -12,9 +12,7 @@ import {
   withRawImageUrls,
 } from '../src/docs.js';
 
-const pjson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')) as {
-  homepage: string;
-};
+const pjson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')) as { homepage: string };
 const RAW = 'https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/';
 
 describe('docs', () => {

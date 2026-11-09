@@ -1,9 +1,7 @@
 import { readFileSync } from 'node:fs';
 
 // `src/docs.ts` and `lib/docs.js` both sit one level below the package root
-const pjson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')) as {
-  homepage: string;
-};
+const pjson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')) as { homepage: string };
 
 const GITHUB_REPOSITORY = 'amtrack/sfdx-browserforce-plugin';
 
