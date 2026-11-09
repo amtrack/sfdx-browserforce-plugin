@@ -1,0 +1,109 @@
+site_name: Browserforce
+site_url: https://amtrack.github.io/sfdx-browserforce-plugin/
+site_description: sf plugin to apply settings in the Salesforce Setup Menu using browser automation
+site_author: Matthias Rolke
+repo_url: https://github.com/amtrack/sfdx-browserforce-plugin
+repo_name: amtrack/sfdx-browserforce-plugin
+edit_uri: edit/main/docs/
+copyright: MIT © Matthias Rolke
+theme:
+  name: material
+  custom_dir: docs/overrides
+  font: false
+  features:
+    - content.code.copy
+    - content.tabs.link
+    - navigation.instant
+    - navigation.footer
+    - navigation.top
+    - search.highlight
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+plugins:
+  - search
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.snippets:
+      base_path: docs
+      check_paths: true
+      restrict_base_path: false
+extra_javascript:
+  - https://cdnjs.cloudflare.com/ajax/libs/tablesort/5.2.1/tablesort.min.js
+  - javascripts/tables.js
+extra_css:
+  - stylesheets/extra.css
+extra:
+  generator: false
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/amtrack/sfdx-browserforce-plugin
+    - icon: fontawesome/brands/npm
+      link: https://www.npmjs.com/package/sfdx-browserforce-plugin
+nav:
+  - Home: index.md
+  - Installation: installation.md
+  - Configuration: configuration.md
+  - Settings:
+      - Overview: settings/index.md
+      - Account Intelligence View: settings/accountIntelligenceView.md
+      - Activity Settings: settings/activitySettings.md
+      - Auth Providers: settings/authProviders.md
+      - Company Information: settings/companyInformation.md
+      - Customer Portal Settings: settings/customerPortal.md
+      - Density Settings: settings/densitySettings.md
+      - Email Deliverability Settings: settings/emailDeliverability.md
+      - HighVelocitySalesSettings: settings/highVelocitySalesSettings.md
+      - History Tracking: settings/historyTracking.md
+      - Home Page Layouts: settings/homePageLayouts.md
+      - LightningExperienceSettings: settings/lightningExperienceSettings.md
+      - LinkedIn Sales Navigator Settings: settings/linkedInSalesNavigatorSettings.md
+      - List View Custom Buttons: settings/listViewCustomButtons.md
+      - Omni-Channel Settings: settings/omniChannelSettings.md
+      - OpportunitySplits Settings: settings/opportunitySplits.md
+      - Permission Sets: settings/permissionSets.md
+      - Picklists: settings/picklists.md
+      - RecordTypes: settings/recordTypes.md
+      - RelateContactToMultipleAccounts Settings: settings/relateContactToMultipleAccounts.md
+      - Reports & Dashboards: settings/reportsAndDashboards.md
+      - SalesforceCpqConfig Settings: settings/salesforceCpqConfig.md
+      - Security Controls: settings/security.md
+      - Service Channels: settings/serviceChannels.md
+      - Slack Apps Setup: settings/slack.md
+      - User Access Policies: settings/userAccessPolicies.md
+  - Commands:
+      - Commands Reference: commands.md
+      - browserforce:
+          - apply: browserforce/apply.md
+          - playwright: browserforce/playwright.md
+          - plugins:
+              - list: browserforce/plugins/list.md
+              - validate: browserforce/plugins/validate.md
+  - Troubleshooting: troubleshooting.md
+  - Hall of Fame: hall-of-fame.md
+  - Contributing:
+      - Contributing: contributing.md
+      - Playwright: PLAYWRIGHT.md
+  - Release notes: https://github.com/amtrack/sfdx-browserforce-plugin/releases
+  - License: license.md

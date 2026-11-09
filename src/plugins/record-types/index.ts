@@ -23,6 +23,7 @@ export const recordTypesSchema = z
   .meta({
     id: 'recordTypes',
     title: 'RecordTypes',
+    description: 'Deletes inactive record types, optionally replacing them by another record type where they are used.',
     examples: [{ deletions: [{ fullName: 'Account.MyOldRecordType', replacement: 'Account.MyRecordType' }] }],
   });
 

@@ -19,6 +19,8 @@ export const permissionSetsSchema = z
   .default([])
   .meta({
     title: 'Permission Sets',
+    description:
+      'Gives Permission Sets access to service presence statuses (Omni-Channel), by the API names of the statuses.',
     examples: [[{ permissionSetName: 'Support_Agent', servicePresenceStatuses: ['Available', 'Busy'] }]],
     'x-prerequisites': ['Omni-Channel enabled'],
   });

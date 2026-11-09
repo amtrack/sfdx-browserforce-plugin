@@ -15,14 +15,16 @@ const authProviderSchema = z.object({
     .optional(),
 });
 
-export const authProvidersSchema = z
-  .record(z.string().regex(/^[a-zA-Z0-9_]+$/), authProviderSchema)
-  .describe('Configuration for updating Auth Provider Consumer Key and Consumer Secret')
-  .meta({
-    id: 'authProviders',
-    title: 'Auth Providers',
-    examples: [{ MyAuthProvider: { consumerKey: 'my-consumer-key', consumerSecret: '${MY_AUTH_PROVIDER_SECRET}' } }],
-  });
+export const authProvidersSchema = z.record(z.string().regex(/^[a-zA-Z0-9_]+$/), authProviderSchema).meta({
+  id: 'authProviders',
+  description: [
+    'Setup: **Identity → Auth. Providers** (`/lightning/setup/AuthProviders/home`)',
+    '',
+    'Updates the Consumer Key and the Consumer Secret of existing Auth Providers, keyed by their API name. Reference the secret with an environment variable (`"${MY_SECRET}"`) rather than writing it in the config file: it is masked in the output of `apply`.',
+  ].join('\n'),
+  title: 'Auth Providers',
+  examples: [{ MyAuthProvider: { consumerKey: 'my-consumer-key', consumerSecret: '${MY_AUTH_PROVIDER_SECRET}' } }],
+});
 
 const CONSUMER_SECRET_SELECTOR = '#ConsumerSecret';
 const CONSUMER_KEY_SELECTOR = '#ConsumerKey';

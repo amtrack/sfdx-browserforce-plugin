@@ -1,6 +1,5 @@
+import { hallOfFameUrl } from '../docs.js';
 import { getValueAtPath } from '../env-references.js';
-
-const HALL_OF_FAME_URL = 'https://github.com/amtrack/sfdx-browserforce-plugin/wiki/Hall-of-Fame';
 
 export type DeprecatedSetting = {
   /** dot path under `settings` */
@@ -20,7 +19,7 @@ const metadataApi = (path: string, anchor: string): DeprecatedSetting => ({
   path,
   reason: 'metadata-api',
   message: METADATA_API_MESSAGE,
-  url: `${HALL_OF_FAME_URL}#${anchor}`,
+  url: hallOfFameUrl(anchor),
 });
 
 export const deprecatedSettings: DeprecatedSetting[] = [
@@ -31,7 +30,7 @@ export const deprecatedSettings: DeprecatedSetting[] = [
     reason: 'retired',
     message: 'Salesforce to Salesforce has been retired.',
     alternatives: 'Partner Cloud, Data Cloud One, MuleSoft Anypoint, or MuleSoft for Flow',
-    url: `${HALL_OF_FAME_URL}#salesforcetosalesforce`,
+    url: hallOfFameUrl('salesforcetosalesforce'),
   },
   metadataApi('security.loginAccessPolicies', 'security-loginaccesspolicies-administratorscanloginasanyuser'),
   metadataApi('security.identityProvider', 'security-identityprovider'),

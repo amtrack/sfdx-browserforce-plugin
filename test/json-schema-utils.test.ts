@@ -1,6 +1,7 @@
 import assert from 'node:assert';
 import { flattenFields, inlineRefs, type JsonSchema, schemaAtPath, schemaType } from '../src/json-schema-utils.js';
 import { getPluginJsonSchema } from '../src/plugin-catalog.js';
+import { authProvidersSchema } from '../src/plugins/auth-providers/index.js';
 
 const pluginSchema = (key: string): JsonSchema => getPluginJsonSchema(key) as JsonSchema;
 
@@ -84,7 +85,7 @@ describe('flattenFields', () => {
         path: '*',
         kind: 'record',
         title: 'Auth Providers',
-        description: 'Configuration for updating Auth Provider Consumer Key and Consumer Secret',
+        description: authProvidersSchema.meta()?.description,
         keyPattern: '^[a-zA-Z0-9_]+$',
       },
     ]);

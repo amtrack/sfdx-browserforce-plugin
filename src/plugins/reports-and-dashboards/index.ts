@@ -9,6 +9,11 @@ export const reportsAndDashboardsSchema = z
   .meta({
     id: 'reportsAndDashboards',
     title: 'Reports & Dashboards',
+    description: [
+      'Setup: **Feature Settings → Analytics → Reports & Dashboards → Folder Sharing**',
+      '',
+      'Enables Enhanced Folder Sharing. Orgs created after the Summer ’13 release already have it.',
+    ].join('\n'),
     examples: [{ folderSharing: { enableEnhancedFolderSharing: true } }],
   });
 

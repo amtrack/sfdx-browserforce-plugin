@@ -17,10 +17,16 @@ export const homePageLayoutsSchema = z
       title: 'Home Page Layout Assignment',
     }),
   })
-  .describe('Assign Home Page Layouts for Profiles. Only available in Salesforce Classic UI')
   .meta({
     id: 'homePageLayouts',
     title: 'Home Page Layouts',
+    description: [
+      'Salesforce Classic Setup: **Customize → Home → Home Page Layouts** (`/setup/ui/assignhomelayoutedit.jsp`)',
+      '',
+      'Assigns Home Page Layouts to profiles.',
+      '',
+      '![Home Page Layout Assignment](docs/assets/settings/home-page-layouts.png)',
+    ].join('\n'),
     examples: [
       {
         homePageLayoutAssignments: [

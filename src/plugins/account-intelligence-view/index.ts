@@ -9,6 +9,11 @@ export const accountIntelligenceViewSchema = z
   .meta({
     id: 'accountIntelligenceView',
     title: 'Account Intelligence View',
+    description: [
+      'Setup: **Feature Settings → Sales → Account Intelligence** (`/lightning/setup/AccountInspectionSettings/home`)',
+      '',
+      'Turns the Account Intelligence view on or off.',
+    ].join('\n'),
     examples: [{ enable: true }, { enable: false }],
     'x-prerequisites': ['Account Intelligence available in the org (scratch org feature AccountInspection)'],
   });

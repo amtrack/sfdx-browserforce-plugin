@@ -154,6 +154,13 @@ export const salesforceCpqConfigSchema = z
   .meta({
     id: 'salesforceCpqConfig',
     title: 'SalesforceCpqConfig Settings',
+    description: [
+      'Setup: **Installed Packages → Salesforce CPQ → Configure**',
+      '',
+      'Sets the settings of the Salesforce CPQ package.',
+      '',
+      '![Salesforce CPQ settings](docs/assets/settings/salesforce-cpq-config.png)',
+    ].join('\n'),
     examples: [{ documents: { documentFolder: 'UserPersonalDocuments', postToFeed: false } }],
     'x-prerequisites': ['Salesforce CPQ managed package (SBQQ) installed'],
   });

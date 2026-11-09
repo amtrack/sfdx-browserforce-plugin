@@ -14,6 +14,13 @@ export const omniChannelSettingsSchema = z
   .meta({
     id: 'omniChannelSettings',
     title: 'Omni-Channel Settings',
+    description: [
+      'Setup: **Feature Settings → Service → Omni-Channel → Omni-Channel Settings** (`/lightning/setup/OmniChannelSettings/home`)',
+      '',
+      'Enables the status-based capacity model.',
+      '',
+      '![Omni-Channel Settings](docs/assets/settings/omni-channel-settings.png)',
+    ].join('\n'),
     examples: [{ enableStatusBasedCapacityModel: true }],
     'x-prerequisites': ['Omni-Channel enabled'],
   });
