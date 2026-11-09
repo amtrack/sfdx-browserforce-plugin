@@ -1,21 +1,17 @@
 import { readFileSync } from 'node:fs';
 
-type PackageJson = {
-  homepage?: string;
-};
-
 // `src/docs.ts` and `lib/docs.js` both sit one level below the package root
-const pjson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')) as PackageJson;
-
-const withTrailingSlash = (url: string): string => (url.endsWith('/') ? url : `${url}/`);
+const pjson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')) as {
+  homepage: string;
+};
 
 const GITHUB_REPOSITORY = 'amtrack/sfdx-browserforce-plugin';
 
 /** Path relative to the repository root, without a leading `./` or `/`. */
 export const repositoryPath = (path: string): string => path.replace(/^\.?\//, '');
 
-/** Base URL of the documentation site (`homepage` in package.json), with a trailing slash. */
-export const DOCS_URL = withTrailingSlash(pjson.homepage ?? `https://github.com/${GITHUB_REPOSITORY}`);
+/** Base URL of the documentation site (`homepage` in package.json, which ends with a slash). */
+export const DOCS_URL = pjson.homepage;
 
 /** Page listing every setting. */
 export const SETTINGS_DOC_URL = `${DOCS_URL}settings/`;
