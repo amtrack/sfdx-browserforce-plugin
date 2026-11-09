@@ -2,7 +2,6 @@ import { readFileSync } from 'node:fs';
 
 type PackageJson = {
   homepage?: string;
-  repository?: string | { url?: string };
 };
 
 // `src/docs.ts` and `lib/docs.js` both sit one level below the package root
@@ -10,26 +9,13 @@ const pjson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url
 
 const withTrailingSlash = (url: string): string => (url.endsWith('/') ? url : `${url}/`);
 
-let repository: string | undefined;
-
-/** `owner/repo` of the GitHub repository in package.json */
-function githubRepository(): string {
-  if (repository === undefined) {
-    const url = typeof pjson.repository === 'string' ? pjson.repository : (pjson.repository?.url ?? '');
-    const match = /github\.com[/:]([^/]+\/[^/.]+)/.exec(url);
-    if (!match) {
-      throw new Error(`package.json "repository" is not a GitHub repository: ${url}`);
-    }
-    repository = match[1];
-  }
-  return repository;
-}
+const GITHUB_REPOSITORY = 'amtrack/sfdx-browserforce-plugin';
 
 /** Path relative to the repository root, without a leading `./` or `/`. */
 export const repositoryPath = (path: string): string => path.replace(/^\.?\//, '');
 
 /** Base URL of the documentation site (`homepage` in package.json), with a trailing slash. */
-export const DOCS_URL = withTrailingSlash(pjson.homepage ?? `https://github.com/${githubRepository()}`);
+export const DOCS_URL = withTrailingSlash(pjson.homepage ?? `https://github.com/${GITHUB_REPOSITORY}`);
 
 /** Page listing every setting. */
 export const SETTINGS_DOC_URL = `${DOCS_URL}settings/`;
@@ -46,12 +32,12 @@ export function hallOfFameUrl(anchor: string): string {
 
 /** URL of a file of the repository on the main branch, from its path relative to the repository root. */
 export function rawFileUrl(path: string): string {
-  return `https://raw.githubusercontent.com/${githubRepository()}/main/${repositoryPath(path)}`;
+  return `https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/main/${repositoryPath(path)}`;
 }
 
 /** URL of a folder of the repository on GitHub, on the main branch, from its path relative to the repository root. */
 export function sourceTreeUrl(path: string): string {
-  return `https://github.com/${githubRepository()}/tree/main/${repositoryPath(path)}`;
+  return `https://github.com/${GITHUB_REPOSITORY}/tree/main/${repositoryPath(path)}`;
 }
 
 // ![alt](target) or ![alt](target "title")
