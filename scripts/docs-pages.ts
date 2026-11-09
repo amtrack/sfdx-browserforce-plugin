@@ -167,7 +167,7 @@ function fieldNotes(field: Field): string[] {
  * Path of a field as inline code that may wrap only after a dot (`picklistValues[].<wbr>metadataType`): a long path
  * does not widen the table, and a name is never cut in the middle.
  */
-export function fieldPath(path: string): string {
+function fieldPath(path: string): string {
   const escaped = path.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\|/g, '&#124;');
   return `<code>${escaped.replace(/\./g, '.<wbr>')}</code>`;
 }
