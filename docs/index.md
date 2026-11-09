@@ -24,8 +24,8 @@ description: Browserforce (sfdx-browserforce-plugin) is an sf CLI plugin applyin
 
 For example, the highlighted checkbox "Show View Hierarchy link on account pages" in Account Settings is indeed represented in the Metadata `AccountSettings` as `showViewHierarchyLink`.
 
-|                                                                                                                                                                   |                                                                                                                                                   |
-|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|
+|                                                                                             |                                                                             |
+|---------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------|
 | ![Account Settings in the Salesforce Setup Menu](assets/images/account-settings.png) | ![AccountSettings Metadata](assets/images/account-settings-meta.png) |
 
 ⚡ **BUT**
