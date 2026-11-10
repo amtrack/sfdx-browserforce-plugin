@@ -19,8 +19,11 @@ export const serviceChannelsSchema = z
   .default([])
   .meta({
     title: 'Service Channels',
-    description:
+    description: [
       'Configures the capacity model of Service Channels (Omni-Channel): status-based capacity, the status field and its in-progress values.',
+      '',
+      '![Service Channel capacity](docs/assets/settings/serviceChannels/overview.webp)',
+    ].join('\n'),
     examples: [
       [
         {

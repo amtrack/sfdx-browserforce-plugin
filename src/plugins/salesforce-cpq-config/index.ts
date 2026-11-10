@@ -173,7 +173,7 @@ export const salesforceCpqConfigSchema = z
 const BASE_PATH = '/0A3?setupid=ImportedPackage&retURL=%2Fui%2Fsetup%2FSetup%3Fsetupid%3DStudio';
 const AUTH_PATH = '/setup/secur/RemoteAccessAuthorizationPage.apexp';
 
-const CONFIGURE_SELECTOR = '.actionLink[title*="Configure"][title*="Salesforce CPQ"]';
+export const CONFIGURE_SELECTOR = '.actionLink[title*="Configure"][title*="Salesforce CPQ"]';
 const GENERATE_INTEGRATION_USER_PERMISSIONS_SELECTOR =
   'input[name="page:form:pb:j_id185:j_id197:setupIntegrationUserPermissions"]';
 const SAVE_SELECTOR = 'input[name="page:form:j_id2:j_id3:j_id11"]';

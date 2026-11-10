@@ -19,7 +19,7 @@ export const omniChannelSettingsSchema = z
       '',
       'Enables the status-based capacity model.',
       '',
-      '![Omni-Channel Settings](docs/assets/settings/omni-channel-settings.png)',
+      '![Omni-Channel Settings](docs/assets/settings/omniChannelSettings/overview.webp)',
     ].join('\n'),
     examples: [{ enableStatusBasedCapacityModel: true }],
     'x-prerequisites': ['Omni-Channel enabled'],
@@ -28,7 +28,7 @@ export const omniChannelSettingsSchema = z
 const BASE_PATH = '/omnichannel/settings.apexp';
 
 const SAVE_BUTTON_SELECTOR = 'input[id$=":save"]';
-const STATUS_CAPACITY_TOGGLE_SELECTOR = 'input[id$=":toggleOmniStatusCapModelPref"]';
+export const STATUS_CAPACITY_TOGGLE_SELECTOR = 'input[id$=":toggleOmniStatusCapModelPref"]';
 
 export type OmniChannelSettingsConfig = z.infer<typeof omniChannelSettingsSchema>;
 

@@ -13,6 +13,8 @@ export const accountIntelligenceViewSchema = z
       'Setup: **Feature Settings → Sales → Account Intelligence** (`/lightning/setup/AccountInspectionSettings/home`)',
       '',
       'Turns the Account Intelligence view on or off.',
+      '',
+      '![Account Intelligence View](docs/assets/settings/accountIntelligenceView/overview.webp)',
     ].join('\n'),
     examples: [{ enable: true }, { enable: false }],
     'x-prerequisites': ['Account Intelligence available in the org (scratch org feature AccountInspection)'],

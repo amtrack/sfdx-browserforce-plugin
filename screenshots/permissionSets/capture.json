@@ -1,0 +1,85 @@
+{
+  "useCases": {
+    "01-agents-presence-statuses": {
+      "hash": "5dfa28636db5d7d97a03451fd75bcdc03d09f5b2ffa32d00d56ab9ac0c8ff82b",
+      "capturedAt": "2026-11-10",
+      "captures": [
+        {
+          "name": "presence-statuses",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "clip": {
+            "x": 173,
+            "y": 106,
+            "width": 960,
+            "height": 619
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "[0].permissionSetName",
+              "in": "both"
+            },
+            {
+              "n": 2,
+              "field": "[0].servicePresenceStatuses",
+              "in": "both"
+            }
+          ],
+          "before": {
+            "file": "01-agents-presence-statuses-presence-statuses-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "[0].permissionSetName",
+                "box": {
+                  "x": 240,
+                  "y": 146,
+                  "width": 826,
+                  "height": 24
+                }
+              },
+              {
+                "n": 2,
+                "field": "[0].servicePresenceStatuses",
+                "box": {
+                  "x": 622,
+                  "y": 428,
+                  "width": 305,
+                  "height": 257
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "01-agents-presence-statuses-presence-statuses-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "[0].permissionSetName",
+                "box": {
+                  "x": 240,
+                  "y": 146,
+                  "width": 826,
+                  "height": 24
+                }
+              },
+              {
+                "n": 2,
+                "field": "[0].servicePresenceStatuses",
+                "box": {
+                  "x": 622,
+                  "y": 428,
+                  "width": 305,
+                  "height": 257
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

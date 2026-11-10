@@ -1,0 +1,272 @@
+{
+  "useCases": {
+    "01-enable-the-customer-portal": {
+      "hash": "c837f0b4eaa6007f09c344e941270c7c6220898fe753da6cfd4f10a8919f4e2e",
+      "capturedAt": "2026-11-10",
+      "captures": [
+        {
+          "name": "customer-portal-setup",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "clip": {
+            "x": 189,
+            "y": 1,
+            "width": 1251,
+            "height": 421
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "enabled",
+              "in": "both"
+            }
+          ],
+          "before": {
+            "file": "01-enable-the-customer-portal-customer-portal-setup-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "enabled",
+                "box": {
+                  "x": 453,
+                  "y": 226,
+                  "width": 966,
+                  "height": 26
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "01-enable-the-customer-portal-customer-portal-setup-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "enabled",
+                "box": {
+                  "x": 248,
+                  "y": 239,
+                  "width": 1165,
+                  "height": 25
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "02-choose-the-portal-profiles": {
+      "hash": "9c568b1ff7b95c29b9299f7260ecc0205f368bd6ba095e33af7969dce33718c6",
+      "capturedAt": "2026-11-10",
+      "captures": [
+        {
+          "name": "portal-profiles",
+          "viewport": {
+            "width": 1440,
+            "height": 2600
+          },
+          "clip": {
+            "x": 213,
+            "y": 1179,
+            "width": 1207,
+            "height": 421
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "portals[0].portalProfileMemberships",
+              "in": "after"
+            }
+          ],
+          "before": {
+            "file": "02-choose-the-portal-profiles-portal-profiles-before.png",
+            "pills": []
+          },
+          "after": {
+            "file": "02-choose-the-portal-profiles-portal-profiles-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "portals[0].portalProfileMemberships",
+                "box": {
+                  "x": 253,
+                  "y": 1545,
+                  "width": 41,
+                  "height": 14
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "03-rename-the-portal": {
+      "hash": "de92db95f3fc3e483609883a5dd36561ea800fbf3642b44fb5e6ad22ee596341",
+      "capturedAt": "2026-11-10",
+      "captures": [
+        {
+          "name": "portals",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "clip": {
+            "x": 240,
+            "y": 0,
+            "width": 1180,
+            "height": 420
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "portals[0].oldName",
+              "in": "before"
+            },
+            {
+              "n": 2,
+              "field": "portals[0].name",
+              "in": "after"
+            }
+          ],
+          "before": {
+            "file": "03-rename-the-portal-portals-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "portals[0].oldName",
+                "box": {
+                  "x": 294,
+                  "y": 244,
+                  "width": 87,
+                  "height": 14
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "03-rename-the-portal-portals-after.png",
+            "pills": [
+              {
+                "n": 2,
+                "field": "portals[0].name",
+                "box": {
+                  "x": 294,
+                  "y": 244,
+                  "width": 76,
+                  "height": 14
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "04-make-a-custom-object-available": {
+      "hash": "03a5947d3e28f0eeb0d6ee54b279c7198c1ad4497a577677f13a6ad7b3797127",
+      "capturedAt": "2026-11-10",
+      "captures": [
+        {
+          "name": "dummy",
+          "viewport": {
+            "width": 1440,
+            "height": 1400
+          },
+          "clip": {
+            "x": 58,
+            "y": 729,
+            "width": 961,
+            "height": 421
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "availableCustomObjects[0].available",
+              "in": "both"
+            }
+          ],
+          "before": {
+            "file": "04-make-a-custom-object-available-dummy-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "availableCustomObjects[0].available",
+                "box": {
+                  "x": 532,
+                  "y": 933,
+                  "width": 13,
+                  "height": 13
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "04-make-a-custom-object-available-dummy-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "availableCustomObjects[0].available",
+                "box": {
+                  "x": 532,
+                  "y": 933,
+                  "width": 13,
+                  "height": 13
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "cpq-quote",
+          "viewport": {
+            "width": 1440,
+            "height": 1400
+          },
+          "clip": {
+            "x": 58,
+            "y": 797,
+            "width": 961,
+            "height": 421
+          },
+          "pills": [
+            {
+              "n": 2,
+              "field": "availableCustomObjects[1].available",
+              "in": "both"
+            }
+          ],
+          "before": {
+            "file": "04-make-a-custom-object-available-cpq-quote-before.png",
+            "pills": [
+              {
+                "n": 2,
+                "field": "availableCustomObjects[1].available",
+                "box": {
+                  "x": 532,
+                  "y": 1001,
+                  "width": 13,
+                  "height": 13
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "04-make-a-custom-object-available-cpq-quote-after.png",
+            "pills": [
+              {
+                "n": 2,
+                "field": "availableCustomObjects[1].available",
+                "box": {
+                  "x": 532,
+                  "y": 1001,
+                  "width": 13,
+                  "height": 13
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

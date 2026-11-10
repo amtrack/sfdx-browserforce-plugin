@@ -82,6 +82,8 @@ export const picklistsSchema = z
       '- activate or deactivate values;',
       '- rename the API name of a value (`newApiName`, and its label with `newLabel`), active or inactive: Salesforce updates the records holding it, without field history nor automation. A deployment of a renamed value creates a new value instead, so rename it in your source too. The org must allow it (`PicklistSettings.isPicklistApiNameEditDisabled` false);',
       '- manage (create, modify, delete) the field dependencies of custom fields. An existing field dependency of the dependent field is deleted first.',
+      '',
+      '![Contract Status picklist values](docs/assets/settings/picklists/overview.webp)',
     ].join('\n'),
     examples: [
       {

@@ -21,6 +21,8 @@ export const relateContactToMultipleAccountsSchema = z
       'Setup: **Feature Settings → Sales → Account Settings** (`/lightning/setup/AccountSettings/home`)',
       '',
       'Enabling it through the Metadata API (`AccountSettings.enableRelateContactToMultipleAccounts`) does not always make the `AccountContactRelation` object available. Enabling it in Setup always does.',
+      '',
+      '![Account Settings](docs/assets/settings/relateContactToMultipleAccounts/overview.webp)',
     ].join('\n'),
     examples: [{ enabled: true }],
   });

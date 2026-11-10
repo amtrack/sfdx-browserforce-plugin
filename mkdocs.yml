@@ -54,6 +54,7 @@ extra_javascript:
   - javascripts/tables.js
 extra_css:
   - stylesheets/extra.css
+  - stylesheets/pills.css
 extra:
   generator: false
   social:

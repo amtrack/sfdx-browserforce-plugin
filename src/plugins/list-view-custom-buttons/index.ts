@@ -55,6 +55,8 @@ export const listViewCustomButtonsSchema = z
       'Object Manager: **(object) → Search Layouts for Salesforce Classic → List View**',
       '',
       'Manages the custom buttons selected in the list view button layout of any object. Buttons are identified by the API name of their WebLink, with an optional namespace prefix (`AssignTask` or `th_dev__AssignTask`).',
+      '',
+      '![List View Custom Buttons](docs/assets/settings/listViewCustomButtons/overview.webp)',
     ].join('\n'),
     examples: [[{ objectApiName: 'Task', buttons: ['MyListButton', 'MyOtherListButton'], removeOtherButtons: true }]],
   });
