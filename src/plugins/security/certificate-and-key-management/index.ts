@@ -59,7 +59,7 @@ type Certificate = {
   name: string;
   label: string;
   exportable?: boolean;
-  keySize?: number;
+  keysize?: number;
   _id?: string;
 };
 
@@ -95,7 +95,7 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
             name: existingCert.DeveloperName,
             label: existingCert.MasterLabel,
             exportable: existingCert.OptionsIsPrivateKeyExportable,
-            keySize: existingCert.KeySize,
+            keysize: existingCert.KeySize,
           });
         }
       }
@@ -156,8 +156,8 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
             DeveloperName: certificate.name,
             MasterLabel: certificate.label,
           };
-          if (certificate.keySize) {
-            urlAttributes['keySize'] = certificate.keySize;
+          if (certificate.keysize) {
+            urlAttributes['keySize'] = certificate.keysize;
           }
           if (certificate.exportable !== undefined) {
             urlAttributes['exp'] = certificate.exportable ? 1 : 0;

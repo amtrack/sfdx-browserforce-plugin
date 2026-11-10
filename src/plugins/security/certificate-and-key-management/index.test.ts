@@ -10,6 +10,16 @@ type T = {
 
 const tests: T[] = [
   {
+    description: 'should not do anything if the certificate already has its key size',
+    source: {
+      certificates: [{ _id: '0P1000000000001', name: 'foo', label: 'foo', exportable: false, keysize: 4096 }],
+    },
+    target: {
+      certificates: [{ name: 'foo', label: 'foo', exportable: false, keysize: 4096 }],
+    },
+    expected: undefined,
+  },
+  {
     description: 'should not do anything if keystore already exists',
     source: {
       importFromKeystore: [
