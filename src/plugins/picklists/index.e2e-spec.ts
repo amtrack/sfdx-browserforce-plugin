@@ -98,6 +98,9 @@ describe(Picklists.name, function () {
   it('should replace and deactivate a picklist value', async () => {
     await plugin.run(configReplaceAndDeactivate);
   });
+  it('should replace all blank values without an old value', async () => {
+    await plugin.run(readJsonFile('./replace-all-blanks.json').settings.picklists);
+  });
   describe(FieldDependencies.name, function () {
     this.timeout('10m');
     let plugin: FieldDependencies;
