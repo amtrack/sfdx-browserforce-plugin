@@ -1,0 +1,135 @@
+{
+  "useCases": {
+    "01-assign-the-sales-home-page": {
+      "hash": "0b0ce94435d8112b8b4e42c510f3f7eab5ab721d5c45baa159e8e1651e4ee0ca",
+      "capturedAt": "2026-11-10",
+      "captures": [
+        {
+          "name": "home-page-layout-assignment",
+          "viewport": {
+            "width": 1440,
+            "height": 2000
+          },
+          "clip": {
+            "x": 0,
+            "y": 1051,
+            "width": 960,
+            "height": 420
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "homePageLayoutAssignments[0].profile",
+              "in": "both"
+            },
+            {
+              "n": 2,
+              "field": "homePageLayoutAssignments[0].layout",
+              "in": "both"
+            },
+            {
+              "n": 3,
+              "field": "homePageLayoutAssignments[1].profile",
+              "in": "both"
+            },
+            {
+              "n": 4,
+              "field": "homePageLayoutAssignments[1].layout",
+              "in": "both"
+            }
+          ],
+          "before": {
+            "file": "01-assign-the-sales-home-page-home-page-layout-assignment-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "homePageLayoutAssignments[0].profile",
+                "box": {
+                  "x": 376,
+                  "y": 1239,
+                  "width": 75,
+                  "height": 12
+                }
+              },
+              {
+                "n": 2,
+                "field": "homePageLayoutAssignments[0].layout",
+                "box": {
+                  "x": 471,
+                  "y": 1239,
+                  "width": 139,
+                  "height": 19
+                }
+              },
+              {
+                "n": 3,
+                "field": "homePageLayoutAssignments[1].profile",
+                "box": {
+                  "x": 338,
+                  "y": 1264,
+                  "width": 113,
+                  "height": 12
+                }
+              },
+              {
+                "n": 4,
+                "field": "homePageLayoutAssignments[1].layout",
+                "box": {
+                  "x": 471,
+                  "y": 1264,
+                  "width": 139,
+                  "height": 19
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "01-assign-the-sales-home-page-home-page-layout-assignment-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "homePageLayoutAssignments[0].profile",
+                "box": {
+                  "x": 376,
+                  "y": 1239,
+                  "width": 75,
+                  "height": 12
+                }
+              },
+              {
+                "n": 2,
+                "field": "homePageLayoutAssignments[0].layout",
+                "box": {
+                  "x": 471,
+                  "y": 1239,
+                  "width": 139,
+                  "height": 19
+                }
+              },
+              {
+                "n": 3,
+                "field": "homePageLayoutAssignments[1].profile",
+                "box": {
+                  "x": 338,
+                  "y": 1264,
+                  "width": 113,
+                  "height": 12
+                }
+              },
+              {
+                "n": 4,
+                "field": "homePageLayoutAssignments[1].layout",
+                "box": {
+                  "x": 471,
+                  "y": 1264,
+                  "width": 139,
+                  "height": 19
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

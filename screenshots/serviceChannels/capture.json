@@ -1,0 +1,120 @@
+{
+  "useCases": {
+    "01-case-capacity-by-status": {
+      "hash": "ad7b4bb91063612cbf45220d6da8e19013ebbb780872ee6f8a555f7fdf9be832",
+      "capturedAt": "2026-11-10",
+      "captures": [
+        {
+          "name": "service-channel",
+          "viewport": {
+            "width": 1440,
+            "height": 1100
+          },
+          "clip": {
+            "x": 240,
+            "y": 119,
+            "width": 1180,
+            "height": 951
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "[0].capacity.capacityModel",
+              "in": "both"
+            },
+            {
+              "n": 2,
+              "field": "[0].capacity.statusField",
+              "in": "after"
+            },
+            {
+              "n": 3,
+              "field": "[0].capacity.valuesForInProgress",
+              "in": "after"
+            },
+            {
+              "n": 4,
+              "field": "[0].capacity.checkAgentCapacityOnReopenedWorkItems",
+              "in": "after"
+            },
+            {
+              "n": 5,
+              "field": "[0].capacity.checkAgentCapacityOnReassignedWorkItems",
+              "in": "after"
+            }
+          ],
+          "before": {
+            "file": "01-case-capacity-by-status-service-channel-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "[0].capacity.capacityModel",
+                "box": {
+                  "x": 471,
+                  "y": 766,
+                  "width": 101,
+                  "height": 19
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "01-case-capacity-by-status-service-channel-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "[0].capacity.capacityModel",
+                "box": {
+                  "x": 471,
+                  "y": 766,
+                  "width": 101,
+                  "height": 19
+                }
+              },
+              {
+                "n": 2,
+                "field": "[0].capacity.statusField",
+                "box": {
+                  "x": 471,
+                  "y": 791,
+                  "width": 103,
+                  "height": 19
+                }
+              },
+              {
+                "n": 3,
+                "field": "[0].capacity.valuesForInProgress",
+                "box": {
+                  "x": 474,
+                  "y": 845,
+                  "width": 180,
+                  "height": 104
+                }
+              },
+              {
+                "n": 4,
+                "field": "[0].capacity.checkAgentCapacityOnReopenedWorkItems",
+                "box": {
+                  "x": 475,
+                  "y": 961,
+                  "width": 13,
+                  "height": 13
+                }
+              },
+              {
+                "n": 5,
+                "field": "[0].capacity.checkAgentCapacityOnReassignedWorkItems",
+                "box": {
+                  "x": 475,
+                  "y": 991,
+                  "width": 13,
+                  "height": 13
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

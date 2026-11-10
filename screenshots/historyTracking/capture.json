@@ -1,0 +1,100 @@
+{
+  "useCases": {
+    "01-track-person-account-fields": {
+      "hash": "6690190f69e139bbe15d29ddea3d94689787a4237b5a575e7f79c14fb96ffa20",
+      "capturedAt": "2026-11-10",
+      "captures": [
+        {
+          "name": "account-field-history",
+          "viewport": {
+            "width": 1440,
+            "height": 1600
+          },
+          "clip": {
+            "x": 200,
+            "y": 94,
+            "width": 1220,
+            "height": 463
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "[0].objectApiName",
+              "in": "both"
+            },
+            {
+              "n": 2,
+              "field": "[0].enableHistoryTracking",
+              "in": "both"
+            },
+            {
+              "n": 3,
+              "field": "[0].fieldHistoryTracking",
+              "in": "after"
+            }
+          ],
+          "before": {
+            "file": "01-track-person-account-fields-account-field-history-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "[0].objectApiName",
+                "box": {
+                  "x": 240,
+                  "y": 134,
+                  "width": 826,
+                  "height": 28
+                }
+              },
+              {
+                "n": 2,
+                "field": "[0].enableHistoryTracking",
+                "box": {
+                  "x": 273,
+                  "y": 189,
+                  "width": 124,
+                  "height": 14
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "01-track-person-account-fields-account-field-history-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "[0].objectApiName",
+                "box": {
+                  "x": 240,
+                  "y": 134,
+                  "width": 826,
+                  "height": 28
+                }
+              },
+              {
+                "n": 2,
+                "field": "[0].enableHistoryTracking",
+                "box": {
+                  "x": 273,
+                  "y": 189,
+                  "width": 124,
+                  "height": 14
+                }
+              },
+              {
+                "n": 3,
+                "field": "[0].fieldHistoryTracking",
+                "box": {
+                  "x": 475,
+                  "y": 504,
+                  "width": 13,
+                  "height": 13
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

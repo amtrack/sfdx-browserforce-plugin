@@ -1,0 +1,85 @@
+{
+  "useCases": {
+    "01-add-task-list-buttons": {
+      "hash": "63075f350451991a2d8a8d0b686d86077e3c354c1319351fc8eb4125da122d0c",
+      "capturedAt": "2026-11-10",
+      "captures": [
+        {
+          "name": "activities-list-view",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "clip": {
+            "x": 200,
+            "y": 106,
+            "width": 1220,
+            "height": 677
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "[0].objectApiName",
+              "in": "both"
+            },
+            {
+              "n": 2,
+              "field": "[0].buttons",
+              "in": "both"
+            }
+          ],
+          "before": {
+            "file": "01-add-task-list-buttons-activities-list-view-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "[0].objectApiName",
+                "box": {
+                  "x": 240,
+                  "y": 146,
+                  "width": 826,
+                  "height": 24
+                }
+              },
+              {
+                "n": 2,
+                "field": "[0].buttons",
+                "box": {
+                  "x": 440,
+                  "y": 554,
+                  "width": 56,
+                  "height": 189
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "01-add-task-list-buttons-activities-list-view-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "[0].objectApiName",
+                "box": {
+                  "x": 240,
+                  "y": 146,
+                  "width": 826,
+                  "height": 24
+                }
+              },
+              {
+                "n": 2,
+                "field": "[0].buttons",
+                "box": {
+                  "x": 420,
+                  "y": 554,
+                  "width": 108,
+                  "height": 189
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

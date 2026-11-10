@@ -22,7 +22,8 @@ If a `/design` spec exists in the conversation, follow it. Otherwise read the re
 - Playwright rules from `docs/PLAYWRIGHT.md`: `await using page = await this.browserforce.openPage(...)`, Locator API, language-independent selectors, save signal raced with `waitForPageErrors(page)`, no `waitForTimeout` / `waitForLoadState` / `evaluate`.
 - Relative imports end in `.js` (ESM).
 - Keep `src/plugins/schema.json` generated: never edit it by hand.
-- In the root `.meta()`, a Markdown `description` for the documentation page: Setup path and URL, what it does and why the Metadata API cannot, and a screenshot in `docs/assets/settings/` referenced as `docs/assets/settings/<file>.png`. After a schema or command change, run `npm run generate:docs` and keep the regenerated `docs/` and `mkdocs.yml` (CI warns otherwise).
+- In the root `.meta()`, a Markdown `description` for the documentation page: Setup path and URL, what it does and why the Metadata API cannot, and its overview image referenced as `docs/assets/settings/<key>/overview.webp` (produced by `/document-setting`). After a schema or command change, run `npm run generate:docs` and keep the regenerated `docs/` and `mkdocs.yml` (CI warns otherwise).
+- Use cases in `src/plugins/<folder>/use-cases.e2e-spec.ts` (the scaffolder creates it with `TODO`s that fail the unit tests on purpose): write them as the design says, following `.claude/skills/document-setting/SKILL.md`.
 - A user-visible change to a command or flag also updates its `summary` / `description`; `npm run build` regenerates the README usage section.
 
 ## 3. Verify
@@ -42,6 +43,8 @@ Fix every failure before going on. Add unit tests for custom `diff()` logic and 
 - If the default org (`isDefaultUsername: true`) is listed under `result.scratchOrgs`, run the plugin's tests: `npm run test:e2e -- -g "<PluginClassName>"`.
 - Otherwise, or when there is no default org, do not run them: ask the user with `AskUserQuestion` whether to run them, create a scratch org with `npm run develop`, or skip.
 - When an e2e test fails on timing, fix the wait condition, not the timeout. A new plugin's e2e test should pass several runs in a row; tell the user if you could not repeat it.
+
+**Use cases and screenshots:** once the e2e tests pass on a scratch org (or when only use cases changed), run the project skill `/document-setting <configKey>` for each new or changed setting: it captures the annotated before/after screenshots in its own scratch org (`browserforce-docs`), never in the default org. Then `npm run generate:docs`.
 
 ## 4. Code review with automatic fixes
 

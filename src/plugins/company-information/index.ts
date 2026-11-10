@@ -14,14 +14,14 @@ export const companyInformationSchema = z
       '',
       'Sets the Currency Locale of the org, which no Metadata API type represents.',
       '',
-      '![Company Information](docs/assets/settings/company-information.png)',
+      '![Company Information](docs/assets/settings/companyInformation/overview.webp)',
     ].join('\n'),
     examples: [{ defaultCurrencyIsoCode: 'English (South Africa) - ZAR' }],
   });
 
 const getUrl = (orgId: string): SalesforceUrlPath => `/${orgId}/e`;
 
-const CURRENCY_DROPDOWN_SELECTOR = '#DefaultCurrencyIsoCode';
+export const CURRENCY_DROPDOWN_SELECTOR = '#DefaultCurrencyIsoCode';
 const SAVE_BUTTON_SELECTOR = 'input[class="btn"][type="submit"][name="save"]';
 
 export type CompanyInformationConfig = z.infer<typeof companyInformationSchema>;

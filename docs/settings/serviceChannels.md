@@ -14,6 +14,59 @@ Config key: `settings.serviceChannels`
 
 Configures the capacity model of Service Channels (Omni-Channel): status-based capacity, the status field and its in-progress values.
 
+![Service Channel capacity](../assets/settings/serviceChannels/overview.webp)
+
+## Use case
+
+### Case capacity follows the status of the case
+
+Litware turned on the status-based capacity model in `omniChannelSettings`. Its case channel still uses the tab-based **capacity model <span class="bf-pill bf-pill-c1">1</span>**, so the change has no effect yet: each case channel must say which field tells the status of the work and which of its values mean "in progress".
+
+This config switches the channel to status-based capacity on the **Status field <span class="bf-pill bf-pill-c2">2</span>** of the case, counts `New`, `Working` and `Escalated` cases as **in progress <span class="bf-pill bf-pill-c3">3</span>**, and checks the agent's capacity again when a closed case is **reopened <span class="bf-pill bf-pill-c4">4</span>** or a case is **reassigned <span class="bf-pill bf-pill-c5">5</span>**. The `ServiceChannel` metadata of the API versions most projects deploy with has no capacity fields, so the deployment of the channel is followed by this config.
+
+=== "Config"
+
+    ```json
+    {
+      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+      "settings": {
+        "serviceChannels": [
+          {
+            "serviceChannelDeveloperName": "CaseTest",
+            "capacity": {
+              "capacityModel": "StatusBased",
+              "statusField": "Case.Status",
+              "valuesForInProgress": [
+                "New",
+                "Working",
+                "Escalated"
+              ],
+              "checkAgentCapacityOnReopenedWorkItems": true,
+              "checkAgentCapacityOnReassignedWorkItems": true
+            }
+          }
+        ]
+      }
+    }
+    ```
+
+=== "Before"
+
+    ![Before: Case capacity follows the status of the case](../assets/settings/serviceChannels/01-case-capacity-by-status-service-channel-before.webp)
+
+=== "After"
+
+    ![After: Case capacity follows the status of the case](../assets/settings/serviceChannels/01-case-capacity-by-status-service-channel-after.webp)
+
+| Pill | Field | Before | After |
+| ---- | ----- | ------ | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>[0].<wbr>capacity.<wbr>capacityModel</code> | `TabBased` | `StatusBased` |
+| <span class="bf-pill bf-pill-c2">2</span> | <code>[0].<wbr>capacity.<wbr>statusField</code> |  | `Case.Status` |
+| <span class="bf-pill bf-pill-c3">3</span> | <code>[0].<wbr>capacity.<wbr>valuesForInProgress</code> |  | `["New","Working","Escalated"]` |
+| <span class="bf-pill bf-pill-c4">4</span> | <code>[0].<wbr>capacity.<wbr>checkAgentCapacityOnReopenedWorkItems</code> |  | `true` |
+| <span class="bf-pill bf-pill-c5">5</span> | <code>[0].<wbr>capacity.<wbr>checkAgentCapacityOnReassignedWorkItems</code> |  | `true` |
+|  | <code>[0].<wbr>serviceChannelDeveloperName</code><br>the service channel whose edit page is opened | `CaseTest` | `CaseTest` |
+
 ## Example
 
 ```json
@@ -55,7 +108,7 @@ In the field paths, `[]` stands for the items of a list and `*` for the entries 
     {
       "default": [],
       "title": "Service Channels",
-      "description": "Configures the capacity model of Service Channels (Omni-Channel): status-based capacity, the status field and its in-progress values.",
+      "description": "Configures the capacity model of Service Channels (Omni-Channel): status-based capacity, the status field and its in-progress values.\n\n![Service Channel capacity](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/serviceChannels/overview.webp)",
       "examples": [
         [
           {

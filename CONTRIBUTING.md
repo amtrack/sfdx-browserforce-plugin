@@ -162,9 +162,31 @@ generated from its schema. Write its `description` in the `.meta()` of the plugi
 
 - the Setup menu path and the URL of the page, e.g. ``Setup: **Email → Deliverability** (`/lightning/setup/OrgEmailSettings/home`)``;
 - what the setting does, and why the Metadata API cannot do it;
-- a screenshot of the Setup page, saved in `docs/assets/settings/` and referenced by its path from the repository
-  root: `![Deliverability](docs/assets/settings/email-deliverability.png)`. The documentation site shows it from
+- its overview image, referenced by its path from the repository root:
+  `![Deliverability](docs/assets/settings/emailDeliverability/overview.webp)`. The documentation site shows it from
   `docs/`, while `sf browserforce plugins list` and `schema.json` point it to its raw URL on GitHub.
+
+#### Use cases and screenshots
+
+Below the description, the page shows the **use cases** of the setting: real-life stories, each with its config and
+screenshots of the Setup page before and after it is applied, where a numbered pill marks each field. They live in
+`src/plugins/<folder>/use-cases.e2e-spec.ts`, which exports them with `defineUseCases()`: the story (citing the
+pills as `**(1)**`), the `given` state and the `config`, typed by the schema of the setting, and a `shoot(doc)`
+function that opens the Setup pages with Playwright and calls `doc.shot()` with the locator of each field (reuse the
+selectors of the plugin). The skill `.claude/skills/document-setting/SKILL.md` describes the format in full.
+
+The use cases are E2E tests that take the screenshots. They run in a scratch org (never your default org), by a
+Chrome the script starts for itself, and not with `npm run test:e2e`:
+
+```shell
+npm run docs:capture -- --plan mySetting                    # check the use cases, without an org
+npm run docs:capture -- -o browserforce-docs mySetting      # run them and take the raw screenshots
+npm run docs:annotate -- mySetting                          # draw the pills into docs/assets/settings/mySetting/
+```
+
+The raw screenshots and the boxes of the fields are committed in `screenshots/<key>/`, so moving a pill (`captures`
+in the use case) only needs `docs:annotate`. A unit test checks that every setting has a use case showing all its fields and that the
+images match their spec. With Claude Code, `/document-setting mySetting` does all of this, including the scratch org.
 
 Multi-line descriptions are written as an array of lines joined with `'\n'` (an indented template literal would
 turn them into code blocks). Then regenerate the pages and commit what changed in `docs/`, `mkdocs.yml` and

@@ -1,0 +1,60 @@
+{
+  "useCases": {
+    "01-route-cases-by-status": {
+      "hash": "8de033c5a19b4327b1acaa93369ed0c1b8dde28402cf8fbbeaf6dd448dd06c51",
+      "capturedAt": "2026-11-10",
+      "captures": [
+        {
+          "name": "omni-channel-settings",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "clip": {
+            "x": 240,
+            "y": 119,
+            "width": 1180,
+            "height": 574
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "enableStatusBasedCapacityModel",
+              "in": "both"
+            }
+          ],
+          "before": {
+            "file": "01-route-cases-by-status-omni-channel-settings-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "enableStatusBasedCapacityModel",
+                "box": {
+                  "x": 471,
+                  "y": 500,
+                  "width": 13,
+                  "height": 13
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "01-route-cases-by-status-omni-channel-settings-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "enableStatusBasedCapacityModel",
+                "box": {
+                  "x": 471,
+                  "y": 500,
+                  "width": 13,
+                  "height": 13
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

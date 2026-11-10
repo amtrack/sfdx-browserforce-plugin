@@ -1,0 +1,85 @@
+{
+  "useCases": {
+    "01-rotate-the-sso-credentials": {
+      "hash": "959a7c113f0d46accb103018452296fef368be9060a93e9280f23344132810b0",
+      "capturedAt": "2026-11-10",
+      "captures": [
+        {
+          "name": "auth-provider",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "clip": {
+            "x": 220,
+            "y": 119,
+            "width": 1220,
+            "height": 757
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "TestAuthProvider.consumerKey",
+              "in": "both"
+            },
+            {
+              "n": 2,
+              "field": "TestAuthProvider.consumerSecret",
+              "in": "both"
+            }
+          ],
+          "before": {
+            "file": "01-rotate-the-sso-credentials-auth-provider-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "TestAuthProvider.consumerKey",
+                "box": {
+                  "x": 452,
+                  "y": 318,
+                  "width": 968,
+                  "height": 21
+                }
+              },
+              {
+                "n": 2,
+                "field": "TestAuthProvider.consumerSecret",
+                "box": {
+                  "x": 452,
+                  "y": 339,
+                  "width": 968,
+                  "height": 21
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "01-rotate-the-sso-credentials-auth-provider-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "TestAuthProvider.consumerKey",
+                "box": {
+                  "x": 452,
+                  "y": 318,
+                  "width": 968,
+                  "height": 21
+                }
+              },
+              {
+                "n": 2,
+                "field": "TestAuthProvider.consumerSecret",
+                "box": {
+                  "x": 452,
+                  "y": 339,
+                  "width": 968,
+                  "height": 21
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

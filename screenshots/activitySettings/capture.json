@@ -1,0 +1,60 @@
+{
+  "useCases": {
+    "01-meetings-with-several-contacts": {
+      "hash": "af3e1c3190ebd5bde203b0ed06fa7e0c8fb909059f276d6dc45909739bb4dc5e",
+      "capturedAt": "2026-11-10",
+      "captures": [
+        {
+          "name": "activity-settings",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "clip": {
+            "x": 220,
+            "y": 119,
+            "width": 1200,
+            "height": 666
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "allowUsersToRelateMultipleContactsToTasksAndEvents",
+              "in": "both"
+            }
+          ],
+          "before": {
+            "file": "01-meetings-with-several-contacts-activity-settings-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "allowUsersToRelateMultipleContactsToTasksAndEvents",
+                "box": {
+                  "x": 260,
+                  "y": 634,
+                  "width": 13,
+                  "height": 13
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "01-meetings-with-several-contacts-activity-settings-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "allowUsersToRelateMultipleContactsToTasksAndEvents",
+                "box": {
+                  "x": 260,
+                  "y": 657,
+                  "width": 13,
+                  "height": 13
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

@@ -25,7 +25,7 @@ export const homePageLayoutsSchema = z
       '',
       'Assigns Home Page Layouts to profiles.',
       '',
-      '![Home Page Layout Assignment](docs/assets/settings/home-page-layouts.png)',
+      '![Home Page Layout Assignment](docs/assets/settings/homePageLayouts/overview.webp)',
     ].join('\n'),
     examples: [
       {

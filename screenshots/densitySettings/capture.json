@@ -1,0 +1,60 @@
+{
+  "useCases": {
+    "01-compact-for-the-contact-center": {
+      "hash": "9aa31b49d2b39cbcc724f1d425765f2b5f4889a9f16266a577c8db1b19502027",
+      "capturedAt": "2026-11-10",
+      "captures": [
+        {
+          "name": "density-settings",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "clip": {
+            "x": 287,
+            "y": 324,
+            "width": 1116,
+            "height": 421
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "density",
+              "in": "both"
+            }
+          ],
+          "before": {
+            "file": "01-compact-for-the-contact-center-density-settings-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "density",
+                "box": {
+                  "x": 857,
+                  "y": 375,
+                  "width": 192,
+                  "height": 319
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "01-compact-for-the-contact-center-density-settings-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "density",
+                "box": {
+                  "x": 857,
+                  "y": 375,
+                  "width": 192,
+                  "height": 319
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

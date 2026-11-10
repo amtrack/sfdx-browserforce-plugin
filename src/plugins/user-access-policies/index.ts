@@ -48,6 +48,8 @@ export const userAccessPoliciesSchema = z
       'Setup: **Users → User Access Policies** (`/lightning/setup/UserAccessPolicies/home`)',
       '',
       'Activates or deactivates User Access Policies, chooses when they run (on create, update, or both), and runs Apply To All.',
+      '',
+      '![User Access Policy](docs/assets/settings/userAccessPolicies/overview.webp)',
     ].join('\n'),
     examples: [
       { accessPolicies: [{ apiName: 'Grant_Permissions', active: true, on: 'Create' }] },

@@ -11,7 +11,7 @@ const ADD_BUTTON_SELECTOR = 'a[id$=":duelingListBox:backingList_add"]';
 const REMOVE_BUTTON_SELECTOR = 'a[id$=":duelingListBox:backingList_remove"]';
 const SAVE_BUTTON_SELECTOR = 'input[id$=":button_pc_save"]';
 const VALUES_AVAILABLE_SELECTOR = 'select[id$=":duelingListBox:backingList_a"]';
-const VALUES_ENABLED_SELECTOR = 'select[id$=":duelingListBox:backingList_s"]';
+export const VALUES_ENABLED_SELECTOR = 'select[id$=":duelingListBox:backingList_s"]';
 
 type PermissionSet = {
   permissionSetName: string;

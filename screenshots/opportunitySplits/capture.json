@@ -1,0 +1,60 @@
+{
+  "useCases": {
+    "01-credit-shared-deals": {
+      "hash": "3c56ea066943af359c44cdc5fe85b811bd2aebfca3ec4942fd827033b741fa18",
+      "capturedAt": "2026-11-10",
+      "captures": [
+        {
+          "name": "opportunity-splits",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "clip": {
+            "x": 250,
+            "y": 196,
+            "width": 1160,
+            "height": 421
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "enabled",
+              "in": "both"
+            }
+          ],
+          "before": {
+            "file": "01-credit-shared-deals-opportunity-splits-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "enabled",
+                "box": {
+                  "x": 709,
+                  "y": 461,
+                  "width": 232,
+                  "height": 28
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "01-credit-shared-deals-opportunity-splits-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "enabled",
+                "box": {
+                  "x": 290,
+                  "y": 324,
+                  "width": 1080,
+                  "height": 99
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

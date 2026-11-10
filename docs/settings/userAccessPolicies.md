@@ -19,6 +19,51 @@ Setup: **Users → User Access Policies** (`/lightning/setup/UserAccessPolicies/
 
 Activates or deactivates User Access Policies, chooses when they run (on create, update, or both), and runs Apply To All.
 
+![User Access Policy](../assets/settings/userAccessPolicies/overview.webp)
+
+## Use case
+
+### New administrators get their permission sets automatically
+
+Every time Fourth Coffee hires a Salesforce administrator, someone forgets one of the permission sets they need. The team describes the rule in a user access policy, `Grant_Permissions` **<span class="bf-pill bf-pill-c1">1</span>**: users with the System Administrator profile get the admin permission sets. The policy is deployed with the rest of the metadata, but the Metadata API cannot switch it on: a policy deployed with the status `Active` is saved as `Design`, and no metadata runs it for the existing users.
+
+This config automates the policy **<span class="bf-pill bf-pill-c2">2</span>** so that it runs whenever a matching user is **created <span class="bf-pill bf-pill-c3">3</span>**, and runs **Apply Policy <span class="bf-pill bf-pill-c4">4</span>** once ("Apply To All") for the administrators who already exist. Apply To All cannot be undone and runs again at every apply, so keep it out of the config once the existing users have their access.
+
+=== "Config"
+
+    ```json
+    {
+      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+      "settings": {
+        "userAccessPolicies": {
+          "accessPolicies": [
+            {
+              "apiName": "Grant_Permissions",
+              "active": true,
+              "on": "Create",
+              "applyToAll": true
+            }
+          ]
+        }
+      }
+    }
+    ```
+
+=== "Before"
+
+    ![Before: New administrators get their permission sets automatically](../assets/settings/userAccessPolicies/01-new-admins-get-their-permissions-policy-before.webp)
+
+=== "After"
+
+    ![After: New administrators get their permission sets automatically](../assets/settings/userAccessPolicies/01-new-admins-get-their-permissions-policy-after.webp)
+
+| Pill | Field | Before | After |
+| ---- | ----- | ------ | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>accessPolicies[0].<wbr>apiName</code> | `Grant_Permissions` | `Grant_Permissions` |
+| <span class="bf-pill bf-pill-c2">2</span> | <code>accessPolicies[0].<wbr>active</code> | `false` | `true` |
+| <span class="bf-pill bf-pill-c3">3</span> | <code>accessPolicies[0].<wbr>on</code> |  | `Create` |
+| <span class="bf-pill bf-pill-c4">4</span> | <code>accessPolicies[0].<wbr>applyToAll</code> |  | `true` |
+
 ## Examples
 
 === "Example 1"
@@ -134,7 +179,7 @@ In the field paths, `[]` stands for the items of a list and `*` for the entries 
         }
       },
       "title": "User Access Policies",
-      "description": "Setup: **Users → User Access Policies** (`/lightning/setup/UserAccessPolicies/home`)\n\nActivates or deactivates User Access Policies, chooses when they run (on create, update, or both), and runs Apply To All.",
+      "description": "Setup: **Users → User Access Policies** (`/lightning/setup/UserAccessPolicies/home`)\n\nActivates or deactivates User Access Policies, chooses when they run (on create, update, or both), and runs Apply To All.\n\n![User Access Policy](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/userAccessPolicies/overview.webp)",
       "examples": [
         {
           "accessPolicies": [

@@ -16,7 +16,52 @@ Salesforce Classic Setup: **Customize → Home → Home Page Layouts** (`/setup/
 
 Assigns Home Page Layouts to profiles.
 
-![Home Page Layout Assignment](../assets/settings/home-page-layouts.png)
+![Home Page Layout Assignment](../assets/settings/homePageLayouts/overview.webp)
+
+## Use case
+
+### Give sales users their own home page
+
+The sales reps of Acme still work in Salesforce Classic, and their home tab should show the dashboard snapshot and the custom links of the **DE Default** home page layout. The Metadata API deploys the `HomePageLayout` itself, but the `Profile` type has no field for its home page layout: which profile sees which layout is only set on the Home Page Layout Assignment page of Setup.
+
+This config gives the **Standard User <span class="bf-pill bf-pill-c1">1</span>** profile the **DE Default <span class="bf-pill bf-pill-c2">2</span>** layout, and keeps the **System Administrator <span class="bf-pill bf-pill-c3">3</span>** profile on the standard home page: an empty `layout` **<span class="bf-pill bf-pill-c4">4</span>** stands for **Home Page Default**. Profiles are named as Setup shows them, and the profiles the config does not list keep their layout.
+
+=== "Config"
+
+    ```json
+    {
+      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+      "settings": {
+        "homePageLayouts": {
+          "homePageLayoutAssignments": [
+            {
+              "profile": "Standard User",
+              "layout": "DE Default"
+            },
+            {
+              "profile": "System Administrator",
+              "layout": ""
+            }
+          ]
+        }
+      }
+    }
+    ```
+
+=== "Before"
+
+    ![Before: Give sales users their own home page](../assets/settings/homePageLayouts/01-assign-the-sales-home-page-home-page-layout-assignment-before.webp)
+
+=== "After"
+
+    ![After: Give sales users their own home page](../assets/settings/homePageLayouts/01-assign-the-sales-home-page-home-page-layout-assignment-after.webp)
+
+| Pill | Field | Before | After |
+| ---- | ----- | ------ | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>homePageLayoutAssignments[0].<wbr>profile</code> | `Standard User` | `Standard User` |
+| <span class="bf-pill bf-pill-c2">2</span> | <code>homePageLayoutAssignments[0].<wbr>layout</code> | `` | `DE Default` |
+| <span class="bf-pill bf-pill-c3">3</span> | <code>homePageLayoutAssignments[1].<wbr>profile</code> | `System Administrator` | `System Administrator` |
+| <span class="bf-pill bf-pill-c4">4</span> | <code>homePageLayoutAssignments[1].<wbr>layout</code> | `` | `` |
 
 ## Example
 
@@ -79,7 +124,7 @@ In the field paths, `[]` stands for the items of a list and `*` for the entries 
         }
       },
       "title": "Home Page Layouts",
-      "description": "Salesforce Classic Setup: **Customize → Home → Home Page Layouts** (`/setup/ui/assignhomelayoutedit.jsp`)\n\nAssigns Home Page Layouts to profiles.\n\n![Home Page Layout Assignment](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/home-page-layouts.png)",
+      "description": "Salesforce Classic Setup: **Customize → Home → Home Page Layouts** (`/setup/ui/assignhomelayoutedit.jsp`)\n\nAssigns Home Page Layouts to profiles.\n\n![Home Page Layout Assignment](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/homePageLayouts/overview.webp)",
       "examples": [
         {
           "homePageLayoutAssignments": [

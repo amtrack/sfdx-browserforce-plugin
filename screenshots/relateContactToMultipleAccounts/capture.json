@@ -1,0 +1,60 @@
+{
+  "useCases": {
+    "01-consultants-working-for-several-clients": {
+      "hash": "a64d2c7fb4867f84ced0ad7a0db9a8ab886bc5db2e2f6605b793d3801c3a01a9",
+      "capturedAt": "2026-11-10",
+      "captures": [
+        {
+          "name": "account-settings",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "clip": {
+            "x": 240,
+            "y": 119,
+            "width": 1180,
+            "height": 591
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "enabled",
+              "in": "both"
+            }
+          ],
+          "before": {
+            "file": "01-consultants-working-for-several-clients-account-settings-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "enabled",
+                "box": {
+                  "x": 536,
+                  "y": 377,
+                  "width": 13,
+                  "height": 13
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "01-consultants-working-for-several-clients-account-settings-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "enabled",
+                "box": {
+                  "x": 536,
+                  "y": 377,
+                  "width": 13,
+                  "height": 13
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

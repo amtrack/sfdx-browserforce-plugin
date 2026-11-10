@@ -3,6 +3,8 @@ import { rawFileUrl, repositoryPath, rewriteMarkdownImages } from '../src/docs.j
 import type { Field } from '../src/json-schema-utils.js';
 import type { PluginCatalogEntry } from '../src/plugin-catalog.js';
 import type { DeprecatedSetting } from '../src/plugins/deprecated.js';
+import { pillColorIndex, shotFileName } from './screenshots.js';
+import { BOLD_RUN, numberPills, PILL_CITATION, type UseCase, valueAt } from './use-cases.js';
 
 /** First line of the content of every page written by `npm run generate:docs`, after its front matter. */
 export const GENERATED_HEADER =
@@ -209,6 +211,79 @@ function renderFields(entry: PluginCatalogEntry): string[] {
   return ['## Fields', ...repeated, lines.join('\n')];
 }
 
+/** A pill number as a coloured badge, in the colour of the pill drawn on the images. */
+export const pillBadge = (n: number): string => `<span class="bf-pill bf-pill-c${pillColorIndex(n)}">${n}</span>`;
+
+/** Pill references of a text, `**(2)**` or `(2)` inside a bold run such as `**Save (3)**`, as coloured badges. */
+export function renderPillReferences(markdown: string): string {
+  return markdown.replace(BOLD_RUN, (bold, text: string) => {
+    const withBadges = text.replace(PILL_CITATION, (_match, n: string) => pillBadge(Number(n)));
+    return withBadges === text ? bold : `**${withBadges}**`;
+  });
+}
+
+const legendValue = (value: unknown): string => (value === undefined ? '' : cell(code(value)));
+
+function renderUseCaseImages(useCase: UseCase, state: 'before' | 'after', imageDir: string): string {
+  const label = state === 'before' ? 'Before' : 'After';
+  return useCase.captures
+    .map((capture) => {
+      const file = shotFileName(useCase.slug, capture.name, state, 'webp');
+      const image = `![${label}: ${capture.title ?? useCase.title}](${imageDir}/${file})`;
+      return useCase.captures.length > 1 ? `*${capture.title ?? capture.name}*\n\n${image}` : image;
+    })
+    .join('\n\n');
+}
+
+function legendRow(useCase: UseCase, pill: string, field: string, note?: string): string {
+  const name = note ? `${fieldPath(field)}<br>${cell(note)}` : fieldPath(field);
+  return `| ${pill} | ${name} | ${legendValue(valueAt(useCase.given, field))} | ${legendValue(
+    valueAt(useCase.config, field),
+  )} |`;
+}
+
+function renderUseCase(entry: PluginCatalogEntry, useCase: UseCase, heading: string, imageDir: string): string {
+  const pills = numberPills(useCase);
+  const rows = [
+    ...pills.map((pill) => legendRow(useCase, pillBadge(pill.n), pill.field)),
+    ...useCase.withoutPill.map((field) => legendRow(useCase, '', field.field, field.reason)),
+  ];
+  const legend = ['| Pill | Field | Before | After |', '| ---- | ----- | ------ | ----- |', ...rows].join('\n');
+  const tabs = [`=== "Config"\n\n${indent(jsonBlock(exampleConfig(entry.key, useCase.config)))}`];
+  if (!useCase.skip) {
+    tabs.push(
+      `=== "Before"\n\n${indent(renderUseCaseImages(useCase, 'before', imageDir))}`,
+      `=== "After"\n\n${indent(renderUseCaseImages(useCase, 'after', imageDir))}`,
+    );
+  }
+  return [
+    heading,
+    renderPillReferences(useCase.story),
+    tabs.join('\n\n'),
+    ...(useCase.skip ? [`!!! note "No screenshots"\n${indent(useCase.skip)}`] : []),
+    ...(rows.length > 0 ? [legend] : []),
+  ].join('\n\n');
+}
+
+/** Section "Use cases" of the page of a setting: story, config, annotated "Before" and "After" images and legend. */
+export function renderUseCases(entry: PluginCatalogEntry, useCases: UseCase[]): string[] {
+  if (useCases.length === 0) {
+    return [];
+  }
+  const imageDir = `../assets/settings/${entry.key}`;
+  return [
+    useCases.length > 1 ? '## Use cases' : '## Use case',
+    ...useCases.map((useCase, index) =>
+      renderUseCase(
+        entry,
+        useCase,
+        useCases.length > 1 ? `### ${index + 1}. ${useCase.title}` : `### ${useCase.title}`,
+        imageDir,
+      ),
+    ),
+  ];
+}
+
 export type SettingPageOptions = {
   /**
    * Markdown description of the setting with the image paths relative to the repository root, as written in its
@@ -217,6 +292,8 @@ export type SettingPageOptions = {
   description?: string;
   /** link to the source folder of the plugin */
   sourceUrl?: string;
+  /** use cases of the setting, in the order of their files */
+  useCases?: UseCase[];
 };
 
 /** Page `docs/settings/<key>.md` of a setting. */
@@ -228,6 +305,7 @@ export function renderSettingPage(entry: PluginCatalogEntry, options: SettingPag
     `Config key: \`settings.${entry.key}\``,
     ...renderWarnings(entry),
     ...(description ? [rewriteMarkdownImages(description.trim(), settingPageImage)] : []),
+    ...renderUseCases(entry, options.useCases ?? []),
     ...renderExamples(entry),
     ...renderFields(entry),
     `??? note "JSON Schema"\n\n${indent(jsonBlock(entry.jsonSchema))}`,

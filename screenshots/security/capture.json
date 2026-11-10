@@ -1,0 +1,180 @@
+{
+  "useCases": {
+    "01-import-a-certificate-from-a-keystore": {
+      "hash": "df44a30e363f5912faa1daeb03165f3a08011535e8d8d5a19b98beaf0a403fcd",
+      "capturedAt": "2026-11-10",
+      "captures": [
+        {
+          "name": "certificates",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "clip": {
+            "x": 195,
+            "y": 110,
+            "width": 1245,
+            "height": 421
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "certificateAndKeyManagement.importFromKeystore[0].name",
+              "in": "after"
+            }
+          ],
+          "before": {
+            "file": "01-import-a-certificate-from-a-keystore-certificates-before.png",
+            "pills": []
+          },
+          "after": {
+            "file": "01-import-a-certificate-from-a-keystore-certificates-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "certificateAndKeyManagement.importFromKeystore[0].name",
+                "box": {
+                  "x": 248,
+                  "y": 431,
+                  "width": 1165,
+                  "height": 25
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "02-offer-single-sign-on-on-the-login-page": {
+      "hash": "30e788d5b24a3d67aba252e0f6b5f2199f32568fd5ca874d968e172876645604",
+      "capturedAt": "2026-11-10",
+      "captures": [
+        {
+          "name": "authentication-configuration",
+          "viewport": {
+            "width": 1440,
+            "height": 1200
+          },
+          "clip": {
+            "x": 86,
+            "y": 260,
+            "width": 961,
+            "height": 420
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "authenticationConfiguration.services[0].authProviderApiName",
+              "in": "both"
+            },
+            {
+              "n": 2,
+              "field": "authenticationConfiguration.services[0].enabled",
+              "in": "both"
+            },
+            {
+              "n": 3,
+              "field": "authenticationConfiguration.services[1].label",
+              "in": "both"
+            },
+            {
+              "n": 4,
+              "field": "authenticationConfiguration.services[1].enabled",
+              "in": "both"
+            }
+          ],
+          "before": {
+            "file": "02-offer-single-sign-on-on-the-login-page-authentication-configuration-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "authenticationConfiguration.services[0].authProviderApiName",
+                "box": {
+                  "x": 532,
+                  "y": 500,
+                  "width": 85,
+                  "height": 12
+                }
+              },
+              {
+                "n": 2,
+                "field": "authenticationConfiguration.services[0].enabled",
+                "box": {
+                  "x": 516,
+                  "y": 497,
+                  "width": 13,
+                  "height": 13
+                }
+              },
+              {
+                "n": 3,
+                "field": "authenticationConfiguration.services[1].label",
+                "box": {
+                  "x": 532,
+                  "y": 431,
+                  "width": 61,
+                  "height": 12
+                }
+              },
+              {
+                "n": 4,
+                "field": "authenticationConfiguration.services[1].enabled",
+                "box": {
+                  "x": 516,
+                  "y": 428,
+                  "width": 13,
+                  "height": 13
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "02-offer-single-sign-on-on-the-login-page-authentication-configuration-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "authenticationConfiguration.services[0].authProviderApiName",
+                "box": {
+                  "x": 532,
+                  "y": 500,
+                  "width": 85,
+                  "height": 12
+                }
+              },
+              {
+                "n": 2,
+                "field": "authenticationConfiguration.services[0].enabled",
+                "box": {
+                  "x": 516,
+                  "y": 497,
+                  "width": 13,
+                  "height": 13
+                }
+              },
+              {
+                "n": 3,
+                "field": "authenticationConfiguration.services[1].label",
+                "box": {
+                  "x": 532,
+                  "y": 431,
+                  "width": 61,
+                  "height": 12
+                }
+              },
+              {
+                "n": 4,
+                "field": "authenticationConfiguration.services[1].enabled",
+                "box": {
+                  "x": 516,
+                  "y": 428,
+                  "width": 13,
+                  "height": 13
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

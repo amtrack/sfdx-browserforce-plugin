@@ -13,6 +13,45 @@ Setup: **Identity → Auth. Providers** (`/lightning/setup/AuthProviders/home`)
 
 Updates the Consumer Key and the Consumer Secret of existing Auth Providers, keyed by their API name. Reference the secret with an environment variable (`"${MY_SECRET}"`) rather than writing it in the config file: it is masked in the output of `apply`.
 
+![Auth. Provider](../assets/settings/authProviders/overview.webp)
+
+## Use case
+
+### Set the credentials of a single sign-on provider in each environment
+
+Acme's partners log in to its community with their own OpenID Connect identity provider. The Auth. Provider is deployed with the Metadata API, but each environment talks to a different client of the identity provider, and the Metadata API only exports the consumer secret as a placeholder and only deploys a value encrypted by the org itself: the real secret has to be typed in Setup in each environment.
+
+This config sets the **Consumer Key <span class="bf-pill bf-pill-c1">1</span>** and the **Consumer Secret <span class="bf-pill bf-pill-c2">2</span>** of the Auth. Provider named `TestAuthProvider` (its API name, the key of the entry). The secret comes from the environment variable `PARTNER_SSO_SECRET` of the pipeline, never from the file, and `apply` masks it in its output. Setup never shows a secret back, so Browserforce cannot compare it: every `apply` writes both values again.
+
+=== "Config"
+
+    ```json
+    {
+      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+      "settings": {
+        "authProviders": {
+          "TestAuthProvider": {
+            "consumerKey": "acme-portal-production",
+            "consumerSecret": "${PARTNER_SSO_SECRET}"
+          }
+        }
+      }
+    }
+    ```
+
+=== "Before"
+
+    ![Before: Set the credentials of a single sign-on provider in each environment](../assets/settings/authProviders/01-rotate-the-sso-credentials-auth-provider-before.webp)
+
+=== "After"
+
+    ![After: Set the credentials of a single sign-on provider in each environment](../assets/settings/authProviders/01-rotate-the-sso-credentials-auth-provider-after.webp)
+
+| Pill | Field | Before | After |
+| ---- | ----- | ------ | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>TestAuthProvider.<wbr>consumerKey</code> | `acme-portal-uat` | `acme-portal-production` |
+| <span class="bf-pill bf-pill-c2">2</span> | <code>TestAuthProvider.<wbr>consumerSecret</code> | `uat-secret` | `${PARTNER_SSO_SECRET}` |
+
 ## Example
 
 ```json
@@ -63,7 +102,7 @@ In the field paths, `[]` stands for the items of a list and `*` for the entries 
           }
         }
       },
-      "description": "Setup: **Identity → Auth. Providers** (`/lightning/setup/AuthProviders/home`)\n\nUpdates the Consumer Key and the Consumer Secret of existing Auth Providers, keyed by their API name. Reference the secret with an environment variable (`\"${MY_SECRET}\"`) rather than writing it in the config file: it is masked in the output of `apply`.",
+      "description": "Setup: **Identity → Auth. Providers** (`/lightning/setup/AuthProviders/home`)\n\nUpdates the Consumer Key and the Consumer Secret of existing Auth Providers, keyed by their API name. Reference the secret with an environment variable (`\"${MY_SECRET}\"`) rather than writing it in the config file: it is masked in the output of `apply`.\n\n![Auth. Provider](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/authProviders/overview.webp)",
       "title": "Auth Providers",
       "examples": [
         {

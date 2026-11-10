@@ -1,4 +1,5 @@
 import assert from 'node:assert';
+import { rawFileUrl, rewriteMarkdownImages } from '../src/docs.js';
 import { flattenFields, inlineRefs, type JsonSchema, schemaAtPath, schemaType } from '../src/json-schema-utils.js';
 import { getPluginJsonSchema } from '../src/plugin-catalog.js';
 import { authProvidersSchema } from '../src/plugins/auth-providers/index.js';
@@ -85,7 +86,8 @@ describe('flattenFields', () => {
         path: '*',
         kind: 'record',
         title: 'Auth Providers',
-        description: authProvidersSchema.meta()?.description,
+        // the catalog shows the images of the descriptions from GitHub
+        description: rewriteMarkdownImages(authProvidersSchema.meta()?.description ?? '', rawFileUrl),
         keyPattern: '^[a-zA-Z0-9_]+$',
       },
     ]);

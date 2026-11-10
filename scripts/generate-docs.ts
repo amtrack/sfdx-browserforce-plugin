@@ -23,6 +23,8 @@ import {
   updateNav,
   withFrontMatter,
 } from './docs-pages.js';
+import { renderPillsCss, shotFileName } from './screenshots.js';
+import { findPluginFolders, loadUseCases } from './use-cases.js';
 
 const root = new URL('../', import.meta.url);
 const settingsDir = new URL('docs/settings/', root);
@@ -31,22 +33,9 @@ const mkdocsYml = new URL('mkdocs.yml', root);
 const pluginsDir = new URL('src/plugins/', root);
 const pjson = JSON.parse(readFileSync(new URL('package.json', root), 'utf8')) as { version: string };
 
-/** Source folder of each setting, found by the `export const <key>Schema` of its index.ts. */
-function findPluginFolders(): Map<string, string> {
-  const folders = new Map<string, string>();
-  for (const folder of readdirSync(pluginsDir, { withFileTypes: true }).filter((entry) => entry.isDirectory())) {
-    const indexFile = new URL(`${folder.name}/index.ts`, pluginsDir);
-    if (existsSync(indexFile)) {
-      for (const match of readFileSync(indexFile, 'utf8').matchAll(/export const (\w+)Schema\b/g)) {
-        folders.set(match[1], folder.name);
-      }
-    }
-  }
-  return folders;
-}
-
 const catalog = buildPluginCatalog(pjson.version);
-const folders = findPluginFolders();
+const folders = findPluginFolders(pluginsDir);
+const useCases = await loadUseCases(root);
 mkdirSync(settingsDir, { recursive: true });
 
 // the descriptions as written in the schemas, with image paths relative to the repository root
@@ -58,11 +47,37 @@ const missingImages = [...descriptions.values()]
 if (missingImages.length > 0) {
   throw new Error(`Images referenced in the schema descriptions do not exist: ${missingImages.join(', ')}`);
 }
+const notCaptured = [...useCases.values()]
+  .flat()
+  .filter((useCase) => !useCase.skip && useCase.captures.length === 0)
+  .map((useCase) => useCase.file);
+if (notCaptured.length > 0) {
+  throw new Error(
+    `Use cases never captured, run npm run docs:capture and npm run docs:annotate: ${notCaptured.join(', ')}`,
+  );
+}
+const missingShots = [...useCases.values()]
+  .flat()
+  .filter((useCase) => !useCase.skip)
+  .flatMap((useCase) =>
+    useCase.captures.flatMap((capture) =>
+      (['before', 'after'] as const).map(
+        (state) => `docs/assets/settings/${useCase.key}/${shotFileName(useCase.slug, capture.name, state, 'webp')}`,
+      ),
+    ),
+  )
+  .filter((image) => !existsSync(new URL(image, root)));
+if (missingShots.length > 0) {
+  throw new Error(
+    `Use case images do not exist, run npm run docs:capture and npm run docs:annotate: ${missingShots.join(', ')}`,
+  );
+}
 for (const entry of catalog.plugins) {
   const folder = folders.get(entry.key);
   const page = renderSettingPage(entry, {
     description: descriptions.get(entry.key),
     sourceUrl: folder ? sourceTreeUrl(`src/plugins/${folder}`) : undefined,
+    useCases: useCases.get(entry.key),
   });
   writeFileSync(new URL(`${entry.key}.md`, settingsDir), page);
 }
@@ -79,6 +94,8 @@ for (const file of readdirSync(settingsDir).filter((name) => name.endsWith('.md'
   }
 }
 
+// the colours of the pills cited in the text of the pages, from the palette of the images
+writeFileSync(new URL('docs/stylesheets/pills.css', root), renderPillsCss());
 writeFileSync(new URL('index.md', settingsDir), renderSettingsIndex(catalog.plugins, catalog.deprecatedSettings));
 writeFileSync(mkdocsYml, updateNav(readFileSync(mkdocsYml, 'utf8'), 'Settings', settingsNav(catalog.plugins)));
 

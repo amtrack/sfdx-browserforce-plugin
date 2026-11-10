@@ -17,14 +17,14 @@ export const emailDeliverabilitySchema = z
       '',
       'Chooses the access level: "No access", "System email only" or "All email".',
       '',
-      '![Email Deliverability](docs/assets/settings/email-deliverability.png)',
+      '![Email Deliverability](docs/assets/settings/emailDeliverability/overview.webp)',
     ].join('\n'),
     examples: [{ accessLevel: 'All email' }, { accessLevel: 'System email only' }, { accessLevel: 'No access' }],
   });
 
 const BASE_PATH = '/email-admin/editOrgEmailSettings.apexp';
 
-const ACCESS_LEVEL_SELECTOR = 'select[id$=":sendEmailAccessControlSelect"]';
+export const ACCESS_LEVEL_SELECTOR = 'select[id$=":sendEmailAccessControlSelect"]';
 const CONFIRM_MESSAGE_SELECTOR = 'span[id$=":successText"]';
 const SAVE_BUTTON_SELECTOR = 'input[id$=":saveBtn"]';
 

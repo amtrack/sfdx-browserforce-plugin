@@ -1,0 +1,60 @@
+{
+  "useCases": {
+    "01-activate-a-standard-theme": {
+      "hash": "dbbc6d63490e985023abb04197afbcaf4c95004bfb9599a47c89f06c5b6848e6",
+      "capturedAt": "2026-11-10",
+      "captures": [
+        {
+          "name": "themes-and-branding",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "clip": {
+            "x": 200,
+            "y": 255,
+            "width": 1240,
+            "height": 421
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "activeThemeName",
+              "in": "both"
+            }
+          ],
+          "before": {
+            "file": "01-activate-a-standard-theme-themes-and-branding-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "activeThemeName",
+                "box": {
+                  "x": 263,
+                  "y": 375,
+                  "width": 1160,
+                  "height": 31
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "01-activate-a-standard-theme-themes-and-branding-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "activeThemeName",
+                "box": {
+                  "x": 263,
+                  "y": 375,
+                  "width": 1160,
+                  "height": 31
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
