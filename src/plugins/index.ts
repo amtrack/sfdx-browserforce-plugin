@@ -5,6 +5,7 @@ import {
 } from './account-intelligence-view/index.js';
 import { ActivitySettings as activitySettings, activitySettingsSchema } from './activity-settings/index.js';
 import { AuthProviders as authProviders, authProvidersSchema } from './auth-providers/index.js';
+import { CallSummaries as callSummaries, callSummariesSchema } from './call-summaries/index.js';
 import { CompanyInformation as companyInformation, companyInformationSchema } from './company-information/index.js';
 import { CustomerPortal as customerPortal, customerPortalSchema } from './customer-portal/index.js';
 import { DensitySettings as densitySettings, densitySettingsSchema } from './density-settings/index.js';
@@ -56,6 +57,7 @@ export const drivers = {
   accountIntelligenceView,
   activitySettings,
   authProviders,
+  callSummaries,
   companyInformation,
   customerPortal,
   densitySettings,
@@ -84,6 +86,7 @@ export const schemas: Record<keyof typeof drivers, z.ZodType> = {
   accountIntelligenceView: accountIntelligenceViewSchema,
   activitySettings: activitySettingsSchema,
   authProviders: authProvidersSchema,
+  callSummaries: callSummariesSchema,
   companyInformation: companyInformationSchema,
   customerPortal: customerPortalSchema,
   densitySettings: densitySettingsSchema,

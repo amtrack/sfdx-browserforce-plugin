@@ -26,6 +26,13 @@
             }
           ]
         },
+        "callSummaries": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/callSummaries"
+            }
+          ]
+        },
         "companyInformation": {
           "allOf": [
             {
@@ -311,6 +318,29 @@
             "consumerSecret": "${MY_AUTH_PROVIDER_SECRET}"
           }
         }
+      ]
+    },
+    "callSummaries": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable Call Summaries",
+          "description": "Turning on Call Summaries using ConversationalIntelligenceSettings Metadata (enableCallSummarization) often fails with OrgPreferences.GenECI, so it is turned on in Setup > Salesforce Go > Call Summaries instead.\nIt is turned off using Metadata https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_conversationalintelligencesettings.htm"
+        }
+      },
+      "title": "Call Summaries",
+      "examples": [
+        {
+          "enabled": true
+        },
+        {
+          "enabled": false
+        }
+      ],
+      "x-prerequisites": [
+        "Einstein Conversation Insights turned on (scratch org feature CallCoaching and ConversationalIntelligenceSettings.enableCallCoaching)",
+        "Einstein Generative AI turned on (scratch org feature Einstein1AIPlatform and EinsteinGptSettings.enableEinsteinGptPlatform)"
       ]
     },
     "companyInformation": {
