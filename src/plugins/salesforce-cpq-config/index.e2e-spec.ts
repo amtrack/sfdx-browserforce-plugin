@@ -19,6 +19,17 @@ describeOrSkip(SalesforceCpqConfig.name, function () {
     },
     quote: {
       disableInitialQuoteSync: true,
+      defaultQuoteValidityDays: 45,
+    },
+    additionalSettings: {
+      quantityScale: 3,
+    },
+    // the fields of the object only appear once Solution Groups Enabled is checked
+    groups: {
+      solutionGroupsEnabled: true,
+      object: 'SBQQ__SolutionGroup__c',
+      nameField: 'Group Name',
+      descriptionField: 'Description',
     },
   };
 
