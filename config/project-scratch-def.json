@@ -2,8 +2,19 @@
   "orgName": "Browserforce",
   "edition": "Developer",
   "language": "en_US",
-  "features": ["CPQ", "HighVelocitySales", "PersonAccounts", "ServiceCloud", "AccountInspection", "CallCoaching"],
+  "features": [
+    "CPQ",
+    "HighVelocitySales",
+    "PersonAccounts",
+    "ServiceCloud",
+    "AccountInspection",
+    "CallCoaching",
+    "Einstein1AIPlatform"
+  ],
   "settings": {
+    "einsteinGptSettings": {
+      "enableEinsteinGptPlatform": true
+    },
     "omniChannelSettings": {
       "enableOmniChannel": true,
       "enableOmniSkillsRouting": true,

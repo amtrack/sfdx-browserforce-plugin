@@ -70,9 +70,11 @@ nav:
       - Account Intelligence View: settings/accountIntelligenceView.md
       - Activity Settings: settings/activitySettings.md
       - Auth Providers: settings/authProviders.md
+      - Call Summaries: settings/callSummaries.md
       - Company Information: settings/companyInformation.md
       - Customer Portal Settings: settings/customerPortal.md
       - Density Settings: settings/densitySettings.md
+      - Einstein Conversation Insights: settings/einsteinConversationInsights.md
       - Email Deliverability Settings: settings/emailDeliverability.md
       - HighVelocitySalesSettings: settings/highVelocitySalesSettings.md
       - History Tracking: settings/historyTracking.md

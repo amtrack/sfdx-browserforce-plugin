@@ -29,6 +29,14 @@
           ],
           "markdownDescription": "Setup: **Identity → Auth. Providers** (`/lightning/setup/AuthProviders/home`)\n\nUpdates the Consumer Key and the Consumer Secret of existing Auth Providers, keyed by their API name. Reference the secret with an environment variable (`\"${MY_SECRET}\"`) rather than writing it in the config file: it is masked in the output of `apply`.\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/authProviders/)"
         },
+        "callSummaries": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/callSummaries"
+            }
+          ],
+          "markdownDescription": "Call Summaries\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/callSummaries/)"
+        },
         "companyInformation": {
           "allOf": [
             {
@@ -58,7 +66,8 @@
             {
               "$ref": "#/definitions/einsteinConversationInsights"
             }
-          ]
+          ],
+          "markdownDescription": "Einstein Conversation Insights\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/einsteinConversationInsights/)"
         },
         "emailDeliverability": {
           "allOf": [
@@ -347,6 +356,29 @@
             "consumerSecret": "${MY_AUTH_PROVIDER_SECRET}"
           }
         }
+      ]
+    },
+    "callSummaries": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable Call Summaries",
+          "description": "Turning on Call Summaries using ConversationalIntelligenceSettings Metadata (enableCallSummarization) often fails with OrgPreferences.GenECI, so it is turned on in Setup > Salesforce Go > Call Summaries instead.\nIt is turned off using Metadata https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_conversationalintelligencesettings.htm"
+        }
+      },
+      "title": "Call Summaries",
+      "examples": [
+        {
+          "enabled": true
+        },
+        {
+          "enabled": false
+        }
+      ],
+      "x-prerequisites": [
+        "Einstein Conversation Insights turned on (scratch org feature CallCoaching and ConversationalIntelligenceSettings.enableCallCoaching)",
+        "Einstein Generative AI turned on (scratch org feature Einstein1AIPlatform and EinsteinGptSettings.enableEinsteinGptPlatform)"
       ]
     },
     "companyInformation": {
