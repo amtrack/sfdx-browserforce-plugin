@@ -53,6 +53,13 @@
           ],
           "markdownDescription": "Setup: **User Interface → Density Settings** (`/lightning/setup/DensitySetup/home`)\n\nChooses the default display density of the org: \"Comfy\" or \"Compact\".\n\n![Density Settings](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/density-settings.png)\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/densitySettings/)"
         },
+        "einsteinConversationInsights": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/einsteinConversationInsights"
+            }
+          ]
+        },
         "emailDeliverability": {
           "allOf": [
             {
@@ -493,6 +500,24 @@
           "density": "Comfy"
         }
       ]
+    },
+    "einsteinConversationInsights": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable Einstein Conversation Insights",
+          "x-irreversible": true,
+          "description": "Turning on Einstein Conversation Insights in the scratch org definition can take more than 30 minutes to complete, and a Metadata deploy does not wait for it to complete.\nIt is turned on using ConversationalIntelligenceSettings Metadata (enableCallCoaching) after the org is created, waiting until it is completely turned on https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_conversationalintelligencesettings.htm\nWarning: it cannot be turned off using Browserforce."
+        }
+      },
+      "title": "Einstein Conversation Insights",
+      "examples": [
+        {
+          "enabled": true
+        }
+      ],
+      "x-prerequisites": ["Einstein Conversation Insights license (scratch org feature CallCoaching)"]
     },
     "emailDeliverability": {
       "type": "object",

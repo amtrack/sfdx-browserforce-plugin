@@ -8,6 +8,10 @@ import { AuthProviders as authProviders, authProvidersSchema } from './auth-prov
 import { CompanyInformation as companyInformation, companyInformationSchema } from './company-information/index.js';
 import { CustomerPortal as customerPortal, customerPortalSchema } from './customer-portal/index.js';
 import { DensitySettings as densitySettings, densitySettingsSchema } from './density-settings/index.js';
+import {
+  EinsteinConversationInsights as einsteinConversationInsights,
+  einsteinConversationInsightsSchema,
+} from './einstein-conversation-insights/index.js';
 import { EmailDeliverability as emailDeliverability, emailDeliverabilitySchema } from './email-deliverability/index.js';
 import {
   HighVelocitySalesSettings as highVelocitySalesSettings,
@@ -59,6 +63,7 @@ export const drivers = {
   companyInformation,
   customerPortal,
   densitySettings,
+  einsteinConversationInsights,
   emailDeliverability,
   highVelocitySalesSettings,
   historyTracking,
@@ -87,6 +92,7 @@ export const schemas: Record<keyof typeof drivers, z.ZodType> = {
   companyInformation: companyInformationSchema,
   customerPortal: customerPortalSchema,
   densitySettings: densitySettingsSchema,
+  einsteinConversationInsights: einsteinConversationInsightsSchema,
   emailDeliverability: emailDeliverabilitySchema,
   highVelocitySalesSettings: highVelocitySalesSettingsSchema,
   historyTracking: historyTrackingSchema,
