@@ -1,0 +1,60 @@
+{
+  "useCases": {
+    "01-summaries-of-the-sales-calls": {
+      "hash": "59aa2426e57f7138a0dc26bd081c72f690559131c4ee7ae5422dcf5b68e2d9d3",
+      "capturedAt": "2026-11-11",
+      "captures": [
+        {
+          "name": "call-summaries",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "clip": {
+            "x": 292,
+            "y": 342,
+            "width": 1147,
+            "height": 421
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "enabled",
+              "in": "both"
+            }
+          ],
+          "before": {
+            "file": "01-summaries-of-the-sales-calls-call-summaries-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "enabled",
+                "box": {
+                  "x": 1318,
+                  "y": 486,
+                  "width": 81,
+                  "height": 32
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "01-summaries-of-the-sales-calls-call-summaries-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "enabled",
+                "box": {
+                  "x": 1365,
+                  "y": 489,
+                  "width": 34,
+                  "height": 26
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

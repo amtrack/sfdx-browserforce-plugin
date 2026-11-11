@@ -1,8 +1,195 @@
 {
   "useCases": {
-    "01-add-a-status-with-its-category": {
-      "hash": "6ec2327ba2188e7491fcfee6545bbda9a8bce8e407b5ab76600438c21a54f025",
-      "capturedAt": "2026-11-10",
+    "01-rename-an-api-name": {
+      "hash": "d4ae2cd34eb0e5e00789ebc694dbdb1966bc2f9baf0faaf38a65a01523e7b79c",
+      "capturedAt": "2026-11-11",
+      "captures": [
+        {
+          "name": "lead-source",
+          "viewport": {
+            "width": 1440,
+            "height": 1000
+          },
+          "clip": {
+            "x": 206,
+            "y": 567,
+            "width": 1214,
+            "height": 420
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "picklistValues[0].metadataFullName",
+              "in": "both"
+            },
+            {
+              "n": 2,
+              "field": "picklistValues[0].value",
+              "in": "before"
+            },
+            {
+              "n": 3,
+              "field": "picklistValues[0].newApiName",
+              "in": "after"
+            }
+          ],
+          "before": {
+            "file": "01-rename-an-api-name-lead-source-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "picklistValues[0].metadataFullName",
+                "box": {
+                  "x": 246,
+                  "y": 705,
+                  "width": 343,
+                  "height": 16
+                }
+              },
+              {
+                "n": 2,
+                "field": "picklistValues[0].value",
+                "box": {
+                  "x": 553,
+                  "y": 806,
+                  "width": 180,
+                  "height": 25
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "01-rename-an-api-name-lead-source-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "picklistValues[0].metadataFullName",
+                "box": {
+                  "x": 246,
+                  "y": 705,
+                  "width": 343,
+                  "height": 16
+                }
+              },
+              {
+                "n": 3,
+                "field": "picklistValues[0].newApiName",
+                "box": {
+                  "x": 553,
+                  "y": 806,
+                  "width": 187,
+                  "height": 25
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "02-rename-the-api-name-and-the-label": {
+      "hash": "f2b81d15d221d9187e4a15e012459919c7a9a0435ff255817161b42395688c43",
+      "capturedAt": "2026-11-11",
+      "captures": [
+        {
+          "name": "features",
+          "viewport": {
+            "width": 1440,
+            "height": 1400
+          },
+          "clip": {
+            "x": 206,
+            "y": 815,
+            "width": 1214,
+            "height": 420
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "picklistValues[0].metadataFullName",
+              "in": "both"
+            },
+            {
+              "n": 2,
+              "field": "picklistValues[0].value",
+              "in": "before"
+            },
+            {
+              "n": 3,
+              "field": "picklistValues[0].newApiName",
+              "in": "after"
+            },
+            {
+              "n": 4,
+              "field": "picklistValues[0].newLabel",
+              "in": "after"
+            }
+          ],
+          "before": {
+            "file": "02-rename-the-api-name-and-the-label-features-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "picklistValues[0].metadataFullName",
+                "box": {
+                  "x": 246,
+                  "y": 935,
+                  "width": 343,
+                  "height": 16
+                }
+              },
+              {
+                "n": 2,
+                "field": "picklistValues[0].value",
+                "box": {
+                  "x": 605,
+                  "y": 1023,
+                  "width": 124,
+                  "height": 25
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "02-rename-the-api-name-and-the-label-features-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "picklistValues[0].metadataFullName",
+                "box": {
+                  "x": 246,
+                  "y": 935,
+                  "width": 343,
+                  "height": 16
+                }
+              },
+              {
+                "n": 3,
+                "field": "picklistValues[0].newApiName",
+                "box": {
+                  "x": 611,
+                  "y": 1023,
+                  "width": 115,
+                  "height": 25
+                }
+              },
+              {
+                "n": 4,
+                "field": "picklistValues[0].newLabel",
+                "box": {
+                  "x": 396,
+                  "y": 1023,
+                  "width": 215,
+                  "height": 25
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "03-add-a-status-with-its-category": {
+      "hash": "041f148a91b2761bac0112af719154b4818142d3e34c794f802d437a38639530",
+      "capturedAt": "2026-11-11",
       "captures": [
         {
           "name": "contract-status",
@@ -34,7 +221,7 @@
             }
           ],
           "before": {
-            "file": "01-add-a-status-with-its-category-contract-status-before.png",
+            "file": "03-add-a-status-with-its-category-contract-status-before.png",
             "pills": [
               {
                 "n": 1,
@@ -49,7 +236,7 @@
             ]
           },
           "after": {
-            "file": "01-add-a-status-with-its-category-contract-status-after.png",
+            "file": "03-add-a-status-with-its-category-contract-status-after.png",
             "pills": [
               {
                 "n": 1,
@@ -67,7 +254,7 @@
                 "box": {
                   "x": 307,
                   "y": 804,
-                  "width": 196,
+                  "width": 198,
                   "height": 23
                 }
               },
@@ -75,9 +262,9 @@
                 "n": 3,
                 "field": "picklistValues[0].statusCategory",
                 "box": {
-                  "x": 698,
+                  "x": 702,
                   "y": 804,
-                  "width": 193,
+                  "width": 195,
                   "height": 23
                 }
               }
@@ -86,9 +273,9 @@
         }
       ]
     },
-    "02-replace-a-value-in-the-records": {
-      "hash": "3f5da17b5e4e453e7a1aebba1f60a154bee4a992b1043627c4bf8e89c4264bd0",
-      "capturedAt": "2026-11-10",
+    "04-replace-a-value-in-the-records": {
+      "hash": "d3b8bcd968557139ded0053b03fa468e994a9c419d0e8d1df56ba93d6246464e",
+      "capturedAt": "2026-11-11",
       "captures": [
         {
           "name": "lead",
@@ -98,9 +285,9 @@
           },
           "clip": {
             "x": 0,
-            "y": 459,
+            "y": 475,
             "width": 960,
-            "height": 421
+            "height": 420
           },
           "pills": [
             {
@@ -115,31 +302,31 @@
             }
           ],
           "before": {
-            "file": "02-replace-a-value-in-the-records-lead-before.png",
+            "file": "04-replace-a-value-in-the-records-lead-before.png",
             "pills": [
               {
                 "n": 1,
                 "field": "picklistValues[0].value",
                 "box": {
-                  "x": 29,
-                  "y": 644,
-                  "width": 457,
-                  "height": 49
+                  "x": 33,
+                  "y": 661,
+                  "width": 455,
+                  "height": 48
                 }
               }
             ]
           },
           "after": {
-            "file": "02-replace-a-value-in-the-records-lead-after.png",
+            "file": "04-replace-a-value-in-the-records-lead-after.png",
             "pills": [
               {
                 "n": 2,
                 "field": "picklistValues[0].newValue",
                 "box": {
-                  "x": 29,
-                  "y": 646,
-                  "width": 457,
-                  "height": 49
+                  "x": 33,
+                  "y": 661,
+                  "width": 455,
+                  "height": 48
                 }
               }
             ]
@@ -147,9 +334,9 @@
         }
       ]
     },
-    "03-fill-blank-values": {
-      "hash": "7926ee5c94a42569898754cba9aa62a73732f745abda5f22685e5ac5b1565ec0",
-      "capturedAt": "2026-11-10",
+    "05-fill-blank-values": {
+      "hash": "23a38b6e4a9c502a585f4ff3387dd05c72c7099a52a901b91ff6569af207ada4",
+      "capturedAt": "2026-11-11",
       "captures": [
         {
           "name": "lead",
@@ -159,9 +346,9 @@
           },
           "clip": {
             "x": 0,
-            "y": 458,
+            "y": 475,
             "width": 960,
-            "height": 421
+            "height": 420
           },
           "pills": [
             {
@@ -176,31 +363,31 @@
             }
           ],
           "before": {
-            "file": "03-fill-blank-values-lead-before.png",
+            "file": "05-fill-blank-values-lead-before.png",
             "pills": [
               {
                 "n": 1,
                 "field": "picklistValues[0].replaceAllBlankValues",
                 "box": {
-                  "x": 29,
-                  "y": 644,
-                  "width": 457,
-                  "height": 47
+                  "x": 33,
+                  "y": 661,
+                  "width": 455,
+                  "height": 48
                 }
               }
             ]
           },
           "after": {
-            "file": "03-fill-blank-values-lead-after.png",
+            "file": "05-fill-blank-values-lead-after.png",
             "pills": [
               {
                 "n": 2,
                 "field": "picklistValues[0].newValue",
                 "box": {
-                  "x": 29,
-                  "y": 644,
-                  "width": 457,
-                  "height": 49
+                  "x": 33,
+                  "y": 661,
+                  "width": 455,
+                  "height": 48
                 }
               }
             ]
@@ -208,9 +395,9 @@
         }
       ]
     },
-    "04-replace-then-deactivate": {
-      "hash": "6c14930ecf285c0155c3062a2c3ee5b2b71cd54e5a8b9b89176fe52b827d3eb8",
-      "capturedAt": "2026-11-10",
+    "06-replace-then-deactivate": {
+      "hash": "7da12ae1af3686e847a0081af36d36115a29070fb513a5338563e208b019298d",
+      "capturedAt": "2026-11-11",
       "captures": [
         {
           "name": "features",
@@ -247,7 +434,7 @@
             }
           ],
           "before": {
-            "file": "04-replace-then-deactivate-features-before.png",
+            "file": "06-replace-then-deactivate-features-before.png",
             "pills": [
               {
                 "n": 1,
@@ -264,7 +451,7 @@
                 "field": "picklistValues[0].value",
                 "box": {
                   "x": 605,
-                  "y": 1123,
+                  "y": 1098,
                   "width": 124,
                   "height": 25
                 }
@@ -284,7 +471,7 @@
                 "field": "picklistValues[1].active",
                 "box": {
                   "x": 248,
-                  "y": 1123,
+                  "y": 1098,
                   "width": 148,
                   "height": 25
                 }
@@ -292,7 +479,7 @@
             ]
           },
           "after": {
-            "file": "04-replace-then-deactivate-features-after.png",
+            "file": "06-replace-then-deactivate-features-after.png",
             "pills": [
               {
                 "n": 1,
@@ -308,9 +495,9 @@
                 "n": 2,
                 "field": "picklistValues[0].value",
                 "box": {
-                  "x": 490,
+                  "x": 493,
                   "y": 1202,
-                  "width": 223,
+                  "width": 228,
                   "height": 23
                 }
               },
@@ -339,9 +526,9 @@
         }
       ]
     },
-    "05-replace-then-delete": {
-      "hash": "d7111840a5c494faf97f0aae285876e14fb610bb15701dcfe12328d7ad95177e",
-      "capturedAt": "2026-11-10",
+    "07-replace-then-delete": {
+      "hash": "ad255ce86b1fa9f2784af5331e609bad31bdfe03b7a8190fcdd95b1abb5faaf5",
+      "capturedAt": "2026-11-11",
       "captures": [
         {
           "name": "features",
@@ -373,7 +560,7 @@
             }
           ],
           "before": {
-            "file": "05-replace-then-delete-features-before.png",
+            "file": "07-replace-then-delete-features-before.png",
             "pills": [
               {
                 "n": 1,
@@ -389,7 +576,7 @@
                 "n": 2,
                 "field": "picklistValues[0].value",
                 "box": {
-                  "x": 604,
+                  "x": 605,
                   "y": 1098,
                   "width": 124,
                   "height": 25
@@ -399,7 +586,7 @@
                 "n": 3,
                 "field": "picklistValues[0].newValue",
                 "box": {
-                  "x": 604,
+                  "x": 605,
                   "y": 1048,
                   "width": 124,
                   "height": 25
@@ -408,7 +595,7 @@
             ]
           },
           "after": {
-            "file": "05-replace-then-delete-features-after.png",
+            "file": "07-replace-then-delete-features-after.png",
             "pills": [
               {
                 "n": 1,
@@ -435,9 +622,9 @@
         }
       ]
     },
-    "06-remove-a-field-dependency": {
-      "hash": "17b1b89c31d62c34528c8ed2c4efaee19b5c63fa88217dc2582bc1604f519c7c",
-      "capturedAt": "2026-11-10",
+    "08-remove-a-field-dependency": {
+      "hash": "db6a671b389ad3d50bd8346ba111f60826221ade3d7ea2333e9ba31f9f2da923",
+      "capturedAt": "2026-11-11",
       "captures": [
         {
           "name": "field-dependencies",
@@ -469,7 +656,7 @@
             }
           ],
           "before": {
-            "file": "06-remove-a-field-dependency-field-dependencies-before.png",
+            "file": "08-remove-a-field-dependency-field-dependencies-before.png",
             "pills": [
               {
                 "n": 1,
@@ -504,7 +691,7 @@
             ]
           },
           "after": {
-            "file": "06-remove-a-field-dependency-field-dependencies-after.png",
+            "file": "08-remove-a-field-dependency-field-dependencies-after.png",
             "pills": [
               {
                 "n": 1,

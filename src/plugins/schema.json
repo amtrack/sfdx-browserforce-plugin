@@ -29,6 +29,14 @@
           ],
           "markdownDescription": "Setup: **Identity → Auth. Providers** (`/lightning/setup/AuthProviders/home`)\n\nUpdates the Consumer Key and the Consumer Secret of existing Auth Providers, keyed by their API name. Reference the secret with an environment variable (`\"${MY_SECRET}\"`) rather than writing it in the config file: it is masked in the output of `apply`.\n\n![Auth. Provider](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/authProviders/overview.webp)\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/authProviders/)"
         },
+        "callSummaries": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/callSummaries"
+            }
+          ],
+          "markdownDescription": "Setup: **Salesforce Go → Call Summaries** (`/lightning/setup/page/feature/sales-cloud-call-summaries/home`)\n\nTurns on Call Summaries, the summaries of voice and video calls written by Einstein generative AI, and waits until Salesforce has created the object that stores them. Deploying `ConversationalIntelligenceSettings` with `enableCallSummarization` often fails with `OrgPreferences.GenECI`, and the setting can read `true` before that object exists. Turning it off uses the Metadata API.\n\n![Call Summaries](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/callSummaries/overview.webp)\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/callSummaries/)"
+        },
         "companyInformation": {
           "allOf": [
             {
@@ -52,6 +60,14 @@
             }
           ],
           "markdownDescription": "Setup: **User Interface → Density Settings** (`/lightning/setup/DensitySetup/home`)\n\nChooses the default display density of the org: \"Comfy\" or \"Compact\".\n\n![Density Settings](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/density-settings.png)\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/densitySettings/)"
+        },
+        "einsteinConversationInsights": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/einsteinConversationInsights"
+            }
+          ],
+          "markdownDescription": "Setup: **Einstein Conversation Insights** (`/lightning/setup/CallCoachingSettings/home`)\n\nTurns on Einstein Conversation Insights through the Metadata API (`ConversationalIntelligenceSettings.enableCallCoaching`), then waits until Salesforce has created the objects that store the conversations: a deployment returns as soon as the setting is saved, while turning the feature on can take more than 30 minutes. It cannot be turned off again.\n\n![Einstein Conversation Insights](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/einsteinConversationInsights/overview.webp)\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/einsteinConversationInsights/)"
         },
         "emailDeliverability": {
           "allOf": [
@@ -182,7 +198,7 @@
               "$ref": "#/definitions/picklists"
             }
           ],
-          "markdownDescription": "Changes picklist values in ways the Metadata API cannot:\n\n- replace a value by another one in the records using it, then deactivate or delete the old value;\n- activate or deactivate values;\n- manage (create, modify, delete) the field dependencies of custom fields. An existing field dependency of the dependent field is deleted first.\n\n![Contract Status picklist values](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/picklists/overview.webp)\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/picklists/)"
+          "markdownDescription": "Changes picklist values in ways the Metadata API cannot:\n\n- replace a value by another one in the records using it, then deactivate or delete the old value;\n- activate or deactivate values;\n- rename the API name of a value (`newApiName`, and its label with `newLabel`), active or inactive: Salesforce updates the records holding it, without field history nor automation. A deployment of a renamed value creates a new value instead, so rename it in your source too. The org must allow it (`PicklistSettings.isPicklistApiNameEditDisabled` false);\n- manage (create, modify, delete) the field dependencies of custom fields. An existing field dependency of the dependent field is deleted first.\n\n![Contract Status picklist values](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/picklists/overview.webp)\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/picklists/)"
         },
         "recordTypes": {
           "allOf": [
@@ -342,6 +358,30 @@
         }
       ]
     },
+    "callSummaries": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable Call Summaries",
+          "description": "Turning on Call Summaries using ConversationalIntelligenceSettings Metadata (enableCallSummarization) often fails with OrgPreferences.GenECI, so it is turned on in Setup > Salesforce Go > Call Summaries instead.\nIt is turned off using Metadata https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_conversationalintelligencesettings.htm"
+        }
+      },
+      "title": "Call Summaries",
+      "description": "Setup: **Salesforce Go → Call Summaries** (`/lightning/setup/page/feature/sales-cloud-call-summaries/home`)\n\nTurns on Call Summaries, the summaries of voice and video calls written by Einstein generative AI, and waits until Salesforce has created the object that stores them. Deploying `ConversationalIntelligenceSettings` with `enableCallSummarization` often fails with `OrgPreferences.GenECI`, and the setting can read `true` before that object exists. Turning it off uses the Metadata API.\n\n![Call Summaries](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/callSummaries/overview.webp)",
+      "examples": [
+        {
+          "enabled": true
+        },
+        {
+          "enabled": false
+        }
+      ],
+      "x-prerequisites": [
+        "Einstein Conversation Insights turned on (scratch org feature CallCoaching and ConversationalIntelligenceSettings.enableCallCoaching)",
+        "Einstein Generative AI turned on (scratch org feature Einstein1AIPlatform and EinsteinGptSettings.enableEinsteinGptPlatform)"
+      ]
+    },
     "companyInformation": {
       "type": "object",
       "properties": {
@@ -493,6 +533,25 @@
           "density": "Comfy"
         }
       ]
+    },
+    "einsteinConversationInsights": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable Einstein Conversation Insights",
+          "x-irreversible": true,
+          "description": "Turning on Einstein Conversation Insights in the scratch org definition can take more than 30 minutes to complete, and a Metadata deploy does not wait for it to complete.\nIt is turned on using ConversationalIntelligenceSettings Metadata (enableCallCoaching) after the org is created, waiting until it is completely turned on https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_conversationalintelligencesettings.htm\nWarning: it cannot be turned off using Browserforce."
+        }
+      },
+      "title": "Einstein Conversation Insights",
+      "description": "Setup: **Einstein Conversation Insights** (`/lightning/setup/CallCoachingSettings/home`)\n\nTurns on Einstein Conversation Insights through the Metadata API (`ConversationalIntelligenceSettings.enableCallCoaching`), then waits until Salesforce has created the objects that store the conversations: a deployment returns as soon as the setting is saved, while turning the feature on can take more than 30 minutes. It cannot be turned off again.\n\n![Einstein Conversation Insights](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/einsteinConversationInsights/overview.webp)",
+      "examples": [
+        {
+          "enabled": true
+        }
+      ],
+      "x-prerequisites": ["Einstein Conversation Insights license (scratch org feature CallCoaching)"]
     },
     "emailDeliverability": {
       "type": "object",
@@ -767,7 +826,7 @@
         }
       },
       "title": "Picklists",
-      "description": "Changes picklist values in ways the Metadata API cannot:\n\n- replace a value by another one in the records using it, then deactivate or delete the old value;\n- activate or deactivate values;\n- manage (create, modify, delete) the field dependencies of custom fields. An existing field dependency of the dependent field is deleted first.\n\n![Contract Status picklist values](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/picklists/overview.webp)",
+      "description": "Changes picklist values in ways the Metadata API cannot:\n\n- replace a value by another one in the records using it, then deactivate or delete the old value;\n- activate or deactivate values;\n- rename the API name of a value (`newApiName`, and its label with `newLabel`), active or inactive: Salesforce updates the records holding it, without field history nor automation. A deployment of a renamed value creates a new value instead, so rename it in your source too. The org must allow it (`PicklistSettings.isPicklistApiNameEditDisabled` false);\n- manage (create, modify, delete) the field dependencies of custom fields. An existing field dependency of the dependent field is deleted first.\n\n![Contract Status picklist values](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/picklists/overview.webp)",
       "examples": [
         {
           "picklistValues": [
@@ -797,6 +856,16 @@
               "metadataFullName": "Account.MyPicklist__c",
               "value": "MyOldValue",
               "active": false
+            }
+          ]
+        },
+        {
+          "picklistValues": [
+            {
+              "metadataType": "StandardValueSet",
+              "metadataFullName": "LeadSource",
+              "value": "Partner Referral",
+              "newApiName": "Partner_Referral"
             }
           ]
         }
@@ -837,6 +906,16 @@
         "absent": {
           "type": "boolean",
           "description": "ensure the picklist value is absent/deleted"
+        },
+        "newApiName": {
+          "type": "string",
+          "minLength": 1,
+          "description": "rename the API name of the value: the records holding it follow"
+        },
+        "newLabel": {
+          "type": "string",
+          "minLength": 1,
+          "description": "with newApiName: the new label of the renamed value"
         }
       },
       "required": ["metadataType", "metadataFullName"]

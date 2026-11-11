@@ -20,7 +20,133 @@ async function resetLead(
 
 export const useCases = defineUseCases(picklistsSchema, [
   {
-    slug: '01-add-a-status-with-its-category',
+    slug: '01-rename-an-api-name',
+    title: 'Rename the API name of a value, with the records that hold it',
+    given: {
+      picklistValues: [
+        {
+          metadataType: 'StandardValueSet',
+          metadataFullName: 'LeadSource',
+          value: 'Partner_Referral',
+          newApiName: 'Partner Referral',
+        },
+      ],
+    },
+    config: {
+      picklistValues: [
+        {
+          metadataType: 'StandardValueSet',
+          metadataFullName: 'LeadSource',
+          value: 'Partner Referral',
+          newApiName: 'Partner_Referral',
+        },
+      ],
+    },
+    story: [
+      'Acme connects a marketing automation tool that only accepts lead sources without spaces, and its **Lead Source (1)** picklist has a value whose API name is **Partner Referral (2)**. The sales reps must go on seeing the same label, and the thousands of existing leads must keep their source. Deploying the value set with a value renamed to `Partner_Referral` does not rename anything: the Metadata API creates a new value, and every lead keeps the old one. Only the **Edit** page of the value in Setup changes its API name in place, and Salesforce then updates the records that hold it.',
+      'With `newApiName`, Browserforce renames the API name to **Partner_Referral (3)** and keeps the label. An inactive value has no Edit link: Browserforce activates it, renames it and deactivates it again. Once `Partner_Referral` exists, a second `apply` does nothing, and it fails before changing anything when another value already has the new API name or when the org forbids changing API names.',
+    ],
+    withoutPill: {
+      'picklistValues[0].metadataType': 'a standard value set, found by its name',
+    },
+    captures: {
+      'lead-source': {
+        // left of the title, not over the New button at its right
+        pills: { 'picklistValues[0].metadataFullName': { px: 1.7, py: 34.7 } },
+      },
+    },
+    async shoot(doc) {
+      await using page = await doc.open('/_ui/common/config/field/StandardFieldAttributes/d?id=LeadSource&type=Lead', {
+        height: 1000,
+      });
+      const ui = await doc.within(page, '.bRelatedList:has(input[name="new"][onclick*="picklist_masteredit"])');
+      await doc.shot('lead-source', page, {
+        context: [ui.locator('.bRelatedList:has(input[name="new"][onclick*="picklist_masteredit"])')],
+        pills: {
+          'picklistValues[0].metadataFullName': ui.locator(
+            '.bRelatedList:has(input[name="new"][onclick*="picklist_masteredit"]) .pbTitle h3',
+          ),
+          'picklistValues[0].value': {
+            locator: ui.locator('tr:has(> td:nth-child(3):text-is("Partner Referral")) > td:nth-child(3)'),
+            in: 'before',
+          },
+          'picklistValues[0].newApiName': {
+            locator: ui.locator('tr:has(> td:nth-child(3):text-is("Partner_Referral")) > td:nth-child(3)'),
+            in: 'after',
+          },
+        },
+      });
+    },
+  },
+  {
+    slug: '02-rename-the-api-name-and-the-label',
+    title: 'Rename the API name and the label of a value',
+    given: {
+      picklistValues: [
+        {
+          metadataType: 'CustomField',
+          metadataFullName: 'Vehicle__c.Features__c',
+          value: 'Satnav',
+          newApiName: 'Navigation',
+          newLabel: 'Navigation System',
+        },
+      ],
+    },
+    config: {
+      picklistValues: [
+        {
+          metadataType: 'CustomField',
+          metadataFullName: 'Vehicle__c.Features__c',
+          value: 'Navigation',
+          newApiName: 'Satnav',
+          newLabel: 'Satellite Navigation',
+        },
+      ],
+    },
+    story: [
+      "The dealer's new telematics partner sends the features of each car with its own codes, and expects `Satnav` where the **Features (1)** field stores **Navigation (2)**. The sales team takes the occasion to give the value a clearer label, and both changes must reach every org of the dealer, with the Vehicles that hold the value.",
+      'Next to `newApiName`, which renames the API name to **Satnav (3)** in place as in the use case above, `newLabel` changes the label users see to **Satellite Navigation (4)** in the same edit. With `newLabel`, a second `apply` also checks the label, and only changes it when it differs.',
+    ],
+    withoutPill: {
+      'picklistValues[0].metadataType': 'a custom field, found by its object and API name',
+    },
+    captures: {
+      features: {
+        // inside the label cell, not over the new API name next to it
+        pills: { 'picklistValues[0].newLabel': { px: 31, py: 52.1 } },
+      },
+    },
+    async shoot(doc) {
+      const customFieldId = await doc.recordId(
+        "SELECT Id FROM CustomField WHERE DeveloperName = 'Features' AND NamespacePrefix = null",
+        { tooling: true },
+      );
+      await using page = await doc.open(`/${customFieldId}`, { height: 1400 });
+      const ui = await doc.within(page, '.bRelatedList:has(input[name="new"][onclick*="picklist_masteredit"])');
+      await doc.shot('features', page, {
+        context: [ui.locator('.bRelatedList:has(input[name="new"][onclick*="picklist_masteredit"])')],
+        pills: {
+          'picklistValues[0].metadataFullName': ui.locator(
+            '.bRelatedList:has(input[name="new"][onclick*="picklist_masteredit"]) .pbTitle h3',
+          ),
+          'picklistValues[0].value': {
+            locator: ui.locator('tr:has(> td:nth-child(3):text-is("Navigation")) > td:nth-child(3)'),
+            in: 'before',
+          },
+          'picklistValues[0].newApiName': {
+            locator: ui.locator('tr:has(> td:nth-child(3):text-is("Satnav")) > td:nth-child(3)'),
+            in: 'after',
+          },
+          'picklistValues[0].newLabel': {
+            locator: ui.locator('tr:has(> td:nth-child(3):text-is("Satnav")) > th'),
+            in: 'after',
+          },
+        },
+      });
+    },
+  },
+  {
+    slug: '03-add-a-status-with-its-category',
     title: 'Add a contract status with its category',
     given: {
       picklistValues: [
@@ -82,7 +208,7 @@ export const useCases = defineUseCases(picklistsSchema, [
     },
   },
   {
-    slug: '02-replace-a-value-in-the-records',
+    slug: '04-replace-a-value-in-the-records',
     title: 'Replace a value in the records, keeping the old one',
     config: {
       picklistValues: [
@@ -128,7 +254,7 @@ export const useCases = defineUseCases(picklistsSchema, [
     },
   },
   {
-    slug: '03-fill-blank-values',
+    slug: '05-fill-blank-values',
     title: 'Fill the blank values of the records',
     config: {
       picklistValues: [
@@ -182,7 +308,7 @@ export const useCases = defineUseCases(picklistsSchema, [
     },
   },
   {
-    slug: '04-replace-then-deactivate',
+    slug: '06-replace-then-deactivate',
     title: 'Replace a value in the records, then deactivate it',
     given: {
       picklistValues: [
@@ -238,7 +364,7 @@ export const useCases = defineUseCases(picklistsSchema, [
     },
   },
   {
-    slug: '05-replace-then-delete',
+    slug: '07-replace-then-delete',
     title: 'Replace a value in the records, then delete it',
     given: {
       picklistValues: [{ metadataType: 'CustomField', metadataFullName: 'Vehicle__c.Features__c', newValue: 'CD' }],
@@ -290,7 +416,7 @@ export const useCases = defineUseCases(picklistsSchema, [
     },
   },
   {
-    slug: '06-remove-a-field-dependency',
+    slug: '08-remove-a-field-dependency',
     title: 'Remove a field dependency',
     given: {
       fieldDependencies: [{ object: 'Vehicle__c', dependentField: 'Gears__c', controllingField: 'Transmission__c' }],

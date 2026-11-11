@@ -17,6 +17,13 @@ export const callSummariesSchema = z
   .meta({
     id: 'callSummaries',
     title: 'Call Summaries',
+    description: [
+      'Setup: **Salesforce Go → Call Summaries** (`/lightning/setup/page/feature/sales-cloud-call-summaries/home`)',
+      '',
+      'Turns on Call Summaries, the summaries of voice and video calls written by Einstein generative AI, and waits until Salesforce has created the object that stores them. Deploying `ConversationalIntelligenceSettings` with `enableCallSummarization` often fails with `OrgPreferences.GenECI`, and the setting can read `true` before that object exists. Turning it off uses the Metadata API.',
+      '',
+      '![Call Summaries](docs/assets/settings/callSummaries/overview.webp)',
+    ].join('\n'),
     examples: [{ enabled: true }, { enabled: false }],
     'x-prerequisites': [
       'Einstein Conversation Insights turned on (scratch org feature CallCoaching and ConversationalIntelligenceSettings.enableCallCoaching)',

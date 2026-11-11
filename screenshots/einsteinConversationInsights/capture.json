@@ -1,0 +1,60 @@
+{
+  "useCases": {
+    "01-turn-on-in-a-pipeline": {
+      "hash": "db8ca5d8069ab742e2642d069c1dffad0dd66ce2931f38646d4b5f5978c96869",
+      "capturedAt": "2026-11-11",
+      "captures": [
+        {
+          "name": "conversation-insights",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "clip": {
+            "x": 279,
+            "y": 292,
+            "width": 1156,
+            "height": 420
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "enabled",
+              "in": "both"
+            }
+          ],
+          "before": {
+            "file": "01-turn-on-in-a-pipeline-conversation-insights-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "enabled",
+                "box": {
+                  "x": 319,
+                  "y": 422,
+                  "width": 94,
+                  "height": 32
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "01-turn-on-in-a-pipeline-conversation-insights-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "enabled",
+                "box": {
+                  "x": 1347,
+                  "y": 616,
+                  "width": 48,
+                  "height": 39
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
