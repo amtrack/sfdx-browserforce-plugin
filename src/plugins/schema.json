@@ -1244,7 +1244,9 @@
             },
             "enableEvergreenSubscriptions": {
               "type": "boolean",
-              "title": "Enable Evergreen Subscriptions"
+              "title": "Enable Evergreen Subscriptions",
+              "x-irreversible": true,
+              "description": "Once enabled, Salesforce CPQ disables the checkbox: evergreen subscriptions cannot be turned off."
             },
             "legacyAmendRenewService": {
               "type": "boolean",

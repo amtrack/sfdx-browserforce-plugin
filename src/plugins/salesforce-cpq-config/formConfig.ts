@@ -268,7 +268,7 @@ export const formConfig: FormConfig = {
         label: 'Legacy Quote Calculator Plugin',
         component: 'input',
         type: 'string',
-        name: 'page:form:pb:j_id173:j_id178',
+        name: 'page:form:pb:j_id173:j_id179',
       },
       documentStorePlugin: {
         label: 'Document Store Plugin',
@@ -463,7 +463,7 @@ export const formConfig: FormConfig = {
         label: 'Disable Product Bundle Sub Type Checks',
         component: 'input',
         type: 'boolean',
-        name: 'page:form:pb:subscriptionAndRenewalSettings:j_id243',
+        name: 'page:form:pb:subscriptionAndRenewalSettings:j_id244:j_id246',
       },
       bypassPreserveBundleStructure: {
         label: 'Bypass Preserve Bundle Structure',
@@ -610,7 +610,7 @@ export const formConfig: FormConfig = {
         label: 'Hide Product Search Bar',
         component: 'input',
         type: 'boolean',
-        name: 'page:form:pb:j_id274:j_id313',
+        name: 'page:form:pb:j_id274:j_id315',
       },
       productResultsGroupFieldName: {
         label: 'Product Results Group Field Name',
@@ -652,7 +652,7 @@ export const formConfig: FormConfig = {
         label: 'Enable Large Configurations',
         component: 'input',
         type: 'boolean',
-        name: 'page:form:pb:j_id274:j_id310',
+        name: 'page:form:pb:j_id274:j_id312',
       },
       nestedBundlesForExternalConfigurator: {
         label: 'Nested Bundles for External Configurator',

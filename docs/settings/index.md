@@ -31,7 +31,7 @@ Each setting is a key under `settings` in a Browserforce config file. `sf browse
 | [RecordTypes](recordTypes.md) | `recordTypes` |  |
 | [RelateContactToMultipleAccounts Settings](relateContactToMultipleAccounts.md) | `relateContactToMultipleAccounts` |  |
 | [Reports & Dashboards](reportsAndDashboards.md) | `reportsAndDashboards` | irreversible |
-| [SalesforceCpqConfig Settings](salesforceCpqConfig.md) | `salesforceCpqConfig` | prerequisites |
+| [SalesforceCpqConfig Settings](salesforceCpqConfig.md) | `salesforceCpqConfig` | irreversible, prerequisites |
 | [Security Controls](security.md) | `security` |  |
 | [Service Channels](serviceChannels.md) | `serviceChannels` | prerequisites |
 | [Slack Apps Setup](slack.md) | `slack` | irreversible |
