@@ -34,7 +34,8 @@
             {
               "$ref": "#/definitions/callSummaries"
             }
-          ]
+          ],
+          "markdownDescription": "Call Summaries\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/callSummaries/)"
         },
         "companyInformation": {
           "allOf": [
