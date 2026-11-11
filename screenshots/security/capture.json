@@ -1,8 +1,8 @@
 {
   "useCases": {
     "01-import-a-certificate-from-a-keystore": {
-      "hash": "df44a30e363f5912faa1daeb03165f3a08011535e8d8d5a19b98beaf0a403fcd",
-      "capturedAt": "2026-11-10",
+      "hash": "efd9cdba97ac4f3fa0c3305a8edfbb3ea1d64bdae9dee1e3e3ac924757e61dc0",
+      "capturedAt": "2026-11-11",
       "captures": [
         {
           "name": "certificates",
@@ -46,8 +46,8 @@
       ]
     },
     "02-offer-single-sign-on-on-the-login-page": {
-      "hash": "30e788d5b24a3d67aba252e0f6b5f2199f32568fd5ca874d968e172876645604",
-      "capturedAt": "2026-11-10",
+      "hash": "cbea5282c7167dd035dd57aafe987f32ffcbf7347bf4f5d1b989f56dcd7eb093",
+      "capturedAt": "2026-11-11",
       "captures": [
         {
           "name": "authentication-configuration",
@@ -57,9 +57,9 @@
           },
           "clip": {
             "x": 86,
-            "y": 260,
+            "y": 248,
             "width": 961,
-            "height": 420
+            "height": 421
           },
           "pills": [
             {
@@ -91,7 +91,7 @@
                 "field": "authenticationConfiguration.services[0].authProviderApiName",
                 "box": {
                   "x": 532,
-                  "y": 500,
+                  "y": 477,
                   "width": 85,
                   "height": 12
                 }
@@ -101,7 +101,7 @@
                 "field": "authenticationConfiguration.services[0].enabled",
                 "box": {
                   "x": 516,
-                  "y": 497,
+                  "y": 474,
                   "width": 13,
                   "height": 13
                 }
@@ -136,7 +136,7 @@
                 "field": "authenticationConfiguration.services[0].authProviderApiName",
                 "box": {
                   "x": 532,
-                  "y": 500,
+                  "y": 477,
                   "width": 85,
                   "height": 12
                 }
@@ -146,7 +146,7 @@
                 "field": "authenticationConfiguration.services[0].enabled",
                 "box": {
                   "x": 516,
-                  "y": 497,
+                  "y": 474,
                   "width": 13,
                   "height": 13
                 }

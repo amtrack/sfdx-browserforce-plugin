@@ -1,8 +1,8 @@
 {
   "useCases": {
     "01-case-capacity-by-status": {
-      "hash": "ad7b4bb91063612cbf45220d6da8e19013ebbb780872ee6f8a555f7fdf9be832",
-      "capturedAt": "2026-11-10",
+      "hash": "fe6fc696bc18f718a36d781839e645eb3a7910acf788a4c59a6573d369e967a5",
+      "capturedAt": "2026-11-11",
       "captures": [
         {
           "name": "service-channel",
