@@ -1,6 +1,8 @@
 import type { Page } from 'playwright';
-import { waitForPageErrors } from '../../../page-errors.js';
+import { throwPageErrors, waitForPageErrors } from '../../../page-errors.js';
+import { isPicklistUrl } from './default-picklist-add.js';
 import { PicklistReplaceAndDeletePage } from './picklist-replace-and-delete.js';
+import { PicklistValueEditPage } from './picklist-value-edit.js';
 import { PicklistReplacePage } from './picklist-replace.js';
 
 export type PicklistValue = {
@@ -103,15 +105,33 @@ export class PicklistPage {
       // delete: deleteType=0 or no deleteType=1
       xpath = `//tr[td[2][text() = "${picklistValueApiName}"]]//td[1]//a[contains(@href, "/setup/ui/picklist_masterdelete.jsp") and contains(@href, "deleteType=1")]`;
     }
-    this.page.on('dialog', async (dialog) => {
-      await dialog.accept();
-    });
+    // Follow the link rather than clicking it: Salesforce goes back to the picklist page, which is already the current
+    // URL, so waiting for that URL after a click returns before Salesforce has processed the change.
+    const action = active ? 'activate' : 'deactivate';
+    const href = await this.page.locator(`xpath=${xpath}`).first().getAttribute('href');
+    if (!href) {
+      throw new Error(`Cannot ${action} the picklist value "${picklistValueApiName}": its link has no URL`);
+    }
+    await this.page.goto(new URL(href, this.page.url()).href);
+    await throwPageErrors(this.page);
+    if (!isPicklistUrl(new URL(this.page.url()))) {
+      throw new Error(
+        `Cannot ${action} the picklist value "${picklistValueApiName}": Salesforce opened ${new URL(this.page.url()).pathname}`,
+      );
+    }
+    return new PicklistPage(this.page);
+  }
 
+  /**
+   * Opens the edit page of an active value (inactive values have no Edit link).
+   */
+  public async clickEditActionForValue(picklistValueApiName: string): Promise<PicklistValueEditPage> {
+    const xpath = `//tr[td[2][text() = "${picklistValueApiName}"]]//td[1]//a[contains(@href, "/setup/ui/picklist_masteredit.jsp")]`;
     await this.page.locator(`xpath=${xpath}`).first().click();
     await Promise.race([
-      this.page.waitForURL((url) => /\/00N.*/.test(url.pathname)), // Salesforce record id
+      this.page.waitForURL((url) => url.pathname === '/setup/ui/picklist_masteredit.jsp'),
       waitForPageErrors(this.page),
     ]);
-    return new PicklistPage(this.page);
+    return new PicklistValueEditPage(this.page);
   }
 }

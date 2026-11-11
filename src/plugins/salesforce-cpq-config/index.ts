@@ -1,3 +1,4 @@
+import { errors, type Page } from 'playwright';
 import { z } from 'zod';
 import { BrowserforcePlugin } from '../../plugin.js';
 import { formConfig } from './formConfig.js';
@@ -96,7 +97,11 @@ export const salesforceCpqConfigSchema = z
         subscriptionProratePrecision: str('Subscription Prorate Precision'),
         includeNetNewProductsInMaintenance: bool('Include Net-new Products in Maintenance'),
         contractInForeground: bool('Contract In Foreground'),
-        enableEvergreenSubscriptions: bool('Enable Evergreen Subscriptions'),
+        enableEvergreenSubscriptions: z
+          .boolean()
+          .meta({ title: 'Enable Evergreen Subscriptions', 'x-irreversible': true })
+          .describe('Once enabled, Salesforce CPQ disables the checkbox: evergreen subscriptions cannot be turned off.')
+          .optional(),
         legacyAmendRenewService: bool('Legacy Amend/Renew Service'),
         amendContractsInBackground: bool('Amend Contracts in Background'),
         bypassPreserveBundleStructure: bool('Bypass Preserve Bundle Structure'),
@@ -175,7 +180,20 @@ const SAVE_SELECTOR = 'input[name="page:form:j_id2:j_id3:j_id11"]';
 const AUTHORIZE_NEW_CALCULATION_SERVICE_SELECTOR = 'span#page\\:form\\:pb\\:calculatorOptions\\:j_id201\\:j_id203 a';
 const ALLOW_SELECTOR = 'input[name="save"]:not([id="oadeny"])';
 
+// error of the page after a save, e.g. "Error: To enable solution groups, select values for the object, name, and
+// description fields." (the page reloads with the error and the values are not saved)
+const ERROR_MESSAGE_SELECTOR = '.message.errorM3 .messageText, .errorMsg';
+
 export type SalesforceCpqConfigConfig = z.infer<typeof salesforceCpqConfigSchema> & { [key: string]: any };
+
+/** Saves the settings page, and throws the error the page shows instead of losing the values silently. */
+async function save(page: Page): Promise<void> {
+  await Promise.all([page.waitForEvent('load'), page.locator(SAVE_SELECTOR).click()]);
+  const errorMessages = await page.locator(ERROR_MESSAGE_SELECTOR).allTextContents();
+  if (errorMessages.length > 0) {
+    throw new Error(errorMessages.map((message) => message.replace(/\s+/g, ' ').trim()).join('\n'));
+  }
+}
 
 export class SalesforceCpqConfig extends BrowserforcePlugin {
   private logger = this.browserforce.logger;
@@ -192,29 +210,23 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
             if (!(definition[keyTab][keyItem] === undefined)) {
               const item = valueItem;
               response[keyTab] = response[keyTab] || {};
-              try {
-                if (item.component === 'input' && item.type === 'boolean') {
-                  response[keyTab][keyItem] = await page.locator(`${item.component}[name="${item.name}"]`).isChecked();
-                } else if (item.component === 'input' && item.type === 'string') {
-                  response[keyTab][keyItem] = await page.locator(`${item.component}[name="${item.name}"]`).inputValue();
-                } else if (item.component === 'select') {
-                  response[keyTab][keyItem] = await page
-                    .locator(`${item.component}[name="${item.name}"] option:checked`)
-                    .textContent();
-                }
-              } catch (e) {
-                if (
-                  e instanceof Error &&
-                  e.message.includes(
-                    `Error: failed to find element matching selector "${item.component}[name="${item.name}"]"`,
-                  )
-                ) {
-                  this.logger?.warn(
-                    `Label '${item.label}' '${keyTab}.${keyItem}' with component '${item.component}[name="${item.name}"]' is not found`,
-                  );
-                } else {
-                  throw e;
-                }
+              const control = page.locator(`${item.component}[name="${item.name}"]`);
+              // a control the page does not render (the Solution Groups fields while groups are disabled) has no value
+              if ((await control.count()) === 0) {
+                this.logger?.warn(
+                  `Label '${item.label}' '${keyTab}.${keyItem}' with component '${item.component}[name="${item.name}"]' is not found`,
+                );
+                continue;
+              }
+              if (item.component === 'input' && item.type === 'boolean') {
+                response[keyTab][keyItem] = await control.isChecked();
+              } else if (item.component === 'input' && item.type === 'string') {
+                response[keyTab][keyItem] = await control.inputValue();
+              } else if (item.component === 'input' && item.type === 'number') {
+                const value = (await control.inputValue()).replace(/[\s,]/g, '');
+                response[keyTab][keyItem] = value === '' ? undefined : Number(value);
+              } else if (item.component === 'select') {
+                response[keyTab][keyItem] = await control.locator('option:checked').textContent();
               }
             }
           }
@@ -250,6 +262,8 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
     This to loop through the formConfig and set the value based on the config provided.
     */
     for (const [keyTab, valueTab] of Object.entries(formConfig)) {
+      // checkboxes CPQ disables until other settings of the tab are saved (Enable Evergreen Subscriptions)
+      const disabledCheckboxes: Array<{ name: string; label: string; value: boolean }> = [];
       if (config[keyTab]) {
         await page.locator(`td[id="${valueTab.id}"]`).click();
         for (const [keyItem, valueItem] of Object.entries(valueTab.properties)) {
@@ -260,18 +274,35 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
                 `Updating: '${keyTab}.${keyItem}' (${item.label}) with component '${item.component}[name="${item.name}"]' with value: '${config[keyTab][keyItem]}'`,
               );
               if (item.component === 'input' && item.type === 'boolean') {
-                const checkbox = await page.locator(`input[name="${item.name}"]`);
+                const checkbox = page.locator(`input[name="${item.name}"]`);
                 if (!(await checkbox.isDisabled())) {
-                  if (config[keyTab][keyItem]) {
-                    await checkbox.check();
-                  } else {
-                    await checkbox.uncheck();
-                  }
+                  await checkbox.setChecked(Boolean(config[keyTab][keyItem]));
+                } else if ((await checkbox.isChecked()) !== Boolean(config[keyTab][keyItem])) {
+                  disabledCheckboxes.push({
+                    name: item.name,
+                    label: item.label,
+                    value: Boolean(config[keyTab][keyItem]),
+                  });
                 }
               } else if (item.component === 'input' && item.type === 'string') {
-                await page.locator(`input[name="${item.name}"]`).fill(config[keyTab][keyItem]);
+                const input = page.locator(`input[name="${item.name}"]`);
+                await input.fill(config[keyTab][keyItem]);
+                // the change event re-renders the fields that depend on it (the Solution Groups object)
+                await input.blur();
+              } else if (item.component === 'input' && item.type === 'number') {
+                const input = page.locator(`input[name="${item.name}"]`);
+                await input.fill(String(config[keyTab][keyItem]));
+                await input.blur();
               } else if (item.component === 'select') {
-                const optionLocators = await page.locator(`select[name="${item.name}"] option`).all();
+                const select = page.locator(`select[name="${item.name}"]`);
+                // the options may be rendered after an earlier field (the fields of the Solution Groups object)
+                await select
+                  .locator('option')
+                  .filter({ hasText: config[keyTab][keyItem] })
+                  .first()
+                  .waitFor({ state: 'attached', timeout: 10_000 })
+                  .catch(() => undefined);
+                const optionLocators = await select.locator('option').all();
                 const selectFieldOptions = await Promise.all(
                   optionLocators.map(async (option) => ({
                     text: await option.textContent(),
@@ -291,16 +322,9 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
                 }
                 await page.locator(`select[name="${item.name}"]`).selectOption(chooseFieldOption.value);
               }
-              if (item.immediatelySave) {
-                await Promise.all([page.waitForEvent('load'), page.locator(SAVE_SELECTOR).click()]);
-              }
             } catch (e) {
-              if (
-                e instanceof Error &&
-                e.message.includes(
-                  `Error: failed to find element matching selector "${item.component}[name="${item.name}"]"`,
-                )
-              ) {
+              // a control this version of CPQ does not render
+              if (e instanceof errors.TimeoutError) {
                 this.logger?.warn(
                   `Label '${item.label}' '${keyTab}.${keyItem}' with component '${item.component}[name="${item.name}"]' is not found`,
                 );
@@ -313,10 +337,31 @@ export class SalesforceCpqConfig extends BrowserforcePlugin {
                 throw e;
               }
             }
+            // outside the try: a save that times out is an error, not a control this version of CPQ lacks
+            if (item.immediatelySave) {
+              await save(page);
+            }
           }
         }
       }
-      await Promise.all([page.waitForEvent('load'), page.locator(SAVE_SELECTOR).click()]);
+      await save(page);
+      if (disabledCheckboxes.length > 0) {
+        // the save may have enabled them: set them and save again
+        await page.locator(`td[id="${valueTab.id}"]`).click();
+        let changed = false;
+        for (const disabled of disabledCheckboxes) {
+          const checkbox = page.locator(`input[name="${disabled.name}"]`);
+          if (await checkbox.isDisabled()) {
+            this.logger?.warn(`'${disabled.label}' is disabled by Salesforce CPQ and cannot be changed`);
+          } else {
+            await checkbox.setChecked(disabled.value);
+            changed = true;
+          }
+        }
+        if (changed) {
+          await save(page);
+        }
+      }
     }
 
     /*

@@ -13,6 +13,7 @@ Changes picklist values in ways the Metadata API cannot:
 
 - replace a value by another one in the records using it, then deactivate or delete the old value;
 - activate or deactivate values;
+- rename the API name of a value (`newApiName`, and its label with `newLabel`), active or inactive: Salesforce updates the records holding it, without field history nor automation. A deployment of a renamed value creates a new value instead, so rename it in your source too. The org must allow it (`PicklistSettings.isPicklistApiNameEditDisabled` false);
 - manage (create, modify, delete) the field dependencies of custom fields. An existing field dependency of the dependent field is deleted first.
 
 ## Examples
@@ -78,6 +79,26 @@ Changes picklist values in ways the Metadata API cannot:
     }
     ```
 
+=== "Example 4"
+
+    ```json
+    {
+      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+      "settings": {
+        "picklists": {
+          "picklistValues": [
+            {
+              "metadataType": "StandardValueSet",
+              "metadataFullName": "LeadSource",
+              "value": "Partner Referral",
+              "newApiName": "Partner_Referral"
+            }
+          ]
+        }
+      }
+    }
+    ```
+
 ## Fields
 
 In the field paths, `[]` stands for the items of a list and `*` for the entries of an object keyed by name.
@@ -92,6 +113,8 @@ In the field paths, `[]` stands for the items of a list and `*` for the entries 
 | <code>picklistValues[].<wbr>replaceAllBlankValues</code> | boolean | replace all blank values (mutually exclusive to replacing an old value) |  |
 | <code>picklistValues[].<wbr>active</code> | boolean | ensure the picklist value is active/inactive |  |
 | <code>picklistValues[].<wbr>absent</code> | boolean | ensure the picklist value is absent/deleted |  |
+| <code>picklistValues[].<wbr>newApiName</code> | string | rename the API name of the value: the records holding it follow |  |
+| <code>picklistValues[].<wbr>newLabel</code> | string | with newApiName: the new label of the renamed value |  |
 | <code>fieldDependencies[].<wbr>object</code> | string | the API name of the CustomObject |  |
 | <code>fieldDependencies[].<wbr>dependentField</code> | string | the API name of the CustomField that has its values filtered |  |
 | <code>fieldDependencies[].<wbr>controllingField</code> | json | the API name of the CustomField that drives filtering<br>If this value is null or not set, the Field Dependency will be deleted. |  |
@@ -146,6 +169,16 @@ In the field paths, `[]` stands for the items of a list and `*` for the entries 
               "absent": {
                 "type": "boolean",
                 "description": "ensure the picklist value is absent/deleted"
+              },
+              "newApiName": {
+                "type": "string",
+                "minLength": 1,
+                "description": "rename the API name of the value: the records holding it follow"
+              },
+              "newLabel": {
+                "type": "string",
+                "minLength": 1,
+                "description": "with newApiName: the new label of the renamed value"
               }
             },
             "required": [
@@ -197,7 +230,7 @@ In the field paths, `[]` stands for the items of a list and `*` for the entries 
         }
       },
       "title": "Picklists",
-      "description": "Changes picklist values in ways the Metadata API cannot:\n\n- replace a value by another one in the records using it, then deactivate or delete the old value;\n- activate or deactivate values;\n- manage (create, modify, delete) the field dependencies of custom fields. An existing field dependency of the dependent field is deleted first.",
+      "description": "Changes picklist values in ways the Metadata API cannot:\n\n- replace a value by another one in the records using it, then deactivate or delete the old value;\n- activate or deactivate values;\n- rename the API name of a value (`newApiName`, and its label with `newLabel`), active or inactive: Salesforce updates the records holding it, without field history nor automation. A deployment of a renamed value creates a new value instead, so rename it in your source too. The org must allow it (`PicklistSettings.isPicklistApiNameEditDisabled` false);\n- manage (create, modify, delete) the field dependencies of custom fields. An existing field dependency of the dependent field is deleted first.",
       "examples": [
         {
           "picklistValues": [
@@ -227,6 +260,16 @@ In the field paths, `[]` stands for the items of a list and `*` for the entries 
               "metadataFullName": "Account.MyPicklist__c",
               "value": "MyOldValue",
               "active": false
+            }
+          ]
+        },
+        {
+          "picklistValues": [
+            {
+              "metadataType": "StandardValueSet",
+              "metadataFullName": "LeadSource",
+              "value": "Partner Referral",
+              "newApiName": "Partner_Referral"
             }
           ]
         }

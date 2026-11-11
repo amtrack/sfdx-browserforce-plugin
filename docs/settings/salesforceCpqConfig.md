@@ -9,6 +9,9 @@ description: Sets the settings of the Salesforce CPQ package.
 
 Config key: `settings.salesforceCpqConfig`
 
+!!! danger "Irreversible"
+    Once applied, `subscriptionsAndRenewals.enableEvergreenSubscriptions` cannot be changed back.
+
 !!! info "Prerequisites"
     - Salesforce CPQ managed package (SBQQ) installed
 
@@ -99,7 +102,7 @@ Sets the settings of the Salesforce CPQ package.
 | <code>subscriptionsAndRenewals.<wbr>subscriptionProratePrecision</code> | string | Subscription Prorate Precision |
 | <code>subscriptionsAndRenewals.<wbr>includeNetNewProductsInMaintenance</code> | boolean | Include Net-new Products in Maintenance |
 | <code>subscriptionsAndRenewals.<wbr>contractInForeground</code> | boolean | Contract In Foreground |
-| <code>subscriptionsAndRenewals.<wbr>enableEvergreenSubscriptions</code> | boolean | Enable Evergreen Subscriptions |
+| <code>subscriptionsAndRenewals.<wbr>enableEvergreenSubscriptions</code> | boolean | Enable Evergreen Subscriptions<br>Once enabled, Salesforce CPQ disables the checkbox: evergreen subscriptions cannot be turned off.<br>**Irreversible:** cannot be changed back once applied. |
 | <code>subscriptionsAndRenewals.<wbr>legacyAmendRenewService</code> | boolean | Legacy Amend/Renew Service |
 | <code>subscriptionsAndRenewals.<wbr>amendContractsInBackground</code> | boolean | Amend Contracts in Background |
 | <code>subscriptionsAndRenewals.<wbr>bypassPreserveBundleStructure</code> | boolean | Bypass Preserve Bundle Structure |
@@ -421,7 +424,9 @@ Sets the settings of the Salesforce CPQ package.
             },
             "enableEvergreenSubscriptions": {
               "type": "boolean",
-              "title": "Enable Evergreen Subscriptions"
+              "title": "Enable Evergreen Subscriptions",
+              "x-irreversible": true,
+              "description": "Once enabled, Salesforce CPQ disables the checkbox: evergreen subscriptions cannot be turned off."
             },
             "legacyAmendRenewService": {
               "type": "boolean",

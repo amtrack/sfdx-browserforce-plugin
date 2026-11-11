@@ -61,6 +61,13 @@
           ],
           "markdownDescription": "Setup: **User Interface → Density Settings** (`/lightning/setup/DensitySetup/home`)\n\nChooses the default display density of the org: \"Comfy\" or \"Compact\".\n\n![Density Settings](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/density-settings.png)\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/densitySettings/)"
         },
+        "einsteinConversationInsights": {
+          "allOf": [
+            {
+              "$ref": "#/definitions/einsteinConversationInsights"
+            }
+          ]
+        },
         "emailDeliverability": {
           "allOf": [
             {
@@ -190,7 +197,7 @@
               "$ref": "#/definitions/picklists"
             }
           ],
-          "markdownDescription": "Changes picklist values in ways the Metadata API cannot:\n\n- replace a value by another one in the records using it, then deactivate or delete the old value;\n- activate or deactivate values;\n- manage (create, modify, delete) the field dependencies of custom fields. An existing field dependency of the dependent field is deleted first.\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/picklists/)"
+          "markdownDescription": "Changes picklist values in ways the Metadata API cannot:\n\n- replace a value by another one in the records using it, then deactivate or delete the old value;\n- activate or deactivate values;\n- rename the API name of a value (`newApiName`, and its label with `newLabel`), active or inactive: Salesforce updates the records holding it, without field history nor automation. A deployment of a renamed value creates a new value instead, so rename it in your source too. The org must allow it (`PicklistSettings.isPicklistApiNameEditDisabled` false);\n- manage (create, modify, delete) the field dependencies of custom fields. An existing field dependency of the dependent field is deleted first.\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/picklists/)"
         },
         "recordTypes": {
           "allOf": [
@@ -525,6 +532,24 @@
         }
       ]
     },
+    "einsteinConversationInsights": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable Einstein Conversation Insights",
+          "x-irreversible": true,
+          "description": "Turning on Einstein Conversation Insights in the scratch org definition can take more than 30 minutes to complete, and a Metadata deploy does not wait for it to complete.\nIt is turned on using ConversationalIntelligenceSettings Metadata (enableCallCoaching) after the org is created, waiting until it is completely turned on https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_conversationalintelligencesettings.htm\nWarning: it cannot be turned off using Browserforce."
+        }
+      },
+      "title": "Einstein Conversation Insights",
+      "examples": [
+        {
+          "enabled": true
+        }
+      ],
+      "x-prerequisites": ["Einstein Conversation Insights license (scratch org feature CallCoaching)"]
+    },
     "emailDeliverability": {
       "type": "object",
       "properties": {
@@ -798,7 +823,7 @@
         }
       },
       "title": "Picklists",
-      "description": "Changes picklist values in ways the Metadata API cannot:\n\n- replace a value by another one in the records using it, then deactivate or delete the old value;\n- activate or deactivate values;\n- manage (create, modify, delete) the field dependencies of custom fields. An existing field dependency of the dependent field is deleted first.",
+      "description": "Changes picklist values in ways the Metadata API cannot:\n\n- replace a value by another one in the records using it, then deactivate or delete the old value;\n- activate or deactivate values;\n- rename the API name of a value (`newApiName`, and its label with `newLabel`), active or inactive: Salesforce updates the records holding it, without field history nor automation. A deployment of a renamed value creates a new value instead, so rename it in your source too. The org must allow it (`PicklistSettings.isPicklistApiNameEditDisabled` false);\n- manage (create, modify, delete) the field dependencies of custom fields. An existing field dependency of the dependent field is deleted first.",
       "examples": [
         {
           "picklistValues": [
@@ -828,6 +853,16 @@
               "metadataFullName": "Account.MyPicklist__c",
               "value": "MyOldValue",
               "active": false
+            }
+          ]
+        },
+        {
+          "picklistValues": [
+            {
+              "metadataType": "StandardValueSet",
+              "metadataFullName": "LeadSource",
+              "value": "Partner Referral",
+              "newApiName": "Partner_Referral"
             }
           ]
         }
@@ -868,6 +903,16 @@
         "absent": {
           "type": "boolean",
           "description": "ensure the picklist value is absent/deleted"
+        },
+        "newApiName": {
+          "type": "string",
+          "minLength": 1,
+          "description": "rename the API name of the value: the records holding it follow"
+        },
+        "newLabel": {
+          "type": "string",
+          "minLength": 1,
+          "description": "with newApiName: the new label of the renamed value"
         }
       },
       "required": ["metadataType", "metadataFullName"]
@@ -1275,7 +1320,9 @@
             },
             "enableEvergreenSubscriptions": {
               "type": "boolean",
-              "title": "Enable Evergreen Subscriptions"
+              "title": "Enable Evergreen Subscriptions",
+              "x-irreversible": true,
+              "description": "Once enabled, Salesforce CPQ disables the checkbox: evergreen subscriptions cannot be turned off."
             },
             "legacyAmendRenewService": {
               "type": "boolean",
