@@ -18,7 +18,7 @@ describe(ServiceChannels.name, function () {
     {
       serviceChannelDeveloperName: 'CaseTest',
       capacity: {
-        capacityModel: 'StatusBased',
+        capacityModel: 'StatusBased' as const,
         statusField: 'Case.Type',
         valuesForInProgress: ['Electrical', 'Mechanical'],
         checkAgentCapacityOnReopenedWorkItems: true,
@@ -28,7 +28,7 @@ describe(ServiceChannels.name, function () {
     {
       serviceChannelDeveloperName: 'LeadTest',
       capacity: {
-        capacityModel: 'StatusBased',
+        capacityModel: 'StatusBased' as const,
         statusField: 'Lead.Industry',
         valuesForInProgress: ['Agriculture', 'Chemicals'],
         checkAgentCapacityOnReopenedWorkItems: true,
@@ -84,6 +84,14 @@ describe(ServiceChannels.name, function () {
     await plugin.run(lessInProgress);
     const res = await plugin.retrieve(lessInProgress);
     assert.deepStrictEqual(res[0].capacity.valuesForInProgress, ['Mechanical']);
+  });
+
+  it('should switch a service channel back to the tab-based capacity model', async () => {
+    const tabBased = [{ serviceChannelDeveloperName: 'CaseTest', capacity: { capacityModel: 'TabBased' as const } }];
+    await plugin.run(tabBased);
+    const res = await plugin.retrieve(tabBased);
+    assert.deepStrictEqual(res[0].capacity, { capacityModel: 'TabBased' });
+    assert.deepStrictEqual(await plugin.run(tabBased), { message: 'no action necessary' });
   });
 
   it('should delete Service Channels', async () => {

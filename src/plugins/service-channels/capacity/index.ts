@@ -40,9 +40,14 @@ export const capacitySchema = z
   .meta({
     id: 'capacity',
     title: 'Capacity Settings',
-    if: { properties: { capacityModel: { const: 'Status-based' } } },
+    // for editors (schema.json): the status-based model needs its status field and values, the tab-based one has none;
+    // `required` keeps a config without capacityModel (changing the values of a status-based channel) valid
+    if: { required: ['capacityModel'], properties: { capacityModel: { const: 'StatusBased' } } },
     then: { required: ['statusField', 'valuesForInProgress'] },
-    else: { not: { required: ['statusField', 'valuesForInProgress'] } },
+    else: {
+      if: { required: ['capacityModel'], properties: { capacityModel: { const: 'TabBased' } } },
+      then: { not: { anyOf: [{ required: ['statusField'] }, { required: ['valuesForInProgress'] }] } },
+    },
   });
 
 const CAPACITY_MODEL_SELECTOR = 'select[id$=":capacityModelSection:editCapacityModel"]';
@@ -71,7 +76,7 @@ type ServiceChannel = {
 };
 
 export type CapacityConfig = {
-  capacityModel?: string;
+  capacityModel?: 'TabBased' | 'StatusBased';
   statusField?: string;
   valuesForInProgress?: string[];
   checkAgentCapacityOnReopenedWorkItems?: boolean;
@@ -119,7 +124,10 @@ export class Capacity extends BrowserforcePlugin {
       return {};
     }
 
-    const capacityModel = await page.locator(`${CAPACITY_MODEL_SELECTOR}`).inputValue();
+    // the values of the select are those of the schema: TabBased, StatusBased
+    const capacityModel = (await page
+      .locator(`${CAPACITY_MODEL_SELECTOR}`)
+      .inputValue()) as CapacityConfig['capacityModel'];
 
     if (capacityModel === 'StatusBased') {
       const statusField = await page.locator(`${STATUS_FIELD_SELECTOR}`).inputValue();
@@ -147,7 +155,7 @@ export class Capacity extends BrowserforcePlugin {
     const response: CapacityConfig = {};
 
     if (state && definition) {
-      if (definition.capacityModel === 'Tab-based') {
+      if (definition.capacityModel === 'TabBased') {
         if (definition.capacityModel !== state.capacityModel) {
           response.capacityModel = definition.capacityModel;
           return response;

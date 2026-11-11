@@ -1619,9 +1619,10 @@
       },
       "title": "Capacity Settings",
       "if": {
+        "required": ["capacityModel"],
         "properties": {
           "capacityModel": {
-            "const": "Status-based"
+            "const": "StatusBased"
           }
         }
       },
@@ -1629,8 +1630,25 @@
         "required": ["statusField", "valuesForInProgress"]
       },
       "else": {
-        "not": {
-          "required": ["statusField", "valuesForInProgress"]
+        "if": {
+          "required": ["capacityModel"],
+          "properties": {
+            "capacityModel": {
+              "const": "TabBased"
+            }
+          }
+        },
+        "then": {
+          "not": {
+            "anyOf": [
+              {
+                "required": ["statusField"]
+              },
+              {
+                "required": ["valuesForInProgress"]
+              }
+            ]
+          }
         }
       }
     },
