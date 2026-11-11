@@ -7,12 +7,16 @@ export const highVelocitySalesSettingsSchema = z
   .object({
     setUpAndEnable: z.boolean().meta({ title: 'Set Up and Enable High Velocity Sales' }).optional(),
   })
-  .describe(
-    'Due to a bug, High Velocity Sales needs to be set up and enabled initially using the UI.\nOnce set up, it can be configured using HighVelocitySalesSettings Metadata https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_highvelocitysalessettings.htm',
-  )
   .meta({
     id: 'highVelocitySalesSettings',
     title: 'HighVelocitySalesSettings',
+    description: [
+      'Setup: **Feature Settings → Sales → Sales Engagement → Sales Engagement Settings** (`/lightning/setup/SalesEngagement/home`)',
+      '',
+      'Due to a bug, High Velocity Sales (Sales Engagement) needs to be set up and enabled initially using the user interface. Once set up, it can be configured with the [HighVelocitySalesSettings](https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_highvelocitysalessettings.htm) metadata.',
+      '',
+      '![Set Up and Enable Sales Engagement](docs/assets/settings/high-velocity-sales-settings.png)',
+    ].join('\n'),
     examples: [{ setUpAndEnable: true }],
     'x-prerequisites': ['High Velocity Sales license (scratch org feature HighVelocitySales)'],
   });

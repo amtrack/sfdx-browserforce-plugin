@@ -44,6 +44,11 @@ export const historyTrackingSchema = z
   .default([])
   .meta({
     title: 'History Tracking',
+    description: [
+      'Enables or disables history tracking on objects and on their fields (**Object Manager → Fields & Relationships → Set History Tracking**).',
+      '',
+      'It closes a gap of the Metadata API, which cannot enable field history tracking on custom Person Account fields.',
+    ].join('\n'),
     examples: [
       [
         {
@@ -57,10 +62,7 @@ export const historyTrackingSchema = z
       ],
     ],
     'x-prerequisites': ['Person Accounts enabled, to track Person Account fields'],
-  })
-  .describe(
-    'This feature specifically closes a gap where you cannot enable field history tracking for custom Person Account fields via the Metadata API.',
-  );
+  });
 
 const BASE_PATH: SalesforceUrlPath = `/ui/setup/layout/FieldHistoryTracking?pEntity={APINAME}&retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`;
 

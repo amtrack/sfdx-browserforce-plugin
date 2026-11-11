@@ -19,6 +19,15 @@ export const securitySchema = z
   .meta({
     id: 'security',
     title: 'Security Controls',
+    description: [
+      '**Certificate and Key Management**: Setup **Security → Certificate and Key Management** (`/lightning/setup/CertificatesAndKeysManagement/home`). Imports certificates from a Java Keystore (JKS) and creates self-signed certificates.',
+      '',
+      '![Import Certificate from Keystore](docs/assets/settings/security-certificate-and-key-management.png)',
+      '',
+      '**Authentication Configuration**: Setup **Company Settings → My Domain** (`/lightning/setup/OrgDomain/home`). Toggles the authentication services of the Authentication Configuration section.',
+      '',
+      '![Authentication Configuration](docs/assets/settings/security-authentication-configuration.png)',
+    ].join('\n'),
     examples: [
       {
         certificateAndKeyManagement: {

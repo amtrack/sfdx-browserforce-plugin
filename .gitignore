@@ -21,3 +21,8 @@ trace-*.zip
 
 # Claude Code personal settings
 .claude/settings.local.json
+
+# Documentation site: build output and the sfdx-hardis install of npm run generate:docs
+/site
+/.sf-docs-tooling
+/hardis-report

@@ -2,6 +2,7 @@ import assert from 'assert';
 import { readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
 import { ConfigParser } from '../src/config-parser.js';
+import { hallOfFameUrl, SETTINGS_DOC_URL, settingDocUrl } from '../src/docs.js';
 import { drivers, schemas } from '../src/plugins/index.js';
 
 describe('ConfigParser', () => {
@@ -60,6 +61,15 @@ describe('ConfigParser', () => {
         ConfigParser.parse(drivers, definition);
       }, /Invalid browserforce configuration:\ndensitySettings\.density: /);
     });
+    it('should end each error with the documentation page of its setting', () => {
+      assert.throws(
+        () => ConfigParser.parse(drivers, { settings: { densitySettings: { density: 'Roomy' }, foo: {} } }),
+        (err: Error) =>
+          err.message.includes('densitySettings.density: ') &&
+          err.message.includes(`(${settingDocUrl('densitySettings')})`) &&
+          err.message.includes(`(${SETTINGS_DOC_URL})`),
+      );
+    });
     it('should fail parsing a config with a missing required nested property', () => {
       const definition = {
         settings: {
@@ -80,7 +90,7 @@ describe('ConfigParser', () => {
     });
     it('reports a missing settings attribute', () => {
       assert.deepStrictEqual(ConfigParser.validate({}), [
-        { path: 'settings', message: "Missing 'settings' attribute" },
+        { path: 'settings', message: "Missing 'settings' attribute", docUrl: SETTINGS_DOC_URL },
       ]);
       assert.deepStrictEqual(ConfigParser.validate(undefined)[0].path, 'settings');
     });
@@ -95,11 +105,16 @@ describe('ConfigParser', () => {
         issues.map((issue) => issue.path),
         ['settings.densitySettings.density', 'settings.picklists.picklistValues.0.metadataFullName'],
       );
+      assert.deepStrictEqual(
+        issues.map((issue) => issue.docUrl),
+        [settingDocUrl('densitySettings'), settingDocUrl('picklists')],
+      );
     });
     it('reports an unknown setting', () => {
       const issues = ConfigParser.validate({ settings: { foo: {} } });
       assert.strictEqual(issues.length, 1);
       assert.match(issues[0].message, /foo/);
+      assert.strictEqual(issues[0].docUrl, SETTINGS_DOC_URL);
     });
     it('reports a removed setting once, with its migration instructions', () => {
       const issues = ConfigParser.validate({ settings: { deferSharingCalculation: { suspend: true } } });
@@ -107,7 +122,8 @@ describe('ConfigParser', () => {
         issues.map((issue) => issue.path),
         ['settings.deferSharingCalculation'],
       );
-      assert.match(issues[0].message, /Hall-of-Fame#defersharingcalculation/);
+      assert.strictEqual(issues[0].docUrl, hallOfFameUrl('defersharingcalculation'));
+      assert.ok(issues[0].message.includes(issues[0].docUrl));
     });
     it('reports an unknown setting next to a removed one without repeating the removed one', () => {
       const issues = ConfigParser.validate({ settings: { communities: {}, foo: {} } });

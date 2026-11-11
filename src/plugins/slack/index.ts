@@ -16,6 +16,13 @@ export const slackSchema = z
   .meta({
     id: 'slack',
     title: 'Slack Apps Setup',
+    description: [
+      'Setup: **Slack → Slack Apps Setup** (`/lightning/setup/SlackSetupAssistant/home`)',
+      '',
+      'Agrees to the terms and conditions and enables the Sales Cloud for Slack app.',
+      '',
+      '![Slack Apps Setup](docs/assets/settings/slack.png)',
+    ].join('\n'),
     examples: [{ agreeToTermsAndConditions: true, enableSalesCloudForSlack: true }],
   });
 

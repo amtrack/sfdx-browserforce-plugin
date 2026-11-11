@@ -24,7 +24,8 @@ Your goal is a technical specification the user can review. Do not write code.
    - **retrieve():** how the current state is read, preferring APIs (`this.browserforce.connection`) over scraping when they give the same information. Return only the fields present in the definition when reading the others is expensive.
    - **diff():** the default `deepDiff`, or a custom one for collections (say which key identifies an item).
    - **apply():** pages opened (`openPage` path, Classic vs Lightning setup domain, iframe via `waitForSelectorInFrameOrPage`), selectors (language-independent: `id`, `name`, `type`), and the save signal (redirect URL, `retURL`, network response, toast) raced with `waitForPageErrors()`. No `waitForTimeout`.
-   - **Registration:** `drivers` and `schemas` in `src/plugins/index.ts`, regenerated `src/plugins/schema.json`.
+   - **Registration:** `drivers` and `schemas` in `src/plugins/index.ts`, regenerated `src/plugins/schema.json` and documentation pages (`npm run generate:docs`).
+   - **Documentation:** the Markdown `description` of the plugin schema (Setup path, why the Metadata API cannot do it) and the screenshot to add in `docs/assets/settings/`.
    - **Catalog keys in `.meta()`:** the user-facing `examples`, and whether a field is irreversible (`x-irreversible`), the setting Classic-only (`x-user-interface`), or needs a package, license or feature (`x-prerequisites`).
    - **Deprecations:** for a setting removed because the Metadata API now supports it, the entry in `src/plugins/deprecated.ts`.
    - **Errors:** messages for invalid values, missing features or permissions.

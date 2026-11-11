@@ -2,5 +2,15 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended", ":semanticCommits"],
   "minimumReleaseAge": "14 days",
-  "osvVulnerabilityAlerts": true
+  "osvVulnerabilityAlerts": true,
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "sfdx-hardis version used by npm run generate:docs",
+      "managerFilePatterns": ["/^scripts/generate-docs\\.sh$/"],
+      "matchStrings": [
+        "(?<currentValue>\\d+\\.\\d+\\.\\d+) # renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)"
+      ]
+    }
+  ]
 }

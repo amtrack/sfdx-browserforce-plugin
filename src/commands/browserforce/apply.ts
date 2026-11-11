@@ -1,5 +1,6 @@
 import { SfError } from '@salesforce/core';
 import { BrowserforceCommand } from '../../browserforce-command.js';
+import { settingDocUrl } from '../../docs.js';
 import { getPluginJsonSchema } from '../../plugin-catalog.js';
 import { maskSensitiveValues } from '../../plugins/utils.js';
 
@@ -113,7 +114,8 @@ export function buildSettingResult(key: string, maskedDiff: unknown, applied: bo
 
 /**
  * The error of a failed setting, carrying in its `data` (shown by `--json`) the results of the settings handled before
- * it, so a caller knows which ones were already applied. The message and the cause stay those of the original error.
+ * it, so a caller knows which ones were already applied, and the documentation page of the failed setting (also shown
+ * as an action). The message and the cause stay those of the original error.
  */
 export function withSettingResults(
   err: unknown,
@@ -130,6 +132,8 @@ export function withSettingResults(
   }
   const existingData =
     typeof sfError.data === 'object' && sfError.data !== null && !Array.isArray(sfError.data) ? sfError.data : {};
+  const docUrl = settingDocUrl(data.failedSetting);
+  sfError.actions = [...(sfError.actions ?? []), `See the documentation of '${data.failedSetting}': ${docUrl}`];
   // the results are plain JSON
-  return sfError.setData({ ...existingData, ...data } as unknown as SfError['data']);
+  return sfError.setData({ ...existingData, ...data, docUrl } as unknown as SfError['data']);
 }

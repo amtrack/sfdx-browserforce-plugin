@@ -22,6 +22,7 @@ If a `/design` spec exists in the conversation, follow it. Otherwise read the re
 - Playwright rules from `docs/PLAYWRIGHT.md`: `await using page = await this.browserforce.openPage(...)`, Locator API, language-independent selectors, save signal raced with `waitForPageErrors(page)`, no `waitForTimeout` / `waitForLoadState` / `evaluate`.
 - Relative imports end in `.js` (ESM).
 - Keep `src/plugins/schema.json` generated: never edit it by hand.
+- In the root `.meta()`, a Markdown `description` for the documentation page: Setup path and URL, what it does and why the Metadata API cannot, and a screenshot in `docs/assets/settings/` referenced as `docs/assets/settings/<file>.png`. After a schema or command change, run `npm run generate:docs` and keep the regenerated `docs/` and `mkdocs.yml` (CI warns otherwise).
 - A user-visible change to a command or flag also updates its `summary` / `description`; `npm run build` regenerates the README usage section.
 
 ## 3. Verify

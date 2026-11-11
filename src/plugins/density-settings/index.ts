@@ -10,7 +10,18 @@ export const densitySettingsSchema = z
       .describe('Choose the default display setting for your org')
       .optional(),
   })
-  .meta({ id: 'densitySettings', title: 'Density Settings', examples: [{ density: 'Compact' }, { density: 'Comfy' }] });
+  .meta({
+    id: 'densitySettings',
+    title: 'Density Settings',
+    description: [
+      'Setup: **User Interface → Density Settings** (`/lightning/setup/DensitySetup/home`)',
+      '',
+      'Chooses the default display density of the org: "Comfy" or "Compact".',
+      '',
+      '![Density Settings](docs/assets/settings/density-settings.png)',
+    ].join('\n'),
+    examples: [{ density: 'Compact' }, { density: 'Comfy' }],
+  });
 
 const BASE_PATH = '/lightning/setup/DensitySetup/home';
 

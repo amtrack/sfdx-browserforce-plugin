@@ -1,3 +1,8 @@
+---
+title: Playwright best practices for plugins
+description: How to write reliable Browserforce plugins with Playwright - locators, language-independent selectors, save signals and page errors on Salesforce Setup pages.
+---
+
 # Best Practices: Using Playwright for Browserforce
 
 This guide provides best practices and patterns for writing Playwright-based plugins for the sfdx-browserforce-plugin project.
@@ -246,14 +251,14 @@ create separate page classes and orchestrate them.
 
 Example:
 
-- ![src/plugins/opportunity-splits/index.ts](../src/plugins/opportunity-splits/index.ts)
-- ![src/plugins/opportunity-splits/pages/overview.ts](../src/plugins/opportunity-splits/pages/overview.ts)
-- ![src/plugins/opportunity-splits/pages/setup.ts](../src/plugins/opportunity-splits/pages/setup.ts)
-- ![src/plugins/opportunity-splits/pages/layout-selection.ts](../src/plugins/opportunity-splits/pages/layout-selection.ts)
+- [src/plugins/opportunity-splits/index.ts](https://github.com/amtrack/sfdx-browserforce-plugin/blob/main/src/plugins/opportunity-splits/index.ts)
+- [src/plugins/opportunity-splits/pages/overview.ts](https://github.com/amtrack/sfdx-browserforce-plugin/blob/main/src/plugins/opportunity-splits/pages/overview.ts)
+- [src/plugins/opportunity-splits/pages/setup.ts](https://github.com/amtrack/sfdx-browserforce-plugin/blob/main/src/plugins/opportunity-splits/pages/setup.ts)
+- [src/plugins/opportunity-splits/pages/layout-selection.ts](https://github.com/amtrack/sfdx-browserforce-plugin/blob/main/src/plugins/opportunity-splits/pages/layout-selection.ts)
 
 ## Debugging
 
-For general debugging and tracing documentation, please see the [CONTRIBUTING](../CONTRIBUTING.md) guide.
+For general debugging and tracing documentation, please see the [CONTRIBUTING](https://github.com/amtrack/sfdx-browserforce-plugin/blob/main/CONTRIBUTING.md) guide.
 Programmatically you can either add console logging
 
 ```typescript

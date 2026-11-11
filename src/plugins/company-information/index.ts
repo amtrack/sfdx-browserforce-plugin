@@ -6,10 +6,16 @@ export const companyInformationSchema = z
   .object({
     defaultCurrencyIsoCode: z.string().meta({ title: 'Default Currency' }).optional(),
   })
-  .describe('')
   .meta({
     id: 'companyInformation',
     title: 'Company Information',
+    description: [
+      'Setup: **Company Settings → Company Information** (`/lightning/setup/CompanyProfileInfo/home`)',
+      '',
+      'Sets the Currency Locale of the org, which no Metadata API type represents.',
+      '',
+      '![Company Information](docs/assets/settings/company-information.png)',
+    ].join('\n'),
     examples: [{ defaultCurrencyIsoCode: 'English (South Africa) - ZAR' }],
   });
 

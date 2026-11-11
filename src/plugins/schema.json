@@ -10,21 +10,24 @@
             {
               "$ref": "#/definitions/accountIntelligenceView"
             }
-          ]
+          ],
+          "markdownDescription": "Setup: **Feature Settings → Sales → Account Intelligence** (`/lightning/setup/AccountInspectionSettings/home`)\n\nTurns the Account Intelligence view on or off.\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/accountIntelligenceView/)"
         },
         "activitySettings": {
           "allOf": [
             {
               "$ref": "#/definitions/activitySettings"
             }
-          ]
+          ],
+          "markdownDescription": "Setup: **Feature Settings → Sales → Activity Settings** (`/lightning/setup/HomeActivitiesSetupPage/home`)\n\nAlthough the Metadata API has an `ActivitiesSettings.allowUsersToRelateMultipleContactsToTasksAndEvents` field, it is read-only since API v36.0: the setting cannot be enabled through an API.\n\n![Activity Settings](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/activity-settings.png)\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/activitySettings/)"
         },
         "authProviders": {
           "allOf": [
             {
               "$ref": "#/definitions/authProviders"
             }
-          ]
+          ],
+          "markdownDescription": "Setup: **Identity → Auth. Providers** (`/lightning/setup/AuthProviders/home`)\n\nUpdates the Consumer Key and the Consumer Secret of existing Auth Providers, keyed by their API name. Reference the secret with an environment variable (`\"${MY_SECRET}\"`) rather than writing it in the config file: it is masked in the output of `apply`.\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/authProviders/)"
         },
         "callSummaries": {
           "allOf": [
@@ -38,39 +41,45 @@
             {
               "$ref": "#/definitions/companyInformation"
             }
-          ]
+          ],
+          "markdownDescription": "Setup: **Company Settings → Company Information** (`/lightning/setup/CompanyProfileInfo/home`)\n\nSets the Currency Locale of the org, which no Metadata API type represents.\n\n![Company Information](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/company-information.png)\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/companyInformation/)"
         },
         "customerPortal": {
           "allOf": [
             {
               "$ref": "#/definitions/customerPortal"
             }
-          ]
+          ],
+          "markdownDescription": "Salesforce Classic Setup: **Customize → Customer Portal → Customer Portal Settings** (`/_ui/core/portal/CustomerSuccessPortalSetup/e`)\n\nEnables the Customer Portal, configures its portals (self-registration, profiles) and the custom objects available in it.\n\n![Customer Portal](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/customer-portal.png)\n\n![Customer Portal Setup](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/customer-portal-setup.png)\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/customerPortal/)"
         },
         "densitySettings": {
           "allOf": [
             {
               "$ref": "#/definitions/densitySettings"
             }
-          ]
+          ],
+          "markdownDescription": "Setup: **User Interface → Density Settings** (`/lightning/setup/DensitySetup/home`)\n\nChooses the default display density of the org: \"Comfy\" or \"Compact\".\n\n![Density Settings](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/density-settings.png)\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/densitySettings/)"
         },
         "emailDeliverability": {
           "allOf": [
             {
               "$ref": "#/definitions/emailDeliverability"
             }
-          ]
+          ],
+          "markdownDescription": "Setup: **Email → Deliverability** (`/lightning/setup/OrgEmailSettings/home`)\n\nChooses the access level: \"No access\", \"System email only\" or \"All email\".\n\n![Email Deliverability](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/email-deliverability.png)\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/emailDeliverability/)"
         },
         "highVelocitySalesSettings": {
           "allOf": [
             {
               "$ref": "#/definitions/highVelocitySalesSettings"
             }
-          ]
+          ],
+          "markdownDescription": "Setup: **Feature Settings → Sales → Sales Engagement → Sales Engagement Settings** (`/lightning/setup/SalesEngagement/home`)\n\nDue to a bug, High Velocity Sales (Sales Engagement) needs to be set up and enabled initially using the user interface. Once set up, it can be configured with the [HighVelocitySalesSettings](https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_highvelocitysalessettings.htm) metadata.\n\n![Set Up and Enable Sales Engagement](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/high-velocity-sales-settings.png)\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/highVelocitySalesSettings/)"
         },
         "historyTracking": {
           "default": [],
           "title": "History Tracking",
+          "description": "Enables or disables history tracking on objects and on their fields (**Object Manager → Fields & Relationships → Set History Tracking**).\n\nIt closes a gap of the Metadata API, which cannot enable field history tracking on custom Person Account fields.",
           "examples": [
             [
               {
@@ -90,29 +99,32 @@
             ]
           ],
           "x-prerequisites": ["Person Accounts enabled, to track Person Account fields"],
-          "description": "This feature specifically closes a gap where you cannot enable field history tracking for custom Person Account fields via the Metadata API.",
           "type": "array",
           "items": {
             "$ref": "#/definitions/historyTracking"
-          }
+          },
+          "markdownDescription": "Enables or disables history tracking on objects and on their fields (**Object Manager → Fields & Relationships → Set History Tracking**).\n\nIt closes a gap of the Metadata API, which cannot enable field history tracking on custom Person Account fields.\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/historyTracking/)"
         },
         "homePageLayouts": {
           "allOf": [
             {
               "$ref": "#/definitions/homePageLayouts"
             }
-          ]
+          ],
+          "markdownDescription": "Salesforce Classic Setup: **Customize → Home → Home Page Layouts** (`/setup/ui/assignhomelayoutedit.jsp`)\n\nAssigns Home Page Layouts to profiles.\n\n![Home Page Layout Assignment](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/home-page-layouts.png)\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/homePageLayouts/)"
         },
         "lightningExperienceSettings": {
           "allOf": [
             {
               "$ref": "#/definitions/lightningExperienceSettings"
             }
-          ]
+          ],
+          "markdownDescription": "Setup: **User Interface → Themes and Branding** (`/lightning/setup/ThemingAndBranding/home`)\n\nActivates a Lightning Experience theme. Although the Metadata API has an `activeThemeName` field in `LightningExperienceSettings`, it cannot activate the standard themes like `Lightning`, `LightningLite` or `SalesforceCosmos`.\n\n![Themes and Branding](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/lightning-experience-settings.png)\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/lightningExperienceSettings/)"
         },
         "listViewCustomButtons": {
           "default": [],
           "title": "List View Custom Buttons",
+          "description": "Object Manager: **(object) → Search Layouts for Salesforce Classic → List View**\n\nManages the custom buttons selected in the list view button layout of any object. Buttons are identified by the API name of their WebLink, with an optional namespace prefix (`AssignTask` or `th_dev__AssignTask`).",
           "examples": [
             [
               {
@@ -122,36 +134,40 @@
               }
             ]
           ],
-          "description": "Manage the selected custom buttons in the list view button layout (Aloha Search Layout) for any object. Buttons are identified by their WebLink API Name (DeveloperName), with optional namespace prefix (e.g. 'AssignTask' or 'th_dev__AssignTask').",
           "type": "array",
           "items": {
             "$ref": "#/definitions/listViewCustomButtons"
-          }
+          },
+          "markdownDescription": "Object Manager: **(object) → Search Layouts for Salesforce Classic → List View**\n\nManages the custom buttons selected in the list view button layout of any object. Buttons are identified by the API name of their WebLink, with an optional namespace prefix (`AssignTask` or `th_dev__AssignTask`).\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/listViewCustomButtons/)"
         },
         "linkedInSalesNavigatorSettings": {
           "allOf": [
             {
               "$ref": "#/definitions/linkedInSalesNavigatorSettings"
             }
-          ]
+          ],
+          "markdownDescription": "Setup: **Feature Settings → Sales → LinkedIn Sales Navigator** (`/lightning/setup/LinkedInSalesNavigatorPage/home`)\n\nEnables or disables the Sales Navigator integration.\n\n![LinkedIn Sales Navigator](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/linkedin-sales-navigator-settings.png)\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/linkedInSalesNavigatorSettings/)"
         },
         "omniChannelSettings": {
           "allOf": [
             {
               "$ref": "#/definitions/omniChannelSettings"
             }
-          ]
+          ],
+          "markdownDescription": "Setup: **Feature Settings → Service → Omni-Channel → Omni-Channel Settings** (`/lightning/setup/OmniChannelSettings/home`)\n\nEnables the status-based capacity model.\n\n![Omni-Channel Settings](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/omni-channel-settings.png)\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/omniChannelSettings/)"
         },
         "opportunitySplits": {
           "allOf": [
             {
               "$ref": "#/definitions/opportunitySplits"
             }
-          ]
+          ],
+          "markdownDescription": "Setup: **Feature Settings → Sales → Opportunities → Opportunity Splits Settings** (`/lightning/setup/OpportunitySplitSetup/home`)\n\nEnables and sets up Opportunity Splits. Opportunity Teams must be enabled first, for example by deploying the `Opportunity` settings with `<enableOpportunityTeam>true</enableOpportunityTeam>`.\n\n![Opportunity Splits Settings](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/opportunity-splits.png)\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/opportunitySplits/)"
         },
         "permissionSets": {
           "default": [],
           "title": "Permission Sets",
+          "description": "Gives Permission Sets access to service presence statuses (Omni-Channel), by the API names of the statuses.",
           "examples": [
             [
               {
@@ -164,53 +180,61 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/permissionSet"
-          }
+          },
+          "markdownDescription": "Gives Permission Sets access to service presence statuses (Omni-Channel), by the API names of the statuses.\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/permissionSets/)"
         },
         "picklists": {
           "allOf": [
             {
               "$ref": "#/definitions/picklists"
             }
-          ]
+          ],
+          "markdownDescription": "Changes picklist values in ways the Metadata API cannot:\n\n- replace a value by another one in the records using it, then deactivate or delete the old value;\n- activate or deactivate values;\n- manage (create, modify, delete) the field dependencies of custom fields. An existing field dependency of the dependent field is deleted first.\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/picklists/)"
         },
         "recordTypes": {
           "allOf": [
             {
               "$ref": "#/definitions/recordTypes"
             }
-          ]
+          ],
+          "markdownDescription": "Deletes inactive record types, optionally replacing them by another record type where they are used.\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/recordTypes/)"
         },
         "relateContactToMultipleAccounts": {
           "allOf": [
             {
               "$ref": "#/definitions/relateContactToMultipleAccounts"
             }
-          ]
+          ],
+          "markdownDescription": "Setup: **Feature Settings → Sales → Account Settings** (`/lightning/setup/AccountSettings/home`)\n\nEnabling it through the Metadata API (`AccountSettings.enableRelateContactToMultipleAccounts`) does not always make the `AccountContactRelation` object available. Enabling it in Setup always does.\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/relateContactToMultipleAccounts/)"
         },
         "reportsAndDashboards": {
           "allOf": [
             {
               "$ref": "#/definitions/reportsAndDashboards"
             }
-          ]
+          ],
+          "markdownDescription": "Setup: **Feature Settings → Analytics → Reports & Dashboards → Folder Sharing**\n\nEnables Enhanced Folder Sharing. Orgs created after the Summer ’13 release already have it.\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/reportsAndDashboards/)"
         },
         "salesforceCpqConfig": {
           "allOf": [
             {
               "$ref": "#/definitions/salesforceCpqConfig"
             }
-          ]
+          ],
+          "markdownDescription": "Setup: **Installed Packages → Salesforce CPQ → Configure**\n\nSets the settings of the Salesforce CPQ package.\n\n![Salesforce CPQ settings](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/salesforce-cpq-config.png)\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/salesforceCpqConfig/)"
         },
         "security": {
           "allOf": [
             {
               "$ref": "#/definitions/security"
             }
-          ]
+          ],
+          "markdownDescription": "**Certificate and Key Management**: Setup **Security → Certificate and Key Management** (`/lightning/setup/CertificatesAndKeysManagement/home`). Imports certificates from a Java Keystore (JKS) and creates self-signed certificates.\n\n![Import Certificate from Keystore](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/security-certificate-and-key-management.png)\n\n**Authentication Configuration**: Setup **Company Settings → My Domain** (`/lightning/setup/OrgDomain/home`). Toggles the authentication services of the Authentication Configuration section.\n\n![Authentication Configuration](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/security-authentication-configuration.png)\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/security/)"
         },
         "serviceChannels": {
           "default": [],
           "title": "Service Channels",
+          "description": "Configures the capacity model of Service Channels (Omni-Channel): status-based capacity, the status field and its in-progress values.",
           "examples": [
             [
               {
@@ -227,21 +251,24 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/serviceChannel"
-          }
+          },
+          "markdownDescription": "Configures the capacity model of Service Channels (Omni-Channel): status-based capacity, the status field and its in-progress values.\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/serviceChannels/)"
         },
         "slack": {
           "allOf": [
             {
               "$ref": "#/definitions/slack"
             }
-          ]
+          ],
+          "markdownDescription": "Setup: **Slack → Slack Apps Setup** (`/lightning/setup/SlackSetupAssistant/home`)\n\nAgrees to the terms and conditions and enables the Sales Cloud for Slack app.\n\n![Slack Apps Setup](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/slack.png)\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/slack/)"
         },
         "userAccessPolicies": {
           "allOf": [
             {
               "$ref": "#/definitions/userAccessPolicies"
             }
-          ]
+          ],
+          "markdownDescription": "Setup: **Users → User Access Policies** (`/lightning/setup/UserAccessPolicies/home`)\n\nActivates or deactivates User Access Policies, chooses when they run (on create, update, or both), and runs Apply To All.\n\n[Documentation](https://amtrack.github.io/sfdx-browserforce-plugin/settings/userAccessPolicies/)"
         }
       },
       "additionalProperties": false
@@ -260,6 +287,7 @@
         }
       },
       "title": "Account Intelligence View",
+      "description": "Setup: **Feature Settings → Sales → Account Intelligence** (`/lightning/setup/AccountInspectionSettings/home`)\n\nTurns the Account Intelligence view on or off.",
       "examples": [
         {
           "enable": true
@@ -281,6 +309,7 @@
         }
       },
       "title": "Activity Settings",
+      "description": "Setup: **Feature Settings → Sales → Activity Settings** (`/lightning/setup/HomeActivitiesSetupPage/home`)\n\nAlthough the Metadata API has an `ActivitiesSettings.allowUsersToRelateMultipleContactsToTasksAndEvents` field, it is read-only since API v36.0: the setting cannot be enabled through an API.\n\n![Activity Settings](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/activity-settings.png)",
       "examples": [
         {
           "allowUsersToRelateMultipleContactsToTasksAndEvents": true
@@ -309,7 +338,7 @@
           }
         }
       },
-      "description": "Configuration for updating Auth Provider Consumer Key and Consumer Secret",
+      "description": "Setup: **Identity → Auth. Providers** (`/lightning/setup/AuthProviders/home`)\n\nUpdates the Consumer Key and the Consumer Secret of existing Auth Providers, keyed by their API name. Reference the secret with an environment variable (`\"${MY_SECRET}\"`) rather than writing it in the config file: it is masked in the output of `apply`.",
       "title": "Auth Providers",
       "examples": [
         {
@@ -351,8 +380,8 @@
           "title": "Default Currency"
         }
       },
-      "description": "",
       "title": "Company Information",
+      "description": "Setup: **Company Settings → Company Information** (`/lightning/setup/CompanyProfileInfo/home`)\n\nSets the Currency Locale of the org, which no Metadata API type represents.\n\n![Company Information](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/company-information.png)",
       "examples": [
         {
           "defaultCurrencyIsoCode": "English (South Africa) - ZAR"
@@ -385,8 +414,8 @@
           }
         }
       },
-      "description": "Only available in Salesforce Classic UI",
       "title": "Customer Portal Settings",
+      "description": "Salesforce Classic Setup: **Customize → Customer Portal → Customer Portal Settings** (`/_ui/core/portal/CustomerSuccessPortalSetup/e`)\n\nEnables the Customer Portal, configures its portals (self-registration, profiles) and the custom objects available in it.\n\n![Customer Portal](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/customer-portal.png)\n\n![Customer Portal Setup](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/customer-portal-setup.png)",
       "examples": [
         {
           "enabled": true
@@ -485,6 +514,7 @@
         }
       },
       "title": "Density Settings",
+      "description": "Setup: **User Interface → Density Settings** (`/lightning/setup/DensitySetup/home`)\n\nChooses the default display density of the org: \"Comfy\" or \"Compact\".\n\n![Density Settings](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/density-settings.png)",
       "examples": [
         {
           "density": "Compact"
@@ -505,6 +535,7 @@
         }
       },
       "title": "Email Deliverability Settings",
+      "description": "Setup: **Email → Deliverability** (`/lightning/setup/OrgEmailSettings/home`)\n\nChooses the access level: \"No access\", \"System email only\" or \"All email\".\n\n![Email Deliverability](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/email-deliverability.png)",
       "examples": [
         {
           "accessLevel": "All email"
@@ -525,8 +556,8 @@
           "title": "Set Up and Enable High Velocity Sales"
         }
       },
-      "description": "Due to a bug, High Velocity Sales needs to be set up and enabled initially using the UI.\nOnce set up, it can be configured using HighVelocitySalesSettings Metadata https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_highvelocitysalessettings.htm",
       "title": "HighVelocitySalesSettings",
+      "description": "Setup: **Feature Settings → Sales → Sales Engagement → Sales Engagement Settings** (`/lightning/setup/SalesEngagement/home`)\n\nDue to a bug, High Velocity Sales (Sales Engagement) needs to be set up and enabled initially using the user interface. Once set up, it can be configured with the [HighVelocitySalesSettings](https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_highvelocitysalessettings.htm) metadata.\n\n![Set Up and Enable Sales Engagement](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/high-velocity-sales-settings.png)",
       "examples": [
         {
           "setUpAndEnable": true
@@ -586,8 +617,8 @@
           }
         }
       },
-      "description": "Assign Home Page Layouts for Profiles. Only available in Salesforce Classic UI",
       "title": "Home Page Layouts",
+      "description": "Salesforce Classic Setup: **Customize → Home → Home Page Layouts** (`/setup/ui/assignhomelayoutedit.jsp`)\n\nAssigns Home Page Layouts to profiles.\n\n![Home Page Layout Assignment](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/home-page-layouts.png)",
       "examples": [
         {
           "homePageLayoutAssignments": [
@@ -627,8 +658,8 @@
           "description": "The API Name of the Lightning Experience Theme to be activated"
         }
       },
-      "description": "Although the Metadata API has a field activeThemeName in LightningExperienceSettings it's not possible to activate any of the standard themes like Lightning and LightningLite or SalesforceCosmos.",
       "title": "LightningExperienceSettings",
+      "description": "Setup: **User Interface → Themes and Branding** (`/lightning/setup/ThemingAndBranding/home`)\n\nActivates a Lightning Experience theme. Although the Metadata API has an `activeThemeName` field in `LightningExperienceSettings`, it cannot activate the standard themes like `Lightning`, `LightningLite` or `SalesforceCosmos`.\n\n![Themes and Branding](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/lightning-experience-settings.png)",
       "examples": [
         {
           "activeThemeName": "Lightning"
@@ -671,6 +702,7 @@
         }
       },
       "title": "LinkedIn Sales Navigator Settings",
+      "description": "Setup: **Feature Settings → Sales → LinkedIn Sales Navigator** (`/lightning/setup/LinkedInSalesNavigatorPage/home`)\n\nEnables or disables the Sales Navigator integration.\n\n![LinkedIn Sales Navigator](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/linkedin-sales-navigator-settings.png)",
       "examples": [
         {
           "enabled": true
@@ -690,6 +722,7 @@
         }
       },
       "title": "Omni-Channel Settings",
+      "description": "Setup: **Feature Settings → Service → Omni-Channel → Omni-Channel Settings** (`/lightning/setup/OmniChannelSettings/home`)\n\nEnables the status-based capacity model.\n\n![Omni-Channel Settings](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/omni-channel-settings.png)",
       "examples": [
         {
           "enableStatusBasedCapacityModel": true
@@ -707,6 +740,7 @@
         }
       },
       "title": "OpportunitySplits Settings",
+      "description": "Setup: **Feature Settings → Sales → Opportunities → Opportunity Splits Settings** (`/lightning/setup/OpportunitySplitSetup/home`)\n\nEnables and sets up Opportunity Splits. Opportunity Teams must be enabled first, for example by deploying the `Opportunity` settings with `<enableOpportunityTeam>true</enableOpportunityTeam>`.\n\n![Opportunity Splits Settings](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/opportunity-splits.png)",
       "examples": [
         {
           "enabled": true
@@ -763,6 +797,7 @@
         }
       },
       "title": "Picklists",
+      "description": "Changes picklist values in ways the Metadata API cannot:\n\n- replace a value by another one in the records using it, then deactivate or delete the old value;\n- activate or deactivate values;\n- manage (create, modify, delete) the field dependencies of custom fields. An existing field dependency of the dependent field is deleted first.",
       "examples": [
         {
           "picklistValues": [
@@ -880,6 +915,7 @@
         }
       },
       "title": "RecordTypes",
+      "description": "Deletes inactive record types, optionally replacing them by another record type where they are used.",
       "examples": [
         {
           "deletions": [
@@ -915,6 +951,7 @@
         }
       },
       "title": "RelateContactToMultipleAccounts Settings",
+      "description": "Setup: **Feature Settings → Sales → Account Settings** (`/lightning/setup/AccountSettings/home`)\n\nEnabling it through the Metadata API (`AccountSettings.enableRelateContactToMultipleAccounts`) does not always make the `AccountContactRelation` object available. Enabling it in Setup always does.",
       "examples": [
         {
           "enabled": true
@@ -933,6 +970,7 @@
         }
       },
       "title": "Reports & Dashboards",
+      "description": "Setup: **Feature Settings → Analytics → Reports & Dashboards → Folder Sharing**\n\nEnables Enhanced Folder Sharing. Orgs created after the Summer ’13 release already have it.",
       "examples": [
         {
           "folderSharing": {
@@ -1401,6 +1439,7 @@
         }
       },
       "title": "SalesforceCpqConfig Settings",
+      "description": "Setup: **Installed Packages → Salesforce CPQ → Configure**\n\nSets the settings of the Salesforce CPQ package.\n\n![Salesforce CPQ settings](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/salesforce-cpq-config.png)",
       "examples": [
         {
           "documents": {
@@ -1430,6 +1469,7 @@
         }
       },
       "title": "Security Controls",
+      "description": "**Certificate and Key Management**: Setup **Security → Certificate and Key Management** (`/lightning/setup/CertificatesAndKeysManagement/home`). Imports certificates from a Java Keystore (JKS) and creates self-signed certificates.\n\n![Import Certificate from Keystore](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/security-certificate-and-key-management.png)\n\n**Authentication Configuration**: Setup **Company Settings → My Domain** (`/lightning/setup/OrgDomain/home`). Toggles the authentication services of the Authentication Configuration section.\n\n![Authentication Configuration](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/security-authentication-configuration.png)",
       "examples": [
         {
           "certificateAndKeyManagement": {
@@ -1639,6 +1679,7 @@
         }
       },
       "title": "Slack Apps Setup",
+      "description": "Setup: **Slack → Slack Apps Setup** (`/lightning/setup/SlackSetupAssistant/home`)\n\nAgrees to the terms and conditions and enables the Sales Cloud for Slack app.\n\n![Slack Apps Setup](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/slack.png)",
       "examples": [
         {
           "agreeToTermsAndConditions": true,
@@ -1660,6 +1701,7 @@
         }
       },
       "title": "User Access Policies",
+      "description": "Setup: **Users → User Access Policies** (`/lightning/setup/UserAccessPolicies/home`)\n\nActivates or deactivates User Access Policies, chooses when they run (on create, update, or both), and runs Apply To All.",
       "examples": [
         {
           "accessPolicies": [

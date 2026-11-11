@@ -18,6 +18,13 @@ export const opportunitySplitsSchema = z
   .meta({
     id: 'opportunitySplits',
     title: 'OpportunitySplits Settings',
+    description: [
+      'Setup: **Feature Settings → Sales → Opportunities → Opportunity Splits Settings** (`/lightning/setup/OpportunitySplitSetup/home`)',
+      '',
+      'Enables and sets up Opportunity Splits. Opportunity Teams must be enabled first, for example by deploying the `Opportunity` settings with `<enableOpportunityTeam>true</enableOpportunityTeam>`.',
+      '',
+      '![Opportunity Splits Settings](docs/assets/settings/opportunity-splits.png)',
+    ].join('\n'),
     examples: [{ enabled: true }, { enabled: false }],
   });
 

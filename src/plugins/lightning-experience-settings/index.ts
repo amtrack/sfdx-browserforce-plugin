@@ -12,12 +12,16 @@ export const lightningExperienceSettingsSchema = z
       .describe('The API Name of the Lightning Experience Theme to be activated')
       .optional(),
   })
-  .describe(
-    "Although the Metadata API has a field activeThemeName in LightningExperienceSettings it's not possible to activate any of the standard themes like Lightning and LightningLite or SalesforceCosmos.",
-  )
   .meta({
     id: 'lightningExperienceSettings',
     title: 'LightningExperienceSettings',
+    description: [
+      'Setup: **User Interface → Themes and Branding** (`/lightning/setup/ThemingAndBranding/home`)',
+      '',
+      'Activates a Lightning Experience theme. Although the Metadata API has an `activeThemeName` field in `LightningExperienceSettings`, it cannot activate the standard themes like `Lightning`, `LightningLite` or `SalesforceCosmos`.',
+      '',
+      '![Themes and Branding](docs/assets/settings/lightning-experience-settings.png)',
+    ].join('\n'),
     examples: [{ activeThemeName: 'Lightning' }],
   });
 

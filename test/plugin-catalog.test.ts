@@ -1,7 +1,10 @@
 import assert from 'node:assert';
+import { existsSync } from 'node:fs';
+import { z } from 'zod';
 import { buildPluginCatalog, CATALOG_FORMAT_VERSION } from '../src/plugin-catalog.js';
 import { ConfigParser } from '../src/config-parser.js';
 import { schemas } from '../src/plugins/index.js';
+import { hallOfFameUrl, listMarkdownImages, settingDocUrl } from '../src/docs.js';
 
 describe('plugin catalog', () => {
   const catalog = buildPluginCatalog('1.2.3');
@@ -53,9 +56,32 @@ describe('plugin catalog', () => {
   it('lists the removed settings with their migration instructions', () => {
     assert.ok(
       catalog.deprecatedSettings.some(
-        (deprecated) => deprecated.path === 'deferSharingCalculation' && deprecated.url.includes('Hall-of-Fame'),
+        (deprecated) =>
+          deprecated.path === 'deferSharingCalculation' && deprecated.url === hallOfFameUrl('defersharingcalculation'),
       ),
     );
+  });
+
+  it('links every setting to its documentation page', () => {
+    for (const plugin of catalog.plugins) {
+      assert.strictEqual(plugin.docUrl, settingDocUrl(plugin.key));
+    }
+  });
+
+  it('points the images of the descriptions to existing files of the repository', () => {
+    const descriptions = catalog.plugins.flatMap((plugin) =>
+      [plugin.description, ...plugin.fields.map((field) => field.description)].filter(
+        (description): description is string => typeof description === 'string',
+      ),
+    );
+    assert.deepStrictEqual(descriptions.flatMap(listMarkdownImages), [], 'relative image paths left');
+    // the schemas themselves reference the images by their path relative to the repository root
+    const images = (Object.keys(schemas) as (keyof typeof schemas)[]).flatMap((key) =>
+      listMarkdownImages(JSON.stringify(z.toJSONSchema(schemas[key]))),
+    );
+    for (const image of images) {
+      assert.ok(existsSync(new URL(`../${image}`, import.meta.url)), `missing image ${image}`);
+    }
   });
 
   it('is serializable as JSON', () => {

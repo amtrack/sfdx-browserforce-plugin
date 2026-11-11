@@ -12,6 +12,13 @@ export const emailDeliverabilitySchema = z
   .meta({
     id: 'emailDeliverability',
     title: 'Email Deliverability Settings',
+    description: [
+      'Setup: **Email → Deliverability** (`/lightning/setup/OrgEmailSettings/home`)',
+      '',
+      'Chooses the access level: "No access", "System email only" or "All email".',
+      '',
+      '![Email Deliverability](docs/assets/settings/email-deliverability.png)',
+    ].join('\n'),
     examples: [{ accessLevel: 'All email' }, { accessLevel: 'System email only' }, { accessLevel: 'No access' }],
   });
 

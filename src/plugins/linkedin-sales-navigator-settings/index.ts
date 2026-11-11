@@ -9,6 +9,13 @@ export const linkedInSalesNavigatorSettingsSchema = z
   .meta({
     id: 'linkedInSalesNavigatorSettings',
     title: 'LinkedIn Sales Navigator Settings',
+    description: [
+      'Setup: **Feature Settings → Sales → LinkedIn Sales Navigator** (`/lightning/setup/LinkedInSalesNavigatorPage/home`)',
+      '',
+      'Enables or disables the Sales Navigator integration.',
+      '',
+      '![LinkedIn Sales Navigator](docs/assets/settings/linkedin-sales-navigator-settings.png)',
+    ].join('\n'),
     examples: [{ enabled: true }, { enabled: false }],
   });
 
