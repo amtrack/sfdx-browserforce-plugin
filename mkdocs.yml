@@ -74,6 +74,7 @@ nav:
       - Company Information: settings/companyInformation.md
       - Customer Portal Settings: settings/customerPortal.md
       - Density Settings: settings/densitySettings.md
+      - Einstein Conversation Insights: settings/einsteinConversationInsights.md
       - Email Deliverability Settings: settings/emailDeliverability.md
       - HighVelocitySalesSettings: settings/highVelocitySalesSettings.md
       - History Tracking: settings/historyTracking.md
