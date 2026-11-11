@@ -248,8 +248,8 @@ export class Picklists extends BrowserforcePlugin {
             } else {
               await new DefaultPicklistAddPage(page).add(action.newValue);
             }
-          } else if (action.value !== undefined && action.newValue !== undefined) {
-            // replace
+          } else if (action.newValue !== undefined && (action.value !== undefined || action.replaceAllBlankValues)) {
+            // replace a value, and/or the blank values
             const values = await picklistPage.getPicklistValues();
             const newValue = values.find((picklist) => picklist.value === action.newValue);
             let newValueLabel;

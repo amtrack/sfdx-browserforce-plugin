@@ -98,6 +98,9 @@ describe(Picklists.name, function () {
   it('should replace and deactivate a picklist value', async () => {
     await plugin.run(configReplaceAndDeactivate);
   });
+  it('should replace all blank values without an old value', async () => {
+    await plugin.run(readJsonFile('./replace-all-blanks.json').settings.picklists);
+  });
   describe('rename', function () {
     const configRename = readJsonFile('./rename.json').settings.picklists;
     const configRenameBack = readJsonFile('./rename-back.json').settings.picklists;
