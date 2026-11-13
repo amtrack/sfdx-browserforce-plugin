@@ -15,6 +15,7 @@ describe(CertificateAndKeyManagement.name, function () {
       {
         name: 'foo',
         label: 'foo',
+        keysize: 4096,
       },
     ],
   };

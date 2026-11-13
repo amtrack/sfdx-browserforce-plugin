@@ -39,6 +39,8 @@ export const certificateAndKeyManagementSchema = z
 const CERT_PREFIX_PATH = '/0P1';
 const KEYSTORE_IMPORT_PATH: SalesforceUrlPath = `/_ui/security/certificate/KeyStoreImportUi/e?retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`;
 
+const KEYSIZE_SELECTOR = 'select#keysize';
+const EXPORTABLE_SELECTOR = 'input#exp';
 const FILE_UPLOAD_SELECTOR = 'input[type="file"]';
 const KEYSTORE_PASSWORD_SELECTOR = 'input#Password';
 const SAVE_BUTTON_SELECTOR = 'input[name="save"]';
@@ -59,7 +61,7 @@ type Certificate = {
   name: string;
   label: string;
   exportable?: boolean;
-  keySize?: number;
+  keysize?: number;
   _id?: string;
 };
 
@@ -95,7 +97,7 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
             name: existingCert.DeveloperName,
             label: existingCert.MasterLabel,
             exportable: existingCert.OptionsIsPrivateKeyExportable,
-            keySize: existingCert.KeySize,
+            keysize: existingCert.KeySize,
           });
         }
       }
@@ -156,18 +158,19 @@ export class CertificateAndKeyManagement extends BrowserforcePlugin {
             DeveloperName: certificate.name,
             MasterLabel: certificate.label,
           };
-          if (certificate.keySize) {
-            urlAttributes['keySize'] = certificate.keySize;
-          }
-          if (certificate.exportable !== undefined) {
-            urlAttributes['exp'] = certificate.exportable ? 1 : 0;
-          }
           await using page = await this.browserforce.openPage(
             `${CERT_PREFIX_PATH}/e?${queryString.stringify(urlAttributes)}`,
           );
+          // the page ignores the key size and the exportable option passed in the URL
+          if (certificate.keysize) {
+            await page.locator(KEYSIZE_SELECTOR).selectOption(String(certificate.keysize));
+          }
+          if (certificate.exportable !== undefined) {
+            await page.locator(EXPORTABLE_SELECTOR).setChecked(certificate.exportable);
+          }
           await page.locator(SAVE_BUTTON_SELECTOR).first().click();
           // -> id (15 character Salesforce ID starting with 0P1)
-          await page.waitForURL((url) => /\/0P1\w{12}/.test(url.pathname));
+          await Promise.race([page.waitForURL((url) => /\/0P1\w{12}/.test(url.pathname)), waitForPageErrors(page)]);
         }
       }
     }
