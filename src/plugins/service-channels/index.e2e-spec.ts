@@ -7,7 +7,7 @@ import { OmniChannelSettings } from '../omni-channel-settings/index.js';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
-describe.skip(ServiceChannels.name, function () {
+describe(ServiceChannels.name, function () {
   this.timeout('10m');
   let plugin: ServiceChannels;
   before(() => {
@@ -18,7 +18,7 @@ describe.skip(ServiceChannels.name, function () {
     {
       serviceChannelDeveloperName: 'CaseTest',
       capacity: {
-        capacityModel: 'StatusBased',
+        capacityModel: 'StatusBased' as const,
         statusField: 'Case.Type',
         valuesForInProgress: ['Electrical', 'Mechanical'],
         checkAgentCapacityOnReopenedWorkItems: true,
@@ -28,7 +28,7 @@ describe.skip(ServiceChannels.name, function () {
     {
       serviceChannelDeveloperName: 'LeadTest',
       capacity: {
-        capacityModel: 'StatusBased',
+        capacityModel: 'StatusBased' as const,
         statusField: 'Lead.Industry',
         valuesForInProgress: ['Agriculture', 'Chemicals'],
         checkAgentCapacityOnReopenedWorkItems: true,
@@ -61,7 +61,37 @@ describe.skip(ServiceChannels.name, function () {
   it('should configure status based capacity model for service channels', async () => {
     await plugin.run(configureServiceChannels);
     const res = await plugin.retrieve(configureServiceChannels);
-    assert.deepStrictEqual(res, configureServiceChannels);
+    const sortValues = (channels: typeof configureServiceChannels) =>
+      channels.map((channel) => ({
+        ...channel,
+        capacity: { ...channel.capacity, valuesForInProgress: [...channel.capacity.valuesForInProgress].sort() },
+      }));
+    assert.deepStrictEqual(sortValues(res as typeof configureServiceChannels), sortValues(configureServiceChannels));
+  });
+
+  it('should already be configured', async () => {
+    const res = await plugin.run(configureServiceChannels);
+    assert.deepStrictEqual(res, { message: 'no action necessary' });
+  });
+
+  it('should move a value back out of in-progress', async () => {
+    const lessInProgress = [
+      {
+        ...configureServiceChannels[0],
+        capacity: { ...configureServiceChannels[0].capacity, valuesForInProgress: ['Mechanical'] },
+      },
+    ];
+    await plugin.run(lessInProgress);
+    const res = await plugin.retrieve(lessInProgress);
+    assert.deepStrictEqual(res[0].capacity.valuesForInProgress, ['Mechanical']);
+  });
+
+  it('should switch a service channel back to the tab-based capacity model', async () => {
+    const tabBased = [{ serviceChannelDeveloperName: 'CaseTest', capacity: { capacityModel: 'TabBased' as const } }];
+    await plugin.run(tabBased);
+    const res = await plugin.retrieve(tabBased);
+    assert.deepStrictEqual(res[0].capacity, { capacityModel: 'TabBased' });
+    assert.deepStrictEqual(await plugin.run(tabBased), { message: 'no action necessary' });
   });
 
   it('should delete Service Channels', async () => {

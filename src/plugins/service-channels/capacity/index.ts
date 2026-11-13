@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { type Locator, type Page } from 'playwright';
 import { waitForPageErrors } from '../../../page-errors.js';
 import { BrowserforcePlugin } from '../../../plugin.js';
 
@@ -39,20 +40,35 @@ export const capacitySchema = z
   .meta({
     id: 'capacity',
     title: 'Capacity Settings',
-    if: { properties: { capacityModel: { const: 'Status-based' } } },
+    // for editors (schema.json): the status-based model needs its status field and values, the tab-based one has none;
+    // `required` keeps a config without capacityModel (changing the values of a status-based channel) valid
+    if: { required: ['capacityModel'], properties: { capacityModel: { const: 'StatusBased' } } },
     then: { required: ['statusField', 'valuesForInProgress'] },
-    else: { not: { required: ['statusField', 'valuesForInProgress'] } },
+    else: {
+      if: { required: ['capacityModel'], properties: { capacityModel: { const: 'TabBased' } } },
+      then: { not: { anyOf: [{ required: ['statusField'] }, { required: ['valuesForInProgress'] }] } },
+    },
   });
 
-const ADD_BUTTON_SELECTOR = 'a[id$=":duelingListBox:backingList_add"]';
 const CAPACITY_MODEL_SELECTOR = 'select[id$=":capacityModelSection:editCapacityModel"]';
 const OWNER_CHANGE_CAPACITY_SELECTOR = 'input[name*=":ownerChangeCapacityCheck"]';
-const REMOVE_BUTTON_SELECTOR = 'a[id$=":duelingListBox:backingList_remove"]';
 const SAVE_BUTTON_SELECTOR = 'input[id$=":save"]';
 const STATUS_FIELD_SELECTOR = 'select[id$=":statusFieldSection:editCapacityModel"]';
 const STATUS_CHANGE_CAPACITY_SELECTOR = 'input[name*=":statusChangeCapacityCheck"]';
-const VALUES_COMPLETED_SELECTOR = 'select[id$=":statusFieldValues:duelingListBox:backingList_a"]';
-const VALUES_IN_PROGRESS_SELECTOR = 'select[id$=":statusFieldValues:duelingListBox:backingList_s"]';
+
+// The values of the status field are spread over three lists (In-Progress, Paused, Completed) since Salesforce added
+// the Paused status. Values move one list at a time, through the links calling moveSelectedItems('<from>', '<to>').
+const IN_PROGRESS_LIST = 'inProgressList';
+const PAUSED_LIST = 'pausedList';
+const COMPLETED_LIST = 'completedList';
+const VALUE_LISTS_SELECTOR = `#${IN_PROGRESS_LIST}, #${PAUSED_LIST}, #${COMPLETED_LIST}`;
+const moveLinkSelector = (from: string, to: string): string => `a[onclick*="moveSelectedItems('${from}', '${to}')"]`;
+
+// Former layout with two lists (In-Progress and Completed), kept for the orgs that still show it
+const LEGACY_ADD_BUTTON_SELECTOR = 'a[id$=":duelingListBox:backingList_add"]';
+const LEGACY_REMOVE_BUTTON_SELECTOR = 'a[id$=":duelingListBox:backingList_remove"]';
+const LEGACY_VALUES_COMPLETED_SELECTOR = 'select[id$=":statusFieldValues:duelingListBox:backingList_a"]';
+const LEGACY_VALUES_IN_PROGRESS_SELECTOR = 'select[id$=":statusFieldValues:duelingListBox:backingList_s"]';
 
 type ServiceChannel = {
   serviceChannelDeveloperName: string;
@@ -60,12 +76,36 @@ type ServiceChannel = {
 };
 
 export type CapacityConfig = {
-  capacityModel?: string;
+  capacityModel?: 'TabBased' | 'StatusBased';
   statusField?: string;
   valuesForInProgress?: string[];
   checkAgentCapacityOnReopenedWorkItems?: boolean;
   checkAgentCapacityOnReassignedWorkItems?: boolean;
 };
+
+/** Labels of the enabled options of a list of values (the former layout put them in the title). */
+async function listLabels(list: Locator): Promise<string[]> {
+  const labels = await list
+    .locator('option:not(:disabled)')
+    .evaluateAll((options) => options.map((option) => option.getAttribute('title') ?? option.textContent ?? ''));
+  return labels.map((label) => label.trim());
+}
+
+/** Moves the given values from one list to the next one, with the link between them. */
+async function moveValues(page: Page, from: string, to: string, labels: string[]): Promise<void> {
+  if (labels.length === 0) {
+    return;
+  }
+  await page.locator(`#${from}`).selectOption(labels.map((label) => ({ label })));
+  await page.locator(moveLinkSelector(from, to)).click();
+  // the exact label: a substring would also match "Closed - Resolved" for "Closed" (strict mode violation)
+  const last = labels[labels.length - 1].replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  await page
+    .locator(`#${to} option`)
+    .filter({ hasText: new RegExp(`^\\s*${last}\\s*$`) })
+    .first()
+    .waitFor();
+}
 
 export class Capacity extends BrowserforcePlugin {
   public async retrieve(definition: ServiceChannel): Promise<CapacityConfig> {
@@ -84,14 +124,18 @@ export class Capacity extends BrowserforcePlugin {
       return {};
     }
 
-    const capacityModel = await page.locator(`${CAPACITY_MODEL_SELECTOR}`).inputValue();
+    // the values of the select are those of the schema: TabBased, StatusBased
+    const capacityModel = (await page
+      .locator(`${CAPACITY_MODEL_SELECTOR}`)
+      .inputValue()) as CapacityConfig['capacityModel'];
 
     if (capacityModel === 'StatusBased') {
       const statusField = await page.locator(`${STATUS_FIELD_SELECTOR}`).inputValue();
-      const inProgressOptionsLocator = page.locator(VALUES_IN_PROGRESS_SELECTOR).locator('option:not(:disabled)');
-      const valuesForInProgress = await Promise.all(
-        (await inProgressOptionsLocator.all()).map((option) => option.getAttribute('title')),
-      );
+      await page.locator(`${VALUE_LISTS_SELECTOR}, ${LEGACY_VALUES_IN_PROGRESS_SELECTOR}`).first().waitFor();
+      const inProgressList = (await page.locator(`#${IN_PROGRESS_LIST}`).count())
+        ? page.locator(`#${IN_PROGRESS_LIST}`)
+        : page.locator(LEGACY_VALUES_IN_PROGRESS_SELECTOR);
+      const valuesForInProgress = await listLabels(inProgressList);
       const checkAgentCapacityOnReopenedWorkItems = await page.locator(STATUS_CHANGE_CAPACITY_SELECTOR).isChecked();
       const checkAgentCapacityOnReassignedWorkItems = await page.locator(OWNER_CHANGE_CAPACITY_SELECTOR).isChecked();
 
@@ -111,7 +155,7 @@ export class Capacity extends BrowserforcePlugin {
     const response: CapacityConfig = {};
 
     if (state && definition) {
-      if (definition.capacityModel === 'Tab-based') {
+      if (definition.capacityModel === 'TabBased') {
         if (definition.capacityModel !== state.capacityModel) {
           response.capacityModel = definition.capacityModel;
           return response;
@@ -127,7 +171,9 @@ export class Capacity extends BrowserforcePlugin {
         response.statusField = definition.statusField;
       }
 
-      if (JSON.stringify(definition.valuesForInProgress) !== JSON.stringify(state.valuesForInProgress)) {
+      // the page lists the values in the order of the picklist, whatever the order of the config
+      const sorted = (values?: string[]): string => JSON.stringify(values ? [...values].sort() : values);
+      if (sorted(definition.valuesForInProgress) !== sorted(state.valuesForInProgress)) {
         response.valuesForInProgress = definition.valuesForInProgress;
       }
 
@@ -157,56 +203,85 @@ export class Capacity extends BrowserforcePlugin {
     const configCapacity = config.capacity;
 
     if (configCapacity?.capacityModel) {
-      await page.locator(CAPACITY_MODEL_SELECTOR).selectOption(configCapacity!.capacityModel);
+      await page.locator(CAPACITY_MODEL_SELECTOR).selectOption(configCapacity.capacityModel);
     }
 
     if (configCapacity?.statusField) {
-      await page.locator(STATUS_FIELD_SELECTOR).selectOption(configCapacity!.statusField);
+      // the status field appears once the page re-rendered the status-based capacity model
+      await page.locator(STATUS_FIELD_SELECTOR).selectOption(configCapacity.statusField);
     }
-
-    // TODO: find another condition
-    await page.waitForLoadState('networkidle');
 
     if (configCapacity?.valuesForInProgress) {
-      const completedOptionsLocator = page.locator(VALUES_COMPLETED_SELECTOR).locator('option:not(:disabled)');
-      const completedOptions = await Promise.all(
-        (await completedOptionsLocator.all()).map((option) => option.getAttribute('title')),
-      );
-
-      const inProgressOptionsLocator = page.locator(VALUES_IN_PROGRESS_SELECTOR).locator('option:not(:disabled)');
-      const inProgressOptions = await Promise.all(
-        (await inProgressOptionsLocator.all()).map((option) => option.getAttribute('title')),
-      );
-
-      for (const optionTitle of completedOptions) {
-        if (configCapacity.valuesForInProgress.includes(optionTitle)) {
-          await page.getByRole('option', { name: optionTitle, exact: true }).click();
-          await page.locator(ADD_BUTTON_SELECTOR).click();
-        }
-      }
-
-      for (const optionTitle of inProgressOptions) {
-        if (!configCapacity.valuesForInProgress.includes(optionTitle)) {
-          await page.getByRole('option', { name: optionTitle, exact: true }).click();
-          await page.locator(REMOVE_BUTTON_SELECTOR).click();
-        }
-      }
-    }
-
-    if (configCapacity?.checkAgentCapacityOnReassignedWorkItems !== undefined) {
+      // the lists of values appear once the page re-rendered them for the status field
       await page
-        .locator(STATUS_CHANGE_CAPACITY_SELECTOR)
-        .setChecked(configCapacity.checkAgentCapacityOnReassignedWorkItems);
+        .locator(
+          `#${COMPLETED_LIST} option, #${PAUSED_LIST} option, #${IN_PROGRESS_LIST} option, ${LEGACY_VALUES_COMPLETED_SELECTOR} option, ${LEGACY_VALUES_IN_PROGRESS_SELECTOR} option`,
+        )
+        .first()
+        .waitFor({ state: 'attached' });
+      if (await page.locator(`#${IN_PROGRESS_LIST}`).count()) {
+        await this.setValuesForInProgress(page, configCapacity.valuesForInProgress);
+      } else {
+        await this.setLegacyValuesForInProgress(page, configCapacity.valuesForInProgress);
+      }
     }
 
     if (configCapacity?.checkAgentCapacityOnReopenedWorkItems !== undefined) {
       await page
-        .locator(OWNER_CHANGE_CAPACITY_SELECTOR)
+        .locator(STATUS_CHANGE_CAPACITY_SELECTOR)
         .setChecked(configCapacity.checkAgentCapacityOnReopenedWorkItems);
+    }
+
+    if (configCapacity?.checkAgentCapacityOnReassignedWorkItems !== undefined) {
+      await page
+        .locator(OWNER_CHANGE_CAPACITY_SELECTOR)
+        .setChecked(configCapacity.checkAgentCapacityOnReassignedWorkItems);
     }
 
     // Save the settings and wait for page refresh
     await page.locator(SAVE_BUTTON_SELECTOR).first().click();
     await Promise.race([page.waitForURL((url) => !url.pathname.endsWith('/e')), waitForPageErrors(page)]);
+  }
+
+  /** In-Progress, Paused and Completed lists: values move through Paused to reach either end. */
+  private async setValuesForInProgress(page: Page, valuesForInProgress: string[]): Promise<void> {
+    const wanted = new Set(valuesForInProgress);
+    const completed = await listLabels(page.locator(`#${COMPLETED_LIST}`));
+    await moveValues(
+      page,
+      COMPLETED_LIST,
+      PAUSED_LIST,
+      completed.filter((label) => wanted.has(label)),
+    );
+    const paused = await listLabels(page.locator(`#${PAUSED_LIST}`));
+    await moveValues(
+      page,
+      PAUSED_LIST,
+      IN_PROGRESS_LIST,
+      paused.filter((label) => wanted.has(label)),
+    );
+    const removed = (await listLabels(page.locator(`#${IN_PROGRESS_LIST}`))).filter((label) => !wanted.has(label));
+    await moveValues(page, IN_PROGRESS_LIST, PAUSED_LIST, removed);
+    await moveValues(page, PAUSED_LIST, COMPLETED_LIST, removed);
+  }
+
+  /** Former In-Progress and Completed lists. */
+  private async setLegacyValuesForInProgress(page: Page, valuesForInProgress: string[]): Promise<void> {
+    const completedOptions = await listLabels(page.locator(LEGACY_VALUES_COMPLETED_SELECTOR));
+    const inProgressOptions = await listLabels(page.locator(LEGACY_VALUES_IN_PROGRESS_SELECTOR));
+
+    for (const optionTitle of completedOptions) {
+      if (valuesForInProgress.includes(optionTitle)) {
+        await page.getByRole('option', { name: optionTitle, exact: true }).click();
+        await page.locator(LEGACY_ADD_BUTTON_SELECTOR).click();
+      }
+    }
+
+    for (const optionTitle of inProgressOptions) {
+      if (!valuesForInProgress.includes(optionTitle)) {
+        await page.getByRole('option', { name: optionTitle, exact: true }).click();
+        await page.locator(LEGACY_REMOVE_BUTTON_SELECTOR).click();
+      }
+    }
   }
 }

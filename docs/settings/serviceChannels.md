@@ -120,9 +120,12 @@ In the field paths, `[]` stands for the items of a list and `*` for the entries 
             },
             "title": "Capacity Settings",
             "if": {
+              "required": [
+                "capacityModel"
+              ],
               "properties": {
                 "capacityModel": {
-                  "const": "Status-based"
+                  "const": "StatusBased"
                 }
               }
             },
@@ -133,11 +136,31 @@ In the field paths, `[]` stands for the items of a list and `*` for the entries 
               ]
             },
             "else": {
-              "not": {
+              "if": {
                 "required": [
-                  "statusField",
-                  "valuesForInProgress"
-                ]
+                  "capacityModel"
+                ],
+                "properties": {
+                  "capacityModel": {
+                    "const": "TabBased"
+                  }
+                }
+              },
+              "then": {
+                "not": {
+                  "anyOf": [
+                    {
+                      "required": [
+                        "statusField"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "valuesForInProgress"
+                      ]
+                    }
+                  ]
+                }
               }
             }
           }
