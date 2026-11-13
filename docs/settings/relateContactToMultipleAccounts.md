@@ -13,6 +13,41 @@ Setup: **Feature Settings → Sales → Account Settings** (`/lightning/setup/Ac
 
 Enabling it through the Metadata API (`AccountSettings.enableRelateContactToMultipleAccounts`) does not always make the `AccountContactRelation` object available. Enabling it in Setup always does.
 
+![Account Settings](../assets/settings/relateContactToMultipleAccounts/overview.webp)
+
+## Use case
+
+### Independent consultants work for several client accounts
+
+Tailspin Consulting staffs freelance consultants on client projects. A consultant is a contact of their own company, but also works for two or three client accounts at a time, and the account managers want to see them on each of those accounts.
+
+**Allow users to relate a contact to multiple accounts <span class="bf-pill bf-pill-c1">1</span>** creates the Account Contact Relationship object and the "Related Contacts" list for that. The `AccountSettings` metadata has a flag for it, but deploying it does not always make the object available, and the deployment of the fields and layouts that use it then fails. Enabling it in Setup with this config always works, before the metadata is deployed.
+
+=== "Config"
+
+    ```json
+    {
+      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+      "settings": {
+        "relateContactToMultipleAccounts": {
+          "enabled": true
+        }
+      }
+    }
+    ```
+
+=== "Before"
+
+    ![Before: Independent consultants work for several client accounts](../assets/settings/relateContactToMultipleAccounts/01-consultants-working-for-several-clients-account-settings-before.webp)
+
+=== "After"
+
+    ![After: Independent consultants work for several client accounts](../assets/settings/relateContactToMultipleAccounts/01-consultants-working-for-several-clients-account-settings-after.webp)
+
+| Pill | Field | Before | After |
+| ---- | ----- | ------ | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>enabled</code> | `false` | `true` |
+
 ## Example
 
 ```json
@@ -45,7 +80,7 @@ Enabling it through the Metadata API (`AccountSettings.enableRelateContactToMult
         }
       },
       "title": "RelateContactToMultipleAccounts Settings",
-      "description": "Setup: **Feature Settings → Sales → Account Settings** (`/lightning/setup/AccountSettings/home`)\n\nEnabling it through the Metadata API (`AccountSettings.enableRelateContactToMultipleAccounts`) does not always make the `AccountContactRelation` object available. Enabling it in Setup always does.",
+      "description": "Setup: **Feature Settings → Sales → Account Settings** (`/lightning/setup/AccountSettings/home`)\n\nEnabling it through the Metadata API (`AccountSettings.enableRelateContactToMultipleAccounts`) does not always make the `AccountContactRelation` object available. Enabling it in Setup always does.\n\n![Account Settings](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/relateContactToMultipleAccounts/overview.webp)",
       "examples": [
         {
           "enabled": true

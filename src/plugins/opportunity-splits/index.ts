@@ -23,7 +23,7 @@ export const opportunitySplitsSchema = z
       '',
       'Enables and sets up Opportunity Splits. Opportunity Teams must be enabled first, for example by deploying the `Opportunity` settings with `<enableOpportunityTeam>true</enableOpportunityTeam>`.',
       '',
-      '![Opportunity Splits Settings](docs/assets/settings/opportunity-splits.png)',
+      '![Opportunity Splits Settings](docs/assets/settings/opportunitySplits/overview.webp)',
     ].join('\n'),
     examples: [{ enabled: true }, { enabled: false }],
   });

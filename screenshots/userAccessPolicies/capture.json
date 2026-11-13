@@ -1,0 +1,135 @@
+{
+  "useCases": {
+    "01-new-admins-get-their-permissions": {
+      "hash": "8c938754bd911fb46521f08648af52f595e291388d4a29f1d1899bd915bcfab5",
+      "capturedAt": "2026-11-10",
+      "captures": [
+        {
+          "name": "policy",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "clip": {
+            "x": 82,
+            "y": 197,
+            "width": 960,
+            "height": 421
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "accessPolicies[0].apiName",
+              "in": "both"
+            },
+            {
+              "n": 2,
+              "field": "accessPolicies[0].active",
+              "in": "both"
+            },
+            {
+              "n": 3,
+              "field": "accessPolicies[0].on",
+              "in": "both"
+            },
+            {
+              "n": 4,
+              "field": "accessPolicies[0].applyToAll",
+              "in": "both"
+            }
+          ],
+          "before": {
+            "file": "01-new-admins-get-their-permissions-policy-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "accessPolicies[0].apiName",
+                "box": {
+                  "x": 279,
+                  "y": 259,
+                  "width": 283,
+                  "height": 44
+                }
+              },
+              {
+                "n": 2,
+                "field": "accessPolicies[0].active",
+                "box": {
+                  "x": 562,
+                  "y": 259,
+                  "width": 283,
+                  "height": 44
+                }
+              },
+              {
+                "n": 3,
+                "field": "accessPolicies[0].on",
+                "box": {
+                  "x": 562,
+                  "y": 319,
+                  "width": 283,
+                  "height": 39
+                }
+              },
+              {
+                "n": 4,
+                "field": "accessPolicies[0].applyToAll",
+                "box": {
+                  "x": 287,
+                  "y": 524,
+                  "width": 126,
+                  "height": 32
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "01-new-admins-get-their-permissions-policy-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "accessPolicies[0].apiName",
+                "box": {
+                  "x": 279,
+                  "y": 259,
+                  "width": 283,
+                  "height": 44
+                }
+              },
+              {
+                "n": 2,
+                "field": "accessPolicies[0].active",
+                "box": {
+                  "x": 562,
+                  "y": 259,
+                  "width": 283,
+                  "height": 44
+                }
+              },
+              {
+                "n": 3,
+                "field": "accessPolicies[0].on",
+                "box": {
+                  "x": 562,
+                  "y": 319,
+                  "width": 283,
+                  "height": 39
+                }
+              },
+              {
+                "n": 4,
+                "field": "accessPolicies[0].applyToAll",
+                "box": {
+                  "x": 287,
+                  "y": 524,
+                  "width": 126,
+                  "height": 32
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

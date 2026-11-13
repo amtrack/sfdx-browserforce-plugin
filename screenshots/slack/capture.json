@@ -1,0 +1,85 @@
+{
+  "useCases": {
+    "01-sales-team-works-deals-in-slack": {
+      "hash": "6d44a94239fc7562446efa323879d676dbfc7f4708ce30293fe0b3ec8b3ff37c",
+      "capturedAt": "2026-11-10",
+      "captures": [
+        {
+          "name": "slack-apps-setup",
+          "viewport": {
+            "width": 1440,
+            "height": 1400
+          },
+          "clip": {
+            "x": 480,
+            "y": 731,
+            "width": 960,
+            "height": 420
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "agreeToTermsAndConditions",
+              "in": "both"
+            },
+            {
+              "n": 2,
+              "field": "enableSalesCloudForSlack",
+              "in": "both"
+            }
+          ],
+          "before": {
+            "file": "01-sales-team-works-deals-in-slack-slack-apps-setup-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "agreeToTermsAndConditions",
+                "box": {
+                  "x": 1291,
+                  "y": 817,
+                  "width": 60,
+                  "height": 48
+                }
+              },
+              {
+                "n": 2,
+                "field": "enableSalesCloudForSlack",
+                "box": {
+                  "x": 1303,
+                  "y": 1026,
+                  "width": 48,
+                  "height": 39
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "01-sales-team-works-deals-in-slack-slack-apps-setup-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "agreeToTermsAndConditions",
+                "box": {
+                  "x": 1295,
+                  "y": 817,
+                  "width": 56,
+                  "height": 48
+                }
+              },
+              {
+                "n": 2,
+                "field": "enableSalesCloudForSlack",
+                "box": {
+                  "x": 1303,
+                  "y": 1026,
+                  "width": 48,
+                  "height": 39
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

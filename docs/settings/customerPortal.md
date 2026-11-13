@@ -19,9 +19,196 @@ Salesforce Classic Setup: **Customize → Customer Portal → Customer Portal Se
 
 Enables the Customer Portal, configures its portals (self-registration, profiles) and the custom objects available in it.
 
-![Customer Portal](../assets/settings/customer-portal.png)
+![Customer Portal](../assets/settings/customerPortal/overview.webp)
 
 ![Customer Portal Setup](../assets/settings/customer-portal-setup.png)
+
+## Use cases
+
+### 1. Enable the Customer Portal with its default portal
+
+Acme still serves its older customers through a Salesforce Classic Customer Portal, and every new sandbox or scratch org of its developers needs it. The Metadata API can turn on `OrgSettings.enableCustomerSuccessPortal`, but only Setup also creates the portal named **Customer Portal**, with the current user as its administrator and email sender, which the next use cases configure.
+
+This config ticks **Enable Customer Portal <span class="bf-pill bf-pill-c1">1</span>**. It cannot be turned off afterwards, so Browserforce only ever enables it.
+
+=== "Config"
+
+    ```json
+    {
+      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+      "settings": {
+        "customerPortal": {
+          "enabled": true
+        }
+      }
+    }
+    ```
+
+=== "Before"
+
+    ![Before: Enable the Customer Portal with its default portal](../assets/settings/customerPortal/01-enable-the-customer-portal-customer-portal-setup-before.webp)
+
+=== "After"
+
+    ![After: Enable the Customer Portal with its default portal](../assets/settings/customerPortal/01-enable-the-customer-portal-customer-portal-setup-after.webp)
+
+| Pill | Field | Before | After |
+| ---- | ----- | ------ | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>enabled</code> |  | `true` |
+
+### 2. Choose the profiles of the portal and its self-registration
+
+Acme's distributors log in to the Customer Portal with their own profile, `Dummy` in this org, and must be able to register themselves. Which profiles may use a portal is set on the **Customer Portal Profiles** page of the portal: the `Profile` and `Portal` types of the Metadata API have no field for it.
+
+This config makes the profile `Dummy` **<span class="bf-pill bf-pill-c1">1</span>** one of the assigned profiles of the portal named **Customer Portal**, and sets its self-registration defaults. Profiles that `portalProfileMemberships` does not list keep their setting.
+
+=== "Config"
+
+    ```json
+    {
+      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+      "settings": {
+        "customerPortal": {
+          "enabled": true,
+          "portals": [
+            {
+              "name": "Customer Portal",
+              "adminUser": "User User",
+              "description": "Customer Portal",
+              "isSelfRegistrationActivated": true,
+              "selfRegUserDefaultLicense": "Customer Portal Manager Custom",
+              "selfRegUserDefaultRole": "User",
+              "selfRegUserDefaultProfile": "Customer Portal Manager Custom",
+              "portalProfileMemberships": [
+                {
+                  "name": "Dummy",
+                  "active": true
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+    ```
+
+=== "Before"
+
+    ![Before: Profiles of the portal](../assets/settings/customerPortal/02-choose-the-portal-profiles-portal-profiles-before.webp)
+
+=== "After"
+
+    ![After: Profiles of the portal](../assets/settings/customerPortal/02-choose-the-portal-profiles-portal-profiles-after.webp)
+
+| Pill | Field | Before | After |
+| ---- | ----- | ------ | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>portals[0].<wbr>portalProfileMemberships</code> | `[{"name":"Dummy","active":false}]` | `[{"name":"Dummy","active":true}]` |
+|  | <code>enabled</code><br>the Customer Portal must be enabled first (use case 1) | `true` | `true` |
+|  | <code>portals[0].<wbr>name</code><br>the portal whose profiles change | `Customer Portal` | `Customer Portal` |
+|  | <code>portals[0].<wbr>adminUser</code><br>also deployable with the Portal type of the Metadata API (admin) |  | `User User` |
+|  | <code>portals[0].<wbr>description</code><br>also deployable with the Portal type of the Metadata API |  | `Customer Portal` |
+|  | <code>portals[0].<wbr>isSelfRegistrationActivated</code><br>also deployable with the Portal type of the Metadata API | `false` | `true` |
+|  | <code>portals[0].<wbr>selfRegUserDefaultLicense</code><br>the license of the users who register themselves |  | `Customer Portal Manager Custom` |
+|  | <code>portals[0].<wbr>selfRegUserDefaultRole</code><br>also deployable with the Portal type of the Metadata API |  | `User` |
+|  | <code>portals[0].<wbr>selfRegUserDefaultProfile</code><br>also deployable with the Portal type of the Metadata API |  | `Customer Portal Manager Custom` |
+
+### 3. Rename the portal
+
+The portal created by Setup is named Customer Portal, and Acme wants its customers to see **Acme Support** in the emails and pages of the portal. The `Portal` type of the Metadata API identifies a portal by its name, so a deployment cannot rename it: it would look for a portal of the new name.
+
+`oldName` **<span class="bf-pill bf-pill-c1">1</span>** finds the portal, and `name` **<span class="bf-pill bf-pill-c2">2</span>** is its new name. Once renamed, a second `apply` finds no portal named Customer Portal but one named Acme Support, and does nothing.
+
+=== "Config"
+
+    ```json
+    {
+      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+      "settings": {
+        "customerPortal": {
+          "enabled": true,
+          "portals": [
+            {
+              "name": "Acme Support",
+              "oldName": "Customer Portal"
+            }
+          ]
+        }
+      }
+    }
+    ```
+
+=== "Before"
+
+    ![Before: Rename the portal](../assets/settings/customerPortal/03-rename-the-portal-portals-before.webp)
+
+=== "After"
+
+    ![After: Rename the portal](../assets/settings/customerPortal/03-rename-the-portal-portals-after.webp)
+
+| Pill | Field | Before | After |
+| ---- | ----- | ------ | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>portals[0].<wbr>oldName</code> | `Acme Support` | `Customer Portal` |
+| <span class="bf-pill bf-pill-c2">2</span> | <code>portals[0].<wbr>name</code> | `Customer Portal` | `Acme Support` |
+|  | <code>enabled</code><br>the Customer Portal must be enabled first (use case 1) | `true` | `true` |
+
+### 4. Make custom objects available in the portal
+
+Acme's customers must see their Dummy records and their Salesforce CPQ quotes in the portal. A custom object only appears in a Customer Portal once **Available for Customer Portal** is ticked in the definition of the object, an option of its Setup page.
+
+This config ticks it for `Dummy__c` **<span class="bf-pill bf-pill-c1">1</span>** and for the `SBQQ__Quote__c` object of Salesforce CPQ **<span class="bf-pill bf-pill-c2">2</span>**: an object is named by its API name without suffix, with its `namespacePrefix` when it comes from a managed package. `available: false` removes an object from the portal.
+
+=== "Config"
+
+    ```json
+    {
+      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+      "settings": {
+        "customerPortal": {
+          "enabled": true,
+          "availableCustomObjects": [
+            {
+              "name": "Dummy",
+              "available": true
+            },
+            {
+              "name": "Quote",
+              "namespacePrefix": "SBQQ",
+              "available": true
+            }
+          ]
+        }
+      }
+    }
+    ```
+
+=== "Before"
+
+    *The custom object Dummy__c*
+
+    ![Before: The custom object Dummy__c](../assets/settings/customerPortal/04-make-a-custom-object-available-dummy-before.webp)
+
+    *The Quote object of Salesforce CPQ (SBQQ__Quote__c)*
+
+    ![Before: The Quote object of Salesforce CPQ (SBQQ__Quote__c)](../assets/settings/customerPortal/04-make-a-custom-object-available-cpq-quote-before.webp)
+
+=== "After"
+
+    *The custom object Dummy__c*
+
+    ![After: The custom object Dummy__c](../assets/settings/customerPortal/04-make-a-custom-object-available-dummy-after.webp)
+
+    *The Quote object of Salesforce CPQ (SBQQ__Quote__c)*
+
+    ![After: The Quote object of Salesforce CPQ (SBQQ__Quote__c)](../assets/settings/customerPortal/04-make-a-custom-object-available-cpq-quote-after.webp)
+
+| Pill | Field | Before | After |
+| ---- | ----- | ------ | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>availableCustomObjects[0].<wbr>available</code> | `false` | `true` |
+| <span class="bf-pill bf-pill-c2">2</span> | <code>availableCustomObjects[1].<wbr>available</code> | `false` | `true` |
+|  | <code>enabled</code><br>the Customer Portal must be enabled first (use case 1) | `true` | `true` |
+|  | <code>availableCustomObjects[0].<wbr>name</code><br>the API name of the object, without its __c suffix | `Dummy` | `Dummy` |
+|  | <code>availableCustomObjects[1].<wbr>name</code><br>the API name of the object, without its namespace and __c suffix | `Quote` | `Quote` |
+|  | <code>availableCustomObjects[1].<wbr>namespacePrefix</code><br>the namespace of the managed package of the object, SBQQ for Salesforce CPQ | `SBQQ` | `SBQQ` |
 
 ## Examples
 
@@ -184,7 +371,7 @@ In the field paths, `[]` stands for the items of a list and `*` for the entries 
         }
       },
       "title": "Customer Portal Settings",
-      "description": "Salesforce Classic Setup: **Customize → Customer Portal → Customer Portal Settings** (`/_ui/core/portal/CustomerSuccessPortalSetup/e`)\n\nEnables the Customer Portal, configures its portals (self-registration, profiles) and the custom objects available in it.\n\n![Customer Portal](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/customer-portal.png)\n\n![Customer Portal Setup](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/customer-portal-setup.png)",
+      "description": "Salesforce Classic Setup: **Customize → Customer Portal → Customer Portal Settings** (`/_ui/core/portal/CustomerSuccessPortalSetup/e`)\n\nEnables the Customer Portal, configures its portals (self-registration, profiles) and the custom objects available in it.\n\n![Customer Portal](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/customerPortal/overview.webp)\n\n![Customer Portal Setup](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/customer-portal-setup.png)",
       "examples": [
         {
           "enabled": true

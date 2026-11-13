@@ -1,0 +1,60 @@
+{
+  "useCases": {
+    "01-account-executives-research-buyers": {
+      "hash": "e39c302e1f745ad80b24ebd7438c7b3546cd498244f87b1ae4f9f1c4c344c6b9",
+      "capturedAt": "2026-11-10",
+      "captures": [
+        {
+          "name": "linkedin-sales-navigator",
+          "viewport": {
+            "width": 1440,
+            "height": 1000
+          },
+          "clip": {
+            "x": 480,
+            "y": 572,
+            "width": 960,
+            "height": 420
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "enabled",
+              "in": "both"
+            }
+          ],
+          "before": {
+            "file": "01-account-executives-research-buyers-linkedin-sales-navigator-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "enabled",
+                "box": {
+                  "x": 1355,
+                  "y": 770,
+                  "width": 48,
+                  "height": 24
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "01-account-executives-research-buyers-linkedin-sales-navigator-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "enabled",
+                "box": {
+                  "x": 1356,
+                  "y": 770,
+                  "width": 47,
+                  "height": 24
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

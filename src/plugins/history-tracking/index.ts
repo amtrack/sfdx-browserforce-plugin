@@ -48,6 +48,8 @@ export const historyTrackingSchema = z
       'Enables or disables history tracking on objects and on their fields (**Object Manager → Fields & Relationships → Set History Tracking**).',
       '',
       'It closes a gap of the Metadata API, which cannot enable field history tracking on custom Person Account fields.',
+      '',
+      '![Set History Tracking](docs/assets/settings/historyTracking/overview.webp)',
     ].join('\n'),
     examples: [
       [

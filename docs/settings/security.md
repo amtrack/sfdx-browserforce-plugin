@@ -11,11 +11,111 @@ Config key: `settings.security`
 
 **Certificate and Key Management**: Setup **Security → Certificate and Key Management** (`/lightning/setup/CertificatesAndKeysManagement/home`). Imports certificates from a Java Keystore (JKS) and creates self-signed certificates.
 
-![Import Certificate from Keystore](../assets/settings/security-certificate-and-key-management.png)
+![Import Certificate from Keystore](../assets/settings/security/overview.webp)
 
 **Authentication Configuration**: Setup **Company Settings → My Domain** (`/lightning/setup/OrgDomain/home`). Toggles the authentication services of the Authentication Configuration section.
 
 ![Authentication Configuration](../assets/settings/security-authentication-configuration.png)
+
+## Use cases
+
+### 1. Import a certificate and its private key from a keystore
+
+Acme signs the SAML assertions of its identity provider with a certificate issued by its own certificate authority, and the same certificate and private key must exist in every org that acts as identity provider. Salesforce does not let any API import a private key: the only way in is the **Import from Keystore** button of Certificate and Key Management, which uploads a Java keystore (JKS).
+
+This config uploads the keystore file at `filePath`, relative to the folder where `apply` runs, and the certificate appears as **Dummy <span class="bf-pill bf-pill-c1">1</span>**, the name Salesforce gives it from the keystore alias (in lowercase unless `name` changes its case). The same config can create self-signed certificates with `certificates`, although the Metadata API can do that too. The org must act as an identity provider first.
+
+=== "Config"
+
+    ```json
+    {
+      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+      "settings": {
+        "security": {
+          "certificateAndKeyManagement": {
+            "importFromKeystore": [
+              {
+                "name": "Dummy",
+                "filePath": "./src/plugins/security/certificate-and-key-management/Dummy.jks",
+                "password": ""
+              }
+            ],
+            "certificates": [
+              {
+                "name": "AcmeSelfSigned",
+                "label": "Acme Self Signed",
+                "keysize": 2048,
+                "exportable": true
+              }
+            ]
+          }
+        }
+      }
+    }
+    ```
+
+=== "Before"
+
+    ![Before: Import a certificate and its private key from a keystore](../assets/settings/security/01-import-a-certificate-from-a-keystore-certificates-before.webp)
+
+=== "After"
+
+    ![After: Import a certificate and its private key from a keystore](../assets/settings/security/01-import-a-certificate-from-a-keystore-certificates-after.webp)
+
+| Pill | Field | Before | After |
+| ---- | ----- | ------ | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>certificateAndKeyManagement.<wbr>importFromKeystore[0].<wbr>name</code> |  | `Dummy` |
+|  | <code>certificateAndKeyManagement.<wbr>importFromKeystore[0].<wbr>filePath</code><br>the keystore file uploaded from the computer that runs Browserforce |  | `./src/plugins/security/certificate-and-key-management/Dummy.jks` |
+|  | <code>certificateAndKeyManagement.<wbr>importFromKeystore[0].<wbr>password</code><br>the keystore password, empty for this test keystore; use an environment variable such as ${KEYSTORE_PASSWORD} |  | `` |
+|  | <code>certificateAndKeyManagement.<wbr>certificates[0].<wbr>name</code><br>a self-signed certificate, which the Certificate type of the Metadata API can also create |  | `AcmeSelfSigned` |
+|  | <code>certificateAndKeyManagement.<wbr>certificates[0].<wbr>label</code><br>a self-signed certificate, which the Certificate type of the Metadata API can also create |  | `Acme Self Signed` |
+|  | <code>certificateAndKeyManagement.<wbr>certificates[0].<wbr>keysize</code><br>a self-signed certificate, which the Certificate type of the Metadata API can also create |  | `2048` |
+|  | <code>certificateAndKeyManagement.<wbr>certificates[0].<wbr>exportable</code><br>a self-signed certificate, which the Certificate type of the Metadata API can also create |  | `true` |
+
+### 2. Offer single sign-on on the login page of My Domain
+
+Acme's employees log in to Salesforce through the company's identity provider, set up as an Auth. Provider, while a few administrators keep a password as a fallback. The buttons of the My Domain login page come from its **Authentication Configuration** section, which no Metadata API setting holds: after each deployment of the Auth. Provider, an admin had to tick it there.
+
+This config ticks **<span class="bf-pill bf-pill-c2">2</span>** the Auth. Provider **TestAuthMethod <span class="bf-pill bf-pill-c1">1</span>**, named by its API name with `authProviderApiName`, and keeps the **Login Form <span class="bf-pill bf-pill-c3">3</span>** ticked **<span class="bf-pill bf-pill-c4">4</span>**, named by the label Setup shows with `label`. Services the config does not list stay as they are.
+
+=== "Config"
+
+    ```json
+    {
+      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+      "settings": {
+        "security": {
+          "authenticationConfiguration": {
+            "services": [
+              {
+                "authProviderApiName": "TestAuthMethod",
+                "enabled": true
+              },
+              {
+                "label": "Login Form",
+                "enabled": true
+              }
+            ]
+          }
+        }
+      }
+    }
+    ```
+
+=== "Before"
+
+    ![Before: Offer single sign-on on the login page of My Domain](../assets/settings/security/02-offer-single-sign-on-on-the-login-page-authentication-configuration-before.webp)
+
+=== "After"
+
+    ![After: Offer single sign-on on the login page of My Domain](../assets/settings/security/02-offer-single-sign-on-on-the-login-page-authentication-configuration-after.webp)
+
+| Pill | Field | Before | After |
+| ---- | ----- | ------ | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>authenticationConfiguration.<wbr>services[0].<wbr>authProviderApiName</code> | `TestAuthMethod` | `TestAuthMethod` |
+| <span class="bf-pill bf-pill-c2">2</span> | <code>authenticationConfiguration.<wbr>services[0].<wbr>enabled</code> | `false` | `true` |
+| <span class="bf-pill bf-pill-c3">3</span> | <code>authenticationConfiguration.<wbr>services[1].<wbr>label</code> |  | `Login Form` |
+| <span class="bf-pill bf-pill-c4">4</span> | <code>authenticationConfiguration.<wbr>services[1].<wbr>enabled</code> |  | `true` |
 
 ## Examples
 
@@ -199,7 +299,7 @@ In the field paths, `[]` stands for the items of a list and `*` for the entries 
         }
       },
       "title": "Security Controls",
-      "description": "**Certificate and Key Management**: Setup **Security → Certificate and Key Management** (`/lightning/setup/CertificatesAndKeysManagement/home`). Imports certificates from a Java Keystore (JKS) and creates self-signed certificates.\n\n![Import Certificate from Keystore](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/security-certificate-and-key-management.png)\n\n**Authentication Configuration**: Setup **Company Settings → My Domain** (`/lightning/setup/OrgDomain/home`). Toggles the authentication services of the Authentication Configuration section.\n\n![Authentication Configuration](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/security-authentication-configuration.png)",
+      "description": "**Certificate and Key Management**: Setup **Security → Certificate and Key Management** (`/lightning/setup/CertificatesAndKeysManagement/home`). Imports certificates from a Java Keystore (JKS) and creates self-signed certificates.\n\n![Import Certificate from Keystore](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/security/overview.webp)\n\n**Authentication Configuration**: Setup **Company Settings → My Domain** (`/lightning/setup/OrgDomain/home`). Toggles the authentication services of the Authentication Configuration section.\n\n![Authentication Configuration](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/security-authentication-configuration.png)",
       "examples": [
         {
           "certificateAndKeyManagement": {

@@ -1,0 +1,90 @@
+{
+  "useCases": {
+    "01-delete-retired-record-types": {
+      "hash": "7279b58796a574f6cab9314b01cf831d0ac0166b9631567b3e743ca1133fad53",
+      "capturedAt": "2026-11-10",
+      "captures": [
+        {
+          "name": "vehicle-record-types",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "clip": {
+            "x": 436,
+            "y": 237,
+            "width": 1004,
+            "height": 420
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "deletions[0].fullName",
+              "in": "before"
+            },
+            {
+              "n": 2,
+              "field": "deletions[0].replacement",
+              "in": "both"
+            },
+            {
+              "n": 3,
+              "field": "deletions[1].fullName",
+              "in": "before"
+            }
+          ],
+          "before": {
+            "file": "01-delete-retired-record-types-vehicle-record-types-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "deletions[0].fullName",
+                "box": {
+                  "x": 503,
+                  "y": 496,
+                  "width": 924,
+                  "height": 49
+                }
+              },
+              {
+                "n": 2,
+                "field": "deletions[0].replacement",
+                "box": {
+                  "x": 503,
+                  "y": 349,
+                  "width": 924,
+                  "height": 49
+                }
+              },
+              {
+                "n": 3,
+                "field": "deletions[1].fullName",
+                "box": {
+                  "x": 503,
+                  "y": 447,
+                  "width": 924,
+                  "height": 49
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "01-delete-retired-record-types-vehicle-record-types-after.png",
+            "pills": [
+              {
+                "n": 2,
+                "field": "deletions[0].replacement",
+                "box": {
+                  "x": 503,
+                  "y": 349,
+                  "width": 924,
+                  "height": 49
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

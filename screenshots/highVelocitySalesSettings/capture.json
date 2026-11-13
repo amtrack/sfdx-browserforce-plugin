@@ -1,0 +1,60 @@
+{
+  "useCases": {
+    "01-sales-development-team-cadences": {
+      "hash": "8babdfc381e3c6e39207774ef6d5aeb4d4bed1be410c3e20090a4b39a9860f4c",
+      "capturedAt": "2026-11-10",
+      "captures": [
+        {
+          "name": "sales-engagement",
+          "viewport": {
+            "width": 1440,
+            "height": 1300
+          },
+          "clip": {
+            "x": 336,
+            "y": 685,
+            "width": 1034,
+            "height": 421
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "setUpAndEnable",
+              "in": "both"
+            }
+          ],
+          "before": {
+            "file": "01-sales-development-team-cadences-sales-engagement-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "setUpAndEnable",
+                "box": {
+                  "x": 376,
+                  "y": 990,
+                  "width": 246,
+                  "height": 30
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "01-sales-development-team-cadences-sales-engagement-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "setUpAndEnable",
+                "box": {
+                  "x": 1283,
+                  "y": 771,
+                  "width": 47,
+                  "height": 24
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

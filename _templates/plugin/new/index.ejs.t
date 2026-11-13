@@ -22,8 +22,8 @@ export const <%= camelCase %>Schema = z
     id: '<%= camelCase %>',
     title: '<%= pascalCase %> Settings',
     // Markdown shown on the documentation page of the setting (npm run generate:docs), in IDEs and in plugins list.
-    // Add a screenshot of the Setup page in docs/assets/settings/ and a line like
-    // '![<%= pascalCase %>](docs/assets/settings/<%= h.changeCase.paramCase(name) %>.png)'
+    // Once /document-setting <%= camelCase %> captured its use cases, add the line
+    // '![<%= pascalCase %>](docs/assets/settings/<%= camelCase %>/overview.webp)'
     description: [
       'Setup: **Security → Login Access Policies** (`/partnerbt/loginAccessPolicies.apexp`)',
       '',
@@ -32,9 +32,9 @@ export const <%= camelCase %>Schema = z
     examples: [{ enabled: true }],
   });
 
-const BASE_PATH = '/partnerbt/loginAccessPolicies.apexp';
+export const BASE_PATH = '/partnerbt/loginAccessPolicies.apexp';
 
-const ENABLED_SELECTOR = 'input[id$="adminsCanLogInAsAny"]';
+export const ENABLED_SELECTOR = 'input[id$="adminsCanLogInAsAny"]';
 
 export type <%= pascalCase %>Config = z.infer<typeof <%= camelCase %>Schema>;
 

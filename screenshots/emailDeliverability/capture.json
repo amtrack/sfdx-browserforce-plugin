@@ -1,0 +1,60 @@
+{
+  "useCases": {
+    "01-qa-team-tests-email-alerts": {
+      "hash": "3809bc3207acc9f92b8375f8075442ccbe3d920630303932f04bb6d75c7900ba",
+      "capturedAt": "2026-11-10",
+      "captures": [
+        {
+          "name": "deliverability",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "clip": {
+            "x": 0,
+            "y": 103,
+            "width": 960,
+            "height": 421
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "accessLevel",
+              "in": "both"
+            }
+          ],
+          "before": {
+            "file": "01-qa-team-tests-email-alerts-deliverability-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "accessLevel",
+                "box": {
+                  "x": 336,
+                  "y": 304,
+                  "width": 131,
+                  "height": 19
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "01-qa-team-tests-email-alerts-deliverability-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "accessLevel",
+                "box": {
+                  "x": 336,
+                  "y": 304,
+                  "width": 131,
+                  "height": 19
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

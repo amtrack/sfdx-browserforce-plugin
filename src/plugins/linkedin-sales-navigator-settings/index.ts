@@ -14,7 +14,7 @@ export const linkedInSalesNavigatorSettingsSchema = z
       '',
       'Enables or disables the Sales Navigator integration.',
       '',
-      '![LinkedIn Sales Navigator](docs/assets/settings/linkedin-sales-navigator-settings.png)',
+      '![LinkedIn Sales Navigator](docs/assets/settings/linkedInSalesNavigatorSettings/overview.webp)',
     ].join('\n'),
     examples: [{ enabled: true }, { enabled: false }],
   });

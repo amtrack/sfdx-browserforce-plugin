@@ -1,0 +1,19 @@
+{
+  "01-rename-an-api-name-lead-source-after.webp": "0efa1e9f4fe645c348acf410e4eca6db4f84c09232499ef1b535d55f1f1eb84e",
+  "01-rename-an-api-name-lead-source-before.webp": "1aeaab5e108c64cc51fb3543c0263029656e900ee0be62c56c85cdefe0c31c90",
+  "02-rename-the-api-name-and-the-label-features-after.webp": "2b71d1aa278a4f5fa78f76739cfacebe2c1a074bace85b5bb476b57881e84eeb",
+  "02-rename-the-api-name-and-the-label-features-before.webp": "d71359e5a62a44acc0837b7477641ffc7ccf45f76258439f6801c0e9054e644c",
+  "03-add-a-status-with-its-category-contract-status-after.webp": "7a32da91323510b31caf13ef6d5eab5c3af7b31858f0ad1d229369de3de78cca",
+  "03-add-a-status-with-its-category-contract-status-before.webp": "b38f136d8a095da0abf6a4f7108433a02ca52ce1d525876bd58fb4e7cb5fac02",
+  "04-replace-a-value-in-the-records-lead-after.webp": "b9b69d8003dbf817b4694f42d3c144a90ce7830421a3009c2dc6b756c53114e6",
+  "04-replace-a-value-in-the-records-lead-before.webp": "f4f155d5d1bd02e0b1dae8c658f569d7e5d65b78412f284052f19c3b64d28f37",
+  "05-fill-blank-values-lead-after.webp": "daaefed417ddaec8eca0304071e1de32fec0eb095b10870508fada5c787a05fd",
+  "05-fill-blank-values-lead-before.webp": "c2e150dc719c3919204ad701fc627856df58ee6a35786dea3d92078b226ac381",
+  "06-replace-then-deactivate-features-after.webp": "3933eeba600c1697094e33d4b8bac00bd1b2da11b92ff19d7bb47deb7e9db4c0",
+  "06-replace-then-deactivate-features-before.webp": "cc061df48a38bed6da13ec81b54e7c23376f9a8095be4996a1e880dc1222ce31",
+  "07-replace-then-delete-features-after.webp": "b1695f9fe99f1765af10f9bf6f88decf7c0950fc63e0341a4184ee3d95a1b93c",
+  "07-replace-then-delete-features-before.webp": "b79562eace59883e1906352ebd586f9ac4aef27075c1fa6b950cd41c2c1e1492",
+  "08-remove-a-field-dependency-field-dependencies-after.webp": "cf27f9b1fb0a2bc5d1b51cbef00656b1801c791dbb979ceda27bf5cad1691cfb",
+  "08-remove-a-field-dependency-field-dependencies-before.webp": "8bcb05e329fb39a2d16b80b567a455533c11178788d25190b222ff5a81d08f74",
+  "overview.webp": "b13a27a2c240e291cc1147a4187a50667f5f13b1475bc7d4d0c9ae6e101bcfd0"
+}

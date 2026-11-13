@@ -1,0 +1,2685 @@
+{
+  "useCases": {
+    "01-quote-documents-and-validity": {
+      "hash": "66f152cff899b846555ccba39839003c7ce8b7035aeac212fbdaa60c5763a993",
+      "capturedAt": "2026-11-10",
+      "captures": [
+        {
+          "name": "documents",
+          "viewport": {
+            "width": 1440,
+            "height": 1400
+          },
+          "clip": {
+            "x": 245,
+            "y": 135,
+            "width": 1170,
+            "height": 421
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "documents.documentFolder",
+              "in": "both"
+            },
+            {
+              "n": 2,
+              "field": "documents.hideDocumentName",
+              "in": "both"
+            },
+            {
+              "n": 3,
+              "field": "documents.fullPagePreview",
+              "in": "both"
+            },
+            {
+              "n": 4,
+              "field": "documents.excludeHiddenLinesInGroupTotals",
+              "in": "both"
+            },
+            {
+              "n": 5,
+              "field": "documents.attachmentTarget",
+              "in": "both"
+            },
+            {
+              "n": 6,
+              "field": "documents.postToFeed",
+              "in": "both"
+            },
+            {
+              "n": 7,
+              "field": "documents.enableMultiLanguageTranslations",
+              "in": "both"
+            }
+          ],
+          "before": {
+            "file": "01-quote-documents-and-validity-documents-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "documents.documentFolder",
+                "box": {
+                  "x": 480,
+                  "y": 275,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 2,
+                "field": "documents.hideDocumentName",
+                "box": {
+                  "x": 480,
+                  "y": 316,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 3,
+                "field": "documents.fullPagePreview",
+                "box": {
+                  "x": 480,
+                  "y": 359,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 4,
+                "field": "documents.excludeHiddenLinesInGroupTotals",
+                "box": {
+                  "x": 480,
+                  "y": 407,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 5,
+                "field": "documents.attachmentTarget",
+                "box": {
+                  "x": 1043,
+                  "y": 275,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 6,
+                "field": "documents.postToFeed",
+                "box": {
+                  "x": 1043,
+                  "y": 316,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 7,
+                "field": "documents.enableMultiLanguageTranslations",
+                "box": {
+                  "x": 1043,
+                  "y": 359,
+                  "width": 22,
+                  "height": 22
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "01-quote-documents-and-validity-documents-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "documents.documentFolder",
+                "box": {
+                  "x": 480,
+                  "y": 275,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 2,
+                "field": "documents.hideDocumentName",
+                "box": {
+                  "x": 480,
+                  "y": 316,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 3,
+                "field": "documents.fullPagePreview",
+                "box": {
+                  "x": 480,
+                  "y": 359,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 4,
+                "field": "documents.excludeHiddenLinesInGroupTotals",
+                "box": {
+                  "x": 480,
+                  "y": 407,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 5,
+                "field": "documents.attachmentTarget",
+                "box": {
+                  "x": 1043,
+                  "y": 275,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 6,
+                "field": "documents.postToFeed",
+                "box": {
+                  "x": 1043,
+                  "y": 316,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 7,
+                "field": "documents.enableMultiLanguageTranslations",
+                "box": {
+                  "x": 1043,
+                  "y": 359,
+                  "width": 22,
+                  "height": 22
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "quote",
+          "viewport": {
+            "width": 1440,
+            "height": 1400
+          },
+          "clip": {
+            "x": 245,
+            "y": 114,
+            "width": 1170,
+            "height": 420
+          },
+          "pills": [
+            {
+              "n": 8,
+              "field": "quote.disableInitialQuoteSync",
+              "in": "both"
+            },
+            {
+              "n": 9,
+              "field": "quote.disableQuoteContactDefaulting",
+              "in": "both"
+            },
+            {
+              "n": 10,
+              "field": "quote.allowOptionDeletion",
+              "in": "both"
+            },
+            {
+              "n": 11,
+              "field": "quote.disableQuoteAddressDefaulting",
+              "in": "both"
+            },
+            {
+              "n": 12,
+              "field": "quote.primaryQuoteKeepsOpportunityProducts",
+              "in": "both"
+            },
+            {
+              "n": 13,
+              "field": "quote.defaultQuoteValidityDays",
+              "in": "both"
+            }
+          ],
+          "before": {
+            "file": "01-quote-documents-and-validity-quote-before.png",
+            "pills": [
+              {
+                "n": 8,
+                "field": "quote.disableInitialQuoteSync",
+                "box": {
+                  "x": 480,
+                  "y": 275,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 9,
+                "field": "quote.disableQuoteContactDefaulting",
+                "box": {
+                  "x": 480,
+                  "y": 318,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 10,
+                "field": "quote.allowOptionDeletion",
+                "box": {
+                  "x": 480,
+                  "y": 363,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 11,
+                "field": "quote.disableQuoteAddressDefaulting",
+                "box": {
+                  "x": 1099,
+                  "y": 275,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 12,
+                "field": "quote.primaryQuoteKeepsOpportunityProducts",
+                "box": {
+                  "x": 1099,
+                  "y": 318,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 13,
+                "field": "quote.defaultQuoteValidityDays",
+                "box": {
+                  "x": 1099,
+                  "y": 361,
+                  "width": 220,
+                  "height": 25
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "01-quote-documents-and-validity-quote-after.png",
+            "pills": [
+              {
+                "n": 8,
+                "field": "quote.disableInitialQuoteSync",
+                "box": {
+                  "x": 480,
+                  "y": 275,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 9,
+                "field": "quote.disableQuoteContactDefaulting",
+                "box": {
+                  "x": 480,
+                  "y": 318,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 10,
+                "field": "quote.allowOptionDeletion",
+                "box": {
+                  "x": 480,
+                  "y": 363,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 11,
+                "field": "quote.disableQuoteAddressDefaulting",
+                "box": {
+                  "x": 1099,
+                  "y": 275,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 12,
+                "field": "quote.primaryQuoteKeepsOpportunityProducts",
+                "box": {
+                  "x": 1099,
+                  "y": 318,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 13,
+                "field": "quote.defaultQuoteValidityDays",
+                "box": {
+                  "x": 1099,
+                  "y": 361,
+                  "width": 220,
+                  "height": 25
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "02-quote-line-editor-for-large-quotes": {
+      "hash": "52053fcb40319ec77cc68c11870239e77a19435245336428bed6b9681b137725",
+      "capturedAt": "2026-11-10",
+      "captures": [
+        {
+          "name": "line-editor",
+          "viewport": {
+            "width": 1440,
+            "height": 1400
+          },
+          "clip": {
+            "x": 245,
+            "y": 222,
+            "width": 1170,
+            "height": 478
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "lineEditor.hideRenewedAssetsWhenEditing",
+              "in": "both"
+            },
+            {
+              "n": 2,
+              "field": "lineEditor.visualizeProductHierarchy",
+              "in": "both"
+            },
+            {
+              "n": 3,
+              "field": "lineEditor.preserveBundleStructure",
+              "in": "both"
+            },
+            {
+              "n": 4,
+              "field": "lineEditor.keepBundleTogether",
+              "in": "both"
+            },
+            {
+              "n": 5,
+              "field": "lineEditor.totalsField",
+              "in": "both"
+            },
+            {
+              "n": 6,
+              "field": "lineEditor.lineSubtotalsTotalField",
+              "in": "both"
+            },
+            {
+              "n": 7,
+              "field": "lineEditor.largeQuoteThreshold",
+              "in": "both"
+            },
+            {
+              "n": 8,
+              "field": "lineEditor.quoteBatchSize",
+              "in": "both"
+            },
+            {
+              "n": 9,
+              "field": "lineEditor.actionsColumnPlacement",
+              "in": "both"
+            },
+            {
+              "n": 10,
+              "field": "lineEditor.enableMultiLineDelete",
+              "in": "both"
+            },
+            {
+              "n": 11,
+              "field": "lineEditor.productConfigurationInitializer",
+              "in": "both"
+            },
+            {
+              "n": 12,
+              "field": "lineEditor.enableAssetUpgrades",
+              "in": "both"
+            },
+            {
+              "n": 13,
+              "field": "lineEditor.groupSubtotalsField",
+              "in": "both"
+            },
+            {
+              "n": 14,
+              "field": "lineEditor.wrapButtons",
+              "in": "both"
+            },
+            {
+              "n": 15,
+              "field": "lineEditor.validateLargeQuotes",
+              "in": "both"
+            },
+            {
+              "n": 16,
+              "field": "lineEditor.enableCompactMode",
+              "in": "both"
+            },
+            {
+              "n": 17,
+              "field": "lineEditor.enableLargeQuoteExperience",
+              "in": "both"
+            },
+            {
+              "n": 18,
+              "field": "lineEditor.enableColumnResizing",
+              "in": "both"
+            },
+            {
+              "n": 19,
+              "field": "lineEditor.enableExpandCollapseBundles",
+              "in": "both"
+            },
+            {
+              "n": 20,
+              "field": "lineEditor.defaultBundleSetting",
+              "in": "both"
+            }
+          ],
+          "before": {
+            "file": "02-quote-line-editor-for-large-quotes-line-editor-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "lineEditor.hideRenewedAssetsWhenEditing",
+                "box": {
+                  "x": 536,
+                  "y": 277,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 2,
+                "field": "lineEditor.visualizeProductHierarchy",
+                "box": {
+                  "x": 536,
+                  "y": 316,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 3,
+                "field": "lineEditor.preserveBundleStructure",
+                "box": {
+                  "x": 536,
+                  "y": 356,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 4,
+                "field": "lineEditor.keepBundleTogether",
+                "box": {
+                  "x": 536,
+                  "y": 395,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 5,
+                "field": "lineEditor.totalsField",
+                "box": {
+                  "x": 536,
+                  "y": 433,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 6,
+                "field": "lineEditor.lineSubtotalsTotalField",
+                "box": {
+                  "x": 536,
+                  "y": 474,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 7,
+                "field": "lineEditor.largeQuoteThreshold",
+                "box": {
+                  "x": 536,
+                  "y": 515,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 8,
+                "field": "lineEditor.quoteBatchSize",
+                "box": {
+                  "x": 536,
+                  "y": 556,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 9,
+                "field": "lineEditor.actionsColumnPlacement",
+                "box": {
+                  "x": 1155,
+                  "y": 275,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 10,
+                "field": "lineEditor.enableMultiLineDelete",
+                "box": {
+                  "x": 1155,
+                  "y": 316,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 11,
+                "field": "lineEditor.productConfigurationInitializer",
+                "box": {
+                  "x": 1155,
+                  "y": 354,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 12,
+                "field": "lineEditor.enableAssetUpgrades",
+                "box": {
+                  "x": 1155,
+                  "y": 395,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 13,
+                "field": "lineEditor.groupSubtotalsField",
+                "box": {
+                  "x": 1155,
+                  "y": 433,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 14,
+                "field": "lineEditor.wrapButtons",
+                "box": {
+                  "x": 1155,
+                  "y": 476,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 15,
+                "field": "lineEditor.validateLargeQuotes",
+                "box": {
+                  "x": 1155,
+                  "y": 517,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 16,
+                "field": "lineEditor.enableCompactMode",
+                "box": {
+                  "x": 1155,
+                  "y": 558,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 17,
+                "field": "lineEditor.enableLargeQuoteExperience",
+                "box": {
+                  "x": 1155,
+                  "y": 597,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 18,
+                "field": "lineEditor.enableColumnResizing",
+                "box": {
+                  "x": 1155,
+                  "y": 637,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 19,
+                "field": "lineEditor.enableExpandCollapseBundles",
+                "box": {
+                  "x": 536,
+                  "y": 597,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 20,
+                "field": "lineEditor.defaultBundleSetting",
+                "box": {
+                  "x": 536,
+                  "y": 635,
+                  "width": 220,
+                  "height": 25
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "02-quote-line-editor-for-large-quotes-line-editor-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "lineEditor.hideRenewedAssetsWhenEditing",
+                "box": {
+                  "x": 536,
+                  "y": 277,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 2,
+                "field": "lineEditor.visualizeProductHierarchy",
+                "box": {
+                  "x": 536,
+                  "y": 316,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 3,
+                "field": "lineEditor.preserveBundleStructure",
+                "box": {
+                  "x": 536,
+                  "y": 356,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 4,
+                "field": "lineEditor.keepBundleTogether",
+                "box": {
+                  "x": 536,
+                  "y": 395,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 5,
+                "field": "lineEditor.totalsField",
+                "box": {
+                  "x": 536,
+                  "y": 433,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 6,
+                "field": "lineEditor.lineSubtotalsTotalField",
+                "box": {
+                  "x": 536,
+                  "y": 474,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 7,
+                "field": "lineEditor.largeQuoteThreshold",
+                "box": {
+                  "x": 536,
+                  "y": 515,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 8,
+                "field": "lineEditor.quoteBatchSize",
+                "box": {
+                  "x": 536,
+                  "y": 556,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 9,
+                "field": "lineEditor.actionsColumnPlacement",
+                "box": {
+                  "x": 1155,
+                  "y": 275,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 10,
+                "field": "lineEditor.enableMultiLineDelete",
+                "box": {
+                  "x": 1155,
+                  "y": 316,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 11,
+                "field": "lineEditor.productConfigurationInitializer",
+                "box": {
+                  "x": 1155,
+                  "y": 354,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 12,
+                "field": "lineEditor.enableAssetUpgrades",
+                "box": {
+                  "x": 1155,
+                  "y": 395,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 13,
+                "field": "lineEditor.groupSubtotalsField",
+                "box": {
+                  "x": 1155,
+                  "y": 433,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 14,
+                "field": "lineEditor.wrapButtons",
+                "box": {
+                  "x": 1155,
+                  "y": 476,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 15,
+                "field": "lineEditor.validateLargeQuotes",
+                "box": {
+                  "x": 1155,
+                  "y": 517,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 16,
+                "field": "lineEditor.enableCompactMode",
+                "box": {
+                  "x": 1155,
+                  "y": 558,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 17,
+                "field": "lineEditor.enableLargeQuoteExperience",
+                "box": {
+                  "x": 1155,
+                  "y": 597,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 18,
+                "field": "lineEditor.enableColumnResizing",
+                "box": {
+                  "x": 1155,
+                  "y": 637,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 19,
+                "field": "lineEditor.enableExpandCollapseBundles",
+                "box": {
+                  "x": 536,
+                  "y": 597,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 20,
+                "field": "lineEditor.defaultBundleSetting",
+                "box": {
+                  "x": 536,
+                  "y": 635,
+                  "width": 220,
+                  "height": 25
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "03-pricing-and-calculation": {
+      "hash": "47116408f52a4738e591fb1b6d86ff66f9cab0a4f565b110964c2e0d5ca5d83f",
+      "capturedAt": "2026-11-10",
+      "captures": [
+        {
+          "name": "pricing-and-calculation",
+          "viewport": {
+            "width": 1440,
+            "height": 1400
+          },
+          "clip": {
+            "x": 245,
+            "y": 207,
+            "width": 1170,
+            "height": 421
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "pricingAndCalculation.currencySymbol",
+              "in": "both"
+            },
+            {
+              "n": 2,
+              "field": "pricingAndCalculation.unitPriceScale",
+              "in": "both"
+            },
+            {
+              "n": 3,
+              "field": "pricingAndCalculation.enableQuickCalculate",
+              "in": "both"
+            },
+            {
+              "n": 4,
+              "field": "pricingAndCalculation.allowNonConsecutiveCustomSegments",
+              "in": "both"
+            },
+            {
+              "n": 5,
+              "field": "pricingAndCalculation.enablePricingGuidance",
+              "in": "both"
+            },
+            {
+              "n": 6,
+              "field": "pricingAndCalculation.useLegacyCalculator",
+              "in": "both"
+            },
+            {
+              "n": 7,
+              "field": "pricingAndCalculation.useInactivePrices",
+              "in": "both"
+            },
+            {
+              "n": 8,
+              "field": "pricingAndCalculation.calculateImmediately",
+              "in": "both"
+            },
+            {
+              "n": 9,
+              "field": "pricingAndCalculation.disableBackgroundCalculationRefresh",
+              "in": "both"
+            },
+            {
+              "n": 10,
+              "field": "pricingAndCalculation.enableUsageBasedPricing",
+              "in": "both"
+            },
+            {
+              "n": 11,
+              "field": "pricingAndCalculation.quoteLineEditsForUsageBasedPricing",
+              "in": "both"
+            },
+            {
+              "n": 12,
+              "field": "pricingAndCalculation.hideUncalculatedQuoteWarning",
+              "in": "both"
+            },
+            {
+              "n": 13,
+              "field": "pricingAndCalculation.useIntegrationUserForCalculations",
+              "in": "both"
+            }
+          ],
+          "before": {
+            "file": "03-pricing-and-calculation-pricing-and-calculation-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "pricingAndCalculation.currencySymbol",
+                "box": {
+                  "x": 480,
+                  "y": 275,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 2,
+                "field": "pricingAndCalculation.unitPriceScale",
+                "box": {
+                  "x": 480,
+                  "y": 316,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 3,
+                "field": "pricingAndCalculation.enableQuickCalculate",
+                "box": {
+                  "x": 480,
+                  "y": 362,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 4,
+                "field": "pricingAndCalculation.allowNonConsecutiveCustomSegments",
+                "box": {
+                  "x": 480,
+                  "y": 410,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 5,
+                "field": "pricingAndCalculation.enablePricingGuidance",
+                "box": {
+                  "x": 480,
+                  "y": 458,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 6,
+                "field": "pricingAndCalculation.useLegacyCalculator",
+                "box": {
+                  "x": 480,
+                  "y": 551,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 7,
+                "field": "pricingAndCalculation.useInactivePrices",
+                "box": {
+                  "x": 1043,
+                  "y": 277,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 8,
+                "field": "pricingAndCalculation.calculateImmediately",
+                "box": {
+                  "x": 1043,
+                  "y": 318,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 9,
+                "field": "pricingAndCalculation.disableBackgroundCalculationRefresh",
+                "box": {
+                  "x": 1043,
+                  "y": 362,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 10,
+                "field": "pricingAndCalculation.enableUsageBasedPricing",
+                "box": {
+                  "x": 1043,
+                  "y": 410,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 11,
+                "field": "pricingAndCalculation.quoteLineEditsForUsageBasedPricing",
+                "box": {
+                  "x": 480,
+                  "y": 506,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 12,
+                "field": "pricingAndCalculation.hideUncalculatedQuoteWarning",
+                "box": {
+                  "x": 1043,
+                  "y": 458,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 13,
+                "field": "pricingAndCalculation.useIntegrationUserForCalculations",
+                "box": {
+                  "x": 1043,
+                  "y": 506,
+                  "width": 22,
+                  "height": 22
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "03-pricing-and-calculation-pricing-and-calculation-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "pricingAndCalculation.currencySymbol",
+                "box": {
+                  "x": 480,
+                  "y": 275,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 2,
+                "field": "pricingAndCalculation.unitPriceScale",
+                "box": {
+                  "x": 480,
+                  "y": 316,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 3,
+                "field": "pricingAndCalculation.enableQuickCalculate",
+                "box": {
+                  "x": 480,
+                  "y": 362,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 4,
+                "field": "pricingAndCalculation.allowNonConsecutiveCustomSegments",
+                "box": {
+                  "x": 480,
+                  "y": 410,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 5,
+                "field": "pricingAndCalculation.enablePricingGuidance",
+                "box": {
+                  "x": 480,
+                  "y": 458,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 6,
+                "field": "pricingAndCalculation.useLegacyCalculator",
+                "box": {
+                  "x": 480,
+                  "y": 551,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 7,
+                "field": "pricingAndCalculation.useInactivePrices",
+                "box": {
+                  "x": 1043,
+                  "y": 277,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 8,
+                "field": "pricingAndCalculation.calculateImmediately",
+                "box": {
+                  "x": 1043,
+                  "y": 318,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 9,
+                "field": "pricingAndCalculation.disableBackgroundCalculationRefresh",
+                "box": {
+                  "x": 1043,
+                  "y": 362,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 10,
+                "field": "pricingAndCalculation.enableUsageBasedPricing",
+                "box": {
+                  "x": 1043,
+                  "y": 410,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 11,
+                "field": "pricingAndCalculation.quoteLineEditsForUsageBasedPricing",
+                "box": {
+                  "x": 480,
+                  "y": 506,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 12,
+                "field": "pricingAndCalculation.hideUncalculatedQuoteWarning",
+                "box": {
+                  "x": 1043,
+                  "y": 458,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 13,
+                "field": "pricingAndCalculation.useIntegrationUserForCalculations",
+                "box": {
+                  "x": 1043,
+                  "y": 506,
+                  "width": 22,
+                  "height": 22
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "plugins",
+          "viewport": {
+            "width": 1440,
+            "height": 1400
+          },
+          "clip": {
+            "x": 245,
+            "y": 156,
+            "width": 1170,
+            "height": 421
+          },
+          "pills": [
+            {
+              "n": 14,
+              "field": "plugins.legacyPageSecurityPlugin",
+              "in": "both"
+            },
+            {
+              "n": 15,
+              "field": "plugins.electronicSignaturePlugin",
+              "in": "both"
+            },
+            {
+              "n": 16,
+              "field": "plugins.billingPlugin",
+              "in": "both"
+            },
+            {
+              "n": 17,
+              "field": "plugins.productSearchPlugin",
+              "in": "both"
+            },
+            {
+              "n": 18,
+              "field": "plugins.recommendedProductsPlugin",
+              "in": "both"
+            },
+            {
+              "n": 19,
+              "field": "plugins.legacyQuoteCalculatorPlugin",
+              "in": "both"
+            },
+            {
+              "n": 20,
+              "field": "plugins.documentStorePlugin",
+              "in": "both"
+            },
+            {
+              "n": 21,
+              "field": "plugins.quoteCalculatorPlugin",
+              "in": "both"
+            },
+            {
+              "n": 22,
+              "field": "plugins.orderManagementPlugin",
+              "in": "both"
+            },
+            {
+              "n": 23,
+              "field": "plugins.qleCustomActionPlugin",
+              "in": "both"
+            }
+          ],
+          "before": {
+            "file": "03-pricing-and-calculation-plugins-before.png",
+            "pills": [
+              {
+                "n": 14,
+                "field": "plugins.legacyPageSecurityPlugin",
+                "box": {
+                  "x": 480,
+                  "y": 275,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 15,
+                "field": "plugins.electronicSignaturePlugin",
+                "box": {
+                  "x": 1043,
+                  "y": 275,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 16,
+                "field": "plugins.billingPlugin",
+                "box": {
+                  "x": 480,
+                  "y": 316,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 17,
+                "field": "plugins.productSearchPlugin",
+                "box": {
+                  "x": 1043,
+                  "y": 316,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 18,
+                "field": "plugins.recommendedProductsPlugin",
+                "box": {
+                  "x": 480,
+                  "y": 361,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 19,
+                "field": "plugins.legacyQuoteCalculatorPlugin",
+                "box": {
+                  "x": 1043,
+                  "y": 361,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 20,
+                "field": "plugins.documentStorePlugin",
+                "box": {
+                  "x": 480,
+                  "y": 405,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 21,
+                "field": "plugins.quoteCalculatorPlugin",
+                "box": {
+                  "x": 1043,
+                  "y": 405,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 22,
+                "field": "plugins.orderManagementPlugin",
+                "box": {
+                  "x": 480,
+                  "y": 446,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 23,
+                "field": "plugins.qleCustomActionPlugin",
+                "box": {
+                  "x": 1043,
+                  "y": 446,
+                  "width": 220,
+                  "height": 25
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "03-pricing-and-calculation-plugins-after.png",
+            "pills": [
+              {
+                "n": 14,
+                "field": "plugins.legacyPageSecurityPlugin",
+                "box": {
+                  "x": 480,
+                  "y": 275,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 15,
+                "field": "plugins.electronicSignaturePlugin",
+                "box": {
+                  "x": 1043,
+                  "y": 275,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 16,
+                "field": "plugins.billingPlugin",
+                "box": {
+                  "x": 480,
+                  "y": 316,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 17,
+                "field": "plugins.productSearchPlugin",
+                "box": {
+                  "x": 1043,
+                  "y": 316,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 18,
+                "field": "plugins.recommendedProductsPlugin",
+                "box": {
+                  "x": 480,
+                  "y": 361,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 19,
+                "field": "plugins.legacyQuoteCalculatorPlugin",
+                "box": {
+                  "x": 1043,
+                  "y": 361,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 20,
+                "field": "plugins.documentStorePlugin",
+                "box": {
+                  "x": 480,
+                  "y": 405,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 21,
+                "field": "plugins.quoteCalculatorPlugin",
+                "box": {
+                  "x": 1043,
+                  "y": 405,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 22,
+                "field": "plugins.orderManagementPlugin",
+                "box": {
+                  "x": 480,
+                  "y": 446,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 23,
+                "field": "plugins.qleCustomActionPlugin",
+                "box": {
+                  "x": 1043,
+                  "y": 446,
+                  "width": 220,
+                  "height": 25
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "04-subscriptions-renewals-and-orders": {
+      "hash": "1393bd7f36d72e6583705bf70a7532700cb34299523298bad7b030f6a3f9013d",
+      "capturedAt": "2026-11-10",
+      "captures": [
+        {
+          "name": "subscriptions-and-renewals",
+          "viewport": {
+            "width": 1440,
+            "height": 1400
+          },
+          "clip": {
+            "x": 245,
+            "y": 222,
+            "width": 1170,
+            "height": 478
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "subscriptionsAndRenewals.renewalModel",
+              "in": "both"
+            },
+            {
+              "n": 2,
+              "field": "subscriptionsAndRenewals.disableAddSubscriptions",
+              "in": "both"
+            },
+            {
+              "n": 3,
+              "field": "subscriptionsAndRenewals.allowRenewalQuotesWithoutAssets",
+              "in": "both"
+            },
+            {
+              "n": 4,
+              "field": "subscriptionsAndRenewals.subscriptionTermUnit",
+              "in": "both"
+            },
+            {
+              "n": 5,
+              "field": "subscriptionsAndRenewals.subscriptionProratePrecision",
+              "in": "both"
+            },
+            {
+              "n": 6,
+              "field": "subscriptionsAndRenewals.includeNetNewProductsInMaintenance",
+              "in": "both"
+            },
+            {
+              "n": 7,
+              "field": "subscriptionsAndRenewals.contractInForeground",
+              "in": "both"
+            },
+            {
+              "n": 8,
+              "field": "subscriptionsAndRenewals.reEvaluateBundleLogicOnRenewals",
+              "in": "both"
+            },
+            {
+              "n": 9,
+              "field": "subscriptionsAndRenewals.enableEvergreenSubscriptions",
+              "in": "both"
+            },
+            {
+              "n": 10,
+              "field": "subscriptionsAndRenewals.poTRenewalsContractingFromOrders",
+              "in": "both"
+            },
+            {
+              "n": 11,
+              "field": "subscriptionsAndRenewals.legacyAmendRenewService",
+              "in": "both"
+            },
+            {
+              "n": 12,
+              "field": "subscriptionsAndRenewals.amendContractsInBackground",
+              "in": "both"
+            },
+            {
+              "n": 13,
+              "field": "subscriptionsAndRenewals.disableProductBundleSubTypeChecks",
+              "in": "both"
+            },
+            {
+              "n": 14,
+              "field": "subscriptionsAndRenewals.bypassPreserveBundleStructure",
+              "in": "both"
+            },
+            {
+              "n": 15,
+              "field": "subscriptionsAndRenewals.useCurrentSubscriptionOnAssets",
+              "in": "both"
+            }
+          ],
+          "before": {
+            "file": "04-subscriptions-renewals-and-orders-subscriptions-and-renewals-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "subscriptionsAndRenewals.renewalModel",
+                "box": {
+                  "x": 536,
+                  "y": 275,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 2,
+                "field": "subscriptionsAndRenewals.disableAddSubscriptions",
+                "box": {
+                  "x": 1099,
+                  "y": 277,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 3,
+                "field": "subscriptionsAndRenewals.allowRenewalQuotesWithoutAssets",
+                "box": {
+                  "x": 536,
+                  "y": 318,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 4,
+                "field": "subscriptionsAndRenewals.subscriptionTermUnit",
+                "box": {
+                  "x": 1099,
+                  "y": 316,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 5,
+                "field": "subscriptionsAndRenewals.subscriptionProratePrecision",
+                "box": {
+                  "x": 536,
+                  "y": 361,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 6,
+                "field": "subscriptionsAndRenewals.includeNetNewProductsInMaintenance",
+                "box": {
+                  "x": 1099,
+                  "y": 362,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 7,
+                "field": "subscriptionsAndRenewals.contractInForeground",
+                "box": {
+                  "x": 536,
+                  "y": 410,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 8,
+                "field": "subscriptionsAndRenewals.reEvaluateBundleLogicOnRenewals",
+                "box": {
+                  "x": 1099,
+                  "y": 410,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 9,
+                "field": "subscriptionsAndRenewals.enableEvergreenSubscriptions",
+                "box": {
+                  "x": 536,
+                  "y": 458,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 10,
+                "field": "subscriptionsAndRenewals.poTRenewalsContractingFromOrders",
+                "box": {
+                  "x": 1099,
+                  "y": 458,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 11,
+                "field": "subscriptionsAndRenewals.legacyAmendRenewService",
+                "box": {
+                  "x": 536,
+                  "y": 501,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 12,
+                "field": "subscriptionsAndRenewals.amendContractsInBackground",
+                "box": {
+                  "x": 536,
+                  "y": 544,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 13,
+                "field": "subscriptionsAndRenewals.disableProductBundleSubTypeChecks",
+                "box": {
+                  "x": 1099,
+                  "y": 544,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 14,
+                "field": "subscriptionsAndRenewals.bypassPreserveBundleStructure",
+                "box": {
+                  "x": 536,
+                  "y": 592,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 15,
+                "field": "subscriptionsAndRenewals.useCurrentSubscriptionOnAssets",
+                "box": {
+                  "x": 1099,
+                  "y": 592,
+                  "width": 22,
+                  "height": 22
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "04-subscriptions-renewals-and-orders-subscriptions-and-renewals-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "subscriptionsAndRenewals.renewalModel",
+                "box": {
+                  "x": 536,
+                  "y": 275,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 2,
+                "field": "subscriptionsAndRenewals.disableAddSubscriptions",
+                "box": {
+                  "x": 1099,
+                  "y": 277,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 3,
+                "field": "subscriptionsAndRenewals.allowRenewalQuotesWithoutAssets",
+                "box": {
+                  "x": 536,
+                  "y": 318,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 4,
+                "field": "subscriptionsAndRenewals.subscriptionTermUnit",
+                "box": {
+                  "x": 1099,
+                  "y": 316,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 5,
+                "field": "subscriptionsAndRenewals.subscriptionProratePrecision",
+                "box": {
+                  "x": 536,
+                  "y": 357,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 6,
+                "field": "subscriptionsAndRenewals.includeNetNewProductsInMaintenance",
+                "box": {
+                  "x": 536,
+                  "y": 403,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 7,
+                "field": "subscriptionsAndRenewals.contractInForeground",
+                "box": {
+                  "x": 1099,
+                  "y": 403,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 8,
+                "field": "subscriptionsAndRenewals.reEvaluateBundleLogicOnRenewals",
+                "box": {
+                  "x": 536,
+                  "y": 451,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 9,
+                "field": "subscriptionsAndRenewals.enableEvergreenSubscriptions",
+                "box": {
+                  "x": 1099,
+                  "y": 451,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 10,
+                "field": "subscriptionsAndRenewals.poTRenewalsContractingFromOrders",
+                "box": {
+                  "x": 536,
+                  "y": 499,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 11,
+                "field": "subscriptionsAndRenewals.legacyAmendRenewService",
+                "box": {
+                  "x": 1099,
+                  "y": 499,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 12,
+                "field": "subscriptionsAndRenewals.amendContractsInBackground",
+                "box": {
+                  "x": 1099,
+                  "y": 547,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 13,
+                "field": "subscriptionsAndRenewals.disableProductBundleSubTypeChecks",
+                "box": {
+                  "x": 536,
+                  "y": 595,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 14,
+                "field": "subscriptionsAndRenewals.bypassPreserveBundleStructure",
+                "box": {
+                  "x": 1099,
+                  "y": 595,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 15,
+                "field": "subscriptionsAndRenewals.useCurrentSubscriptionOnAssets",
+                "box": {
+                  "x": 536,
+                  "y": 638,
+                  "width": 22,
+                  "height": 22
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "order",
+          "viewport": {
+            "width": 1440,
+            "height": 1400
+          },
+          "clip": {
+            "x": 245,
+            "y": 92,
+            "width": 1170,
+            "height": 420
+          },
+          "pills": [
+            {
+              "n": 16,
+              "field": "order.requireApprovedQuote",
+              "in": "both"
+            },
+            {
+              "n": 17,
+              "field": "order.defaultOrderStartDate",
+              "in": "both"
+            },
+            {
+              "n": 18,
+              "field": "order.allowMultipleOrders",
+              "in": "both"
+            },
+            {
+              "n": 19,
+              "field": "order.createOrdersWithoutOpportunities",
+              "in": "both"
+            }
+          ],
+          "before": {
+            "file": "04-subscriptions-renewals-and-orders-order-before.png",
+            "pills": [
+              {
+                "n": 16,
+                "field": "order.requireApprovedQuote",
+                "box": {
+                  "x": 480,
+                  "y": 275,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 17,
+                "field": "order.defaultOrderStartDate",
+                "box": {
+                  "x": 480,
+                  "y": 317,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 18,
+                "field": "order.allowMultipleOrders",
+                "box": {
+                  "x": 1043,
+                  "y": 275,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 19,
+                "field": "order.createOrdersWithoutOpportunities",
+                "box": {
+                  "x": 1043,
+                  "y": 318,
+                  "width": 22,
+                  "height": 22
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "04-subscriptions-renewals-and-orders-order-after.png",
+            "pills": [
+              {
+                "n": 16,
+                "field": "order.requireApprovedQuote",
+                "box": {
+                  "x": 480,
+                  "y": 275,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 17,
+                "field": "order.defaultOrderStartDate",
+                "box": {
+                  "x": 480,
+                  "y": 317,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 18,
+                "field": "order.allowMultipleOrders",
+                "box": {
+                  "x": 1043,
+                  "y": 275,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 19,
+                "field": "order.createOrdersWithoutOpportunities",
+                "box": {
+                  "x": 1043,
+                  "y": 318,
+                  "width": 22,
+                  "height": 22
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "05-solution-groups-and-product-selection": {
+      "hash": "6aad7c24651e6c7b7fb7c01bf23bfe18412165fdc740e44572970662bdd5431d",
+      "capturedAt": "2026-11-10",
+      "captures": [
+        {
+          "name": "groups",
+          "viewport": {
+            "width": 1440,
+            "height": 1400
+          },
+          "clip": {
+            "x": 245,
+            "y": 120,
+            "width": 1170,
+            "height": 420
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "groups.requireGroupName",
+              "in": "both"
+            }
+          ],
+          "before": {
+            "file": "05-solution-groups-and-product-selection-groups-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "groups.requireGroupName",
+                "box": {
+                  "x": 1043,
+                  "y": 275,
+                  "width": 22,
+                  "height": 22
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "05-solution-groups-and-product-selection-groups-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "groups.requireGroupName",
+                "box": {
+                  "x": 1043,
+                  "y": 275,
+                  "width": 22,
+                  "height": 22
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name": "additional-settings",
+          "viewport": {
+            "width": 1440,
+            "height": 1400
+          },
+          "clip": {
+            "x": 245,
+            "y": 222,
+            "width": 1170,
+            "height": 894
+          },
+          "pills": [
+            {
+              "n": 2,
+              "field": "additionalSettings.triggersDisabled",
+              "in": "both"
+            },
+            {
+              "n": 3,
+              "field": "additionalSettings.quantityScale",
+              "in": "both"
+            },
+            {
+              "n": 4,
+              "field": "additionalSettings.sortProductsInMemory",
+              "in": "both"
+            },
+            {
+              "n": 5,
+              "field": "additionalSettings.multipleBundlesView",
+              "in": "both"
+            },
+            {
+              "n": 6,
+              "field": "additionalSettings.externalConfiguratorUrl",
+              "in": "both"
+            },
+            {
+              "n": 7,
+              "field": "additionalSettings.thirdPartyConfigurator",
+              "in": "both"
+            },
+            {
+              "n": 8,
+              "field": "additionalSettings.openSearchFilterByDefault",
+              "in": "both"
+            },
+            {
+              "n": 9,
+              "field": "additionalSettings.hideFeaturesWithHiddenOptions",
+              "in": "both"
+            },
+            {
+              "n": 10,
+              "field": "additionalSettings.hideProductSearchBar",
+              "in": "both"
+            },
+            {
+              "n": 11,
+              "field": "additionalSettings.productResultsGroupFieldName",
+              "in": "both"
+            },
+            {
+              "n": 12,
+              "field": "additionalSettings.productDescriptionField",
+              "in": "both"
+            },
+            {
+              "n": 13,
+              "field": "additionalSettings.theme",
+              "in": "both"
+            },
+            {
+              "n": 14,
+              "field": "additionalSettings.useGlobalHeaderPermission",
+              "in": "both"
+            },
+            {
+              "n": 15,
+              "field": "additionalSettings.serviceRegion",
+              "in": "both"
+            },
+            {
+              "n": 16,
+              "field": "additionalSettings.enableProductOptionDrawer",
+              "in": "both"
+            },
+            {
+              "n": 17,
+              "field": "additionalSettings.enableLargeConfigurations",
+              "in": "both"
+            },
+            {
+              "n": 18,
+              "field": "additionalSettings.nestedBundlesForExternalConfigurator",
+              "in": "both"
+            }
+          ],
+          "before": {
+            "file": "05-solution-groups-and-product-selection-additional-settings-before.png",
+            "pills": [
+              {
+                "n": 2,
+                "field": "additionalSettings.triggersDisabled",
+                "box": {
+                  "x": 536,
+                  "y": 277,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 3,
+                "field": "additionalSettings.quantityScale",
+                "box": {
+                  "x": 536,
+                  "y": 316,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 4,
+                "field": "additionalSettings.sortProductsInMemory",
+                "box": {
+                  "x": 536,
+                  "y": 359,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 5,
+                "field": "additionalSettings.multipleBundlesView",
+                "box": {
+                  "x": 536,
+                  "y": 398,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 6,
+                "field": "additionalSettings.externalConfiguratorUrl",
+                "box": {
+                  "x": 536,
+                  "y": 439,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 7,
+                "field": "additionalSettings.thirdPartyConfigurator",
+                "box": {
+                  "x": 536,
+                  "y": 480,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 8,
+                "field": "additionalSettings.openSearchFilterByDefault",
+                "box": {
+                  "x": 536,
+                  "y": 518,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 9,
+                "field": "additionalSettings.hideFeaturesWithHiddenOptions",
+                "box": {
+                  "x": 536,
+                  "y": 561,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 10,
+                "field": "additionalSettings.hideProductSearchBar",
+                "box": {
+                  "x": 536,
+                  "y": 604,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 11,
+                "field": "additionalSettings.productResultsGroupFieldName",
+                "box": {
+                  "x": 1155,
+                  "y": 275,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 12,
+                "field": "additionalSettings.productDescriptionField",
+                "box": {
+                  "x": 1155,
+                  "y": 316,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 13,
+                "field": "additionalSettings.theme",
+                "box": {
+                  "x": 1155,
+                  "y": 357,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 14,
+                "field": "additionalSettings.useGlobalHeaderPermission",
+                "box": {
+                  "x": 1155,
+                  "y": 400,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 15,
+                "field": "additionalSettings.serviceRegion",
+                "box": {
+                  "x": 1155,
+                  "y": 439,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 16,
+                "field": "additionalSettings.enableProductOptionDrawer",
+                "box": {
+                  "x": 1155,
+                  "y": 480,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 17,
+                "field": "additionalSettings.enableLargeConfigurations",
+                "box": {
+                  "x": 1155,
+                  "y": 518,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 18,
+                "field": "additionalSettings.nestedBundlesForExternalConfigurator",
+                "box": {
+                  "x": 1155,
+                  "y": 561,
+                  "width": 22,
+                  "height": 22
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "05-solution-groups-and-product-selection-additional-settings-after.png",
+            "pills": [
+              {
+                "n": 2,
+                "field": "additionalSettings.triggersDisabled",
+                "box": {
+                  "x": 536,
+                  "y": 277,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 3,
+                "field": "additionalSettings.quantityScale",
+                "box": {
+                  "x": 536,
+                  "y": 316,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 4,
+                "field": "additionalSettings.sortProductsInMemory",
+                "box": {
+                  "x": 536,
+                  "y": 359,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 5,
+                "field": "additionalSettings.multipleBundlesView",
+                "box": {
+                  "x": 536,
+                  "y": 398,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 6,
+                "field": "additionalSettings.externalConfiguratorUrl",
+                "box": {
+                  "x": 536,
+                  "y": 439,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 7,
+                "field": "additionalSettings.thirdPartyConfigurator",
+                "box": {
+                  "x": 536,
+                  "y": 480,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 8,
+                "field": "additionalSettings.openSearchFilterByDefault",
+                "box": {
+                  "x": 536,
+                  "y": 518,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 9,
+                "field": "additionalSettings.hideFeaturesWithHiddenOptions",
+                "box": {
+                  "x": 536,
+                  "y": 561,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 10,
+                "field": "additionalSettings.hideProductSearchBar",
+                "box": {
+                  "x": 536,
+                  "y": 604,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 11,
+                "field": "additionalSettings.productResultsGroupFieldName",
+                "box": {
+                  "x": 1155,
+                  "y": 275,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 12,
+                "field": "additionalSettings.productDescriptionField",
+                "box": {
+                  "x": 1155,
+                  "y": 316,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 13,
+                "field": "additionalSettings.theme",
+                "box": {
+                  "x": 1155,
+                  "y": 357,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 14,
+                "field": "additionalSettings.useGlobalHeaderPermission",
+                "box": {
+                  "x": 1155,
+                  "y": 400,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 15,
+                "field": "additionalSettings.serviceRegion",
+                "box": {
+                  "x": 1155,
+                  "y": 439,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 16,
+                "field": "additionalSettings.enableProductOptionDrawer",
+                "box": {
+                  "x": 1155,
+                  "y": 480,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 17,
+                "field": "additionalSettings.enableLargeConfigurations",
+                "box": {
+                  "x": 1155,
+                  "y": 518,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 18,
+                "field": "additionalSettings.nestedBundlesForExternalConfigurator",
+                "box": {
+                  "x": 1155,
+                  "y": 561,
+                  "width": 22,
+                  "height": 22
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "06-solution-group-object": {
+      "hash": "fec7ce1968d9b1f51121047ebe5b550d5072606f80261e5a69abff2f1fec2cd5",
+      "capturedAt": "2026-11-10",
+      "captures": [
+        {
+          "name": "groups",
+          "viewport": {
+            "width": 1440,
+            "height": 1000
+          },
+          "clip": {
+            "x": 245,
+            "y": 131,
+            "width": 1170,
+            "height": 420
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "groups.solutionGroupsEnabled",
+              "in": "both"
+            },
+            {
+              "n": 2,
+              "field": "groups.object",
+              "in": "after"
+            },
+            {
+              "n": 3,
+              "field": "groups.nameField",
+              "in": "after"
+            },
+            {
+              "n": 4,
+              "field": "groups.descriptionField",
+              "in": "after"
+            }
+          ],
+          "before": {
+            "file": "06-solution-group-object-groups-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "groups.solutionGroupsEnabled",
+                "box": {
+                  "x": 480,
+                  "y": 275,
+                  "width": 22,
+                  "height": 22
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "06-solution-group-object-groups-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "groups.solutionGroupsEnabled",
+                "box": {
+                  "x": 480,
+                  "y": 275,
+                  "width": 22,
+                  "height": 22
+                }
+              },
+              {
+                "n": 2,
+                "field": "groups.object",
+                "box": {
+                  "x": 480,
+                  "y": 313,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 3,
+                "field": "groups.nameField",
+                "box": {
+                  "x": 480,
+                  "y": 354,
+                  "width": 220,
+                  "height": 25
+                }
+              },
+              {
+                "n": 4,
+                "field": "groups.descriptionField",
+                "box": {
+                  "x": 480,
+                  "y": 395,
+                  "width": 220,
+                  "height": 25
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

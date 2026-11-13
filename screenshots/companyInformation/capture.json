@@ -1,0 +1,60 @@
+{
+  "useCases": {
+    "01-south-african-subsidiary": {
+      "hash": "ac91745ccbde23fe9d383caf3814a7b4bd38cdcebe30e9efb74783ddd64b8506",
+      "capturedAt": "2026-11-10",
+      "captures": [
+        {
+          "name": "company-information",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "clip": {
+            "x": 241,
+            "y": 258,
+            "width": 1178,
+            "height": 642
+          },
+          "pills": [
+            {
+              "n": 1,
+              "field": "defaultCurrencyIsoCode",
+              "in": "both"
+            }
+          ],
+          "before": {
+            "file": "01-south-african-subsidiary-company-information-before.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "defaultCurrencyIsoCode",
+                "box": {
+                  "x": 480,
+                  "y": 726,
+                  "width": 362,
+                  "height": 19
+                }
+              }
+            ]
+          },
+          "after": {
+            "file": "01-south-african-subsidiary-company-information-after.png",
+            "pills": [
+              {
+                "n": 1,
+                "field": "defaultCurrencyIsoCode",
+                "box": {
+                  "x": 480,
+                  "y": 726,
+                  "width": 362,
+                  "height": 19
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

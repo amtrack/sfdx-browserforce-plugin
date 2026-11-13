@@ -19,8 +19,11 @@ export const permissionSetsSchema = z
   .default([])
   .meta({
     title: 'Permission Sets',
-    description:
+    description: [
       'Gives Permission Sets access to service presence statuses (Omni-Channel), by the API names of the statuses.',
+      '',
+      '![Service Presence Statuses Access](docs/assets/settings/permissionSets/overview.webp)',
+    ].join('\n'),
     examples: [[{ permissionSetName: 'Support_Agent', servicePresenceStatuses: ['Available', 'Busy'] }]],
     'x-prerequisites': ['Omni-Channel enabled'],
   });

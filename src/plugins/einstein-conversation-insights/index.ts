@@ -16,6 +16,13 @@ export const einsteinConversationInsightsSchema = z
   .meta({
     id: 'einsteinConversationInsights',
     title: 'Einstein Conversation Insights',
+    description: [
+      'Setup: **Einstein Conversation Insights** (`/lightning/setup/CallCoachingSettings/home`)',
+      '',
+      'Turns on Einstein Conversation Insights through the Metadata API (`ConversationalIntelligenceSettings.enableCallCoaching`), then waits until Salesforce has created the objects that store the conversations: a deployment returns as soon as the setting is saved, while turning the feature on can take more than 30 minutes. It cannot be turned off again.',
+      '',
+      '![Einstein Conversation Insights](docs/assets/settings/einsteinConversationInsights/overview.webp)',
+    ].join('\n'),
     examples: [{ enabled: true }],
     'x-prerequisites': ['Einstein Conversation Insights license (scratch org feature CallCoaching)'],
   });

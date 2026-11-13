@@ -16,6 +16,350 @@ Changes picklist values in ways the Metadata API cannot:
 - rename the API name of a value (`newApiName`, and its label with `newLabel`), active or inactive: Salesforce updates the records holding it, without field history nor automation. A deployment of a renamed value creates a new value instead, so rename it in your source too. The org must allow it (`PicklistSettings.isPicklistApiNameEditDisabled` false);
 - manage (create, modify, delete) the field dependencies of custom fields. An existing field dependency of the dependent field is deleted first.
 
+![Contract Status picklist values](../assets/settings/picklists/overview.webp)
+
+## Use cases
+
+### 1. Rename the API name of a value, with the records that hold it
+
+Acme connects a marketing automation tool that only accepts lead sources without spaces, and its **Lead Source <span class="bf-pill bf-pill-c1">1</span>** picklist has a value whose API name is **Partner Referral <span class="bf-pill bf-pill-c2">2</span>**. The sales reps must go on seeing the same label, and the thousands of existing leads must keep their source. Deploying the value set with a value renamed to `Partner_Referral` does not rename anything: the Metadata API creates a new value, and every lead keeps the old one. Only the **Edit** page of the value in Setup changes its API name in place, and Salesforce then updates the records that hold it.
+
+With `newApiName`, Browserforce renames the API name to **Partner_Referral <span class="bf-pill bf-pill-c3">3</span>** and keeps the label. An inactive value has no Edit link: Browserforce activates it, renames it and deactivates it again. Once `Partner_Referral` exists, a second `apply` does nothing, and it fails before changing anything when another value already has the new API name or when the org forbids changing API names.
+
+=== "Config"
+
+    ```json
+    {
+      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+      "settings": {
+        "picklists": {
+          "picklistValues": [
+            {
+              "metadataType": "StandardValueSet",
+              "metadataFullName": "LeadSource",
+              "value": "Partner Referral",
+              "newApiName": "Partner_Referral"
+            }
+          ]
+        }
+      }
+    }
+    ```
+
+=== "Before"
+
+    ![Before: Rename the API name of a value, with the records that hold it](../assets/settings/picklists/01-rename-an-api-name-lead-source-before.webp)
+
+=== "After"
+
+    ![After: Rename the API name of a value, with the records that hold it](../assets/settings/picklists/01-rename-an-api-name-lead-source-after.webp)
+
+| Pill | Field | Before | After |
+| ---- | ----- | ------ | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>picklistValues[0].<wbr>metadataFullName</code> | `LeadSource` | `LeadSource` |
+| <span class="bf-pill bf-pill-c2">2</span> | <code>picklistValues[0].<wbr>value</code> | `Partner_Referral` | `Partner Referral` |
+| <span class="bf-pill bf-pill-c3">3</span> | <code>picklistValues[0].<wbr>newApiName</code> | `Partner Referral` | `Partner_Referral` |
+|  | <code>picklistValues[0].<wbr>metadataType</code><br>a standard value set, found by its name | `StandardValueSet` | `StandardValueSet` |
+
+### 2. Rename the API name and the label of a value
+
+The dealer's new telematics partner sends the features of each car with its own codes, and expects `Satnav` where the **Features <span class="bf-pill bf-pill-c1">1</span>** field stores **Navigation <span class="bf-pill bf-pill-c2">2</span>**. The sales team takes the occasion to give the value a clearer label, and both changes must reach every org of the dealer, with the Vehicles that hold the value.
+
+Next to `newApiName`, which renames the API name to **Satnav <span class="bf-pill bf-pill-c3">3</span>** in place as in the use case above, `newLabel` changes the label users see to **Satellite Navigation <span class="bf-pill bf-pill-c4">4</span>** in the same edit. With `newLabel`, a second `apply` also checks the label, and only changes it when it differs.
+
+=== "Config"
+
+    ```json
+    {
+      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+      "settings": {
+        "picklists": {
+          "picklistValues": [
+            {
+              "metadataType": "CustomField",
+              "metadataFullName": "Vehicle__c.Features__c",
+              "value": "Navigation",
+              "newApiName": "Satnav",
+              "newLabel": "Satellite Navigation"
+            }
+          ]
+        }
+      }
+    }
+    ```
+
+=== "Before"
+
+    ![Before: Rename the API name and the label of a value](../assets/settings/picklists/02-rename-the-api-name-and-the-label-features-before.webp)
+
+=== "After"
+
+    ![After: Rename the API name and the label of a value](../assets/settings/picklists/02-rename-the-api-name-and-the-label-features-after.webp)
+
+| Pill | Field | Before | After |
+| ---- | ----- | ------ | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>picklistValues[0].<wbr>metadataFullName</code> | `Vehicle__c.Features__c` | `Vehicle__c.Features__c` |
+| <span class="bf-pill bf-pill-c2">2</span> | <code>picklistValues[0].<wbr>value</code> | `Satnav` | `Navigation` |
+| <span class="bf-pill bf-pill-c3">3</span> | <code>picklistValues[0].<wbr>newApiName</code> | `Navigation` | `Satnav` |
+| <span class="bf-pill bf-pill-c4">4</span> | <code>picklistValues[0].<wbr>newLabel</code> | `Navigation System` | `Satellite Navigation` |
+|  | <code>picklistValues[0].<wbr>metadataType</code><br>a custom field, found by its object and API name | `CustomField` | `CustomField` |
+
+### 3. Add a contract status with its category
+
+At Acme, every contract goes through the legal team before it is activated. The **Contract Status <span class="bf-pill bf-pill-c1">1</span>** picklist needs a step **Under Legal Review <span class="bf-pill bf-pill-c2">2</span>**, and each contract status belongs to a **Status Category <span class="bf-pill bf-pill-c3">3</span>**, `Draft`, `Activated` or `Expired`, which drives what users can do with the contract. The `StandardValue` type of the Metadata API has no field for the status category, so a deployment cannot create such a status.
+
+Set `statusCategory` with `newValue` on a status picklist (contracts, orders): Browserforce creates the value on its Setup page and picks the category there. A second `apply` finds the value and does nothing.
+
+=== "Config"
+
+    ```json
+    {
+      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+      "settings": {
+        "picklists": {
+          "picklistValues": [
+            {
+              "metadataType": "StandardValueSet",
+              "metadataFullName": "ContractStatus",
+              "newValue": "Under Legal Review",
+              "statusCategory": "Draft"
+            }
+          ]
+        }
+      }
+    }
+    ```
+
+=== "Before"
+
+    ![Before: Add a contract status with its category](../assets/settings/picklists/03-add-a-status-with-its-category-contract-status-before.webp)
+
+=== "After"
+
+    ![After: Add a contract status with its category](../assets/settings/picklists/03-add-a-status-with-its-category-contract-status-after.webp)
+
+| Pill | Field | Before | After |
+| ---- | ----- | ------ | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>picklistValues[0].<wbr>metadataFullName</code> | `ContractStatus` | `ContractStatus` |
+| <span class="bf-pill bf-pill-c2">2</span> | <code>picklistValues[0].<wbr>newValue</code> |  | `Under Legal Review` |
+| <span class="bf-pill bf-pill-c3">3</span> | <code>picklistValues[0].<wbr>statusCategory</code> |  | `Draft` |
+|  | <code>picklistValues[0].<wbr>metadataType</code><br>tells Browserforce which Setup page holds the values | `StandardValueSet` | `StandardValueSet` |
+
+### 4. Replace a value in the records, keeping the old one
+
+The marketing team of Acme merged its call channels: the leads that came by phone, like Thandi Ndlovu's, now count under Other. The **Replace** button of a picklist page rewrites a value in every record that holds it; the Metadata API only deploys the list of values, and never touches the records.
+
+This config replaces **Phone Inquiry <span class="bf-pill bf-pill-c1">1</span>** with **Other <span class="bf-pill bf-pill-c2">2</span>** in the Lead Source of every lead. Without `active` or `absent`, the old value stays in the picklist, active, for the processes that still read it. Replacing is not idempotent: every `apply` runs it again, which is harmless once no record holds the old value.
+
+=== "Config"
+
+    ```json
+    {
+      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+      "settings": {
+        "picklists": {
+          "picklistValues": [
+            {
+              "metadataType": "StandardValueSet",
+              "metadataFullName": "LeadSource",
+              "value": "Phone Inquiry",
+              "newValue": "Other"
+            }
+          ]
+        }
+      }
+    }
+    ```
+
+=== "Before"
+
+    ![Before: A lead that came by phone](../assets/settings/picklists/04-replace-a-value-in-the-records-lead-before.webp)
+
+=== "After"
+
+    ![After: A lead that came by phone](../assets/settings/picklists/04-replace-a-value-in-the-records-lead-after.webp)
+
+| Pill | Field | Before | After |
+| ---- | ----- | ------ | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>picklistValues[0].<wbr>value</code> |  | `Phone Inquiry` |
+| <span class="bf-pill bf-pill-c2">2</span> | <code>picklistValues[0].<wbr>newValue</code> |  | `Other` |
+|  | <code>picklistValues[0].<wbr>metadataFullName</code><br>the Lead Source field, shown by the other pills |  | `LeadSource` |
+|  | <code>picklistValues[0].<wbr>metadataType</code><br>tells Browserforce which Setup page holds the values |  | `StandardValueSet` |
+
+### 5. Fill the blank values of the records
+
+Acme imported a purchased list of prospects without filling their source, and its marketing reports now show a large "blank" slice. Records are data, not metadata: no deployment can fill an empty field, and only the **Replace** page of the picklist offers to replace the blanks.
+
+With `replaceAllBlankValues`, the leads whose **Lead Source <span class="bf-pill bf-pill-c1">1</span>** is empty, like Bongani Dube's, get **Purchased List <span class="bf-pill bf-pill-c2">2</span>**. It is an alternative to `value`: one action replaces either a value or the blanks.
+
+=== "Config"
+
+    ```json
+    {
+      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+      "settings": {
+        "picklists": {
+          "picklistValues": [
+            {
+              "metadataType": "StandardValueSet",
+              "metadataFullName": "LeadSource",
+              "replaceAllBlankValues": true,
+              "newValue": "Purchased List"
+            }
+          ]
+        }
+      }
+    }
+    ```
+
+=== "Before"
+
+    ![Before: A lead imported without source](../assets/settings/picklists/05-fill-blank-values-lead-before.webp)
+
+=== "After"
+
+    ![After: A lead imported without source](../assets/settings/picklists/05-fill-blank-values-lead-after.webp)
+
+| Pill | Field | Before | After |
+| ---- | ----- | ------ | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>picklistValues[0].<wbr>replaceAllBlankValues</code> |  | `true` |
+| <span class="bf-pill bf-pill-c2">2</span> | <code>picklistValues[0].<wbr>newValue</code> |  | `Purchased List` |
+|  | <code>picklistValues[0].<wbr>metadataFullName</code><br>the Lead Source field, shown by the other pills |  | `LeadSource` |
+|  | <code>picklistValues[0].<wbr>metadataType</code><br>tells Browserforce which Setup page holds the values |  | `StandardValueSet` |
+
+### 6. Replace a value in the records, then deactivate it
+
+The AUX input of old cars is now part of the media system. The admins of the dealer want every Vehicle that says **AUX <span class="bf-pill bf-pill-c2">2</span>** to say **Media <span class="bf-pill bf-pill-c3">3</span>**, and AUX to leave the choices, while the records keep a valid value. A deployment can deactivate a value, but it leaves the records with the old one: only the **Replace** page of Setup moves them.
+
+Two actions on the same value run in order: the first replaces it in the records, the second sets **active <span class="bf-pill bf-pill-c4">4</span>** to `false`. The list of a config is applied from top to bottom.
+
+=== "Config"
+
+    ```json
+    {
+      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+      "settings": {
+        "picklists": {
+          "picklistValues": [
+            {
+              "metadataType": "CustomField",
+              "metadataFullName": "Vehicle__c.Features__c",
+              "value": "AUX",
+              "newValue": "Media"
+            },
+            {
+              "metadataType": "CustomField",
+              "metadataFullName": "Vehicle__c.Features__c",
+              "value": "AUX",
+              "active": false
+            }
+          ]
+        }
+      }
+    }
+    ```
+
+=== "Before"
+
+    ![Before: Replace a value in the records, then deactivate it](../assets/settings/picklists/06-replace-then-deactivate-features-before.webp)
+
+=== "After"
+
+    ![After: Replace a value in the records, then deactivate it](../assets/settings/picklists/06-replace-then-deactivate-features-after.webp)
+
+| Pill | Field | Before | After |
+| ---- | ----- | ------ | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>picklistValues[0].<wbr>metadataFullName</code> | `Vehicle__c.Features__c` | `Vehicle__c.Features__c` |
+| <span class="bf-pill bf-pill-c2">2</span> | <code>picklistValues[0].<wbr>value</code> | `AUX` | `AUX` |
+| <span class="bf-pill bf-pill-c3">3</span> | <code>picklistValues[0].<wbr>newValue</code> |  | `Media` |
+| <span class="bf-pill bf-pill-c4">4</span> | <code>picklistValues[1].<wbr>active</code> |  | `false` |
+|  | <code>picklistValues[0].<wbr>metadataType</code><br>a custom field, found by its object and API name | `CustomField` | `CustomField` |
+|  | <code>picklistValues[1].<wbr>metadataType</code><br>the same field as (1) |  | `CustomField` |
+|  | <code>picklistValues[1].<wbr>metadataFullName</code><br>the same field as (1) |  | `Vehicle__c.Features__c` |
+|  | <code>picklistValues[1].<wbr>value</code><br>the same value as (2) |  | `AUX` |
+
+### 7. Replace a value in the records, then delete it
+
+Compact discs are gone for good, and the dealer wants the value out of the **Features <span class="bf-pill bf-pill-c1">1</span>** field, not only hidden. The Metadata API cannot delete a picklist value: a value missing from a deployment is only deactivated, and its records keep it. Deleting a value in Setup asks what the records that hold it become.
+
+With `absent: true` and a `newValue`, Browserforce deletes **CD <span class="bf-pill bf-pill-c2">2</span>** and gives its records **Media <span class="bf-pill bf-pill-c3">3</span>**. Without `newValue`, their value is cleared.
+
+=== "Config"
+
+    ```json
+    {
+      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+      "settings": {
+        "picklists": {
+          "picklistValues": [
+            {
+              "metadataType": "CustomField",
+              "metadataFullName": "Vehicle__c.Features__c",
+              "value": "CD",
+              "newValue": "Media",
+              "absent": true
+            }
+          ]
+        }
+      }
+    }
+    ```
+
+=== "Before"
+
+    ![Before: Replace a value in the records, then delete it](../assets/settings/picklists/07-replace-then-delete-features-before.webp)
+
+=== "After"
+
+    ![After: Replace a value in the records, then delete it](../assets/settings/picklists/07-replace-then-delete-features-after.webp)
+
+| Pill | Field | Before | After |
+| ---- | ----- | ------ | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>picklistValues[0].<wbr>metadataFullName</code> | `Vehicle__c.Features__c` | `Vehicle__c.Features__c` |
+| <span class="bf-pill bf-pill-c2">2</span> | <code>picklistValues[0].<wbr>value</code> |  | `CD` |
+| <span class="bf-pill bf-pill-c3">3</span> | <code>picklistValues[0].<wbr>newValue</code> | `CD` | `Media` |
+|  | <code>picklistValues[0].<wbr>metadataType</code><br>a custom field, found by its object and API name | `CustomField` | `CustomField` |
+|  | <code>picklistValues[0].<wbr>absent</code><br>the value (2) is gone from the list |  | `true` |
+
+### 8. Remove a field dependency
+
+A field dependency also gets in the way: an import of old Vehicle records fails on every gear that does not match its transmission. The dealer removes the dependency during the migration. The Metadata API can create or change a field dependency, but deploying the field without its controlling field does not remove it.
+
+Set the controlling field of **Gears <span class="bf-pill bf-pill-c3">3</span>** on **Vehicle <span class="bf-pill bf-pill-c1">1</span>** to `null`: Browserforce deletes the dependency, which leaves the field dependencies of **Transmission <span class="bf-pill bf-pill-c2">2</span>**, and every value of Gears is available again. A second `apply` finds no dependency and does nothing.
+
+=== "Config"
+
+    ```json
+    {
+      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+      "settings": {
+        "picklists": {
+          "fieldDependencies": [
+            {
+              "object": "Vehicle__c",
+              "dependentField": "Gears__c",
+              "controllingField": null
+            }
+          ]
+        }
+      }
+    }
+    ```
+
+=== "Before"
+
+    ![Before: Remove a field dependency](../assets/settings/picklists/08-remove-a-field-dependency-field-dependencies-before.webp)
+
+=== "After"
+
+    ![After: Remove a field dependency](../assets/settings/picklists/08-remove-a-field-dependency-field-dependencies-after.webp)
+
+| Pill | Field | Before | After |
+| ---- | ----- | ------ | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>fieldDependencies[0].<wbr>object</code> | `Vehicle__c` | `Vehicle__c` |
+| <span class="bf-pill bf-pill-c2">2</span> | <code>fieldDependencies[0].<wbr>controllingField</code> | `Transmission__c` | `null` |
+| <span class="bf-pill bf-pill-c3">3</span> | <code>fieldDependencies[0].<wbr>dependentField</code> | `Gears__c` | `Gears__c` |
+
 ## Examples
 
 === "Example 1"
@@ -230,7 +574,7 @@ In the field paths, `[]` stands for the items of a list and `*` for the entries 
         }
       },
       "title": "Picklists",
-      "description": "Changes picklist values in ways the Metadata API cannot:\n\n- replace a value by another one in the records using it, then deactivate or delete the old value;\n- activate or deactivate values;\n- rename the API name of a value (`newApiName`, and its label with `newLabel`), active or inactive: Salesforce updates the records holding it, without field history nor automation. A deployment of a renamed value creates a new value instead, so rename it in your source too. The org must allow it (`PicklistSettings.isPicklistApiNameEditDisabled` false);\n- manage (create, modify, delete) the field dependencies of custom fields. An existing field dependency of the dependent field is deleted first.",
+      "description": "Changes picklist values in ways the Metadata API cannot:\n\n- replace a value by another one in the records using it, then deactivate or delete the old value;\n- activate or deactivate values;\n- rename the API name of a value (`newApiName`, and its label with `newLabel`), active or inactive: Salesforce updates the records holding it, without field history nor automation. A deployment of a renamed value creates a new value instead, so rename it in your source too. The org must allow it (`PicklistSettings.isPicklistApiNameEditDisabled` false);\n- manage (create, modify, delete) the field dependencies of custom fields. An existing field dependency of the dependent field is deleted first.\n\n![Contract Status picklist values](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/picklists/overview.webp)",
       "examples": [
         {
           "picklistValues": [

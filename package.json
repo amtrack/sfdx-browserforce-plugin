@@ -66,6 +66,8 @@
   "scripts": {
     "build": "rm -rf lib && tsc -p . && oclif manifest && oclif readme && npm run generate:schema",
     "develop": "bash scripts/develop.sh",
+    "docs:annotate": "node --loader ts-node/esm --no-warnings=ExperimentalWarning scripts/annotate-screenshots.ts",
+    "docs:capture": "node --loader ts-node/esm --no-warnings=ExperimentalWarning scripts/capture-use-cases.ts",
     "format": "npx prettier --write \"+(src|test)/**/*.+(ts|js|json)\"",
     "generate:docs": "npm run build && bash scripts/generate-docs.sh",
     "generate:plugin": "npx --yes hygen plugin new",
@@ -73,7 +75,8 @@
     "prepack": "npm run build",
     "prepare": "npm run build",
     "test": "tsc -p test && nyc --reporter=lcov --reporter=text mocha \"test/**/*.test.ts\" \"src/**/*.test.ts\"",
-    "test:e2e": "tsc -p test && mocha --slow 30s --timeout 2m --file test/e2e-setup.ts \"test/**/*.e2e-spec.ts\" \"src/**/*.e2e-spec.ts\"",
+    "test:e2e": "tsc -p test && mocha --slow 30s --timeout 2m --file test/e2e-setup.ts --ignore \"src/**/use-cases.e2e-spec.ts\" \"test/**/*.e2e-spec.ts\" \"src/**/*.e2e-spec.ts\"",
+    "test:use-cases": "tsc -p test && mocha --slow 60s --timeout 15m --file test/docs-setup.ts \"src/**/use-cases.e2e-spec.ts\"",
     "test:format": "npx prettier --check \"+(src|test)/**/*.+(ts|js|json)\""
   }
 }

@@ -6,7 +6,7 @@ import { semanticallyCleanObject } from '../../utils.js';
 import type { availableCustomObjectSchema } from '../index.js';
 
 const SAVE_BUTTON_SELECTOR = 'input[name="save"]';
-const CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL_SELECTOR = '#options_9';
+export const CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL_SELECTOR = '#options_9';
 
 interface CustomObjectRecord extends Record {
   DeveloperName: string;
