@@ -91,6 +91,9 @@ async function listLabels(list: Locator): Promise<string[]> {
   return labels.map((label) => label.trim());
 }
 
+/** The exact label: a substring would also match "Closed - Resolved" for "Closed" (strict mode violation). */
+const exactLabel = (label: string): RegExp => new RegExp(`^\\s*${label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*$`);
+
 /** Moves the given values from one list to the next one, with the link between them. */
 async function moveValues(page: Page, from: string, to: string, labels: string[]): Promise<void> {
   if (labels.length === 0) {
@@ -98,11 +101,9 @@ async function moveValues(page: Page, from: string, to: string, labels: string[]
   }
   await page.locator(`#${from}`).selectOption(labels.map((label) => ({ label })));
   await page.locator(moveLinkSelector(from, to)).click();
-  // the exact label: a substring would also match "Closed - Resolved" for "Closed" (strict mode violation)
-  const last = labels[labels.length - 1].replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   await page
     .locator(`#${to} option`)
-    .filter({ hasText: new RegExp(`^\\s*${last}\\s*$`) })
+    .filter({ hasText: exactLabel(labels[labels.length - 1]) })
     .first()
     .waitFor();
 }
@@ -212,11 +213,13 @@ export class Capacity extends BrowserforcePlugin {
     }
 
     if (configCapacity?.valuesForInProgress) {
-      // the lists of values appear once the page re-rendered them for the status field
-      await page
-        .locator(
-          `#${COMPLETED_LIST} option, #${PAUSED_LIST} option, #${IN_PROGRESS_LIST} option, ${LEGACY_VALUES_COMPLETED_SELECTOR} option, ${LEGACY_VALUES_IN_PROGRESS_SELECTOR} option`,
-        )
+      // the page re-renders the lists of values for the status field: wait for a value of the config, since the lists
+      // of the former status field are still there when a status-based channel changes its status field
+      const options = page.locator(
+        `#${COMPLETED_LIST} option, #${PAUSED_LIST} option, #${IN_PROGRESS_LIST} option, ${LEGACY_VALUES_COMPLETED_SELECTOR} option, ${LEGACY_VALUES_IN_PROGRESS_SELECTOR} option`,
+      );
+      const [wanted] = configCapacity.valuesForInProgress;
+      await (wanted === undefined ? options : options.filter({ hasText: exactLabel(wanted) }))
         .first()
         .waitFor({ state: 'attached' });
       if (await page.locator(`#${IN_PROGRESS_LIST}`).count()) {
