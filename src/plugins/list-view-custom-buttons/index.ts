@@ -85,7 +85,7 @@ export class ListViewCustomButtons extends BrowserforcePlugin {
     const results: ListViewCustomButtonsConfig[] = [];
 
     for (const entry of definition) {
-      const page = await this.browserforce.openPage(buildPagePath(entry.objectApiName));
+      await using page = await this.browserforce.openPage(buildPagePath(entry.objectApiName));
       const selectedListbox = page.getByRole('listbox', { name: SELECTED_LISTBOX_NAME });
       await selectedListbox.waitFor();
 
@@ -136,7 +136,7 @@ export class ListViewCustomButtons extends BrowserforcePlugin {
 
       const targetButtonIds = buttons.map((b) => b.Id.slice(0, 15)!);
 
-      const page = await this.browserforce.openPage(buildPagePath(entry.objectApiName));
+      await using page = await this.browserforce.openPage(buildPagePath(entry.objectApiName));
       const availableListbox = page.getByRole('listbox', { name: AVAILABLE_LISTBOX_NAME });
       const selectedListbox = page.getByRole('listbox', { name: SELECTED_LISTBOX_NAME });
       await availableListbox.waitFor();
