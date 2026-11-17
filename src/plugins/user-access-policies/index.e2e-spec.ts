@@ -3,7 +3,9 @@ import * as child from 'child_process';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import * as path from 'path';
-import { UserAccessPolicies } from './index.js';
+import { UserAccessPolicies, userAccessPoliciesSchema } from './index.js';
+import { UserAccessPoliciesPage } from './page.js';
+import { capture } from '../../../test/capture.js';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const readJsonFile = function (u: string) {
@@ -34,6 +36,28 @@ describe(UserAccessPolicies.name, function () {
     ]);
     assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
   });
+  it(
+    'should grant their permission sets to new admins @capture',
+    capture(userAccessPoliciesSchema, {
+      config: { accessPolicies: [{ apiName: 'Grant_Permissions', active: true, on: 'Create', applyToAll: true }] },
+      pages: {
+        screenshot: {
+          clip: { x: 256, y: 140, width: 1184, height: 440 },
+          async open(doc) {
+            const id = await doc.recordId("SELECT Id FROM UserAccessPolicy WHERE DeveloperName = 'Grant_Permissions'");
+            return doc.open(UserAccessPoliciesPage.getPolicyUrl(id));
+          },
+          pills: {
+            'accessPolicies[0].apiName':
+              'li.slds-page-header__detail-block:has(> p:text-is("API Name")):has-text("Grant_Permissions")',
+            'accessPolicies[0].active': 'li.slds-page-header__detail-block:has(> p:text-is("Status"))',
+            'accessPolicies[0].on': 'li.slds-page-header__detail-block:has(> p:text-is("Trigger Type"))',
+            'accessPolicies[0].applyToAll': 'button:has-text("Apply Policy")',
+          },
+        },
+      },
+    }),
+  );
 
   it('should activate policy', async () => {
     await plugin.run(configActivate);

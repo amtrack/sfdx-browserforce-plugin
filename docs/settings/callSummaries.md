@@ -17,40 +17,32 @@ Setup: **Salesforce Go → Call Summaries** (`/lightning/setup/page/feature/sale
 
 Turns on Call Summaries, the summaries of voice and video calls written by Einstein generative AI, and waits until Salesforce has created the object that stores them. Deploying `ConversationalIntelligenceSettings` with `enableCallSummarization` often fails with `OrgPreferences.GenECI`, and the setting can read `true` before that object exists. Turning it off uses the Metadata API.
 
-![Call Summaries](../assets/settings/callSummaries/overview.webp)
+## Screenshot
 
-## Use case
+![Call Summaries](../assets/plugins/call-summaries/screenshot.webp)
+
+| Pill | Field |
+| ---- | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>enabled</code> |
+
+## Use cases
 
 ### Summarize the sales calls with generative AI
 
 The managers of Tailspin Toys no longer have time to listen to the recorded calls of their reps: they want Einstein to write a summary of each call, with its next steps and the feedback of the customer. Deploying `ConversationalIntelligenceSettings` with `enableCallSummarization` often fails with `OrgPreferences.GenECI`, and even when the setting reads `true`, the object that stores the summaries may not exist yet.
 
-With `enabled: true`, Browserforce clicks **Turn On <span class="bf-pill bf-pill-c1">1</span>** in Setup > Salesforce Go > Call Summaries and waits until Salesforce has created that object. Einstein Conversation Insights must be on first, which the `einsteinConversationInsights` setting does. `enabled: false` turns the setting off through the Metadata API.
+With `enabled: true`, Browserforce clicks **Turn On** in Setup > Salesforce Go > Call Summaries and waits until Salesforce has created that object. Einstein Conversation Insights must be on first, which the `einsteinConversationInsights` setting does. `enabled: false` turns the setting off through the Metadata API.
 
-=== "Config"
-
-    ```json
-    {
-      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-      "settings": {
-        "callSummaries": {
-          "enabled": true
-        }
-      }
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+  "settings": {
+    "callSummaries": {
+      "enabled": true
     }
-    ```
-
-=== "Before"
-
-    ![Before: Summarize the sales calls with generative AI](../assets/settings/callSummaries/01-summaries-of-the-sales-calls-call-summaries-before.webp)
-
-=== "After"
-
-    ![After: Summarize the sales calls with generative AI](../assets/settings/callSummaries/01-summaries-of-the-sales-calls-call-summaries-after.webp)
-
-| Pill | Field | Before | After |
-| ---- | ----- | ------ | ----- |
-| <span class="bf-pill bf-pill-c1">1</span> | <code>enabled</code> | `false` | `true` |
+  }
+}
+```
 
 ## Examples
 
@@ -99,7 +91,7 @@ With `enabled: true`, Browserforce clicks **Turn On <span class="bf-pill bf-pill
         }
       },
       "title": "Call Summaries",
-      "description": "Setup: **Salesforce Go → Call Summaries** (`/lightning/setup/page/feature/sales-cloud-call-summaries/home`)\n\nTurns on Call Summaries, the summaries of voice and video calls written by Einstein generative AI, and waits until Salesforce has created the object that stores them. Deploying `ConversationalIntelligenceSettings` with `enableCallSummarization` often fails with `OrgPreferences.GenECI`, and the setting can read `true` before that object exists. Turning it off uses the Metadata API.\n\n![Call Summaries](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/callSummaries/overview.webp)",
+      "description": "Setup: **Salesforce Go → Call Summaries** (`/lightning/setup/page/feature/sales-cloud-call-summaries/home`)\n\nTurns on Call Summaries, the summaries of voice and video calls written by Einstein generative AI, and waits until Salesforce has created the object that stores them. Deploying `ConversationalIntelligenceSettings` with `enableCallSummarization` often fails with `OrgPreferences.GenECI`, and the setting can read `true` before that object exists. Turning it off uses the Metadata API.\n\n![Call Summaries](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/call-summaries/screenshot.webp)",
       "examples": [
         {
           "enabled": true

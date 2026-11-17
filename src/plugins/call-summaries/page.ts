@@ -8,8 +8,7 @@ export const GET_STARTED_BUTTON = 'lightning-button.feature-page__enhanced-page-
 // disabled while a prerequisite listed above it is still being turned on
 export const TURN_ON_BUTTON = 'setup_discovery-feature-enablement-panel [slot=action] button';
 // shown instead of Turn On once Call Summaries was turned on, even while Salesforce is still finishing it
-export const ON_BADGE =
-  'setup_discovery-feature-enablement-panel lightning-badge.feature-enablement-panel__enabled-badge';
+const ON_BADGE = 'setup_discovery-feature-enablement-panel lightning-badge.feature-enablement-panel__enabled-badge';
 const CONFIRM_MODAL = 'lightning-modal';
 const CONFIRM_TURN_ON_BUTTON = 'lightning-modal lightning-button.enable-feature-modal__confirm-button button';
 

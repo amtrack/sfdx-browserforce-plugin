@@ -21,7 +21,7 @@ export const slackSchema = z
       '',
       'Agrees to the terms and conditions and enables the Sales Cloud for Slack app.',
       '',
-      '![Slack Apps Setup](docs/assets/settings/slack.png)',
+      '![Slack Apps Setup](src/plugins/slack/screenshot.webp)',
     ].join('\n'),
     examples: [{ agreeToTermsAndConditions: true, enableSalesCloudForSlack: true }],
   });

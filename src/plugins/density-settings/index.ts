@@ -18,7 +18,7 @@ export const densitySettingsSchema = z
       '',
       'Chooses the default display density of the org: "Comfy" or "Compact".',
       '',
-      '![Density Settings](docs/assets/settings/density-settings.png)',
+      '![Density Settings](src/plugins/density-settings/screenshot.webp)',
     ].join('\n'),
     examples: [{ density: 'Compact' }, { density: 'Comfy' }],
   });

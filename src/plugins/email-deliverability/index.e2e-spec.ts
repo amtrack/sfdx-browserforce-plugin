@@ -1,5 +1,6 @@
 import assert from 'assert';
-import { EmailDeliverability } from './index.js';
+import { EmailDeliverability, emailDeliverabilitySchema, ACCESS_LEVEL_SELECTOR } from './index.js';
+import { capture } from '../../../test/capture.js';
 
 describe(EmailDeliverability.name, function () {
   let plugin: EmailDeliverability;
@@ -34,9 +35,18 @@ describe(EmailDeliverability.name, function () {
     const res = await plugin.retrieve();
     assert.deepStrictEqual(res, configSystem);
   });
-  it('should apply all email', async () => {
-    await plugin.apply(configAll);
-  });
+  it(
+    'should apply all email @capture',
+    capture(emailDeliverabilitySchema, {
+      config: { accessLevel: 'All email' },
+      pages: {
+        screenshot: {
+          clip: { x: 240, y: 120, width: 1180, height: 300 },
+          pills: { accessLevel: ACCESS_LEVEL_SELECTOR },
+        },
+      },
+    }),
+  );
   it('should already be have all enabled', async () => {
     const res = await plugin.retrieve();
     assert.deepStrictEqual(res, configAll);

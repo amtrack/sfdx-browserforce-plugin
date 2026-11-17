@@ -49,7 +49,7 @@ export const historyTrackingSchema = z
       '',
       'It closes a gap of the Metadata API, which cannot enable field history tracking on custom Person Account fields.',
       '',
-      '![Set History Tracking](docs/assets/settings/historyTracking/overview.webp)',
+      '![Set History Tracking](src/plugins/history-tracking/screenshot.webp)',
     ].join('\n'),
     examples: [
       [

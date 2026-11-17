@@ -1,10 +1,18 @@
 import { Org } from '@salesforce/core';
 import { type Options } from 'p-retry';
 import { chromium } from 'playwright';
+import { VIEWPORT_WIDTH } from '../scripts/screenshots.js';
+import { checkCaptureOrg } from '../scripts/use-case-doc.js';
 import { Browserforce } from '../src/browserforce.js';
+
+// CAPTURE=true: the tests tagged @capture take the screenshots of their use case (test/capture.ts)
+const capture = process.env.CAPTURE === 'true';
 
 before('global setup', async () => {
   const org = await Org.create({});
+  if (capture) {
+    globalThis.captureIdentities = await checkCaptureOrg(org);
+  }
   const connection = org.getConnection();
   const browserContext = await createBrowserContextFromEnv();
   await browserContext.tracing.group('global setup');
@@ -52,10 +60,14 @@ async function createBrowserContextFromEnv() {
       : {}),
     headless: process.env.BROWSER_DEBUG !== 'true' && process.env.BROWSERFORCE_HEADLESS !== 'false',
     slowMo: Number(process.env.BROWSERFORCE_SLOWMO ?? '0'),
+    // the browser controls (a file input) in English, whatever the language of the computer
+    ...(capture ? { args: ['--hide-scrollbars', '--lang=en-US'] } : {}),
   });
-  const browserContext = await browser.newContext({
-    viewport: { width: 1280, height: 1536 },
-  });
+  const browserContext = await browser.newContext(
+    capture
+      ? { viewport: { width: VIEWPORT_WIDTH, height: 900 }, deviceScaleFactor: 1, locale: 'en-US' }
+      : { viewport: { width: 1280, height: 1536 } },
+  );
   browserContext.setDefaultNavigationTimeout(Number(process.env.BROWSERFORCE_NAVIGATION_TIMEOUT_MS ?? '90000'));
   if (process.env.BROWSERFORCE_TRACE === 'true') {
     await browserContext.tracing.start({

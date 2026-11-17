@@ -22,7 +22,7 @@ export const activitySettingsSchema = z
       '',
       'Although the Metadata API has an `ActivitiesSettings.allowUsersToRelateMultipleContactsToTasksAndEvents` field, it is read-only since API v36.0: the setting cannot be enabled through an API.',
       '',
-      '![Activity Settings](docs/assets/settings/activitySettings/overview.webp)',
+      '![Activity Settings](src/plugins/activity-settings/screenshot.webp)',
     ].join('\n'),
     examples: [{ allowUsersToRelateMultipleContactsToTasksAndEvents: true }],
   });

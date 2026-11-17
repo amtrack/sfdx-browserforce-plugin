@@ -22,7 +22,7 @@ export const serviceChannelsSchema = z
     description: [
       'Configures the capacity model of Service Channels (Omni-Channel): status-based capacity, the status field and its in-progress values.',
       '',
-      '![Service Channel capacity](docs/assets/settings/serviceChannels/overview.webp)',
+      '![Service Channel capacity](src/plugins/service-channels/screenshot.webp)',
     ].join('\n'),
     examples: [
       [

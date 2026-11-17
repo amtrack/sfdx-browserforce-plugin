@@ -16,40 +16,32 @@ Setup: **Feature Settings → Service → Omni-Channel → Omni-Channel Settings
 
 Enables the status-based capacity model.
 
-![Omni-Channel Settings](../assets/settings/omniChannelSettings/overview.webp)
+## Screenshot
 
-## Use case
+![Omni-Channel Settings](../assets/plugins/omni-channel-settings/screenshot.webp)
+
+| Pill | Field |
+| ---- | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>enableStatusBasedCapacityModel</code> |
+
+## Use cases
 
 ### A support center counts only the cases agents are working on
 
 The support center of Litware routes cases to its agents with Omni-Channel. With the default tab-based capacity model, a case counts against an agent's capacity as long as its tab is open, so agents who park cases in "Waiting on customer" stop receiving new work while they have nothing to do.
 
-The **status-based capacity model <span class="bf-pill bf-pill-c1">1</span>** counts a case only while its status says it is in progress, and frees the capacity as soon as the agent changes the status or the owner. It is a checkbox of the Omni-Channel Settings page with no Metadata API equivalent; turn it on with this config before configuring the capacity of the service channels with `serviceChannels`.
+The **status-based capacity model** counts a case only while its status says it is in progress, and frees the capacity as soon as the agent changes the status or the owner. It is a checkbox of the Omni-Channel Settings page with no Metadata API equivalent; turn it on with this config before configuring the capacity of the service channels with `serviceChannels`.
 
-=== "Config"
-
-    ```json
-    {
-      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-      "settings": {
-        "omniChannelSettings": {
-          "enableStatusBasedCapacityModel": true
-        }
-      }
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+  "settings": {
+    "omniChannelSettings": {
+      "enableStatusBasedCapacityModel": true
     }
-    ```
-
-=== "Before"
-
-    ![Before: A support center counts only the cases agents are working on](../assets/settings/omniChannelSettings/01-route-cases-by-status-omni-channel-settings-before.webp)
-
-=== "After"
-
-    ![After: A support center counts only the cases agents are working on](../assets/settings/omniChannelSettings/01-route-cases-by-status-omni-channel-settings-after.webp)
-
-| Pill | Field | Before | After |
-| ---- | ----- | ------ | ----- |
-| <span class="bf-pill bf-pill-c1">1</span> | <code>enableStatusBasedCapacityModel</code> | `false` | `true` |
+  }
+}
+```
 
 ## Example
 
@@ -83,7 +75,7 @@ The **status-based capacity model <span class="bf-pill bf-pill-c1">1</span>** co
         }
       },
       "title": "Omni-Channel Settings",
-      "description": "Setup: **Feature Settings → Service → Omni-Channel → Omni-Channel Settings** (`/lightning/setup/OmniChannelSettings/home`)\n\nEnables the status-based capacity model.\n\n![Omni-Channel Settings](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/omniChannelSettings/overview.webp)",
+      "description": "Setup: **Feature Settings → Service → Omni-Channel → Omni-Channel Settings** (`/lightning/setup/OmniChannelSettings/home`)\n\nEnables the status-based capacity model.\n\n![Omni-Channel Settings](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/omni-channel-settings/screenshot.webp)",
       "examples": [
         {
           "enableStatusBasedCapacityModel": true

@@ -14,7 +14,7 @@ export const accountIntelligenceViewSchema = z
       '',
       'Turns the Account Intelligence view on or off.',
       '',
-      '![Account Intelligence View](docs/assets/settings/accountIntelligenceView/overview.webp)',
+      '![Account Intelligence View](src/plugins/account-intelligence-view/screenshot.webp)',
     ].join('\n'),
     examples: [{ enable: true }, { enable: false }],
     'x-prerequisites': ['Account Intelligence available in the org (scratch org feature AccountInspection)'],

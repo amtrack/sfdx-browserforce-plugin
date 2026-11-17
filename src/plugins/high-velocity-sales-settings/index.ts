@@ -15,7 +15,7 @@ export const highVelocitySalesSettingsSchema = z
       '',
       'Due to a bug, High Velocity Sales (Sales Engagement) needs to be set up and enabled initially using the user interface. Once set up, it can be configured with the [HighVelocitySalesSettings](https://developer.salesforce.com/docs/atlas.en-us.api_meta.meta/api_meta/meta_highvelocitysalessettings.htm) metadata.',
       '',
-      '![Set Up and Enable Sales Engagement](docs/assets/settings/highVelocitySalesSettings/overview.webp)',
+      '![Set Up and Enable Sales Engagement](src/plugins/high-velocity-sales-settings/screenshot.webp)',
     ].join('\n'),
     examples: [{ setUpAndEnable: true }],
     'x-prerequisites': ['High Velocity Sales license (scratch org feature HighVelocitySales)'],

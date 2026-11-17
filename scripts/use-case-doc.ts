@@ -1,142 +1,38 @@
 /**
- * Runtime of the use cases under `npm run docs:capture` (loaded by `test/docs-setup.ts`): the dedicated Chrome over
- * CDP, the checks of the scratch org, and the run of one use case with its `UseCaseDoc`, which opens the Setup pages,
- * measures the controls and writes the raw screenshots and their record to `screenshots/<key>/`.
+ * Runtime of the screenshots, taken by the E2E tests tagged `@capture` (`test/capture.ts`): the checks of the scratch
+ * org, and the run of one `capture()` test: with CAPTURE=true, it shoots each capture, measures its controls and draws the pills into
+ * the images of the documentation (`src/plugins/<folder>/`).
  */
-import assert from 'node:assert';
-import { type ChildProcess, spawn } from 'node:child_process';
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-import { setTimeout as sleep } from 'node:timers/promises';
-import { Org } from '@salesforce/core';
-import { chromium, type FrameLocator, type Locator, type Page } from 'playwright';
-import type { z } from 'zod';
+import { mkdirSync, writeFileSync } from 'node:fs';
+import type { Org } from '@salesforce/core';
+import type { FrameLocator, Locator, Page } from 'playwright';
 import { Browserforce, type SalesforceUrlPath } from '../src/browserforce.js';
 import { type BrowserforcePlugin } from '../src/plugin.js';
 import { drivers, schemas } from '../src/plugins/index.js';
-import { deepDiff } from '../src/plugins/utils.js';
 import {
   type Box,
-  type CaptureRecord,
   computeClip,
-  readSettingRecord,
-  type RecordedPill,
-  type ShotRecord,
-  shotFileName,
+  type DrawnPill,
+  pluginDir,
+  PILL_RADIUS,
+  pillWidth,
+  placePill,
+  type ShotPill,
+  toClip,
   VIEWPORT_WIDTH,
-  writeSettingRecord,
+  WEBP_QUALITY,
 } from './screenshots.js';
-import {
-  captureHash,
-  changesIrreversibly,
-  checkUseCases,
-  fieldsOf,
-  isIrreversible,
-  settingKey,
-  type ShotOptions,
-  toUseCase,
-  type UseCase,
-  type UseCaseDoc,
-} from './use-cases.js';
+import { checkUseCases, fieldsOf, type PageCapture, type UseCase, type UseCaseDoc } from './use-cases.js';
 
 const root = new URL('../', import.meta.url);
 
-/** Google Chrome installed on this computer, else the Chromium of Playwright; BROWSERFORCE_DOCS_CHROME overrides it. */
-function chromeExecutable(): string {
-  if (process.env.BROWSERFORCE_DOCS_CHROME) {
-    return process.env.BROWSERFORCE_DOCS_CHROME;
-  }
-  const candidates =
-    process.platform === 'win32'
-      ? [process.env.PROGRAMFILES, process.env['PROGRAMFILES(X86)'], process.env.LOCALAPPDATA]
-          .filter((dir): dir is string => Boolean(dir))
-          .map((dir) => join(dir, 'Google', 'Chrome', 'Application', 'chrome.exe'))
-      : process.platform === 'darwin'
-        ? ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome']
-        : ['/usr/bin/google-chrome', '/usr/bin/google-chrome-stable', '/usr/bin/chromium'];
-  return candidates.find((candidate) => existsSync(candidate)) ?? chromium.executablePath();
-}
-
-export type Chrome = { process: ChildProcess; endpoint: string; profile: string };
-
 /**
- * Starts a Chrome of our own with a free debugging port and an empty profile. It never attaches to, nor closes, a
- * browser it did not start.
+ * Refuses what is not a scratch org (the captures change it, irreversibly for some settings) and a user who does not
+ * see Setup in English. Returns the identities of its user, never shown in a screenshot.
  */
-export async function startChrome(headed: boolean): Promise<Chrome> {
-  const executable = chromeExecutable();
-  const profile = mkdtempSync(join(tmpdir(), 'browserforce-docs-'));
-  const child = spawn(
-    executable,
-    [
-      '--remote-debugging-port=0',
-      `--user-data-dir=${profile}`,
-      '--no-first-run',
-      '--no-default-browser-check',
-      '--hide-scrollbars',
-      // the browser controls (a file input) in English, whatever the language of the computer
-      '--lang=en-US',
-      ...(headed ? [] : ['--headless=new']),
-      'about:blank',
-    ],
-    { stdio: 'ignore' },
-  );
-  // Chrome writes the port it picked into DevToolsActivePort (the file may exist before the port is written)
-  const portFile = join(profile, 'DevToolsActivePort');
-  let port = '';
-  for (let attempt = 0; attempt < 150 && !port; attempt++) {
-    if (child.exitCode !== null) {
-      break;
-    }
-    if (existsSync(portFile)) {
-      port = readFileSync(portFile, 'utf8').split('\n')[0].trim();
-    }
-    if (!port) {
-      // eslint-disable-next-line no-await-in-loop
-      await sleep(200);
-    }
-  }
-  if (!port) {
-    const exitCode = child.exitCode;
-    await stopChrome({ process: child, profile, endpoint: '' });
-    throw new Error(
-      exitCode !== null
-        ? `Chrome exited with code ${exitCode}: ${executable}`
-        : `Chrome did not open a debugging port: ${executable}`,
-    );
-  }
-  return { process: child, endpoint: `http://127.0.0.1:${port}`, profile };
-}
-
-export async function stopChrome(chrome: Chrome): Promise<void> {
-  // only the Chrome started above: never browser.close() on a browser this code did not start
-  chrome.process.kill();
-  // `killed` only says the signal was sent: wait for the exit, so the profile is no longer locked
-  for (
-    let attempt = 0;
-    attempt < 25 && chrome.process.exitCode === null && chrome.process.signalCode === null;
-    attempt++
-  ) {
-    // eslint-disable-next-line no-await-in-loop
-    await sleep(200);
-  }
-  try {
-    rmSync(chrome.profile, { recursive: true, force: true, maxRetries: 5, retryDelay: 500 });
-  } catch {
-    // a locked file of the profile stays in the temp folder
-  }
-}
-
-/**
- * Connects to the org, refusing what is not a scratch org (the use cases change it, irreversibly for some settings)
- * and a user who does not see Setup in English. Returns the org and the identities of its user, never shown in a
- * screenshot.
- */
-export async function connectScratchOrg(alias: string): Promise<{ org: Org; identities: string[] }> {
-  const org = await Org.create({ aliasOrUsername: alias });
+export async function checkCaptureOrg(org: Org): Promise<string[]> {
   if (!(await org.determineIfScratch())) {
-    throw new Error(`${alias} is not a scratch org: the use cases change the org, run them in a scratch org`);
+    throw new Error(`${org.getUsername()} is not a scratch org: CAPTURE=true changes the org, use a scratch org`);
   }
   const connection = org.getConnection();
   const username = connection.getUsername()!;
@@ -144,10 +40,10 @@ export async function connectScratchOrg(alias: string): Promise<{ org: Org; iden
     `SELECT LanguageLocaleKey, Email FROM User WHERE Username = '${username.replace(/'/g, "\\'")}'`,
   );
   if (user.LanguageLocaleKey !== 'en_US') {
-    throw new Error(`The user of ${alias} sees Setup in ${user.LanguageLocaleKey}: the screenshots need en_US`);
+    throw new Error(`The user of ${username} sees Setup in ${user.LanguageLocaleKey}: the screenshots need en_US`);
   }
   // the email of the scratch org user is the one of the Dev Hub user who created it
-  return { org, identities: [user.Email, username].filter(Boolean) };
+  return [user.Email, username].filter(Boolean);
 }
 
 /** What the email and the username of the org user are replaced with in the screenshots. */
@@ -207,32 +103,26 @@ const roundBox = (box: Box): Box => ({
   height: Math.round(box.height),
 });
 
-type Shot = ShotRecord & { name: string; pills: ShotRecord['pills']; declared: RecordedPill[]; buffer: Buffer };
-type Measured = Shot & { context: Box[]; viewport: { width: number; height: number } };
+type Measured = {
+  name: string;
+  pills: ShotPill[];
+  buffer: Buffer;
+  context: Box[];
+  viewport: { width: number; height: number };
+};
 
 function newPlugin(browserforce: Browserforce, key: string): BrowserforcePlugin {
   const Driver = drivers[key as keyof typeof drivers];
   return new Driver(browserforce);
 }
 
-/** The `doc` of one pass ("Before" or "After") of a use case. */
+/** What `open()` of a capture gets: opens its page at the size of the screenshot. */
 class Doc implements UseCaseDoc {
-  public readonly shots: Measured[] = [];
-  private n = 0;
-
   public constructor(
     public readonly browserforce: Browserforce,
     private readonly useCase: UseCase,
-    private readonly identities: string[],
-    private readonly currentState?: 'before' | 'after',
+    private readonly height: number,
   ) {}
-
-  public get state(): 'before' | 'after' {
-    if (!this.currentState) {
-      throw new Error('doc.state is only known in shoot()');
-    }
-    return this.currentState;
-  }
 
   public get orgId(): string {
     return this.browserforce.connection.getAuthInfoFields().orgId!;
@@ -248,9 +138,9 @@ class Doc implements UseCaseDoc {
     return options.short ? id.slice(0, 15) : id;
   }
 
-  public async open(path: `/${string}`, options: { height?: number } = {}): Promise<Page & AsyncDisposable> {
-    const page = (await this.browserforce.openPage(path as SalesforceUrlPath)) as Page & AsyncDisposable;
-    await page.setViewportSize({ width: VIEWPORT_WIDTH, height: options.height ?? 900 });
+  public async open(path: `/${string}`): Promise<Page> {
+    const page = await this.browserforce.openPage(path as SalesforceUrlPath);
+    await page.setViewportSize({ width: VIEWPORT_WIDTH, height: this.height });
     return page;
   }
 
@@ -261,209 +151,232 @@ class Doc implements UseCaseDoc {
   public async click(page: Page, selector: string): Promise<void> {
     await (await this.within(page, selector)).locator(selector).first().click();
   }
-
-  public async apply<S extends z.ZodType>(schema: S, config: z.input<S>): Promise<void> {
-    await newPlugin(this.browserforce, settingKey(schema)).run(config);
-  }
-
-  public async shot(name: string, page: Page, options: ShotOptions): Promise<void> {
-    const state = this.state;
-    if (this.shots.some((shot) => shot.name === name)) {
-      throw new Error(`${this.useCase.file}: two doc.shot() calls take "${name}"`);
-    }
-    const viewport = page.viewportSize() ?? { width: VIEWPORT_WIDTH, height: 900 };
-    const declared: RecordedPill[] = [];
-    const pills: ShotRecord['pills'] = [];
-    for (const [field, spec] of Object.entries(options.pills)) {
-      const n = ++this.n;
-      const { locator, in: shownIn } = 'in' in spec ? spec : { locator: spec, in: 'both' as const };
-      declared.push({ n, field, in: shownIn });
-      if (shownIn !== 'both' && shownIn !== state) {
-        continue;
-      }
-      let box: Box | null = null;
-      try {
-        // eslint-disable-next-line no-await-in-loop
-        await locator.first().waitFor({ state: 'visible', timeout: 30_000 });
-        // eslint-disable-next-line no-await-in-loop
-        box = await locator.first().boundingBox();
-      } catch (error) {
-        throw new Error(
-          `${this.useCase.file}, capture "${name}" (${state}): pill (${n}) ${field} not found: ${
-            (error as Error).message.split('\n')[0]
-          }`,
-        );
-      }
-      if (!box || box.y + box.height > viewport.height || box.x + box.width > viewport.width) {
-        throw new Error(
-          `${this.useCase.file}, capture "${name}" (${state}): pill (${n}) ${field} is outside the viewport ` +
-            `(${JSON.stringify(box)}): open the page with a larger height (now ${viewport.height})`,
-        );
-      }
-      pills.push({ n, field, box: roundBox(box) });
-    }
-    const context: Box[] = [];
-    for (const locator of options.context ?? []) {
-      // eslint-disable-next-line no-await-in-loop
-      const box = await locator.first().boundingBox();
-      if (box) {
-        // the part inside the viewport
-        const bottom = Math.min(box.y + box.height, viewport.height);
-        const right = Math.min(box.x + box.width, viewport.width);
-        context.push(roundBox({ x: box.x, y: box.y, width: right - box.x, height: bottom - box.y }));
-      }
-    }
-    await hideNoise(page, options.hide ?? [], this.identities);
-    const buffer = await page.screenshot({ type: 'png', animations: 'disabled', caret: 'hide' });
-    this.shots.push({
-      name,
-      file: shotFileName(this.useCase.slug, name, state, 'png'),
-      pills,
-      declared,
-      buffer,
-      context,
-      viewport,
-    });
-  }
 }
 
-/** Runs `shoot()` for one state and returns its shots. */
-async function shootState(
+/** Measures the controls of a capture in its page and takes its screenshot; its pills are numbered from `first`. */
+async function shoot(
   browserforce: Browserforce,
   useCase: UseCase,
   identities: string[],
-  state: 'before' | 'after',
-): Promise<Measured[]> {
-  const doc = new Doc(browserforce, useCase, identities, state);
-  console.log(`      shoot (${state})`);
-  await useCase.definition.shoot!(doc);
-  if (doc.shots.length === 0) {
-    throw new Error(`${useCase.file}: shoot() took no doc.shot()`);
+  { name, page, capture, first }: { name: string; page: Page; capture: PageCapture; first: number },
+): Promise<Measured> {
+  const pills = Object.entries(capture.pills);
+  const ui = await browserforce.waitForSelectorInFrameOrPage(page, capture.context?.[0] ?? pills[0]?.[1] ?? 'body');
+  const viewport = page.viewportSize() ?? { width: VIEWPORT_WIDTH, height: 900 };
+  const measured: ShotPill[] = [];
+  for (const [index, [field, selector]] of pills.entries()) {
+    const n = first + index;
+    const locator = ui.locator(selector).first();
+    let box: Box | null = null;
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      await locator.waitFor({ state: 'visible', timeout: 30_000 });
+      // eslint-disable-next-line no-await-in-loop
+      box = await locator.boundingBox();
+    } catch (error) {
+      throw new Error(
+        `${useCase.file}, capture "${name}": pill (${n}) ${field} not found: ${(error as Error).message.split('\n')[0]}`,
+      );
+    }
+    if (!box || box.y + box.height > viewport.height || box.x + box.width > viewport.width) {
+      throw new Error(
+        `${useCase.file}, capture "${name}": pill (${n}) ${field} is outside the viewport (${JSON.stringify(box)}): ` +
+          `give the capture a larger height (now ${viewport.height})`,
+      );
+    }
+    measured.push({ n, field, box: roundBox(box) });
   }
-  return doc.shots;
+  const context: Box[] = [];
+  for (const selector of capture.context ?? []) {
+    // eslint-disable-next-line no-await-in-loop
+    const box = await ui.locator(selector).first().boundingBox();
+    if (box) {
+      // the part inside the viewport
+      const bottom = Math.min(box.y + box.height, viewport.height);
+      const right = Math.min(box.x + box.width, viewport.width);
+      context.push(roundBox({ x: box.x, y: box.y, width: right - box.x, height: bottom - box.y }));
+    }
+  }
+  await hideNoise(
+    page,
+    (capture.hide ?? []).map((selector) => ui.locator(selector)),
+    identities,
+  );
+  const buffer = await page.screenshot({ type: 'png', animations: 'disabled', caret: 'hide' });
+  return { name, pills: measured, buffer, context, viewport };
 }
 
 /**
- * Writes the raw screenshots and the record of a use case once `check` accepts the use case with its new captures,
- * so a use case whose pills do not match is not recorded as captured (`--stale` takes it again).
+ * Shoots the captures of a `capture()` test: those without `open()` in the pages that `retrieve(config)` of the plugin opens,
+ * just before it closes them (the first page whose path contains `path`, in the order of `pages`), the others in the
+ * page their `open()` returns. Returns the shots in the order of `pages`.
  */
-function record(
-  useCase: UseCase,
-  hash: string,
-  before: Measured[],
-  after: Measured[],
-  check: (captured: UseCase) => void,
-): void {
-  const describe = (shots: Measured[]): string =>
-    JSON.stringify(shots.map((shot) => ({ name: shot.name, pills: shot.declared })));
-  if (describe(before) !== describe(after)) {
-    throw new Error(
-      `${useCase.file}: shoot() took other captures or pills for "After" than for "Before": ` +
-        'declare the same pills in both, with "in" for the controls of one state',
-    );
-  }
-  const captures: CaptureRecord[] = before.map((shotBefore, index) => {
-    const shotAfter = after[index];
-    const clip = computeClip(
-      [...shotBefore.pills, ...shotAfter.pills].map((pill) => pill.box),
-      [...shotBefore.context, ...shotAfter.context],
-      shotAfter.viewport,
-    );
-    return {
-      name: shotBefore.name,
-      viewport: shotAfter.viewport,
-      clip,
-      pills: shotBefore.declared,
-      before: { file: shotBefore.file, pills: shotBefore.pills },
-      after: { file: shotAfter.file, pills: shotAfter.pills },
+async function shootAll(browserforce: Browserforce, useCase: UseCase, identities: string[]): Promise<Measured[]> {
+  const captures = Object.entries(useCase.definition.pages!);
+  // pills are numbered in the order of `pages`, whatever the order the pages are opened in
+  const firsts = new Map(useCase.captures.map((capture) => [capture.name, capture.pills[0]?.n ?? 0]));
+  const shots = new Map<string, Measured>();
+  const taken = new Set<string>();
+  const fromRetrieve = captures.filter(([, capture]) => !capture.open);
+  if (fromRetrieve.length > 0) {
+    console.log('      retrieve');
+    const openPage = browserforce.openPage;
+    // shortcut: patches the instance during retrieve() only, no hook in Browserforce
+    browserforce.openPage = async (path: SalesforceUrlPath): Promise<Page> => {
+      const page = await openPage.call(browserforce, path);
+      const found = fromRetrieve.find(([name, capture]) => !taken.has(name) && path.includes(capture.path ?? ''));
+      if (!found) {
+        return page;
+      }
+      const [name, capture] = found;
+      taken.add(name);
+      await page.setViewportSize({ width: VIEWPORT_WIDTH, height: capture.height ?? 900 });
+      const close = page.close.bind(page);
+      page.close = async (options): Promise<void> => {
+        try {
+          shots.set(
+            name,
+            await shoot(browserforce, useCase, identities, { name, page, capture, first: firsts.get(name)! }),
+          );
+        } finally {
+          await close(options);
+        }
+      };
+      return page;
     };
-  });
-  const settingRecord = readSettingRecord(root, useCase.key) ?? { useCases: {} };
-  settingRecord.useCases[useCase.slug] = {
-    hash,
-    capturedAt: new Date().toISOString().slice(0, 10),
-    captures,
-  };
-  check(toUseCase({ key: useCase.key, definitions: [] }, useCase.definition, settingRecord));
-  const dir = new URL(`screenshots/${useCase.key}/`, root);
-  mkdirSync(dir, { recursive: true });
-  for (const shot of [...before, ...after]) {
-    writeFileSync(new URL(shot.file, dir), shot.buffer);
+    try {
+      await newPlugin(browserforce, useCase.key).retrieve(structuredClone(useCase.config));
+    } finally {
+      browserforce.openPage = openPage;
+    }
   }
-  writeSettingRecord(root, useCase.key, settingRecord);
+  for (const [name, capture] of captures.filter(([, candidate]) => candidate.open)) {
+    console.log(`      open ${name}`);
+    // eslint-disable-next-line no-await-in-loop
+    await using page = (await capture.open!(new Doc(browserforce, useCase, capture.height ?? 900))) as Page &
+      AsyncDisposable;
+    // eslint-disable-next-line no-await-in-loop
+    shots.set(name, await shoot(browserforce, useCase, identities, { name, page, capture, first: firsts.get(name)! }));
+  }
+  const missing = captures.filter(([name]) => !shots.has(name)).map(([name]) => name);
+  if (missing.length > 0) {
+    throw new Error(`${useCase.file}: retrieve() opened and closed no page for "${missing.join('", "')}"`);
+  }
+  return captures.map(([name]) => shots.get(name)!);
+}
+
+type DrawInput = {
+  source: string;
+  clip: Box;
+  pills: DrawnPill[];
+  radius: number;
+  widths: Record<number, number>;
+  quality: number;
+};
+
+/** Runs in the browser: crops the screenshot, outlines each control, draws its pill, returns a WebP data URL. */
+async function draw(input: DrawInput): Promise<string> {
+  const image = new Image();
+  image.src = input.source;
+  await image.decode();
+  const canvas = document.createElement('canvas');
+  canvas.width = input.clip.width;
+  canvas.height = input.clip.height;
+  const context = canvas.getContext('2d')!;
+  const { x, y, width, height } = input.clip;
+  context.drawImage(image, x, y, width, height, 0, 0, width, height);
+  const roundedRect = (rx: number, ry: number, rw: number, rh: number, radius: number): void => {
+    context.beginPath();
+    context.roundRect(rx, ry, rw, rh, radius);
+  };
+  for (const pill of input.pills) {
+    roundedRect(pill.box.x - 3, pill.box.y - 3, pill.box.width + 6, pill.box.height + 6, 4);
+    context.lineWidth = 3;
+    context.strokeStyle = pill.color;
+    context.stroke();
+  }
+  for (const pill of input.pills) {
+    const pillW = input.widths[pill.n];
+    roundedRect(pill.cx - pillW / 2, pill.cy - input.radius, pillW, 2 * input.radius, input.radius);
+    context.shadowColor = 'rgba(0, 0, 0, 0.35)';
+    context.shadowBlur = 4;
+    context.shadowOffsetY = 1;
+    context.fillStyle = pill.color;
+    context.fill();
+    context.shadowColor = 'transparent';
+    context.lineWidth = 2;
+    context.strokeStyle = '#ffffff';
+    context.stroke();
+    context.fillStyle = '#ffffff';
+    context.font = 'bold 15px "Segoe UI", Arial, sans-serif';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText(String(pill.n), pill.cx, pill.cy + 1);
+  }
+  return canvas.toDataURL('image/webp', input.quality);
+}
+
+/** Draws the image of each capture into `src/plugins/<folder>/<capture>.webp`. */
+async function drawImages(browserforce: Browserforce, useCase: UseCase, shots: Measured[]): Promise<void> {
+  const dir = new URL(`${pluginDir(useCase.folder)}/`, root);
+  mkdirSync(dir, { recursive: true });
+  await using page = await browserforce.browserContext.newPage();
+  for (const shot of shots) {
+    const layout = useCase.definition.pages[shot.name];
+    const clip =
+      layout.clip === 'viewport'
+        ? { x: 0, y: 0, ...shot.viewport }
+        : typeof layout.clip === 'object'
+          ? layout.clip
+          : computeClip(
+              shot.pills.map((pill) => pill.box),
+              shot.context,
+              shot.viewport,
+            );
+    const pills = shot.pills.map((pill) =>
+      placePill(
+        { n: pill.n, box: toClip(pill.box, clip), ...layout.positions?.[pill.field] },
+        { width: clip.width, height: clip.height },
+      ),
+    );
+    // eslint-disable-next-line no-await-in-loop
+    const dataUrl = await page.evaluate(draw, {
+      source: `data:image/png;base64,${shot.buffer.toString('base64')}`,
+      clip,
+      pills,
+      radius: PILL_RADIUS,
+      widths: Object.fromEntries(pills.map((pill) => [pill.n, pillWidth(pill.n)])),
+      quality: WEBP_QUALITY,
+    });
+    writeFileSync(new URL(`${shot.name}.webp`, dir), Buffer.from(dataUrl.slice(dataUrl.indexOf(',') + 1), 'base64'));
+  }
 }
 
 /**
- * Runs a use case as an E2E test: `prepare`, apply `given`, shoot "Before", apply `config` (it must change
- * something), check a second run is "no action necessary" (unless `notIdempotent`), shoot "After", check the pills
- * against the config and the story, record, and apply `given` again (also when it failed).
+ * Runs the step of an E2E test tagged `@capture`: apply `config` (or the step passed to `capture()`).
+ * With `capture`, it shoots each capture after the step (or before it with `screenshot: 'before'`) and draws its
+ * image. Returns what the step returned.
  */
-export async function runUseCase(browserforce: Browserforce, useCase: UseCase, identities: string[]): Promise<void> {
+export async function runCapture(
+  browserforce: Browserforce,
+  useCase: UseCase,
+  options: { capture: boolean; identities: string[]; step?: () => Promise<unknown> },
+): Promise<unknown> {
   const schema = schemas[useCase.key as keyof typeof schemas];
-  const fields = fieldsOf(useCase.key);
   const plugin = newPlugin(browserforce, useCase.key);
-  const problems = checkUseCases([useCase], fields, schema, { captured: false });
+  const problems = checkUseCases([useCase], fieldsOf(useCase.key), schema, { captured: false });
   if (problems.length > 0) {
-    throw new Error(`Invalid use case:\n- ${problems.join('\n- ')}`);
+    throw new Error(`Invalid capture() test:\n- ${problems.join('\n- ')}`);
   }
   // `browserforce apply` validates the config, then passes it as written, without the zod defaults; each run gets
-  // a copy, since a plugin may change the object it gets, and the hash is taken before
-  const { given, config } = useCase;
-  const hash = captureHash(root, useCase);
-  const irreversible = isIrreversible(useCase, fields);
-  if (irreversible && given !== undefined) {
-    const state = await plugin.retrieve(config);
-    if (deepDiff(state, config) === undefined) {
-      throw new Error(
-        `${useCase.file}: the org already has its irreversible config, so the "Before" cannot be shown: ` +
-          'capture it in a new scratch org',
-      );
-    }
+  // a copy, since a plugin may change the object it gets
+  const step = options.step ?? (() => plugin.run(structuredClone(useCase.config)));
+  if (!options.capture) {
+    return step();
   }
-  if (useCase.definition.prepare) {
-    console.log('      prepare');
-    await useCase.definition.prepare(new Doc(browserforce, useCase, identities));
-  }
-  if (given !== undefined) {
-    console.log('      apply "given"');
-    await plugin.run(structuredClone(given));
-  }
-  // a config that repeats the irreversible values of `given` can be undone by `given`
-  const restore = useCase.restore && given !== undefined && !changesIrreversibly(useCase, fields);
-  let failed = true;
-  try {
-    const before = await shootState(browserforce, useCase, identities, 'before');
-    console.log('      apply "config"');
-    const result = await plugin.run(structuredClone(config));
-    assert.notDeepStrictEqual(
-      result,
-      { message: 'no action necessary' },
-      `${useCase.file}: "config" changed nothing: the "Before" and "After" would be the same`,
-    );
-    if (!useCase.definition.notIdempotent) {
-      assert.deepStrictEqual(
-        await plugin.run(structuredClone(config)),
-        { message: 'no action necessary' },
-        `${useCase.file}: a second run of "config" still changes the org (or set "notIdempotent" with the reason)`,
-      );
-    }
-    const after = await shootState(browserforce, useCase, identities, 'after');
-    record(useCase, hash, before, after, (captured) => {
-      const pillProblems = checkUseCases([captured], fields, schema, { wholeSetting: false });
-      if (pillProblems.length > 0) {
-        throw new Error(`The pills do not match the config or the story:\n- ${pillProblems.join('\n- ')}`);
-      }
-    });
-    failed = false;
-  } finally {
-    // the next use cases start from a neutral org, even when this one failed after applying its config
-    if (restore) {
-      console.log('      restore "given"');
-      const restoring = plugin.run(structuredClone(given));
-      // after a failure, the error of the use case is the one to report
-      await (failed
-        ? restoring.catch((error: Error) => console.error(`      restore failed: ${error.message}`))
-        : restoring);
-    }
-  }
+  const before = useCase.definition.screenshot === 'before';
+  const shots = before ? await shootAll(browserforce, useCase, options.identities) : undefined;
+  const result = await step();
+  await drawImages(browserforce, useCase, shots ?? (await shootAll(browserforce, useCase, options.identities)));
+  return result;
 }

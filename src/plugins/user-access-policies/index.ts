@@ -49,7 +49,7 @@ export const userAccessPoliciesSchema = z
       '',
       'Activates or deactivates User Access Policies, chooses when they run (on create, update, or both), and runs Apply To All.',
       '',
-      '![User Access Policy](docs/assets/settings/userAccessPolicies/overview.webp)',
+      '![User Access Policy](src/plugins/user-access-policies/screenshot.webp)',
     ].join('\n'),
     examples: [
       { accessPolicies: [{ apiName: 'Grant_Permissions', active: true, on: 'Create' }] },

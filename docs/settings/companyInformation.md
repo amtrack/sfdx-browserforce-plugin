@@ -13,40 +13,32 @@ Setup: **Company Settings → Company Information** (`/lightning/setup/CompanyPr
 
 Sets the Currency Locale of the org, which no Metadata API type represents.
 
-![Company Information](../assets/settings/companyInformation/overview.webp)
+## Screenshot
 
-## Use case
+![Company Information](../assets/plugins/company-information/screenshot.webp)
+
+| Pill | Field |
+| ---- | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>defaultCurrencyIsoCode</code> |
+
+## Use cases
 
 ### A South African subsidiary invoices in rand
 
 Acme opens a sales office in Johannesburg with its own Salesforce org. The org was created with the defaults of the US admin who signed it up, so every opportunity, quote and report shows amounts in US dollars.
 
-The currency of an org without multiple currencies is its **Currency Locale <span class="bf-pill bf-pill-c1">1</span>**, a field of the Company Information page that no Metadata API type holds. Applying this config in every new environment of the subsidiary, from the scratch orgs of the developers to production, switches it to `English (South Africa) - ZAR` without anyone clicking in Setup.
+The currency of an org without multiple currencies is its **Currency Locale**, a field of the Company Information page that no Metadata API type holds. Applying this config in every new environment of the subsidiary, from the scratch orgs of the developers to production, switches it to `English (South Africa) - ZAR` without anyone clicking in Setup.
 
-=== "Config"
-
-    ```json
-    {
-      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-      "settings": {
-        "companyInformation": {
-          "defaultCurrencyIsoCode": "English (South Africa) - ZAR"
-        }
-      }
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+  "settings": {
+    "companyInformation": {
+      "defaultCurrencyIsoCode": "English (South Africa) - ZAR"
     }
-    ```
-
-=== "Before"
-
-    ![Before: A South African subsidiary invoices in rand](../assets/settings/companyInformation/01-south-african-subsidiary-company-information-before.webp)
-
-=== "After"
-
-    ![After: A South African subsidiary invoices in rand](../assets/settings/companyInformation/01-south-african-subsidiary-company-information-after.webp)
-
-| Pill | Field | Before | After |
-| ---- | ----- | ------ | ----- |
-| <span class="bf-pill bf-pill-c1">1</span> | <code>defaultCurrencyIsoCode</code> | `English (United States) - USD` | `English (South Africa) - ZAR` |
+  }
+}
+```
 
 ## Example
 
@@ -79,7 +71,7 @@ The currency of an org without multiple currencies is its **Currency Locale <spa
         }
       },
       "title": "Company Information",
-      "description": "Setup: **Company Settings → Company Information** (`/lightning/setup/CompanyProfileInfo/home`)\n\nSets the Currency Locale of the org, which no Metadata API type represents.\n\n![Company Information](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/companyInformation/overview.webp)",
+      "description": "Setup: **Company Settings → Company Information** (`/lightning/setup/CompanyProfileInfo/home`)\n\nSets the Currency Locale of the org, which no Metadata API type represents.\n\n![Company Information](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/company-information/screenshot.webp)",
       "examples": [
         {
           "defaultCurrencyIsoCode": "English (South Africa) - ZAR"

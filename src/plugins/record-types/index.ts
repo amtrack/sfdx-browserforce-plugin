@@ -26,7 +26,7 @@ export const recordTypesSchema = z
     description: [
       'Deletes inactive record types, optionally replacing them by another record type where they are used.',
       '',
-      '![Record Types](docs/assets/settings/recordTypes/overview.webp)',
+      '![Record Types](src/plugins/record-types/screenshot.webp)',
     ].join('\n'),
     examples: [{ deletions: [{ fullName: 'Account.MyOldRecordType', replacement: 'Account.MyRecordType' }] }],
   });

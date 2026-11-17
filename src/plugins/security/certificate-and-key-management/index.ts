@@ -36,7 +36,7 @@ export const certificateAndKeyManagementSchema = z
   })
   .meta({ id: 'certificateAndKeyManagement', title: 'Certificate and Key Management' });
 
-const CERT_PREFIX_PATH = '/0P1';
+export const CERT_PREFIX_PATH = '/0P1';
 const KEYSTORE_IMPORT_PATH: SalesforceUrlPath = `/_ui/security/certificate/KeyStoreImportUi/e?retURL=${encodeURIComponent('/setup/forcecomHomepage.apexp')}`;
 
 const KEYSIZE_SELECTOR = 'select#keysize';

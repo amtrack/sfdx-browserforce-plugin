@@ -4,7 +4,7 @@
  * It also completes the command pages that sfdx-hardis wrote before it (examples, navigation written as lists).
  * Run through `npm run generate:docs`, which also generates the command pages with sfdx-hardis.
  */
-import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { parse } from 'yaml';
 import { DOCS_URL, listMarkdownImages, repositoryPath, sourceTreeUrl } from '../src/docs.js';
 import { buildPluginCatalog } from '../src/plugin-catalog.js';
@@ -23,7 +23,7 @@ import {
   updateNav,
   withFrontMatter,
 } from './docs-pages.js';
-import { renderPillsCss, shotFileName } from './screenshots.js';
+import { pluginDir, renderPillsCss } from './screenshots.js';
 import { findPluginFolders, loadUseCases } from './use-cases.js';
 
 const root = new URL('../', import.meta.url);
@@ -47,30 +47,21 @@ const missingImages = [...descriptions.values()]
 if (missingImages.length > 0) {
   throw new Error(`Images referenced in the schema descriptions do not exist: ${missingImages.join(', ')}`);
 }
-const notCaptured = [...useCases.values()]
-  .flat()
-  .filter((useCase) => !useCase.skip && useCase.captures.length === 0)
-  .map((useCase) => useCase.file);
-if (notCaptured.length > 0) {
-  throw new Error(
-    `Use cases never captured, run npm run docs:capture and npm run docs:annotate: ${notCaptured.join(', ')}`,
-  );
-}
 const missingShots = [...useCases.values()]
   .flat()
-  .filter((useCase) => !useCase.skip)
-  .flatMap((useCase) =>
-    useCase.captures.flatMap((capture) =>
-      (['before', 'after'] as const).map(
-        (state) => `docs/assets/settings/${useCase.key}/${shotFileName(useCase.slug, capture.name, state, 'webp')}`,
-      ),
-    ),
-  )
+  .flatMap((useCase) => useCase.captures.map((capture) => `${pluginDir(useCase.folder)}/${capture.name}.webp`))
   .filter((image) => !existsSync(new URL(image, root)));
 if (missingShots.length > 0) {
-  throw new Error(
-    `Use case images do not exist, run npm run docs:capture and npm run docs:annotate: ${missingShots.join(', ')}`,
-  );
+  throw new Error(`Screenshots do not exist, run CAPTURE=true npm run test:e2e: ${missingShots.join(', ')}`);
+}
+// the site only serves docs/: it gets a copy of the images of the plugins (git-ignored)
+const pluginAssets = new URL('docs/assets/plugins/', root);
+rmSync(pluginAssets, { recursive: true, force: true });
+for (const folder of new Set(folders.values())) {
+  const dir = new URL(`${pluginDir(folder)}/`, root);
+  for (const image of readdirSync(dir).filter((file) => file.endsWith('.webp'))) {
+    cpSync(new URL(image, dir), new URL(`${folder}/${image}`, pluginAssets));
+  }
 }
 for (const entry of catalog.plugins) {
   const folder = folders.get(entry.key);
@@ -78,6 +69,10 @@ for (const entry of catalog.plugins) {
     description: descriptions.get(entry.key),
     sourceUrl: folder ? sourceTreeUrl(`src/plugins/${folder}`) : undefined,
     useCases: useCases.get(entry.key),
+    stories:
+      folder && existsSync(new URL(`src/plugins/${folder}/use-cases.md`, root))
+        ? readFileSync(new URL(`src/plugins/${folder}/use-cases.md`, root), 'utf8')
+        : undefined,
   });
   writeFileSync(new URL(`${entry.key}.md`, settingsDir), page);
 }

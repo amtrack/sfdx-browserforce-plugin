@@ -1,5 +1,6 @@
 import assert from 'assert';
-import { ActivitySettings } from './index.js';
+import { ActivitySettings, activitySettingsSchema } from './index.js';
+import { capture } from '../../../test/capture.js';
 
 describe(ActivitySettings.name, function () {
   let plugin: ActivitySettings;
@@ -15,9 +16,21 @@ describe(ActivitySettings.name, function () {
       allowUsersToRelateMultipleContactsToTasksAndEvents: false,
     };
 
-    it('should enable', async () => {
-      await plugin.run(configEnabled);
-    });
+    it(
+      'should enable @capture',
+      capture(activitySettingsSchema, {
+        config: { allowUsersToRelateMultipleContactsToTasksAndEvents: true },
+        pages: {
+          screenshot: {
+            positions: { allowUsersToRelateMultipleContactsToTasksAndEvents: { px: 1.6 } },
+            context: ['.bPageTitle', '.bPageBlock'],
+            pills: {
+              allowUsersToRelateMultipleContactsToTasksAndEvents: 'input[id="thePage:theForm:theBlock:manyWhoPref"]',
+            },
+          },
+        },
+      }),
+    );
     it('should be enabled', async () => {
       const res = await plugin.retrieve();
       assert.deepStrictEqual(res, configEnabled);

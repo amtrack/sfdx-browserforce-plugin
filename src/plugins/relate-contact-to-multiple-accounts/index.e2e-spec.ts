@@ -1,5 +1,6 @@
 import assert from 'assert';
-import { RelateContactToMultipleAccounts } from './index.js';
+import { RelateContactToMultipleAccounts, relateContactToMultipleAccountsSchema } from './index.js';
+import { capture } from '../../../test/capture.js';
 
 describe(RelateContactToMultipleAccounts.name, function () {
   this.timeout('5m');
@@ -15,9 +16,18 @@ describe(RelateContactToMultipleAccounts.name, function () {
     enabled: false,
   };
 
-  it('should enable', async () => {
-    await plugin.run(configEnabled);
-  });
+  it(
+    'should enable @capture',
+    capture(relateContactToMultipleAccountsSchema, {
+      config: { enabled: true },
+      pages: {
+        screenshot: {
+          context: ['.bPageTitle', '.bPageBlock'],
+          pills: { enabled: 'input[id$=":sharedContactsCheckBox"]' },
+        },
+      },
+    }),
+  );
   it('should be enabled', async () => {
     const res = await plugin.run(configEnabled);
     assert.deepStrictEqual(res, { message: 'no action necessary' });

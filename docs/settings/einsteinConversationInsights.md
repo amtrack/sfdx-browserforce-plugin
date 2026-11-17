@@ -19,40 +19,32 @@ Setup: **Einstein Conversation Insights** (`/lightning/setup/CallCoachingSetting
 
 Turns on Einstein Conversation Insights through the Metadata API (`ConversationalIntelligenceSettings.enableCallCoaching`), then waits until Salesforce has created the objects that store the conversations: a deployment returns as soon as the setting is saved, while turning the feature on can take more than 30 minutes. It cannot be turned off again.
 
-![Einstein Conversation Insights](../assets/settings/einsteinConversationInsights/overview.webp)
+## Screenshot
 
-## Use case
+![Einstein Conversation Insights](../assets/plugins/einstein-conversation-insights/screenshot.webp)
+
+| Pill | Field |
+| ---- | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>enabled</code> |
+
+## Use cases
 
 ### Turn on Conversation Insights in every new org of a pipeline
 
 Tailspin Toys records the sales calls of its reps, and every new scratch org of the sales team needs Einstein Conversation Insights before Call Summaries and the recording providers can be set up. A deployment of `ConversationalIntelligenceSettings` with `enableCallCoaching` returns as soon as the setting is saved, while Salesforce goes on turning the feature on in the background, sometimes for more than 30 minutes: a step that needs its objects right after the deployment fails.
 
-With `enabled: true`, Browserforce turns on **Conversation Insights <span class="bf-pill bf-pill-c1">1</span>** through the Metadata API, then waits until Salesforce has created the objects that store the conversations. The page can show the readiness as in progress for a while longer: the `callSummaries` setting waits for it. Conversation Insights cannot be turned off again.
+With `enabled: true`, Browserforce turns on **Conversation Insights** through the Metadata API, then waits until Salesforce has created the objects that store the conversations. The page can show the readiness as in progress for a while longer: the `callSummaries` setting waits for it. Conversation Insights cannot be turned off again.
 
-=== "Config"
-
-    ```json
-    {
-      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-      "settings": {
-        "einsteinConversationInsights": {
-          "enabled": true
-        }
-      }
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+  "settings": {
+    "einsteinConversationInsights": {
+      "enabled": true
     }
-    ```
-
-=== "Before"
-
-    ![Before: Turn on Conversation Insights in every new org of a pipeline](../assets/settings/einsteinConversationInsights/01-turn-on-in-a-pipeline-conversation-insights-before.webp)
-
-=== "After"
-
-    ![After: Turn on Conversation Insights in every new org of a pipeline](../assets/settings/einsteinConversationInsights/01-turn-on-in-a-pipeline-conversation-insights-after.webp)
-
-| Pill | Field | Before | After |
-| ---- | ----- | ------ | ----- |
-| <span class="bf-pill bf-pill-c1">1</span> | <code>enabled</code> |  | `true` |
+  }
+}
+```
 
 ## Example
 
@@ -87,7 +79,7 @@ With `enabled: true`, Browserforce turns on **Conversation Insights <span class=
         }
       },
       "title": "Einstein Conversation Insights",
-      "description": "Setup: **Einstein Conversation Insights** (`/lightning/setup/CallCoachingSettings/home`)\n\nTurns on Einstein Conversation Insights through the Metadata API (`ConversationalIntelligenceSettings.enableCallCoaching`), then waits until Salesforce has created the objects that store the conversations: a deployment returns as soon as the setting is saved, while turning the feature on can take more than 30 minutes. It cannot be turned off again.\n\n![Einstein Conversation Insights](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/einsteinConversationInsights/overview.webp)",
+      "description": "Setup: **Einstein Conversation Insights** (`/lightning/setup/CallCoachingSettings/home`)\n\nTurns on Einstein Conversation Insights through the Metadata API (`ConversationalIntelligenceSettings.enableCallCoaching`), then waits until Salesforce has created the objects that store the conversations: a deployment returns as soon as the setting is saved, while turning the feature on can take more than 30 minutes. It cannot be turned off again.\n\n![Einstein Conversation Insights](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/einstein-conversation-insights/screenshot.webp)",
       "examples": [
         {
           "enabled": true

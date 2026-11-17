@@ -17,7 +17,7 @@ export const emailDeliverabilitySchema = z
       '',
       'Chooses the access level: "No access", "System email only" or "All email".',
       '',
-      '![Email Deliverability](docs/assets/settings/emailDeliverability/overview.webp)',
+      '![Email Deliverability](src/plugins/email-deliverability/screenshot.webp)',
     ].join('\n'),
     examples: [{ accessLevel: 'All email' }, { accessLevel: 'System email only' }, { accessLevel: 'No access' }],
   });

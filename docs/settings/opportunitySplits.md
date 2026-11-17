@@ -13,40 +13,32 @@ Setup: **Feature Settings → Sales → Opportunities → Opportunity Splits Set
 
 Enables and sets up Opportunity Splits. Opportunity Teams must be enabled first, for example by deploying the `Opportunity` settings with `<enableOpportunityTeam>true</enableOpportunityTeam>`.
 
-![Opportunity Splits Settings](../assets/settings/opportunitySplits/overview.webp)
+## Screenshot
 
-## Use case
+![OpportunitySplits Settings](../assets/plugins/opportunity-splits/screenshot.webp)
+
+| Pill | Field |
+| ---- | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>enabled</code> |
+
+## Use cases
 
 ### Sales reps share the credit of the deals they close together
 
 At Adventure Works, an account executive and a solution engineer often close a deal together, and the commission plan pays each of them a share of its revenue. Sales operations tracks those shares in a spreadsheet next to the CRM, and the quarterly commission run is always late.
 
-Opportunity Splits stores the shares on the opportunity itself. The Metadata API cannot turn it on (`OpportunitySettings` only has `enableOpportunityTeam`), and Setup does it with a wizard: enable the feature, confirm the recalculation of the existing opportunities, then choose the page layouts that get the splits related list. This config runs the whole wizard, from **Set Up Opportunity Splits <span class="bf-pill bf-pill-c1">1</span>** to the default split types Revenue and Overlay, once Opportunity Teams are on (deploy the `Opportunity` settings with `enableOpportunityTeam` first, as the fixture of this plugin does).
+Opportunity Splits stores the shares on the opportunity itself. The Metadata API cannot turn it on (`OpportunitySettings` only has `enableOpportunityTeam`), and Setup does it with a wizard: enable the feature, confirm the recalculation of the existing opportunities, then choose the page layouts that get the splits related list. This config runs the whole wizard, from **Set Up Opportunity Splits** to the default split types Revenue and Overlay, once Opportunity Teams are on (deploy the `Opportunity` settings with `enableOpportunityTeam` first, as the fixture of this plugin does).
 
-=== "Config"
-
-    ```json
-    {
-      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-      "settings": {
-        "opportunitySplits": {
-          "enabled": true
-        }
-      }
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+  "settings": {
+    "opportunitySplits": {
+      "enabled": true
     }
-    ```
-
-=== "Before"
-
-    ![Before: Sales reps share the credit of the deals they close together](../assets/settings/opportunitySplits/01-credit-shared-deals-opportunity-splits-before.webp)
-
-=== "After"
-
-    ![After: Sales reps share the credit of the deals they close together](../assets/settings/opportunitySplits/01-credit-shared-deals-opportunity-splits-after.webp)
-
-| Pill | Field | Before | After |
-| ---- | ----- | ------ | ----- |
-| <span class="bf-pill bf-pill-c1">1</span> | <code>enabled</code> | `false` | `true` |
+  }
+}
+```
 
 ## Examples
 
@@ -95,7 +87,7 @@ Opportunity Splits stores the shares on the opportunity itself. The Metadata API
         }
       },
       "title": "OpportunitySplits Settings",
-      "description": "Setup: **Feature Settings → Sales → Opportunities → Opportunity Splits Settings** (`/lightning/setup/OpportunitySplitSetup/home`)\n\nEnables and sets up Opportunity Splits. Opportunity Teams must be enabled first, for example by deploying the `Opportunity` settings with `<enableOpportunityTeam>true</enableOpportunityTeam>`.\n\n![Opportunity Splits Settings](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/opportunitySplits/overview.webp)",
+      "description": "Setup: **Feature Settings → Sales → Opportunities → Opportunity Splits Settings** (`/lightning/setup/OpportunitySplitSetup/home`)\n\nEnables and sets up Opportunity Splits. Opportunity Teams must be enabled first, for example by deploying the `Opportunity` settings with `<enableOpportunityTeam>true</enableOpportunityTeam>`.\n\n![Opportunity Splits Settings](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/opportunity-splits/screenshot.webp)",
       "examples": [
         {
           "enabled": true

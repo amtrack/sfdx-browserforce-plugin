@@ -22,8 +22,8 @@ export const <%= camelCase %>Schema = z
     id: '<%= camelCase %>',
     title: '<%= pascalCase %> Settings',
     // Markdown shown on the documentation page of the setting (npm run generate:docs), in IDEs and in plugins list.
-    // Once /document-setting <%= camelCase %> captured its use cases, add the line
-    // '![<%= pascalCase %>](docs/assets/settings/<%= camelCase %>/overview.webp)'
+    // Once /document-setting <%= camelCase %> captured its screenshot, add the line
+    // '![<%= pascalCase %>](src/plugins/<%= h.changeCase.paramCase(name) %>/screenshot.webp)'
     description: [
       'Setup: **Security → Login Access Policies** (`/partnerbt/loginAccessPolicies.apexp`)',
       '',

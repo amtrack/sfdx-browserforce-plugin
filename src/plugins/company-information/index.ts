@@ -14,7 +14,7 @@ export const companyInformationSchema = z
       '',
       'Sets the Currency Locale of the org, which no Metadata API type represents.',
       '',
-      '![Company Information](docs/assets/settings/companyInformation/overview.webp)',
+      '![Company Information](src/plugins/company-information/screenshot.webp)',
     ].join('\n'),
     examples: [{ defaultCurrencyIsoCode: 'English (South Africa) - ZAR' }],
   });

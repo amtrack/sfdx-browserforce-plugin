@@ -16,7 +16,7 @@ Setup: **Feature Settings → Analytics → Reports & Dashboards → Folder Shar
 
 Enables Enhanced Folder Sharing. Orgs created after the Summer ’13 release already have it.
 
-## Use case
+## Use cases
 
 ### A long-lived org gets access levels on its report folders
 
@@ -24,27 +24,18 @@ Blue Yonder Airlines has used Salesforce since 2010. Its report and dashboard fo
 
 Enhanced folder sharing gives each folder Viewer, Editor and Manager access levels. Orgs created before Summer ’13 have to turn it on in Setup, and it cannot be turned off again. Applying this config to the old production org and to its full sandboxes aligns them with the scratch orgs of the developers, which always have it.
 
-=== "Config"
-
-    ```json
-    {
-      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-      "settings": {
-        "reportsAndDashboards": {
-          "folderSharing": {
-            "enableEnhancedFolderSharing": true
-          }
-        }
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+  "settings": {
+    "reportsAndDashboards": {
+      "folderSharing": {
+        "enableEnhancedFolderSharing": true
       }
     }
-    ```
-
-!!! note "No screenshots"
-    Not captured: scratch orgs, like every org created after the Summer ’13 release, already have enhanced folder sharing, so they have no Before image to show.
-
-| Pill | Field | Before | After |
-| ---- | ----- | ------ | ----- |
-|  | <code>folderSharing.<wbr>enableEnhancedFolderSharing</code><br>the checkbox of Setup → Folder Sharing, only shown by orgs created before Summer ’13 |  | `true` |
+  }
+}
+```
 
 ## Example
 

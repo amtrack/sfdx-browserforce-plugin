@@ -1,5 +1,6 @@
 import assert from 'assert';
-import { HomePageLayouts } from './index.js';
+import { HomePageLayouts, homePageLayoutsSchema } from './index.js';
+import { capture } from '../../../test/capture.js';
 
 describe(HomePageLayouts.name, function () {
   let plugin: HomePageLayouts;
@@ -38,6 +39,32 @@ describe(HomePageLayouts.name, function () {
     const res = await plugin.run(configPageDefault);
     assert.deepStrictEqual(res, { message: 'no action necessary' });
   });
+  it(
+    'should assign the DE Default home page to the Standard User profile @capture',
+    capture(homePageLayoutsSchema, {
+      config: {
+        homePageLayoutAssignments: [
+          { profile: 'Standard User', layout: 'DE Default' },
+          { profile: 'System Administrator', layout: '' },
+        ],
+      },
+      pages: {
+        screenshot: {
+          positions: {
+            'homePageLayoutAssignments[0].profile': { px: 37.2, py: 46.2 },
+            'homePageLayoutAssignments[1].profile': { px: 33.2, py: 52.1 },
+          },
+          height: 2000,
+          pills: {
+            'homePageLayoutAssignments[0].profile': 'label:has-text("Standard User")',
+            'homePageLayoutAssignments[0].layout': 'tr:has(> td > label:has-text("Standard User")) select',
+            'homePageLayoutAssignments[1].profile': 'label:has-text("System Administrator")',
+            'homePageLayoutAssignments[1].layout': 'tr:has(> td > label:has-text("System Administrator")) select',
+          },
+        },
+      },
+    }),
+  );
   it('should unassign some layouts', async () => {
     await plugin.apply(configOrgDefault);
   });

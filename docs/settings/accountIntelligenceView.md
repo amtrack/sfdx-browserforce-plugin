@@ -16,40 +16,32 @@ Setup: **Feature Settings → Sales → Account Intelligence** (`/lightning/setu
 
 Turns the Account Intelligence view on or off.
 
-![Account Intelligence View](../assets/settings/accountIntelligenceView/overview.webp)
+## Screenshot
 
-## Use case
+![Account Intelligence View](../assets/plugins/account-intelligence-view/screenshot.webp)
+
+| Pill | Field |
+| ---- | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>enable</code> |
+
+## Use cases
 
 ### Account managers review their whole portfolio in one view
 
 Northwind Traders runs quarterly account reviews: each account manager walks through the activity, open opportunities and cases of the accounts they own. Opening the accounts one by one takes hours, so the sales operations team wants the Account Intelligence view, a list of accounts with their key metrics and recent changes side by side.
 
-The view is switched on by the **Account Intelligence toggle <span class="bf-pill bf-pill-c1">1</span>** in Setup. The Metadata API cannot do it: `AccountIntelligenceSettings` only holds the logos, news and automated fields of the accounts, not this toggle. With this config, every new sandbox and scratch org of the sales team gets the view, so the reviews can be rehearsed and the related customizations tested before they reach production.
+The view is switched on by the **Account Intelligence toggle** in Setup. The Metadata API cannot do it: `AccountIntelligenceSettings` only holds the logos, news and automated fields of the accounts, not this toggle. With this config, every new sandbox and scratch org of the sales team gets the view, so the reviews can be rehearsed and the related customizations tested before they reach production.
 
-=== "Config"
-
-    ```json
-    {
-      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-      "settings": {
-        "accountIntelligenceView": {
-          "enable": true
-        }
-      }
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+  "settings": {
+    "accountIntelligenceView": {
+      "enable": true
     }
-    ```
-
-=== "Before"
-
-    ![Before: Account managers review their whole portfolio in one view](../assets/settings/accountIntelligenceView/01-account-managers-see-their-portfolio-account-intelligence-before.webp)
-
-=== "After"
-
-    ![After: Account managers review their whole portfolio in one view](../assets/settings/accountIntelligenceView/01-account-managers-see-their-portfolio-account-intelligence-after.webp)
-
-| Pill | Field | Before | After |
-| ---- | ----- | ------ | ----- |
-| <span class="bf-pill bf-pill-c1">1</span> | <code>enable</code> | `false` | `true` |
+  }
+}
+```
 
 ## Examples
 
@@ -97,7 +89,7 @@ The view is switched on by the **Account Intelligence toggle <span class="bf-pil
         }
       },
       "title": "Account Intelligence View",
-      "description": "Setup: **Feature Settings → Sales → Account Intelligence** (`/lightning/setup/AccountInspectionSettings/home`)\n\nTurns the Account Intelligence view on or off.\n\n![Account Intelligence View](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/accountIntelligenceView/overview.webp)",
+      "description": "Setup: **Feature Settings → Sales → Account Intelligence** (`/lightning/setup/AccountInspectionSettings/home`)\n\nTurns the Account Intelligence view on or off.\n\n![Account Intelligence View](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/account-intelligence-view/screenshot.webp)",
       "examples": [
         {
           "enable": true

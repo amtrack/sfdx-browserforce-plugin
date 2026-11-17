@@ -3,6 +3,7 @@
   "entry": ["bin/*.js", "src/commands/**/*.ts"],
   "supportEntry": ["scripts/**/*.ts", "test/**/*.ts"],
   "ignorePatterns": ["docs/**"],
+  "ignoreBinaries": ["sf"],
   "ignoreDependencies": [
     "@jsforce/jsforce-node",
     "@oclif/core",

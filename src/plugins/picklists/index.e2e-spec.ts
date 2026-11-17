@@ -4,7 +4,25 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import * as path from 'path';
 import { FieldDependencies } from './field-dependencies/index.js';
-import { PicklistsConfig, Picklists } from './index.js';
+import { PicklistsConfig, Picklists, picklistsSchema } from './index.js';
+import { capture } from '../../../test/capture.js';
+
+/** The list of the values on the page of a picklist field. */
+const VALUES_LIST = '.bRelatedList:has(input[name="new"][onclick*="picklist_masteredit"])';
+
+/** The lead of a use case with the Lead Source it has before the use case, created when the org does not have it. */
+async function resetLead(
+  lead: { FirstName: string; LastName: string; Company: string },
+  leadSource: string | null,
+): Promise<void> {
+  const connection = global.browserforce.connection;
+  const found = await connection.query(`SELECT Id FROM Lead WHERE Company = '${lead.Company}'`);
+  if (found.records.length > 0) {
+    await connection.sobject('Lead').update({ Id: found.records[0].Id, LeadSource: leadSource });
+  } else {
+    await connection.sobject('Lead').create({ ...lead, LeadSource: leadSource });
+  }
+}
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const readJsonFile = function (u: string) {
@@ -25,7 +43,6 @@ describe(Picklists.name, function () {
   });
 
   const configNew = readJsonFile('./new.json').settings.picklists;
-  const configReplace = readJsonFile('./replace.json').settings.picklists;
   const configReplaceAndDelete = readJsonFile('./replace-and-delete.json').settings.picklists;
   const configDeactivate = readJsonFile('./deactivate.json').settings.picklists;
   const configActivate = readJsonFile('./activate.json').settings.picklists;
@@ -49,7 +66,6 @@ describe(Picklists.name, function () {
       },
     ],
   };
-  const configReplaceAndDeactivate = readJsonFile('./replace-and-deactivate.json').settings.picklists;
 
   it('should deploy a CustomObject for testing', () => {
     const sourceDeployCmd = child.spawnSync('sf', [
@@ -69,8 +85,67 @@ describe(Picklists.name, function () {
     const res = await plugin.run(configNew);
     assert.deepStrictEqual(res, { message: 'no action necessary' });
   });
-  it('should replace picklist values', async () => {
-    await plugin.run(configReplace);
+  it(
+    'should add a contract status with its status category @capture',
+    capture(picklistsSchema, {
+      config: {
+        picklistValues: [
+          {
+            metadataType: 'StandardValueSet',
+            metadataFullName: 'ContractStatus',
+            newValue: 'Under Legal Review',
+            statusCategory: 'Draft',
+          },
+        ],
+      },
+      pages: {
+        'contract-status': {
+          positions: {
+            'picklistValues[0].metadataFullName': { px: 1.7, py: 34.9 },
+            'picklistValues[0].newValue': { px: 21.4, py: 64.3 },
+            'picklistValues[0].statusCategory': { px: 47.8, py: 64.3 },
+          },
+          height: 1000,
+          context: [VALUES_LIST],
+          pills: {
+            'picklistValues[0].metadataFullName': `${VALUES_LIST} .pbTitle h3`,
+            'picklistValues[0].newValue': 'tr:has(> th:text-is("Under Legal Review")) > th',
+            'picklistValues[0].statusCategory': 'tr:has(> th:text-is("Under Legal Review")) > td:nth-child(4)',
+          },
+        },
+      },
+    }),
+  );
+  it('should give the lead of Thandi Ndlovu the Lead Source Phone Inquiry', async () => {
+    await resetLead({ FirstName: 'Thandi', LastName: 'Ndlovu', Company: 'Ndlovu Motors' }, 'Phone Inquiry');
+  });
+  it('should replace a value in the records', async () => {
+    await plugin.run({
+      picklistValues: [
+        {
+          metadataType: 'StandardValueSet',
+          metadataFullName: 'LeadSource',
+          value: 'Phone Inquiry',
+          newValue: 'Other',
+        },
+      ],
+    });
+  });
+  it('should replace then delete a value', async () => {
+    await plugin.run({
+      picklistValues: [{ metadataType: 'CustomField', metadataFullName: 'Vehicle__c.Features__c', newValue: 'CD' }],
+    });
+    await plugin.run({
+      picklistValues: [
+        {
+          metadataType: 'CustomField',
+          metadataFullName: 'Vehicle__c.Features__c',
+          value: 'CD',
+          newValue: 'Media',
+          absent: true,
+        },
+      ],
+    });
   });
   it('should replace and delete picklist values', async () => {
     await plugin.run(configReplaceAndDelete);
@@ -96,10 +171,81 @@ describe(Picklists.name, function () {
     assert.deepStrictEqual(res, { message: 'no action necessary' });
   });
   it('should replace and deactivate a picklist value', async () => {
-    await plugin.run(configReplaceAndDeactivate);
+    await plugin.run({
+      picklistValues: [
+        { metadataType: 'CustomField', metadataFullName: 'Vehicle__c.Features__c', value: 'AUX', active: true },
+      ],
+    });
+    await plugin.run({
+      picklistValues: [
+        { metadataType: 'CustomField', metadataFullName: 'Vehicle__c.Features__c', value: 'AUX', newValue: 'Media' },
+        { metadataType: 'CustomField', metadataFullName: 'Vehicle__c.Features__c', value: 'AUX', active: false },
+      ],
+    });
   });
   it('should replace all blank values without an old value', async () => {
     await plugin.run(readJsonFile('./replace-all-blanks.json').settings.picklists);
+  });
+  it('should give the lead of Bongani Dube no Lead Source', async () => {
+    await resetLead({ FirstName: 'Bongani', LastName: 'Dube', Company: 'Dube Logistics' }, null);
+  });
+  it('should fill the blank values of the leads', async () => {
+    await plugin.run({
+      picklistValues: [
+        {
+          metadataType: 'StandardValueSet',
+          metadataFullName: 'LeadSource',
+          replaceAllBlankValues: true,
+          newValue: 'Purchased List',
+        },
+      ],
+    });
+  });
+  it('should rename an API name', async () => {
+    await plugin.run({
+      picklistValues: [
+        {
+          metadataType: 'StandardValueSet',
+          metadataFullName: 'LeadSource',
+          value: 'Partner_Referral',
+          newApiName: 'Partner Referral',
+        },
+      ],
+    });
+    await plugin.run({
+      picklistValues: [
+        {
+          metadataType: 'StandardValueSet',
+          metadataFullName: 'LeadSource',
+          value: 'Partner Referral',
+          newApiName: 'Partner_Referral',
+        },
+      ],
+    });
+  });
+  it('should rename the API name and the label of a value', async () => {
+    await plugin.run({
+      picklistValues: [
+        {
+          metadataType: 'CustomField',
+          metadataFullName: 'Vehicle__c.Features__c',
+          value: 'Satnav',
+          newApiName: 'Navigation',
+          newLabel: 'Navigation System',
+        },
+      ],
+    });
+    await plugin.run({
+      picklistValues: [
+        {
+          metadataType: 'CustomField',
+          metadataFullName: 'Vehicle__c.Features__c',
+          value: 'Navigation',
+          newApiName: 'Satnav',
+          newLabel: 'Satellite Navigation',
+        },
+      ],
+    });
   });
   describe('rename', function () {
     const configRename = readJsonFile('./rename.json').settings.picklists;
@@ -189,9 +335,35 @@ describe(Picklists.name, function () {
       const res = await plugin.run(configSet);
       assert.deepStrictEqual(res, { message: 'no action necessary' });
     });
-    it('should unset a field dependency', async () => {
-      await plugin.run(configUnset);
-    });
+    it(
+      'should unset a field dependency @capture',
+      capture(picklistsSchema, {
+        config: { fieldDependencies: [{ object: 'Vehicle__c', dependentField: 'Gears__c', controllingField: null }] },
+        // the dependency before its removal
+        screenshot: 'before',
+        pages: {
+          'field-dependencies': {
+            height: 1000,
+            async open(doc) {
+              const id = await doc.recordId(
+                "SELECT Id FROM CustomField WHERE DeveloperName = 'Transmission' AND NamespacePrefix = null",
+                { tooling: true },
+              );
+              return doc.open(`/${id}`);
+            },
+            context: [
+              '.bPageTitle',
+              '.bRelatedList:has(.pbTitle h3:text-is("Field Dependencies")), .listRelatedObject:has(.pbTitle h3:text-is("Field Dependencies"))',
+            ],
+            pills: {
+              'fieldDependencies[0].object': '.bPageTitle h1.pageType',
+              'fieldDependencies[0].controllingField': '.bPageTitle h2.pageDescription',
+              'fieldDependencies[0].dependentField': 'tr:has(> th:text-is("Gears"))',
+            },
+          },
+        },
+      }),
+    );
     it('should not do anything when the dependency is already unset', async () => {
       const res = await plugin.run(configUnset);
       assert.deepStrictEqual(res, { message: 'no action necessary' });

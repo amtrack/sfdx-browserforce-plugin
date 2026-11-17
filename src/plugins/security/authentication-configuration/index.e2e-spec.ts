@@ -3,6 +3,8 @@ import * as child from 'child_process';
 import { fileURLToPath } from 'node:url';
 import * as path from 'path';
 import { type AuthenticationConfigurationConfig, AuthenticationConfiguration } from './index.js';
+import { securitySchema } from '../index.js';
+import { capture } from '../../../../test/capture.js';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
@@ -81,6 +83,36 @@ describe(AuthenticationConfiguration.name, function () {
       ]);
       assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
     });
+    it(
+      'should offer single sign-on on the login page @capture',
+      capture(securitySchema, {
+        config: {
+          authenticationConfiguration: {
+            services: [
+              { authProviderApiName: 'TestAuthMethod', enabled: true },
+              { label: 'Login Form', enabled: true },
+            ],
+          },
+        },
+        pages: {
+          'authentication-configuration': {
+            positions: {
+              'authenticationConfiguration.services[0].enabled': { px: 42.5, py: 57.9 },
+              'authenticationConfiguration.services[1].enabled': { px: 42.5, py: 41.7 },
+            },
+            height: 1200,
+            hide: ['input[type="file"]'],
+            pills: {
+              'authenticationConfiguration.services[0].authProviderApiName': 'label:text-is("TestAuthMethod")',
+              'authenticationConfiguration.services[0].enabled':
+                'input.authOption:has(+ label:text-is("TestAuthMethod"))',
+              'authenticationConfiguration.services[1].label': 'label:text-is("Login Form")',
+              'authenticationConfiguration.services[1].enabled': 'input.authOption[value="*login"]',
+            },
+          },
+        },
+      }),
+    );
 
     it('should update multiple auth services', async () => {
       await plugin.apply(configApplyMultiple);

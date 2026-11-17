@@ -13,40 +13,32 @@ Setup: **Email → Deliverability** (`/lightning/setup/OrgEmailSettings/home`)
 
 Chooses the access level: "No access", "System email only" or "All email".
 
-![Email Deliverability](../assets/settings/emailDeliverability/overview.webp)
+## Screenshot
 
-## Use case
+![Email Deliverability Settings](../assets/plugins/email-deliverability/screenshot.webp)
+
+| Pill | Field |
+| ---- | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>accessLevel</code> |
+
+## Use cases
 
 ### The QA team tests the email alerts of a new process
 
 Wide World Importers adds approval and escalation emails to its case management process. Each release is tested in a fresh sandbox, and a new sandbox only sends system emails such as password resets: the email alerts of the process never reach the testers, who report them as bugs.
 
-The Metadata API cannot set the **Access level <span class="bf-pill bf-pill-c1">1</span>** of email deliverability: `EmailAdministrationSettings` has no field for it. Applying this config right after the sandbox is created lets the flows and workflow rules send their emails to the test users. Use `System email only` in the opposite situation, for an org loaded with real customer data that must never email them.
+The Metadata API cannot set the **Access level** of email deliverability: `EmailAdministrationSettings` has no field for it. Applying this config right after the sandbox is created lets the flows and workflow rules send their emails to the test users. Use `System email only` in the opposite situation, for an org loaded with real customer data that must never email them.
 
-=== "Config"
-
-    ```json
-    {
-      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-      "settings": {
-        "emailDeliverability": {
-          "accessLevel": "All email"
-        }
-      }
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+  "settings": {
+    "emailDeliverability": {
+      "accessLevel": "All email"
     }
-    ```
-
-=== "Before"
-
-    ![Before: The QA team tests the email alerts of a new process](../assets/settings/emailDeliverability/01-qa-team-tests-email-alerts-deliverability-before.webp)
-
-=== "After"
-
-    ![After: The QA team tests the email alerts of a new process](../assets/settings/emailDeliverability/01-qa-team-tests-email-alerts-deliverability-after.webp)
-
-| Pill | Field | Before | After |
-| ---- | ----- | ------ | ----- |
-| <span class="bf-pill bf-pill-c1">1</span> | <code>accessLevel</code> | `System email only` | `All email` |
+  }
+}
+```
 
 ## Examples
 
@@ -113,7 +105,7 @@ The Metadata API cannot set the **Access level <span class="bf-pill bf-pill-c1">
         }
       },
       "title": "Email Deliverability Settings",
-      "description": "Setup: **Email → Deliverability** (`/lightning/setup/OrgEmailSettings/home`)\n\nChooses the access level: \"No access\", \"System email only\" or \"All email\".\n\n![Email Deliverability](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/emailDeliverability/overview.webp)",
+      "description": "Setup: **Email → Deliverability** (`/lightning/setup/OrgEmailSettings/home`)\n\nChooses the access level: \"No access\", \"System email only\" or \"All email\".\n\n![Email Deliverability](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/email-deliverability/screenshot.webp)",
       "examples": [
         {
           "accessLevel": "All email"

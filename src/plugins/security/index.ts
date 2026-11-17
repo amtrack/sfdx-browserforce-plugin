@@ -22,11 +22,11 @@ export const securitySchema = z
     description: [
       '**Certificate and Key Management**: Setup **Security → Certificate and Key Management** (`/lightning/setup/CertificatesAndKeysManagement/home`). Imports certificates from a Java Keystore (JKS) and creates self-signed certificates.',
       '',
-      '![Import Certificate from Keystore](docs/assets/settings/security/overview.webp)',
+      '![Import Certificate from Keystore](src/plugins/security/certificates.webp)',
       '',
       '**Authentication Configuration**: Setup **Company Settings → My Domain** (`/lightning/setup/OrgDomain/home`). Toggles the authentication services of the Authentication Configuration section.',
       '',
-      '![Authentication Configuration](docs/assets/settings/security-authentication-configuration.png)',
+      '![Authentication Configuration](src/plugins/security/authentication-configuration.webp)',
     ].join('\n'),
     examples: [
       {

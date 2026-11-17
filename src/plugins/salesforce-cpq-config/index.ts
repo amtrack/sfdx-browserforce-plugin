@@ -164,13 +164,13 @@ export const salesforceCpqConfigSchema = z
       '',
       'Sets the settings of the Salesforce CPQ package.',
       '',
-      '![Salesforce CPQ settings](docs/assets/settings/salesforce-cpq-config.png)',
+      '![Salesforce CPQ settings](src/plugins/salesforce-cpq-config/documents.webp)',
     ].join('\n'),
     examples: [{ documents: { documentFolder: 'UserPersonalDocuments', postToFeed: false } }],
     'x-prerequisites': ['Salesforce CPQ managed package (SBQQ) installed'],
   });
 
-const BASE_PATH = '/0A3?setupid=ImportedPackage&retURL=%2Fui%2Fsetup%2FSetup%3Fsetupid%3DStudio';
+export const BASE_PATH = '/0A3?setupid=ImportedPackage&retURL=%2Fui%2Fsetup%2FSetup%3Fsetupid%3DStudio';
 const AUTH_PATH = '/setup/secur/RemoteAccessAuthorizationPage.apexp';
 
 export const CONFIGURE_SELECTOR = '.actionLink[title*="Configure"][title*="Salesforce CPQ"]';

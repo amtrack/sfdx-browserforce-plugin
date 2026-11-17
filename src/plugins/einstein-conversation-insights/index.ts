@@ -21,7 +21,7 @@ export const einsteinConversationInsightsSchema = z
       '',
       'Turns on Einstein Conversation Insights through the Metadata API (`ConversationalIntelligenceSettings.enableCallCoaching`), then waits until Salesforce has created the objects that store the conversations: a deployment returns as soon as the setting is saved, while turning the feature on can take more than 30 minutes. It cannot be turned off again.',
       '',
-      '![Einstein Conversation Insights](docs/assets/settings/einsteinConversationInsights/overview.webp)',
+      '![Einstein Conversation Insights](src/plugins/einstein-conversation-insights/screenshot.webp)',
     ].join('\n'),
     examples: [{ enabled: true }],
     'x-prerequisites': ['Einstein Conversation Insights license (scratch org feature CallCoaching)'],

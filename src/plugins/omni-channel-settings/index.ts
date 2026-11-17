@@ -19,7 +19,7 @@ export const omniChannelSettingsSchema = z
       '',
       'Enables the status-based capacity model.',
       '',
-      '![Omni-Channel Settings](docs/assets/settings/omniChannelSettings/overview.webp)',
+      '![Omni-Channel Settings](src/plugins/omni-channel-settings/screenshot.webp)',
     ].join('\n'),
     examples: [{ enableStatusBasedCapacityModel: true }],
     'x-prerequisites': ['Omni-Channel enabled'],

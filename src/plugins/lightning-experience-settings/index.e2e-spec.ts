@@ -1,5 +1,6 @@
 import assert from 'assert';
-import { LightningExperienceSettings } from './index.js';
+import { LightningExperienceSettings, lightningExperienceSettingsSchema } from './index.js';
+import { capture } from '../../../test/capture.js';
 
 describe(LightningExperienceSettings.name, function () {
   describe('activeThemeName', () => {
@@ -19,6 +20,21 @@ describe(LightningExperienceSettings.name, function () {
       const state = await plugin.retrieve();
       assert.deepStrictEqual(state, configSLDS2);
     });
+    it(
+      'should activate the Lightning theme @capture',
+      capture(lightningExperienceSettingsSchema, {
+        config: { activeThemeName: 'Lightning' },
+        pages: {
+          screenshot: {
+            context: ['#setupComponent table'],
+            pills: {
+              activeThemeName:
+                '#setupComponent table > tbody > tr:has(td:nth-child(2) lightning-base-formatted-text:text-is("Lightning"))',
+            },
+          },
+        },
+      }),
+    );
     it('should activate LightningLite theme', async () => {
       await plugin.run(configLightningLite);
     });

@@ -14,47 +14,39 @@ Config key: `settings.permissionSets`
 
 Gives Permission Sets access to service presence statuses (Omni-Channel), by the API names of the statuses.
 
-![Service Presence Statuses Access](../assets/settings/permissionSets/overview.webp)
+## Screenshot
 
-## Use case
+![Permission Sets](../assets/plugins/permission-sets/screenshot.webp)
+
+| Pill | Field |
+| ---- | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>[0].<wbr>permissionSetName</code> |
+| <span class="bf-pill bf-pill-c2">2</span> | <code>[0].<wbr>servicePresenceStatuses</code> |
+
+## Use cases
 
 ### Support agents get the presence statuses of their team
 
-Omni-Channel agents choose a presence status, such as "Available for cases" or "On a break", in the Omni-Channel widget, and they only see the statuses their profile or permission sets give access to. Litware gives them through the **permission set <span class="bf-pill bf-pill-c1">1</span>** of its support agents, and adds a status each time a new channel opens.
+Omni-Channel agents choose a presence status, such as "Available for cases" or "On a break", in the Omni-Channel widget, and they only see the statuses their profile or permission sets give access to. Litware gives them through the **permission set** of its support agents, and adds a status each time a new channel opens.
 
-The access of a permission set to service presence statuses is not part of the `PermissionSet` metadata. This config moves the statuses `TestStatus` and `TestStatus2` (the API names of the statuses, here those of the test fixtures of this plugin) to the **enabled statuses <span class="bf-pill bf-pill-c2">2</span>** of the permission set, and removes the ones not listed.
+The access of a permission set to service presence statuses is not part of the `PermissionSet` metadata. This config moves the statuses `TestStatus` and `TestStatus2` (the API names of the statuses, here those of the test fixtures of this plugin) to the **enabled statuses** of the permission set, and removes the ones not listed.
 
-=== "Config"
-
-    ```json
-    {
-      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-      "settings": {
-        "permissionSets": [
-          {
-            "permissionSetName": "ServicePresenceTest",
-            "servicePresenceStatuses": [
-              "TestStatus",
-              "TestStatus2"
-            ]
-          }
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+  "settings": {
+    "permissionSets": [
+      {
+        "permissionSetName": "ServicePresenceTest",
+        "servicePresenceStatuses": [
+          "TestStatus",
+          "TestStatus2"
         ]
       }
-    }
-    ```
-
-=== "Before"
-
-    ![Before: Support agents get the presence statuses of their team](../assets/settings/permissionSets/01-agents-presence-statuses-presence-statuses-before.webp)
-
-=== "After"
-
-    ![After: Support agents get the presence statuses of their team](../assets/settings/permissionSets/01-agents-presence-statuses-presence-statuses-after.webp)
-
-| Pill | Field | Before | After |
-| ---- | ----- | ------ | ----- |
-| <span class="bf-pill bf-pill-c1">1</span> | <code>[0].<wbr>permissionSetName</code> | `ServicePresenceTest` | `ServicePresenceTest` |
-| <span class="bf-pill bf-pill-c2">2</span> | <code>[0].<wbr>servicePresenceStatuses</code> | `[]` | `["TestStatus","TestStatus2"]` |
+    ]
+  }
+}
+```
 
 ## Example
 
@@ -90,7 +82,7 @@ In the field paths, `[]` stands for the items of a list and `*` for the entries 
     {
       "default": [],
       "title": "Permission Sets",
-      "description": "Gives Permission Sets access to service presence statuses (Omni-Channel), by the API names of the statuses.\n\n![Service Presence Statuses Access](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/permissionSets/overview.webp)",
+      "description": "Gives Permission Sets access to service presence statuses (Omni-Channel), by the API names of the statuses.\n\n![Service Presence Statuses Access](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/permission-sets/screenshot.webp)",
       "examples": [
         [
           {

@@ -13,40 +13,32 @@ Setup: **User Interface → Density Settings** (`/lightning/setup/DensitySetup/h
 
 Chooses the default display density of the org: "Comfy" or "Compact".
 
-![Density Settings](../assets/settings/density-settings.png)
+## Screenshot
 
-## Use case
+![Density Settings](../assets/plugins/density-settings/screenshot.webp)
+
+| Pill | Field |
+| ---- | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>density</code> |
+
+## Use cases
 
 ### Contact center agents see more records on their laptops
 
 The agents of Pinewood Insurance answer claims on 13-inch laptops. With the default **Comfy** density, a case list view shows a dozen rows and the related lists of an account need several scrolls.
 
-Choosing **Compact <span class="bf-pill bf-pill-c1">1</span>** as the default density of the org puts labels next to their values and tightens every list, so the agents see about a third more records without zooming out. Agents who prefer the airier layout can still switch back in their own settings: this config only changes the default of the org, which the Metadata API cannot set.
+Choosing **Compact** as the default density of the org puts labels next to their values and tightens every list, so the agents see about a third more records without zooming out. Agents who prefer the airier layout can still switch back in their own settings: this config only changes the default of the org, which the Metadata API cannot set.
 
-=== "Config"
-
-    ```json
-    {
-      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-      "settings": {
-        "densitySettings": {
-          "density": "Compact"
-        }
-      }
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+  "settings": {
+    "densitySettings": {
+      "density": "Compact"
     }
-    ```
-
-=== "Before"
-
-    ![Before: Contact center agents see more records on their laptops](../assets/settings/densitySettings/01-compact-for-the-contact-center-density-settings-before.webp)
-
-=== "After"
-
-    ![After: Contact center agents see more records on their laptops](../assets/settings/densitySettings/01-compact-for-the-contact-center-density-settings-after.webp)
-
-| Pill | Field | Before | After |
-| ---- | ----- | ------ | ----- |
-| <span class="bf-pill bf-pill-c1">1</span> | <code>density</code> | `Comfy` | `Compact` |
+  }
+}
+```
 
 ## Examples
 
@@ -99,7 +91,7 @@ Choosing **Compact <span class="bf-pill bf-pill-c1">1</span>** as the default de
         }
       },
       "title": "Density Settings",
-      "description": "Setup: **User Interface → Density Settings** (`/lightning/setup/DensitySetup/home`)\n\nChooses the default display density of the org: \"Comfy\" or \"Compact\".\n\n![Density Settings](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/density-settings.png)",
+      "description": "Setup: **User Interface → Density Settings** (`/lightning/setup/DensitySetup/home`)\n\nChooses the default display density of the org: \"Comfy\" or \"Compact\".\n\n![Density Settings](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/density-settings/screenshot.webp)",
       "examples": [
         {
           "density": "Compact"

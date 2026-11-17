@@ -1,9 +1,7 @@
 /**
- * Pure helpers of the documentation screenshots: the capture records written by `npm run docs:capture`, and the
- * geometry, colours and stamps of the numbered pills drawn by `npm run docs:annotate`.
+ * Pure helpers of the documentation screenshots taken by `CAPTURE=true npm run test:e2e`: the geometry and colours of
+ * the numbered pills it draws into the images.
  */
-import { createHash } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 
 /** Width of the viewport of every capture, in CSS pixels. */
 export const VIEWPORT_WIDTH = 1440;
@@ -68,53 +66,6 @@ export function renderPillsCss(): string {
 export type Box = { x: number; y: number; width: number; height: number };
 
 export type ShotPill = { n: number; field: string; box: Box };
-
-/** One image of a capture: the raw screenshot of the whole viewport and the boxes of its controls. */
-export type ShotRecord = { file: string; pills: ShotPill[] };
-
-/** A pill of a capture: its number, the field it shows, and the images where its control is. */
-export type RecordedPill = { n: number; field: string; in: 'both' | 'before' | 'after' };
-
-export type CaptureRecord = {
-  name: string;
-  viewport: { width: number; height: number };
-  /** the pills declared by the `doc.shot()` of the capture, in their order */
-  pills: RecordedPill[];
-  /** part of the viewport kept in the documentation images, the same for "Before" and "After" */
-  clip: Box;
-  before: ShotRecord;
-  after: ShotRecord;
-};
-
-export type UseCaseRecord = {
-  /** `captureHash()` of the use case when it was captured */
-  hash: string;
-  capturedAt: string;
-  captures: CaptureRecord[];
-};
-
-/** `screenshots/<key>/capture.json` */
-export type SettingRecord = { useCases: Record<string, UseCaseRecord> };
-
-const recordUrl = (root: URL, key: string): URL => new URL(`screenshots/${key}/capture.json`, root);
-
-export function readSettingRecord(root: URL, key: string): SettingRecord | undefined {
-  const file = recordUrl(root, key);
-  return existsSync(file) ? (JSON.parse(readFileSync(file, 'utf8')) as SettingRecord) : undefined;
-}
-
-/** Writes the record of a setting with its use cases sorted, so a capture only changes its own lines. */
-export function writeSettingRecord(root: URL, key: string, record: SettingRecord): void {
-  mkdirSync(new URL(`screenshots/${key}/`, root), { recursive: true });
-  const sorted: SettingRecord = {
-    useCases: Object.fromEntries(Object.entries(record.useCases).sort(([a], [b]) => a.localeCompare(b))),
-  };
-  writeFileSync(
-    recordUrl(root, key),
-    `${JSON.stringify(sorted, null, 2)}
-`,
-  );
-}
 
 const PADDING = 40;
 const MIN_WIDTH = 960;
@@ -218,21 +169,5 @@ export function toClip(box: Box, clip: Box): Box {
 /** Quality of the WebP images of the documentation: text stays sharp, files are about 5 times smaller than PNG. */
 export const WEBP_QUALITY = 0.9;
 
-/** Changes whenever the drawing changes, so every image is drawn again. */
-export const RENDER_VERSION = 1;
-
-/** Stamp of an annotated image: changes when its raw screenshot, its clip or its pills change. */
-export function annotationStamp(raw: Buffer, clip: Box, pills: DrawnPill[]): string {
-  return createHash('sha256')
-    .update(raw)
-    .update(JSON.stringify({ clip, pills, version: RENDER_VERSION, quality: WEBP_QUALITY, palette: PILL_PALETTE }))
-    .digest('hex');
-}
-
-/** File name of an image: `<use case>-<capture>-<before|after>.<extension>` */
-export function shotFileName(slug: string, capture: string, state: 'before' | 'after', extension: string): string {
-  return `${slug}-${capture}-${state}.${extension}`;
-}
-
-/** Name of the overview image of a setting, shown in its description (catalog, schema.json and its page). */
-export const OVERVIEW_FILE = 'overview.webp';
+/** Folder of a plugin, with its screenshots, from the repository root; the site gets a copy of the images in docs/assets/plugins/. */
+export const pluginDir = (folder: string): string => `src/plugins/${folder}`;

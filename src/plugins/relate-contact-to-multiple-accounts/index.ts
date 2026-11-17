@@ -22,7 +22,7 @@ export const relateContactToMultipleAccountsSchema = z
       '',
       'Enabling it through the Metadata API (`AccountSettings.enableRelateContactToMultipleAccounts`) does not always make the `AccountContactRelation` object available. Enabling it in Setup always does.',
       '',
-      '![Account Settings](docs/assets/settings/relateContactToMultipleAccounts/overview.webp)',
+      '![Account Settings](src/plugins/relate-contact-to-multiple-accounts/screenshot.webp)',
     ].join('\n'),
     examples: [{ enabled: true }],
   });

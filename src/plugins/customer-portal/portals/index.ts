@@ -5,7 +5,7 @@ import { BrowserforcePlugin } from '../../../plugin.js';
 import { semanticallyCleanObject } from '../../utils.js';
 import type { portalProfileMembershipSchema, portalSchema } from '../index.js';
 
-const LIST_VIEW_PATH = '/_ui/core/portal/CustomerSuccessPortalSetup/d';
+export const LIST_VIEW_PATH = '/_ui/core/portal/CustomerSuccessPortalSetup/d';
 const PORTAL_PROFILE_MEMBERSHIP_PATH = '/_ui/core/portal/PortalProfileMembershipPage/e';
 
 const SAVE_BUTTON_SELECTOR = 'input[name="save"]';

@@ -1,6 +1,5 @@
 import assert from 'node:assert';
 import {
-  annotationStamp,
   computeClip,
   PILL_PALETTE,
   pillColor,
@@ -79,18 +78,6 @@ describe('screenshots', () => {
     it('vertically centers small controls and aligns tall ones on their first line', () => {
       const tall = placePill({ n: 1, box: { x: 100, y: 100, width: 200, height: 200 } }, image);
       assert.strictEqual(tall.cy, 115);
-    });
-  });
-
-  describe('annotationStamp()', () => {
-    it('changes with the image, the clip and the pills', () => {
-      const clip = { x: 0, y: 0, width: 10, height: 10 };
-      const pill = placePill({ n: 1, box: { x: 1, y: 1, width: 2, height: 2 } }, { width: 100, height: 100 });
-      const stamp = annotationStamp(Buffer.from('a'), clip, [pill]);
-      assert.strictEqual(stamp, annotationStamp(Buffer.from('a'), clip, [pill]));
-      assert.notStrictEqual(stamp, annotationStamp(Buffer.from('b'), clip, [pill]));
-      assert.notStrictEqual(stamp, annotationStamp(Buffer.from('a'), { ...clip, x: 1 }, [pill]));
-      assert.notStrictEqual(stamp, annotationStamp(Buffer.from('a'), clip, [{ ...pill, cx: pill.cx + 1 }]));
     });
   });
 

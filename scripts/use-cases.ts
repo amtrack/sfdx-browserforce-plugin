@@ -1,110 +1,89 @@
 /**
- * Use cases of the settings: each setting has a `src/plugins/<folder>/use-cases.e2e-spec.ts`, which exports its use
- * cases with `defineUseCases()`: the story told on the page of the setting, the `given` and `config` of the setting,
- * and a `shoot(doc)` function that opens the Setup pages with Playwright and takes the screenshots.
+ * The screenshots of the settings: an E2E test tagged `@capture` in its title wraps its step with `capture()`
+ * (`test/capture.ts`), whose definition lists the captures of the setting (`pages`): the selector of the control of
+ * each field, in the page that `retrieve()` of the plugin opens or the one `open()` returns.
  *
- * - `npm run docs:capture` runs them as E2E tests in a scratch org (`test/docs-setup.ts` makes `defineUseCases()`
- *   register them with mocha): apply `given`, shoot "Before", apply `config`, shoot "After", apply `given` again.
- *   The raw screenshots and the boxes of the controls go to `screenshots/<key>/`.
- * - `npm run docs:annotate` draws the numbered pills on them, `npm run generate:docs` writes the "Use cases" section
- *   of the pages, and the unit tests check them: they import the same files as data, without an org.
+ * - `CAPTURE=true npm run test:e2e` takes the screenshots in a scratch org while the E2E tests run and draws the
+ *   numbered pills into `src/plugins/<folder>/<capture>.webp`.
+ * - `npm run generate:docs` shows them on the page of the setting, and the unit tests check them: `loadUseCases()` reads
+ *   the E2E test files without running them. The stories of a setting are hand-written in
+ *   `src/plugins/<folder>/use-cases.md`.
  */
-import { createHash } from 'node:crypto';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
-import { isDeepStrictEqual } from 'node:util';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import type { FrameLocator, Locator, Page } from 'playwright';
+import type { FrameLocator, Page } from 'playwright';
 import { z } from 'zod';
 import type { Browserforce } from '../src/browserforce.js';
 import type { Field } from '../src/json-schema-utils.js';
 import { buildPluginCatalog } from '../src/plugin-catalog.js';
 import { schemas } from '../src/plugins/index.js';
-import { type Box, readSettingRecord, type SettingRecord } from './screenshots.js';
+import { type Box, pluginDir } from './screenshots.js';
 
 /** A position of a pill center, in % of the final image, when the default one covers something. */
 export type PillPosition = { px?: number; py?: number };
 
-/** How the images of a capture are drawn: changing it only needs `npm run docs:annotate`, not a new capture. */
-export type CaptureLayout = {
-  /** caption of the image when the use case has several captures */
+/**
+ * A capture: one annotated screenshot of a page, by default the one `retrieve(config)` of the plugin opens, shot just
+ * before it closes it. The selectors are looked up in the page or its Classic iframe.
+ */
+export type PageCapture = {
+  /**
+   * opens the page to shoot instead, when `retrieve()` opens none to show (it reads the API, or the page to show is a
+   * record or needs a click); use the paths the plugin exports
+   */
+  open?(doc: UseCaseDoc): Promise<Page>;
+  /** a part of the path of the page, when `retrieve()` opens other pages before it */
+  path?: string;
+  /** height of the viewport (default 900) */
+  height?: number;
+  /** the control of each field shown in the capture, by concrete path in the config; numbered in this order */
+  pills: Record<string, string>;
+  /** controls whose boxes join the pills to frame the image (a form section, a table), for context */
+  context?: string[];
+  /** controls hidden before the shot */
+  hide?: string[];
+  /** caption of the image when the setting has several captures */
   title?: string;
   /** part of the viewport kept: around the pills (default), the whole viewport, or a box in CSS pixels */
   clip?: 'auto' | 'viewport' | Box;
-  /** manual positions of pills, by field; `before` for the "Before" image only, when the control moves */
-  pills?: Record<string, PillPosition & { before?: PillPosition }>;
+  /** manual positions of pills, by field, when the default one covers something */
+  positions?: Record<string, PillPosition>;
 };
 
-/** The control that shows a field, and the images where it is (both by default). */
-export type ShotPill = Locator | { locator: Locator; in: 'before' | 'after' };
-
-export type ShotOptions = {
-  /** the control of each field shown in the capture, by concrete path in the config; numbered in this order */
-  pills: Record<string, ShotPill>;
-  /** controls whose boxes join the pills to frame the image (a form section, a table), for context */
-  context?: Locator[];
-  /** controls hidden before the shot */
-  hide?: Locator[];
-};
-
-/** What `shoot()` and `prepare()` get to drive the scratch org. */
+/** What `open()` of a capture gets to drive the scratch org. */
 export type UseCaseDoc = {
-  /** the images being taken: `shoot()` runs once before the config is applied, once after */
-  readonly state: 'before' | 'after';
   readonly browserforce: Browserforce;
   readonly orgId: string;
   /** Id of the first record of a SOQL query (Tooling API with `tooling`; 15 characters with `short`) */
   recordId(soql: string, options?: { tooling?: boolean; short?: boolean }): Promise<string>;
-  /** opens a page at the width of the screenshots (1440) and the given height (default 900) */
-  open(path: `/${string}`, options?: { height?: number }): Promise<Page & AsyncDisposable>;
+  /** opens a page at the size of the screenshot (1440 wide, the `height` of the capture) */
+  open(path: `/${string}`): Promise<Page>;
   /** the page, or the Classic page of a Lightning Setup page (its iframe), once the selector is there */
   within(page: Page, selector: string): Promise<Page | FrameLocator>;
   /** clicks the first control of a selector, in the page or its Classic iframe (a tab, a link; never Save) */
   click(page: Page, selector: string): Promise<void>;
-  /** applies the config of another setting, e.g. a feature this use case needs */
-  apply<S extends z.ZodType>(schema: S, config: z.input<S>): Promise<void>;
-  /** measures the controls and takes the screenshot of a capture */
-  shot(name: string, page: Page, options: ShotOptions): Promise<void>;
 };
 
 export type UseCaseDefinition<C> = {
-  /** `NN-short-title`: the order of the use case on the page, and the prefix of its images */
-  slug: string;
-  title: string;
-  /** the story, in Markdown paragraphs, citing the pills as **(1)** */
-  story: string[];
-  /** value of the setting applied before the "Before" shots, and again after the "After" shots */
-  given?: C;
-  /** value of the setting the use case applies */
+  /** value of the setting the step applies (unless the test passes its own step to `capture()`) */
   config: C;
-  /** apply `given` again after the "After" shots, so the next use cases start from a neutral org (default true) */
-  restore?: boolean;
-  /** why a second run of `config` still changes the org (a replacement in records, a secret that cannot be read) */
-  notIdempotent?: string;
-  /** fields of `config` that no control of the captured pages shows, with the reason */
-  withoutPill?: Record<string, string>;
-  /** why the screenshots cannot be produced in a scratch org */
-  skip?: string;
-  /** how the images of each capture are drawn, by capture name */
-  captures?: Record<string, CaptureLayout>;
-  /** runs before `given`: the settings or data the use case needs */
-  prepare?(doc: UseCaseDoc): Promise<void>;
-  /** opens the Setup pages and calls `doc.shot()` for each capture; runs for "Before", then for "After" */
-  shoot?(doc: UseCaseDoc): Promise<void>;
+  /**
+   * when the screenshots are taken: after the step (default), or before it, when the config removes what they show
+   * (a deleted value, a renamed one)
+   */
+  screenshot?: 'before' | 'after';
+  /** the captures, by name (the file name of the image): one screenshot each, its pills numbered in this order */
+  pages: Record<string, PageCapture>;
 };
 
-/** The use cases of a setting, as exported by its `use-cases.e2e-spec.ts`. */
-export type UseCaseSet = {
-  key: string;
-  definitions: Array<UseCaseDefinition<unknown>>;
-};
+/** What `capture()` attaches to the test function it returns, so it can be read without running it. */
+export type CaptureTestData = { key: string; definition: UseCaseDefinition<unknown> };
 
 /** A pill with its number and drawing options. */
 export type NumberedPill = PillPosition & {
   n: number;
   field: string;
-  in: 'both' | 'before' | 'after';
   capture: string;
-  before?: PillPosition;
 };
 
 export type UseCaseCapture = {
@@ -114,37 +93,23 @@ export type UseCaseCapture = {
   pills: NumberedPill[];
 };
 
-/** A use case with the captures recorded by its last run (none when it was never captured). */
+/** The screenshots of a `capture()` test, with their numbered pills. */
 export type UseCase = {
   /** config key of the setting */
   key: string;
   /** folder of the plugin in src/plugins */
   folder: string;
-  slug: string;
-  /** where the use case is defined, for the messages */
+  /** where it is defined (the E2E test), for the messages */
   file: string;
-  title: string;
-  story: string;
-  given?: unknown;
   config: unknown;
-  restore: boolean;
-  withoutPill: Array<{ field: string; reason: string }>;
-  skip?: string;
-  /** the captures of the last run, with the layout of the definition */
   captures: UseCaseCapture[];
   definition: UseCaseDefinition<unknown>;
 };
 
-/** What `test/docs-setup.ts` provides to run the use cases; absent outside `npm run docs:capture`. */
-export type UseCaseRunner = { run(useCase: UseCase): Promise<void> };
-
-declare global {
-  // eslint-disable-next-line no-var
-  var browserforceDocs: UseCaseRunner | undefined;
-}
-
-export const USE_CASES_FILE = 'use-cases.e2e-spec.ts';
-const SLUG = /^\d{2}-[a-z0-9]+(?:-[a-z0-9]+)*$/;
+/** The tag of the title of the E2E tests that take screenshots: `it('... @capture', capture(...))`. */
+export const CAPTURE_TAG = '@capture';
+/** Where the E2E tests are, in a plugin folder (`index.e2e-spec.ts`, also in the folders of its parts). */
+const E2E_FILE = /\.e2e-spec\.ts$/;
 
 const root = new URL('../', import.meta.url);
 
@@ -191,130 +156,106 @@ export function fieldsOf(key: string): Field[] {
   return fieldsCache.get(key) ?? [];
 }
 
+/** A definition with its captures, their pills numbered in the order of `pages`. */
+export function toUseCase(
+  key: string,
+  definition: UseCaseDefinition<unknown>,
+  file = `src/plugins/${folderOf(key)}`,
+): UseCase {
+  let n = 0;
+  const captures: UseCaseCapture[] = Object.entries(definition.pages).map(([name, page]) => ({
+    name,
+    title: page.title,
+    clip: page.clip ?? 'auto',
+    pills: Object.keys(page.pills).map((field) => ({
+      n: ++n,
+      field,
+      capture: name,
+      px: page.positions?.[field]?.px,
+      py: page.positions?.[field]?.py,
+    })),
+  }));
+  return { key, folder: folderOf(key), file, config: definition.config, captures, definition };
+}
+
+function listE2eFiles(dir: URL): URL[] {
+  return readdirSync(dir, { withFileTypes: true })
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .flatMap((entry) =>
+      entry.isDirectory()
+        ? listE2eFiles(new URL(`${entry.name}/`, dir))
+        : E2E_FILE.test(entry.name)
+          ? [new URL(entry.name, dir)]
+          : [],
+    );
+}
+
+type CollectedTest = { title: string; data: CaptureTestData };
+const collectedTests = new Map<string, CollectedTest[]>();
+
 /**
- * The use cases of a setting, typed by its schema. Under `npm run docs:capture` (`test/docs-setup.ts` loaded first),
- * it also registers them as mocha tests: `describe('<key>')` with one `it('<slug>')` per use case, the irreversible
- * ones last since their "Before" can only be taken once per org.
+ * The `capture()` tests of an E2E test file, read by importing it with stand-ins for the globals of mocha that run the
+ * `describe()` bodies but no test or hook. A module is only evaluated once, so the result is kept.
  */
-export function defineUseCases<S extends z.ZodType>(
-  schema: S,
-  definitions: Array<UseCaseDefinition<z.input<S>>>,
-): UseCaseSet {
-  const key = settingKey(schema);
-  const set: UseCaseSet = { key, definitions: definitions as Array<UseCaseDefinition<unknown>> };
-  const runner = globalThis.browserforceDocs;
-  if (runner) {
-    const record = readSettingRecord(root, key);
-    const useCases = set.definitions.map((definition) => toUseCase(set, definition, record));
-    describe(key, function () {
-      this.timeout('15m');
-      for (const useCase of runOrder(useCases)) {
-        (useCase.skip ? it.skip : it)(useCase.slug, async () => runner.run(useCase));
-      }
-    });
+async function collectCaptureTests(file: URL): Promise<CollectedTest[]> {
+  const cached = collectedTests.get(file.href);
+  if (cached) {
+    return cached;
   }
-  return set;
+  const tests: CollectedTest[] = [];
+  const noop = (): void => {};
+  const suiteContext = { timeout: noop, slow: noop, retries: noop };
+  const suite = (_title: string, body?: (this: typeof suiteContext) => void): void => body?.call(suiteContext);
+  const test = (title: string, fn?: { useCase?: CaptureTestData }): void => {
+    if (fn?.useCase) {
+      tests.push({ title, data: fn.useCase });
+    }
+  };
+  const stand = {
+    describe: Object.assign(suite, { skip: suite, only: suite }),
+    it: Object.assign(test, { skip: test, only: test }),
+    before: noop,
+    after: noop,
+    beforeEach: noop,
+    afterEach: noop,
+  };
+  const globals = globalThis as unknown as Record<string, unknown>;
+  const saved = Object.fromEntries(Object.keys(stand).map((name) => [name, globals[name]]));
+  Object.assign(globals, stand);
+  try {
+    await import(pathToFileURL(fileURLToPath(file)).href);
+  } finally {
+    Object.assign(globals, saved);
+  }
+  collectedTests.set(file.href, tests);
+  return tests;
 }
 
 /**
- * The run order of use cases in one scratch org: by plugin folder, and in each the reversible use cases, then the
- * irreversible ones (their "Before" can only be taken once per org).
+ * The `capture()` tests of every setting, by config key, in the order of their files. A test belongs to the setting of
+ * the schema given to `capture()`, whatever the folder of its test: the first test that turns on a setting another one
+ * needs may be in the folder of the other one (einsteinConversationInsights in call-summaries).
  */
-export function runOrder(useCases: UseCase[]): UseCase[] {
-  const irreversible = (useCase: UseCase): boolean => isIrreversible(useCase, fieldsOf(useCase.key));
-  const folders = [...new Set(useCases.map((useCase) => useCase.folder))].sort();
-  return folders.flatMap((folder) => {
-    const ofFolder = useCases.filter((useCase) => useCase.folder === folder);
-    return [...ofFolder.filter((useCase) => !irreversible(useCase)), ...ofFolder.filter(irreversible)];
-  });
-}
-
-/** A definition with the captures of its record, numbered, and the layout of the definition. */
-export function toUseCase(set: UseCaseSet, definition: UseCaseDefinition<unknown>, record?: SettingRecord): UseCase {
-  const folder = folderOf(set.key);
-  const captures: UseCaseCapture[] = (record?.useCases[definition.slug]?.captures ?? []).map((capture) => {
-    const layout = definition.captures?.[capture.name] ?? {};
-    return {
-      name: capture.name,
-      title: layout.title,
-      clip: layout.clip ?? 'auto',
-      pills: capture.pills.map((pill) => ({
-        ...pill,
-        capture: capture.name,
-        px: layout.pills?.[pill.field]?.px,
-        py: layout.pills?.[pill.field]?.py,
-        before: layout.pills?.[pill.field]?.before,
-      })),
-    };
-  });
-  return {
-    key: set.key,
-    folder,
-    slug: definition.slug,
-    file: `src/plugins/${folder}/${USE_CASES_FILE} (${definition.slug})`,
-    title: definition.title,
-    story: definition.story.join('\n\n'),
-    given: definition.given,
-    config: definition.config,
-    restore: definition.restore ?? true,
-    withoutPill: Object.entries(definition.withoutPill ?? {}).map(([field, reason]) => ({ field, reason })),
-    skip: definition.skip,
-    captures,
-    definition,
-  };
-}
-
-/** The use cases of every setting, by config key, in the order of their definitions, with their records. */
 export async function loadUseCases(rootUrl: URL = root): Promise<Map<string, UseCase[]>> {
   const pluginsDir = new URL('src/plugins/', rootUrl);
-  const useCases = new Map<string, UseCase[]>();
-  for (const [key, folder] of findPluginFolders(pluginsDir)) {
-    const file = new URL(`${folder}/${USE_CASES_FILE}`, pluginsDir);
-    if (!existsSync(file)) {
-      useCases.set(key, []);
-      continue;
-    }
+  const folders = findPluginFolders(pluginsDir);
+  const useCases = new Map<string, UseCase[]>([...folders.keys()].map((key) => [key, []]));
+  for (const file of listE2eFiles(pluginsDir)) {
     // eslint-disable-next-line no-await-in-loop
-    const module = (await import(pathToFileURL(fileURLToPath(file)).href)) as { useCases?: UseCaseSet };
-    const set = module.useCases;
-    if (set?.key !== key) {
-      throw new Error(`src/plugins/${folder}/${USE_CASES_FILE} must export the use cases of ${key} as "useCases"`);
+    for (const { title, data } of await collectCaptureTests(file)) {
+      const where = `${fileURLToPath(file).slice(fileURLToPath(rootUrl).length)} "${title}"`;
+      if (!title.includes(CAPTURE_TAG)) {
+        throw new Error(`${where}: the title of a capture() test must include ${CAPTURE_TAG}`);
+      }
+      useCases.get(data.key)!.push(toUseCase(data.key, data.definition, where));
     }
-    const record = readSettingRecord(rootUrl, key);
-    useCases.set(
-      key,
-      set.definitions.map((definition) => toUseCase(set, definition, record)),
-    );
   }
   return useCases;
 }
 
-/** Pills of a use case with their numbers, in the order of the captures. */
+/** Pills of a `capture()` test with their numbers, in the order of the captures. */
 export function numberPills(useCase: Pick<UseCase, 'captures'>): NumberedPill[] {
   return useCase.captures.flatMap((capture) => capture.pills);
-}
-
-type PathSegment = string | number;
-
-/** `picklistValues[0].newValue` → ['picklistValues', 0, 'newValue']; `[1].name` → [1, 'name'] */
-export function parseConcretePath(path: string): PathSegment[] {
-  const segments: PathSegment[] = [];
-  for (const match of path.matchAll(/\[(\d+)\]|([^.[\]]+)/g)) {
-    segments.push(match[1] === undefined ? match[2] : Number(match[1]));
-  }
-  return segments;
-}
-
-/** Value at a concrete path, or undefined. */
-export function valueAt(value: unknown, path: string): unknown {
-  let current: unknown = value;
-  for (const segment of parseConcretePath(path)) {
-    if (current === null || typeof current !== 'object') {
-      return undefined;
-    }
-    current = (current as Record<PathSegment, unknown>)[segment];
-  }
-  return current;
 }
 
 /**
@@ -337,238 +278,55 @@ export function matchesFieldPath(concrete: string, fieldPath: string): boolean {
   return new RegExp(`^${pattern}$`).test(concrete);
 }
 
-/** Concrete paths of a value that are instances of a catalog field; `json` fields stop the descent. */
-export function fieldInstances(value: unknown, fields: Field[]): string[] {
-  const found = new Set<string>();
-  const visit = (node: unknown, path: string): void => {
-    if (path && fields.some((field) => matchesFieldPath(path, field.path))) {
-      found.add(path);
-      return;
-    }
-    if (Array.isArray(node)) {
-      node.forEach((item, index) => visit(item, `${path}[${index}]`));
-    } else if (node !== null && typeof node === 'object') {
-      for (const [name, item] of Object.entries(node)) {
-        visit(item, path ? `${path}.${name}` : name);
-      }
-    }
-  };
-  visit(value, '');
-  return [...found];
-}
-
-/** A bold run of Markdown, `**text**`: the pills are cited inside one. */
-export const BOLD_RUN = /\*\*([^*]+)\*\*/g;
-/** A pill citation inside a bold run, `(2)`. */
-export const PILL_CITATION = /\((\d+)\)/g;
-
-/** Numbers of the pills cited in a story: `**(2)**`, or `(2)` inside a bold run such as `**Save (3)**`. */
-export function citedPills(story: string): number[] {
-  return [...story.matchAll(BOLD_RUN)].flatMap((bold) =>
-    [...bold[1].matchAll(PILL_CITATION)].map((match) => Number(match[1])),
-  );
-}
-
 type SafeParser = { safeParse: (value: unknown) => { success: boolean; error?: z.core.$ZodError } };
 
 export type CheckOptions = {
-  /** check the pills of the captures too (false before the use cases run) */
+  /** check that the images of the captures exist (false before the screenshots are taken) */
   captured?: boolean;
-  /** check that the use cases together show every field of the setting */
-  wholeSetting?: boolean;
 };
 
 /**
- * Problems of the use cases of one setting: invalid config, unfinished text, and once captured: unknown fields,
- * fields of the config shown by no pill, pills cited in the story but missing, layouts of unknown captures.
+ * Problems of the `capture()` tests of one setting: invalid config, no capture, two captures of the same name (the
+ * same image), pills on fields the setting does not have, positions of pills the capture does not have, and missing
+ * images.
  */
 export function checkUseCases(
   useCases: UseCase[],
   fields: Field[],
   schema: SafeParser,
-  { captured = true, wholeSetting = true }: CheckOptions = {},
+  { captured = true }: CheckOptions = {},
 ): string[] {
   const problems: string[] = [];
-  const covered = new Set<string>();
-  const slugs = useCases.map((useCase) => useCase.slug);
-  if (new Set(slugs).size !== slugs.length) {
-    problems.push(`${useCases[0].key}: two use cases have the same slug`);
+  const names = useCases.flatMap((useCase) => useCase.captures.map((capture) => capture.name));
+  for (const name of new Set(names.filter((name, index) => names.indexOf(name) !== index))) {
+    problems.push(`${useCases[0].key}: two captures are named "${name}", their images would overwrite each other`);
   }
   for (const useCase of useCases) {
     const where = useCase.file;
-    if (!SLUG.test(useCase.slug)) {
-      problems.push(`${where}: the slug must look like 01-short-title`);
-    }
-    for (const [name, value] of [
-      ['config', useCase.config],
-      ['given', useCase.given],
-    ] as const) {
-      if (value === undefined) {
-        continue;
-      }
-      const result = schema.safeParse(value);
-      if (!result.success) {
-        const details = result.error ? z.prettifyError(result.error) : 'invalid';
-        problems.push(`${where}: "${name}" does not match the schema of the setting: ${details}`);
-      }
-    }
-    if (/\bTODO\b/.test(`${useCase.title}\n${useCase.story}`)) {
-      problems.push(`${where}: replace the TODO with the story of the use case`);
-    }
-    if (!useCase.story) {
-      problems.push(`${where}: the story is missing`);
-    }
-    if (!useCase.skip && !useCase.definition.shoot) {
-      problems.push(`${where}: no shoot() (add one, or "skip" with the reason)`);
-    }
-    for (const entry of useCase.withoutPill) {
-      covered.add(entry.field);
-    }
-    if (!captured || useCase.skip) {
-      continue;
+    const result = schema.safeParse(useCase.config);
+    if (!result.success) {
+      const details = result.error ? z.prettifyError(result.error) : 'invalid';
+      problems.push(`${where}: "config" does not match the schema of the setting: ${details}`);
     }
     if (useCase.captures.length === 0) {
-      problems.push(`${where}: never captured: run npm run docs:capture -- -o <scratch org> ${useCase.key}`);
-      continue;
+      problems.push(`${where}: no capture in "pages"`);
     }
-    const pills = numberPills(useCase);
-    const shown = [...pills.map((pill) => pill.field), ...useCase.withoutPill.map((entry) => entry.field)];
-    for (const path of shown) {
-      if (!fields.some((field) => matchesFieldPath(path, field.path))) {
-        problems.push(`${where}: "${path}" is not a field of the setting`);
-      } else if (valueAt(useCase.config, path) === undefined && valueAt(useCase.given, path) === undefined) {
-        problems.push(`${where}: "${path}" is set neither in "config" nor in "given"`);
+    for (const capture of useCase.captures) {
+      const image = `${pluginDir(useCase.folder)}/${capture.name}.webp`;
+      if (captured && !existsSync(new URL(image, root))) {
+        problems.push(`${where}: ${image} is missing: run CAPTURE=true npm run test:e2e in a scratch org`);
       }
-    }
-    if (new Set(shown).size !== shown.length) {
-      problems.push(`${where}: a field has two pills, or a pill and a "withoutPill" entry`);
-    }
-    for (const path of fieldInstances(useCase.config, fields)) {
-      if (!shown.includes(path)) {
-        problems.push(`${where}: "${path}" of the config needs a pill, or a "withoutPill" entry with the reason`);
-      }
-    }
-    for (const n of citedPills(useCase.story)) {
-      if (n < 1 || n > pills.length) {
-        problems.push(`${where}: the story cites pill (${n}) but the use case has ${pills.length} pills`);
-      }
-    }
-    for (const [name, layout] of Object.entries(useCase.definition.captures ?? {})) {
-      const capture = useCase.captures.find((candidate) => candidate.name === name);
-      if (!capture) {
-        problems.push(`${where}: "captures" names "${name}", which no doc.shot() takes`);
-        continue;
-      }
-      for (const field of Object.keys(layout.pills ?? {})) {
-        if (!capture.pills.some((pill) => pill.field === field)) {
-          problems.push(`${where}: "captures.${name}.pills" names "${field}", which has no pill in that capture`);
+      for (const pill of capture.pills) {
+        if (!fields.some((field) => matchesFieldPath(pill.field, field.path))) {
+          problems.push(`${where}: "${pill.field}" is not a field of the setting`);
         }
       }
-    }
-    for (const path of shown) {
-      covered.add(path);
-    }
-  }
-  if (wholeSetting && captured && useCases.some((useCase) => !useCase.skip)) {
-    for (const field of fields) {
-      if (![...covered].some((path) => matchesFieldPath(path, field.path))) {
-        problems.push(`${useCases[0].key}: no use case shows the field "${field.path}"`);
+      for (const field of Object.keys(useCase.definition.pages[capture.name].positions ?? {})) {
+        if (!capture.pills.some((pill) => pill.field === field)) {
+          problems.push(`${where}: "pages.${capture.name}.positions" names "${field}", which has no pill`);
+        }
       }
     }
   }
   return problems;
-}
-
-/** Whether the config of a use case sets a field that cannot be changed back once applied. */
-export function isIrreversible(useCase: Pick<UseCase, 'config'>, fields: Field[]): boolean {
-  return fieldInstances(useCase.config, fields).some((path) =>
-    fields.some((field) => field.isIrreversible && matchesFieldPath(path, field.path)),
-  );
-}
-
-/**
- * Whether applying the config of a use case changes an irreversible field from its value in `given`: `given` cannot
- * be applied again afterwards. A config that repeats the irreversible value of `given` (`enabled: true` of a portal
- * already enabled) can be restored.
- */
-export function changesIrreversibly(useCase: Pick<UseCase, 'config' | 'given'>, fields: Field[]): boolean {
-  return fieldInstances(useCase.config, fields).some(
-    (path) =>
-      fields.some((field) => field.isIrreversible && matchesFieldPath(path, field.path)) &&
-      !isDeepStrictEqual(valueAt(useCase.config, path), valueAt(useCase.given, path)),
-  );
-}
-
-const normalizeText = (text: string): string => text.replace(/\r\n/g, '\n');
-
-/**
- * The code of a plugin without the Markdown descriptions of its schema (`description: [...].join('\n')`), which
- * change nothing in the Setup pages: pointing a description to its new overview image keeps the capture fresh.
- */
-export const withoutDescriptions = (code: string): string =>
-  code.replace(/description: \[[\s\S]*?\]\.join\('\\n'\)/g, 'description');
-
-function listFiles(dir: URL, relative = ''): string[] {
-  if (!existsSync(dir)) {
-    return [];
-  }
-  return readdirSync(dir, { withFileTypes: true })
-    .flatMap((entry) =>
-      entry.isDirectory()
-        ? listFiles(new URL(`${entry.name}/`, dir), `${relative}${entry.name}/`)
-        : [`${relative}${entry.name}`],
-    )
-    .sort();
-}
-
-/** The source of a function with its whitespace collapsed, so a reformatting does not make a capture stale. */
-const functionCode = (fn?: (...args: never[]) => unknown): string | undefined =>
-  fn ? fn.toString().replace(/\s+/g, ' ') : undefined;
-
-/**
- * What of a use case changes its screenshots: the states applied and the code that opens the pages and measures the
- * controls. Its story, title and layout only change the text or the drawing (`npm run docs:annotate`).
- */
-function captureSpec(rootUrl: URL, useCase: UseCase): unknown {
-  return {
-    given: useCase.given,
-    config: useCase.config,
-    restore: useCase.restore,
-    prepare: functionCode(useCase.definition.prepare),
-    shoot: functionCode(useCase.definition.shoot),
-    helpers: specHelpers(rootUrl, useCase.folder),
-  };
-}
-
-/**
- * The code of a use cases file before its `defineUseCases()` call: the imports and the helpers that `shoot()` and
- * `prepare()` call (`shootTab()` of salesforceCpqConfig), whose changes change the screenshots too.
- */
-function specHelpers(rootUrl: URL, folder: string): string {
-  const file = new URL(`src/plugins/${folder}/${USE_CASES_FILE}`, rootUrl);
-  if (!existsSync(file)) {
-    return '';
-  }
-  const text = normalizeText(readFileSync(file, 'utf8'));
-  const call = text.indexOf('export const useCases = defineUseCases(');
-  return (call < 0 ? text : text.slice(0, call)).replace(/\s+/g, ' ');
-}
-
-/**
- * Hash of what a capture depends on: its capture spec, and the code (without the descriptions) and fixtures of its
- * plugin. A capture whose hash differs is stale: `npm run docs:capture -- --stale` takes it again. Line endings are
- * normalized, so a checkout with CRLF gives the same hash.
- */
-export function captureHash(rootUrl: URL, useCase: UseCase): string {
-  const hash = createHash('sha256');
-  hash.update(JSON.stringify(captureSpec(rootUrl, useCase)));
-  const pluginDir = new URL(`src/plugins/${useCase.folder}/`, rootUrl);
-  for (const file of listFiles(pluginDir).filter(
-    (name) => name.startsWith('sfdx-source/') || (name.endsWith('.ts') && !/\.(test|e2e-spec)\.ts$/.test(name)),
-  )) {
-    hash.update(`\0${file}\0`);
-    const text = normalizeText(readFileSync(new URL(file, pluginDir), 'utf8'));
-    hash.update(file.endsWith('.ts') ? withoutDescriptions(text) : text);
-  }
-  return hash.digest('hex');
 }

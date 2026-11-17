@@ -16,42 +16,34 @@ Setup: **Slack → Slack Apps Setup** (`/lightning/setup/SlackSetupAssistant/hom
 
 Agrees to the terms and conditions and enables the Sales Cloud for Slack app.
 
-![Slack Apps Setup](../assets/settings/slack.png)
+## Screenshot
 
-## Use case
+![Slack Apps Setup](../assets/plugins/slack/screenshot.webp)
+
+| Pill | Field |
+| ---- | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>agreeToTermsAndConditions</code> |
+| <span class="bf-pill bf-pill-c2">2</span> | <code>enableSalesCloudForSlack</code> |
+
+## Use cases
 
 ### The sales team works its deals from Slack
 
 The account executives of Trey Research spend their day in Slack, and update their opportunities in Salesforce at the end of the week, if at all. Sales operations wants them to look up and update records, and get deal alerts, without leaving Slack, with the Sales Cloud for Slack app.
 
-Before any Slack app can connect to the org, an admin must **accept the terms and conditions <span class="bf-pill bf-pill-c1">1</span>** of the Slack integration, then turn on **Sales Cloud for Slack <span class="bf-pill bf-pill-c2">2</span>**. No Metadata API type holds either toggle, and the terms can never be declined again once accepted: this config does both in each new org, so the Slack workspace of the sandbox can be connected right after it is created.
+Before any Slack app can connect to the org, an admin must **accept the terms and conditions** of the Slack integration, then turn on **Sales Cloud for Slack**. No Metadata API type holds either toggle, and the terms can never be declined again once accepted: this config does both in each new org, so the Slack workspace of the sandbox can be connected right after it is created.
 
-=== "Config"
-
-    ```json
-    {
-      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-      "settings": {
-        "slack": {
-          "agreeToTermsAndConditions": true,
-          "enableSalesCloudForSlack": true
-        }
-      }
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+  "settings": {
+    "slack": {
+      "agreeToTermsAndConditions": true,
+      "enableSalesCloudForSlack": true
     }
-    ```
-
-=== "Before"
-
-    ![Before: The sales team works its deals from Slack](../assets/settings/slack/01-sales-team-works-deals-in-slack-slack-apps-setup-before.webp)
-
-=== "After"
-
-    ![After: The sales team works its deals from Slack](../assets/settings/slack/01-sales-team-works-deals-in-slack-slack-apps-setup-after.webp)
-
-| Pill | Field | Before | After |
-| ---- | ----- | ------ | ----- |
-| <span class="bf-pill bf-pill-c1">1</span> | <code>agreeToTermsAndConditions</code> |  | `true` |
-| <span class="bf-pill bf-pill-c2">2</span> | <code>enableSalesCloudForSlack</code> | `false` | `true` |
+  }
+}
+```
 
 ## Example
 
@@ -92,7 +84,7 @@ Before any Slack app can connect to the org, an admin must **accept the terms an
         }
       },
       "title": "Slack Apps Setup",
-      "description": "Setup: **Slack → Slack Apps Setup** (`/lightning/setup/SlackSetupAssistant/home`)\n\nAgrees to the terms and conditions and enables the Sales Cloud for Slack app.\n\n![Slack Apps Setup](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/slack.png)",
+      "description": "Setup: **Slack → Slack Apps Setup** (`/lightning/setup/SlackSetupAssistant/home`)\n\nAgrees to the terms and conditions and enables the Sales Cloud for Slack app.\n\n![Slack Apps Setup](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/slack/screenshot.webp)",
       "examples": [
         {
           "agreeToTermsAndConditions": true,
