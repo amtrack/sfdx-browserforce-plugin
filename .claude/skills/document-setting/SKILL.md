@@ -127,14 +127,16 @@ it(
 - A setting a scratch org cannot show (an external app, a feature the scratch definition cannot enable) has no
   screenshot: add it to `WITHOUT_SCREENSHOT` in `test/use-cases.test.ts` with the reason.
 
-**The use cases** (`src/plugins/<folder>/use-cases.md`, optional) are for an end user, an admin who never read the
+**The use cases** (`src/plugins/<folder>/use-cases.md`, optional; `npm run generate:plugin` creates a placeholder to
+replace or delete) are for an end user, an admin who never read the
 code. Per use case: a `##` heading, the story (a named company, its admin's need, one sentence on why the Metadata API
 cannot do it, what the config changes; three to six sentences) and its config as a `json` block with `$schema`. Only
 what the Metadata API cannot do: a setting the Metadata API now covers belongs in `src/plugins/deprecated.ts`, report
 it to the user instead of documenting it. Order them from the simplest to the most advanced.
 
 Validate without an org: `npm run test -- -g "screenshots"` (it reads the `capture()` steps from the E2E tests and
-checks them), and `npx tsc -p test` (the configs are typed by the schema of the setting).
+checks them), `npm run test -- -g "use-cases.md"` (the `json` blocks of `use-cases.md` must parse) and `npx tsc -p test`
+(the configs are typed by the schema of the setting).
 
 ## 4. Capture
 
