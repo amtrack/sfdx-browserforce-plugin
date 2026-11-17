@@ -40,33 +40,18 @@ Turning on the **Sales Navigator integration** adds the Sales Navigator componen
 }
 ```
 
-## Examples
+## Example
 
-=== "Example 1"
-
-    ```json
-    {
-      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-      "settings": {
-        "linkedInSalesNavigatorSettings": {
-          "enabled": true
-        }
-      }
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+  "settings": {
+    "linkedInSalesNavigatorSettings": {
+      "enabled": false
     }
-    ```
-
-=== "Example 2"
-
-    ```json
-    {
-      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-      "settings": {
-        "linkedInSalesNavigatorSettings": {
-          "enabled": false
-        }
-      }
-    }
-    ```
+  }
+}
+```
 
 ## Fields
 

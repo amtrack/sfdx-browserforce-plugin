@@ -40,33 +40,18 @@ Choosing **Compact** as the default density of the org puts labels next to their
 }
 ```
 
-## Examples
+## Example
 
-=== "Example 1"
-
-    ```json
-    {
-      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-      "settings": {
-        "densitySettings": {
-          "density": "Compact"
-        }
-      }
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+  "settings": {
+    "densitySettings": {
+      "density": "Comfy"
     }
-    ```
-
-=== "Example 2"
-
-    ```json
-    {
-      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-      "settings": {
-        "densitySettings": {
-          "density": "Comfy"
-        }
-      }
-    }
-    ```
+  }
+}
+```
 
 ## Fields
 

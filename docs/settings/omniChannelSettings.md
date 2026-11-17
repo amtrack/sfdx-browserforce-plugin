@@ -43,19 +43,6 @@ The **status-based capacity model** counts a case only while its status says it 
 }
 ```
 
-## Example
-
-```json
-{
-  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-  "settings": {
-    "omniChannelSettings": {
-      "enableStatusBasedCapacityModel": true
-    }
-  }
-}
-```
-
 ## Fields
 
 | Field | Type | Description |

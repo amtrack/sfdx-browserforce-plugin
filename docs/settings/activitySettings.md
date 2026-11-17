@@ -43,19 +43,6 @@ The account managers of Proseware meet buying committees of four or five people.
 }
 ```
 
-## Example
-
-```json
-{
-  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-  "settings": {
-    "activitySettings": {
-      "allowUsersToRelateMultipleContactsToTasksAndEvents": true
-    }
-  }
-}
-```
-
 ## Fields
 
 | Field | Type | Description |

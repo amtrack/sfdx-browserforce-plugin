@@ -37,21 +37,6 @@ Enhanced folder sharing gives each folder Viewer, Editor and Manager access leve
 }
 ```
 
-## Example
-
-```json
-{
-  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-  "settings": {
-    "reportsAndDashboards": {
-      "folderSharing": {
-        "enableEnhancedFolderSharing": true
-      }
-    }
-  }
-}
-```
-
 ## Fields
 
 | Field | Type | Description |

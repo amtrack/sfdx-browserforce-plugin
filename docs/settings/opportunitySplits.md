@@ -40,33 +40,18 @@ Opportunity Splits stores the shares on the opportunity itself. The Metadata API
 }
 ```
 
-## Examples
+## Example
 
-=== "Example 1"
-
-    ```json
-    {
-      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-      "settings": {
-        "opportunitySplits": {
-          "enabled": true
-        }
-      }
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+  "settings": {
+    "opportunitySplits": {
+      "enabled": false
     }
-    ```
-
-=== "Example 2"
-
-    ```json
-    {
-      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-      "settings": {
-        "opportunitySplits": {
-          "enabled": false
-        }
-      }
-    }
-    ```
+  }
+}
+```
 
 ## Fields
 

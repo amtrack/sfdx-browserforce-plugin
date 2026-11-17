@@ -43,19 +43,6 @@ That metadata cannot turn the feature on for the first time: Salesforce requires
 }
 ```
 
-## Example
-
-```json
-{
-  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-  "settings": {
-    "highVelocitySalesSettings": {
-      "setUpAndEnable": true
-    }
-  }
-}
-```
-
 ## Fields
 
 | Field | Type | Description |

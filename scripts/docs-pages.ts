@@ -148,16 +148,33 @@ function renderWarnings(entry: PluginCatalogEntry): string[] {
   return blocks;
 }
 
-function renderExamples(entry: PluginCatalogEntry): string[] {
-  if (entry.examples.length === 0) {
+/** JSON with sorted object keys, to compare configs whatever the order of their keys. */
+const canonicalJson = (value: unknown): string =>
+  JSON.stringify(value, (_key, v: unknown) =>
+    v && typeof v === 'object' && !Array.isArray(v) ? Object.fromEntries(Object.entries(v).sort()) : v,
+  );
+
+/** The examples of the setting that no use case already shows as its config. */
+function examplesNotInStories(entry: PluginCatalogEntry, stories = ''): unknown[] {
+  const shown = new Set(
+    [...stories.matchAll(/^```json\n([\s\S]*?)^```$/gm)].map((m) =>
+      canonicalJson((JSON.parse(m[1]) as { settings?: Record<string, unknown> }).settings?.[entry.key]),
+    ),
+  );
+  return entry.examples.filter((example) => !shown.has(canonicalJson(example)));
+}
+
+function renderExamples(entry: PluginCatalogEntry, stories?: string): string[] {
+  const examples = examplesNotInStories(entry, stories);
+  if (examples.length === 0) {
     return [];
   }
-  if (entry.examples.length === 1) {
-    return ['## Example', jsonBlock(exampleConfig(entry.key, entry.examples[0]))];
+  if (examples.length === 1) {
+    return ['## Example', jsonBlock(exampleConfig(entry.key, examples[0]))];
   }
   return [
     '## Examples',
-    entry.examples
+    examples
       .map((example, index) => `=== "Example ${index + 1}"\n\n${indent(jsonBlock(exampleConfig(entry.key, example)))}`)
       .join('\n\n'),
   ];
@@ -284,7 +301,7 @@ export function renderSettingPage(entry: PluginCatalogEntry, options: SettingPag
     ...(shown ? [rewriteMarkdownImages(shown, settingPageImage)] : []),
     ...renderScreenshots(entry, options.useCases ?? []),
     ...renderUseCases(options.stories),
-    ...renderExamples(entry),
+    ...renderExamples(entry, options.stories),
     ...renderFields(entry),
     `??? note "JSON Schema"\n\n${indent(jsonBlock(entry.jsonSchema))}`,
     ...(options.sourceUrl ? [`[Source code of this setting](${options.sourceUrl})`] : []),

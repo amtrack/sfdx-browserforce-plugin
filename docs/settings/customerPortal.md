@@ -174,19 +174,6 @@ This config ticks it for `Dummy__c` and for the `SBQQ__Quote__c` object of Sales
       "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
       "settings": {
         "customerPortal": {
-          "enabled": true
-        }
-      }
-    }
-    ```
-
-=== "Example 2"
-
-    ```json
-    {
-      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-      "settings": {
-        "customerPortal": {
           "portals": [
             {
               "name": "Customer Portal",
@@ -198,7 +185,7 @@ This config ticks it for `Dummy__c` and for the `SBQQ__Quote__c` object of Sales
     }
     ```
 
-=== "Example 3"
+=== "Example 2"
 
     ```json
     {

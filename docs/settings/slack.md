@@ -45,20 +45,6 @@ Before any Slack app can connect to the org, an admin must **accept the terms an
 }
 ```
 
-## Example
-
-```json
-{
-  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-  "settings": {
-    "slack": {
-      "agreeToTermsAndConditions": true,
-      "enableSalesCloudForSlack": true
-    }
-  }
-}
-```
-
 ## Fields
 
 | Field | Type | Description |

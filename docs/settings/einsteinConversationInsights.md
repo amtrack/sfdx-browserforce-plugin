@@ -46,19 +46,6 @@ With `enabled: true`, Browserforce turns on **Conversation Insights** through th
 }
 ```
 
-## Example
-
-```json
-{
-  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-  "settings": {
-    "einsteinConversationInsights": {
-      "enabled": true
-    }
-  }
-}
-```
-
 ## Fields
 
 | Field | Type | Description |

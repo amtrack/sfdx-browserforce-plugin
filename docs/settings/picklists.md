@@ -252,8 +252,9 @@ Set the controlling field of **Gears** on **Vehicle** to `null`: Browserforce de
             {
               "metadataType": "StandardValueSet",
               "metadataFullName": "LeadSource",
-              "value": "Phone Inquiry",
-              "newValue": "Other"
+              "value": "Purchased List",
+              "newValue": "Other",
+              "absent": true
             }
           ]
         }
@@ -270,51 +271,10 @@ Set the controlling field of **Gears** on **Vehicle** to `null`: Browserforce de
         "picklists": {
           "picklistValues": [
             {
-              "metadataType": "StandardValueSet",
-              "metadataFullName": "LeadSource",
-              "value": "Purchased List",
-              "newValue": "Other",
-              "absent": true
-            }
-          ]
-        }
-      }
-    }
-    ```
-
-=== "Example 3"
-
-    ```json
-    {
-      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-      "settings": {
-        "picklists": {
-          "picklistValues": [
-            {
               "metadataType": "CustomField",
               "metadataFullName": "Account.MyPicklist__c",
               "value": "MyOldValue",
               "active": false
-            }
-          ]
-        }
-      }
-    }
-    ```
-
-=== "Example 4"
-
-    ```json
-    {
-      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-      "settings": {
-        "picklists": {
-          "picklistValues": [
-            {
-              "metadataType": "StandardValueSet",
-              "metadataFullName": "LeadSource",
-              "value": "Partner Referral",
-              "newApiName": "Partner_Referral"
             }
           ]
         }

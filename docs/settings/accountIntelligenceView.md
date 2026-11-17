@@ -43,33 +43,18 @@ The view is switched on by the **Account Intelligence toggle** in Setup. The Met
 }
 ```
 
-## Examples
+## Example
 
-=== "Example 1"
-
-    ```json
-    {
-      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-      "settings": {
-        "accountIntelligenceView": {
-          "enable": true
-        }
-      }
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+  "settings": {
+    "accountIntelligenceView": {
+      "enable": false
     }
-    ```
-
-=== "Example 2"
-
-    ```json
-    {
-      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-      "settings": {
-        "accountIntelligenceView": {
-          "enable": false
-        }
-      }
-    }
-    ```
+  }
+}
+```
 
 ## Fields
 

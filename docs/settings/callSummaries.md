@@ -44,33 +44,18 @@ With `enabled: true`, Browserforce clicks **Turn On** in Setup > Salesforce Go >
 }
 ```
 
-## Examples
+## Example
 
-=== "Example 1"
-
-    ```json
-    {
-      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-      "settings": {
-        "callSummaries": {
-          "enabled": true
-        }
-      }
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+  "settings": {
+    "callSummaries": {
+      "enabled": false
     }
-    ```
-
-=== "Example 2"
-
-    ```json
-    {
-      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-      "settings": {
-        "callSummaries": {
-          "enabled": false
-        }
-      }
-    }
-    ```
+  }
+}
+```
 
 ## Fields
 

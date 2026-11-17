@@ -40,19 +40,6 @@ Tailspin Consulting staffs freelance consultants on client projects. A consultan
 }
 ```
 
-## Example
-
-```json
-{
-  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-  "settings": {
-    "relateContactToMultipleAccounts": {
-      "enabled": true
-    }
-  }
-}
-```
-
 ## Fields
 
 | Field | Type | Description |

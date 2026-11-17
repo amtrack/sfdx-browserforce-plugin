@@ -49,26 +49,13 @@ The Metadata API cannot set the **Access level** of email deliverability: `Email
       "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
       "settings": {
         "emailDeliverability": {
-          "accessLevel": "All email"
-        }
-      }
-    }
-    ```
-
-=== "Example 2"
-
-    ```json
-    {
-      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-      "settings": {
-        "emailDeliverability": {
           "accessLevel": "System email only"
         }
       }
     }
     ```
 
-=== "Example 3"
+=== "Example 2"
 
     ```json
     {

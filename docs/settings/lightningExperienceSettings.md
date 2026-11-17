@@ -40,19 +40,6 @@ The Metadata API has an `activeThemeName` field in `LightningExperienceSettings`
 }
 ```
 
-## Example
-
-```json
-{
-  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-  "settings": {
-    "lightningExperienceSettings": {
-      "activeThemeName": "Lightning"
-    }
-  }
-}
-```
-
 ## Fields
 
 | Field | Type | Description |

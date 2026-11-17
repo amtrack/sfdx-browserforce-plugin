@@ -110,6 +110,16 @@ describe('documentation pages', () => {
       assert.deepStrictEqual(renderUseCases(undefined), []);
     });
 
+    it('leaves out the examples a use case already shows as its config', () => {
+      const story = (level: string) =>
+        `## Story\n\n\`\`\`json\n${JSON.stringify({ settings: { densitySettings: { level } } }, null, 2)}\n\`\`\`\n`;
+      const one = renderSettingPage(entry, { stories: story('High') });
+      assert.ok(one.includes('## Example\n'));
+      assert.ok(!one.includes('=== "Example'));
+      const all = renderSettingPage(entry, { stories: `${story('High')}\n${story('Low')}` });
+      assert.ok(!/## Examples?\n/.test(all));
+    });
+
     it('places the screenshots after the description, then the stories, before the examples', () => {
       const page = renderSettingPage(entry, {
         useCases: [toUseCase('densitySettings', { config: {}, pages: { screenshot: { pills: {} } } })],

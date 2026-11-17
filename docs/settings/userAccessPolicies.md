@@ -87,26 +87,6 @@ This config automates the policy so that it runs whenever a matching user is **c
           "accessPolicies": [
             {
               "apiName": "Grant_Permissions",
-              "active": true,
-              "on": "Create",
-              "applyToAll": true
-            }
-          ]
-        }
-      }
-    }
-    ```
-
-=== "Example 3"
-
-    ```json
-    {
-      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-      "settings": {
-        "userAccessPolicies": {
-          "accessPolicies": [
-            {
-              "apiName": "Grant_Permissions",
               "applyToAll": true
             }
           ]

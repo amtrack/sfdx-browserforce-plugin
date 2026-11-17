@@ -40,19 +40,6 @@ The currency of an org without multiple currencies is its **Currency Locale**, a
 }
 ```
 
-## Example
-
-```json
-{
-  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-  "settings": {
-    "companyInformation": {
-      "defaultCurrencyIsoCode": "English (South Africa) - ZAR"
-    }
-  }
-}
-```
-
 ## Fields
 
 | Field | Type | Description |
