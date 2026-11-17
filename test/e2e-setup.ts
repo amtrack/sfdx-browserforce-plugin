@@ -50,7 +50,7 @@ async function createBrowserContextFromEnv() {
           executablePath: process.env.BROWSERFORCE_BROWSER_EXECUTABLE_PATH,
         }
       : {}),
-    headless: !(process.env.BROWSER_DEBUG === 'true') || process.env.BROWSERFORCE_HEADLESS === 'false',
+    headless: process.env.BROWSER_DEBUG !== 'true' && process.env.BROWSERFORCE_HEADLESS !== 'false',
     slowMo: Number(process.env.BROWSERFORCE_SLOWMO ?? '0'),
   });
   const browserContext = await browser.newContext({
