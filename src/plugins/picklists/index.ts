@@ -300,20 +300,22 @@ export class Picklists extends BrowserforcePlugin {
     };
     // set by the first attempt only: a retry after the activation must still deactivate the value at the end
     let wasInactive: boolean | undefined;
-    await this.browserforce.retry(async () => {
-      await using page = await this.browserforce.openPage(picklistUrl);
-      const picklistPage = new PicklistPage(page);
-      const value = findValue(await picklistPage.getPicklistValues());
-      wasInactive ??= !value.active;
-      if (!value.active) {
-        await picklistPage.clickActivateDeactivateActionForValue(value.value, true);
-      }
-    });
     try {
       await this.browserforce.retry(async () => {
         await using page = await this.browserforce.openPage(picklistUrl);
-        const picklistPage = new PicklistPage(page);
-        const value = findValue(await picklistPage.getPicklistValues());
+        let picklistPage = new PicklistPage(page);
+        let value = findValue(await picklistPage.getPicklistValues());
+        wasInactive ??= !value.active;
+        // activated in the same attempt as the edit: Salesforce can ignore an activation, which a retry then repeats
+        if (!value.active) {
+          picklistPage = await picklistPage.clickActivateDeactivateActionForValue(value.value, true);
+          value = findValue(await picklistPage.getPicklistValues());
+          if (!value.active) {
+            throw new Error(
+              `Cannot rename "${value.value}" of ${action.metadataFullName}: Salesforce did not activate it`,
+            );
+          }
+        }
         const editPage = await picklistPage.clickEditActionForValue(value.value);
         await editPage.edit({ apiName: value.value === newApiName ? undefined : newApiName, label: action.newLabel });
       });
