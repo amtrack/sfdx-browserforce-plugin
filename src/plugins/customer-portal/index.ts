@@ -64,9 +64,7 @@ export const customerPortalSchema = z
       '',
       'Enables the Customer Portal, configures its portals (self-registration, profiles) and the custom objects available in it.',
       '',
-      '![Customer Portal](docs/assets/settings/customer-portal.png)',
-      '',
-      '![Customer Portal Setup](docs/assets/settings/customer-portal-setup.png)',
+      '![Customer Portal](src/plugins/customer-portal/customer-portal-setup.webp)',
     ].join('\n'),
     examples: [
       { enabled: true },

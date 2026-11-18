@@ -3,6 +3,8 @@ import { rawFileUrl, repositoryPath, rewriteMarkdownImages } from '../src/docs.j
 import type { Field } from '../src/json-schema-utils.js';
 import type { PluginCatalogEntry } from '../src/plugin-catalog.js';
 import type { DeprecatedSetting } from '../src/plugins/deprecated.js';
+import { pluginDir, pillColorIndex } from './screenshots.js';
+import type { UseCase } from './use-cases.js';
 
 /** First line of the content of every page written by `npm run generate:docs`, after its front matter. */
 export const GENERATED_HEADER =
@@ -108,7 +110,13 @@ const code = (value: unknown): string => `\`${typeof value === 'string' ? value 
  */
 export function settingPageImage(target: string): string {
   const path = repositoryPath(target);
-  return path.startsWith('docs/') ? `../${path.slice('docs/'.length)}` : rawFileUrl(path);
+  if (path.startsWith('docs/')) {
+    return `../${path.slice('docs/'.length)}`;
+  }
+  // the images of the plugins, copied into docs/assets/plugins/ by generate:docs
+  return /^src\/plugins\/[^/]+(\/[^/]+\.webp)?$/.test(path)
+    ? `../assets/${path.slice('src/'.length)}`
+    : rawFileUrl(path);
 }
 
 const jsonBlock = (value: unknown): string => ['```json', JSON.stringify(value, null, 2), '```'].join('\n');
@@ -140,16 +148,33 @@ function renderWarnings(entry: PluginCatalogEntry): string[] {
   return blocks;
 }
 
-function renderExamples(entry: PluginCatalogEntry): string[] {
-  if (entry.examples.length === 0) {
+/** JSON with sorted object keys, to compare configs whatever the order of their keys. */
+const canonicalJson = (value: unknown): string =>
+  JSON.stringify(value, (_key, v: unknown) =>
+    v && typeof v === 'object' && !Array.isArray(v) ? Object.fromEntries(Object.entries(v).sort()) : v,
+  );
+
+/** The examples of the setting that no use case already shows as its config. */
+function examplesNotInStories(entry: PluginCatalogEntry, stories = ''): unknown[] {
+  const shown = new Set(
+    [...stories.matchAll(/^```json\n([\s\S]*?)^```$/gm)].map((m) =>
+      canonicalJson((JSON.parse(m[1]) as { settings?: Record<string, unknown> }).settings?.[entry.key]),
+    ),
+  );
+  return entry.examples.filter((example) => !shown.has(canonicalJson(example)));
+}
+
+function renderExamples(entry: PluginCatalogEntry, stories?: string): string[] {
+  const examples = examplesNotInStories(entry, stories);
+  if (examples.length === 0) {
     return [];
   }
-  if (entry.examples.length === 1) {
-    return ['## Example', jsonBlock(exampleConfig(entry.key, entry.examples[0]))];
+  if (examples.length === 1) {
+    return ['## Example', jsonBlock(exampleConfig(entry.key, examples[0]))];
   }
   return [
     '## Examples',
-    entry.examples
+    examples
       .map((example, index) => `=== "Example ${index + 1}"\n\n${indent(jsonBlock(exampleConfig(entry.key, example)))}`)
       .join('\n\n'),
   ];
@@ -209,6 +234,43 @@ function renderFields(entry: PluginCatalogEntry): string[] {
   return ['## Fields', ...repeated, lines.join('\n')];
 }
 
+/** A pill number as a coloured badge, in the colour of the pill drawn on the images. */
+export const pillBadge = (n: number): string => `<span class="bf-pill bf-pill-c${pillColorIndex(n)}">${n}</span>`;
+
+/** Section "Screenshots" of the page of a setting: each annotated screenshot, then the field of each of its pills. */
+export function renderScreenshots(entry: PluginCatalogEntry, useCases: UseCase[]): string[] {
+  const captures = useCases.flatMap((useCase) =>
+    useCase.captures.map((capture) => ({ ...capture, dir: settingPageImage(pluginDir(useCase.folder)) })),
+  );
+  if (captures.length === 0) {
+    return [];
+  }
+  return [
+    captures.length > 1 ? '## Screenshots' : '## Screenshot',
+    ...captures.map((capture) => {
+      // several captures are told apart by their name: `portal-profiles` → Portal profiles
+      const name = capture.name.replace(/-/g, ' ');
+      const title =
+        capture.title ?? (captures.length > 1 ? name[0].toUpperCase() + name.slice(1) : settingTitle(entry));
+      const legend = [
+        '| Pill | Field |',
+        '| ---- | ----- |',
+        ...capture.pills.map((pill) => `| ${pillBadge(pill.n)} | ${fieldPath(pill.field)} |`),
+      ];
+      return [
+        ...(captures.length > 1 ? [`*${title}*`] : []),
+        `![${title}](${capture.dir}/${capture.name}.webp)`,
+        ...(capture.pills.length > 0 ? [legend.join('\n')] : []),
+      ].join('\n\n');
+    }),
+  ];
+}
+
+/** Section "Use cases" of the page of a setting: its hand-written `use-cases.md`, its headings one level down. */
+export function renderUseCases(markdown?: string): string[] {
+  return markdown ? ['## Use cases', markdown.trim().replace(/^(#+) /gm, '#$1 ')] : [];
+}
+
 export type SettingPageOptions = {
   /**
    * Markdown description of the setting with the image paths relative to the repository root, as written in its
@@ -217,18 +279,29 @@ export type SettingPageOptions = {
   description?: string;
   /** link to the source folder of the plugin */
   sourceUrl?: string;
+  /** the `capture()` tests of the setting, in the order of their files */
+  useCases?: UseCase[];
+  /** the hand-written stories of the setting (`use-cases.md` of its plugin) */
+  stories?: string;
 };
 
 /** Page `docs/settings/<key>.md` of a setting. */
 export function renderSettingPage(entry: PluginCatalogEntry, options: SettingPageOptions = {}): string {
   const description = options.description ?? entry.description;
+  // the screenshot in the description is already shown in its section below
+  const shown = description
+    ?.replace(/^!\[[^\]]*\]\(src\/plugins\/[^/]+\/[^/)]+\.webp\)$/gm, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
   const sections = [
     GENERATED_HEADER,
     `# ${settingTitle(entry)}`,
     `Config key: \`settings.${entry.key}\``,
     ...renderWarnings(entry),
-    ...(description ? [rewriteMarkdownImages(description.trim(), settingPageImage)] : []),
-    ...renderExamples(entry),
+    ...(shown ? [rewriteMarkdownImages(shown, settingPageImage)] : []),
+    ...renderScreenshots(entry, options.useCases ?? []),
+    ...renderUseCases(options.stories),
+    ...renderExamples(entry, options.stories),
     ...renderFields(entry),
     `??? note "JSON Schema"\n\n${indent(jsonBlock(entry.jsonSchema))}`,
     ...(options.sourceUrl ? [`[Source code of this setting](${options.sourceUrl})`] : []),

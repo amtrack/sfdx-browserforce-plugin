@@ -2,9 +2,14 @@ import assert from 'assert';
 import * as child from 'child_process';
 import { fileURLToPath } from 'node:url';
 import * as path from 'path';
-import { CustomerPortalAvailableCustomObjects } from './available-custom-objects/index.js';
+import {
+  CustomerPortalAvailableCustomObjects,
+  CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL_SELECTOR,
+} from './available-custom-objects/index.js';
 import { CustomerPortalEnable } from './enabled/index.js';
-import { CustomerPortalSetup } from './portals/index.js';
+import { CustomerPortalSetup, LIST_VIEW_PATH } from './portals/index.js';
+import { customerPortalSchema } from './index.js';
+import { capture } from '../../../test/capture.js';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
@@ -15,9 +20,22 @@ describe('CustomerPortal', () => {
       plugin = new CustomerPortalEnable(global.browserforce);
     });
 
-    it('should enable', async () => {
-      await plugin.run(true);
-    });
+    it(
+      'should enable @capture',
+      capture(customerPortalSchema, {
+        config: { enabled: true },
+        pages: {
+          'customer-portal-setup': {
+            open: (doc) => doc.open(LIST_VIEW_PATH),
+            context: ['.bPageTitle', '.bPageBlock'],
+            pills: {
+              enabled:
+                'td.labelCol:text-is("Enable Customer Portal") + td, tr.dataRow:has(a:text-is("Customer Portal"))',
+            },
+          },
+        },
+      }),
+    );
     it('should be enabled', async () => {
       const res = await plugin.retrieve();
       assert.deepStrictEqual(res, true);
@@ -103,6 +121,46 @@ describe('CustomerPortal', () => {
       const permSetAssignCmd = child.spawnSync('sf', ['org', 'assign', 'permset', '-n', 'Customer_Portal_Admin']);
       assert.deepStrictEqual(permSetAssignCmd.status, 0, permSetAssignCmd.output.toString());
     });
+    it(
+      'should choose the profiles of the portal @capture',
+      capture(customerPortalSchema, {
+        config: {
+          enabled: true,
+          portals: [
+            {
+              name: 'Customer Portal',
+              adminUser: 'User User',
+              description: 'Customer Portal',
+              isSelfRegistrationActivated: true,
+              selfRegUserDefaultLicense: 'Customer Portal Manager Custom',
+              selfRegUserDefaultRole: 'User',
+              selfRegUserDefaultProfile: 'Customer Portal Manager Custom',
+              portalProfileMemberships: [{ name: 'Dummy', active: true }],
+            },
+          ],
+        },
+        pages: {
+          'portal-profiles': {
+            title: 'Profiles of the portal',
+            height: 2600,
+            async open(doc) {
+              const page = await doc.open(LIST_VIEW_PATH);
+              await doc.click(page, 'tr.dataRow a:text-is("Customer Portal")');
+              return page;
+            },
+            context: ['.bRelatedList:has(h3:text-is("Assigned Profiles"))'],
+            hide: [
+              'tr:has(> td.labelCol:text-is("From Email Address"))',
+              'tr:has(> td.labelCol:text-is("From Email Name"))',
+            ],
+            pills: {
+              'portals[0].portalProfileMemberships':
+                '.bRelatedList:has(h3:text-is("Assigned Profiles")) a:text-is("Dummy")',
+            },
+          },
+        },
+      }),
+    );
     it('should set up portal', async () => {
       await plugin.run(configSetupPortal);
     });
@@ -116,6 +174,27 @@ describe('CustomerPortal', () => {
     it('should be reverted back', async () => {
       const res = await plugin.run(configRevertPortal);
       assert.deepStrictEqual(res, { message: 'no action necessary' });
+    });
+    it(
+      'should rename the portal @capture',
+      capture(customerPortalSchema, {
+        config: { enabled: true, portals: [{ name: 'Acme Support', oldName: 'Customer Portal' }] },
+        // the portal before its rename
+        screenshot: 'before',
+        pages: {
+          portals: {
+            // retrieve() then opens the page of each portal
+            path: LIST_VIEW_PATH,
+            context: ['.bPageTitle', '.bPageBlock'],
+            pills: {
+              'portals[0].oldName': 'tr.dataRow a:text-is("Customer Portal")',
+            },
+          },
+        },
+      }),
+    );
+    it('should rename the portal back', async () => {
+      await plugin.run([{ name: 'Customer Portal', oldName: 'Acme Support' }]);
     });
     it('should cleanup', async () => {
       await global.browserforce.connection.metadata.delete('Profile', ['Dummy']);
@@ -180,6 +259,39 @@ describe('CustomerPortal', () => {
       ]);
       assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
     });
+    (process.env['CPQ'] === 'true' ? it : it.skip)(
+      'should make a custom object and the quotes of Salesforce CPQ available @capture',
+      capture(customerPortalSchema, {
+        config: {
+          enabled: true,
+          availableCustomObjects: [
+            { name: 'Dummy', available: true },
+            { name: 'Quote', namespacePrefix: 'SBQQ', available: true },
+          ],
+        },
+        // the edit pages of the objects, in the order of the config, not the home page retrieve() opens first
+        pages: {
+          dummy: {
+            title: 'The custom object Dummy__c',
+            path: 'ObjectManager',
+            height: 1400,
+            pills: {
+              // the label: left of the checkbox is the edge of the Classic iframe
+              'availableCustomObjects[0].available': `label[for="${CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL_SELECTOR.slice(1)}"]`,
+            },
+          },
+          'cpq-quote': {
+            title: 'The Quote object of Salesforce CPQ (SBQQ__Quote__c)',
+            path: 'ObjectManager',
+            height: 1400,
+            pills: {
+              // the label: left of the checkbox is the edge of the Classic iframe
+              'availableCustomObjects[1].available': `label[for="${CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL_SELECTOR.slice(1)}"]`,
+            },
+          },
+        },
+      }),
+    );
     it('should make custom objects available for customer portal', async () => {
       await plugin.run(configAvailableCustomObjects);
     });

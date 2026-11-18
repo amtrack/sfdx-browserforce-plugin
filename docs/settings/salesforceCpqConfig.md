@@ -19,7 +19,378 @@ Setup: **Installed Packages → Salesforce CPQ → Configure**
 
 Sets the settings of the Salesforce CPQ package.
 
-![Salesforce CPQ settings](../assets/settings/salesforce-cpq-config.png)
+## Screenshots
+
+*Documents*
+
+![Documents](../assets/plugins/salesforce-cpq-config/documents.webp)
+
+| Pill | Field |
+| ---- | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>documents.<wbr>documentFolder</code> |
+| <span class="bf-pill bf-pill-c2">2</span> | <code>documents.<wbr>hideDocumentName</code> |
+| <span class="bf-pill bf-pill-c3">3</span> | <code>documents.<wbr>fullPagePreview</code> |
+| <span class="bf-pill bf-pill-c4">4</span> | <code>documents.<wbr>excludeHiddenLinesInGroupTotals</code> |
+| <span class="bf-pill bf-pill-c5">5</span> | <code>documents.<wbr>attachmentTarget</code> |
+| <span class="bf-pill bf-pill-c6">6</span> | <code>documents.<wbr>postToFeed</code> |
+| <span class="bf-pill bf-pill-c7">7</span> | <code>documents.<wbr>enableMultiLanguageTranslations</code> |
+
+*Quote*
+
+![Quote](../assets/plugins/salesforce-cpq-config/quote.webp)
+
+| Pill | Field |
+| ---- | ----- |
+| <span class="bf-pill bf-pill-c8">8</span> | <code>quote.<wbr>disableInitialQuoteSync</code> |
+| <span class="bf-pill bf-pill-c9">9</span> | <code>quote.<wbr>disableQuoteContactDefaulting</code> |
+| <span class="bf-pill bf-pill-c10">10</span> | <code>quote.<wbr>allowOptionDeletion</code> |
+| <span class="bf-pill bf-pill-c11">11</span> | <code>quote.<wbr>disableQuoteAddressDefaulting</code> |
+| <span class="bf-pill bf-pill-c12">12</span> | <code>quote.<wbr>primaryQuoteKeepsOpportunityProducts</code> |
+| <span class="bf-pill bf-pill-c13">13</span> | <code>quote.<wbr>defaultQuoteValidityDays</code> |
+
+*Line Editor*
+
+![Line Editor](../assets/plugins/salesforce-cpq-config/line-editor.webp)
+
+| Pill | Field |
+| ---- | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>lineEditor.<wbr>hideRenewedAssetsWhenEditing</code> |
+| <span class="bf-pill bf-pill-c2">2</span> | <code>lineEditor.<wbr>visualizeProductHierarchy</code> |
+| <span class="bf-pill bf-pill-c3">3</span> | <code>lineEditor.<wbr>preserveBundleStructure</code> |
+| <span class="bf-pill bf-pill-c4">4</span> | <code>lineEditor.<wbr>keepBundleTogether</code> |
+| <span class="bf-pill bf-pill-c5">5</span> | <code>lineEditor.<wbr>totalsField</code> |
+| <span class="bf-pill bf-pill-c6">6</span> | <code>lineEditor.<wbr>lineSubtotalsTotalField</code> |
+| <span class="bf-pill bf-pill-c7">7</span> | <code>lineEditor.<wbr>largeQuoteThreshold</code> |
+| <span class="bf-pill bf-pill-c8">8</span> | <code>lineEditor.<wbr>quoteBatchSize</code> |
+| <span class="bf-pill bf-pill-c9">9</span> | <code>lineEditor.<wbr>actionsColumnPlacement</code> |
+| <span class="bf-pill bf-pill-c10">10</span> | <code>lineEditor.<wbr>enableMultiLineDelete</code> |
+| <span class="bf-pill bf-pill-c11">11</span> | <code>lineEditor.<wbr>productConfigurationInitializer</code> |
+| <span class="bf-pill bf-pill-c12">12</span> | <code>lineEditor.<wbr>enableAssetUpgrades</code> |
+| <span class="bf-pill bf-pill-c13">13</span> | <code>lineEditor.<wbr>groupSubtotalsField</code> |
+| <span class="bf-pill bf-pill-c14">14</span> | <code>lineEditor.<wbr>wrapButtons</code> |
+| <span class="bf-pill bf-pill-c15">15</span> | <code>lineEditor.<wbr>validateLargeQuotes</code> |
+| <span class="bf-pill bf-pill-c16">16</span> | <code>lineEditor.<wbr>enableCompactMode</code> |
+| <span class="bf-pill bf-pill-c17">17</span> | <code>lineEditor.<wbr>enableLargeQuoteExperience</code> |
+| <span class="bf-pill bf-pill-c18">18</span> | <code>lineEditor.<wbr>enableColumnResizing</code> |
+| <span class="bf-pill bf-pill-c19">19</span> | <code>lineEditor.<wbr>enableExpandCollapseBundles</code> |
+| <span class="bf-pill bf-pill-c20">20</span> | <code>lineEditor.<wbr>defaultBundleSetting</code> |
+
+*Pricing and Calculation*
+
+![Pricing and Calculation](../assets/plugins/salesforce-cpq-config/pricing-and-calculation.webp)
+
+| Pill | Field |
+| ---- | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>pricingAndCalculation.<wbr>currencySymbol</code> |
+| <span class="bf-pill bf-pill-c2">2</span> | <code>pricingAndCalculation.<wbr>unitPriceScale</code> |
+| <span class="bf-pill bf-pill-c3">3</span> | <code>pricingAndCalculation.<wbr>enableQuickCalculate</code> |
+| <span class="bf-pill bf-pill-c4">4</span> | <code>pricingAndCalculation.<wbr>allowNonConsecutiveCustomSegments</code> |
+| <span class="bf-pill bf-pill-c5">5</span> | <code>pricingAndCalculation.<wbr>enablePricingGuidance</code> |
+| <span class="bf-pill bf-pill-c6">6</span> | <code>pricingAndCalculation.<wbr>useLegacyCalculator</code> |
+| <span class="bf-pill bf-pill-c7">7</span> | <code>pricingAndCalculation.<wbr>useInactivePrices</code> |
+| <span class="bf-pill bf-pill-c8">8</span> | <code>pricingAndCalculation.<wbr>calculateImmediately</code> |
+| <span class="bf-pill bf-pill-c9">9</span> | <code>pricingAndCalculation.<wbr>disableBackgroundCalculationRefresh</code> |
+| <span class="bf-pill bf-pill-c10">10</span> | <code>pricingAndCalculation.<wbr>enableUsageBasedPricing</code> |
+| <span class="bf-pill bf-pill-c11">11</span> | <code>pricingAndCalculation.<wbr>quoteLineEditsForUsageBasedPricing</code> |
+| <span class="bf-pill bf-pill-c12">12</span> | <code>pricingAndCalculation.<wbr>hideUncalculatedQuoteWarning</code> |
+| <span class="bf-pill bf-pill-c13">13</span> | <code>pricingAndCalculation.<wbr>useIntegrationUserForCalculations</code> |
+
+*Plugins*
+
+![Plugins](../assets/plugins/salesforce-cpq-config/plugins.webp)
+
+| Pill | Field |
+| ---- | ----- |
+| <span class="bf-pill bf-pill-c14">14</span> | <code>plugins.<wbr>legacyPageSecurityPlugin</code> |
+| <span class="bf-pill bf-pill-c15">15</span> | <code>plugins.<wbr>electronicSignaturePlugin</code> |
+| <span class="bf-pill bf-pill-c16">16</span> | <code>plugins.<wbr>billingPlugin</code> |
+| <span class="bf-pill bf-pill-c17">17</span> | <code>plugins.<wbr>productSearchPlugin</code> |
+| <span class="bf-pill bf-pill-c18">18</span> | <code>plugins.<wbr>recommendedProductsPlugin</code> |
+| <span class="bf-pill bf-pill-c19">19</span> | <code>plugins.<wbr>legacyQuoteCalculatorPlugin</code> |
+| <span class="bf-pill bf-pill-c20">20</span> | <code>plugins.<wbr>documentStorePlugin</code> |
+| <span class="bf-pill bf-pill-c1">21</span> | <code>plugins.<wbr>quoteCalculatorPlugin</code> |
+| <span class="bf-pill bf-pill-c2">22</span> | <code>plugins.<wbr>orderManagementPlugin</code> |
+| <span class="bf-pill bf-pill-c3">23</span> | <code>plugins.<wbr>qleCustomActionPlugin</code> |
+
+*Subscriptions and Renewals*
+
+![Subscriptions and Renewals](../assets/plugins/salesforce-cpq-config/subscriptions-and-renewals.webp)
+
+| Pill | Field |
+| ---- | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>subscriptionsAndRenewals.<wbr>renewalModel</code> |
+| <span class="bf-pill bf-pill-c2">2</span> | <code>subscriptionsAndRenewals.<wbr>disableAddSubscriptions</code> |
+| <span class="bf-pill bf-pill-c3">3</span> | <code>subscriptionsAndRenewals.<wbr>allowRenewalQuotesWithoutAssets</code> |
+| <span class="bf-pill bf-pill-c4">4</span> | <code>subscriptionsAndRenewals.<wbr>subscriptionTermUnit</code> |
+| <span class="bf-pill bf-pill-c5">5</span> | <code>subscriptionsAndRenewals.<wbr>subscriptionProratePrecision</code> |
+| <span class="bf-pill bf-pill-c6">6</span> | <code>subscriptionsAndRenewals.<wbr>includeNetNewProductsInMaintenance</code> |
+| <span class="bf-pill bf-pill-c7">7</span> | <code>subscriptionsAndRenewals.<wbr>contractInForeground</code> |
+| <span class="bf-pill bf-pill-c8">8</span> | <code>subscriptionsAndRenewals.<wbr>reEvaluateBundleLogicOnRenewals</code> |
+| <span class="bf-pill bf-pill-c9">9</span> | <code>subscriptionsAndRenewals.<wbr>enableEvergreenSubscriptions</code> |
+| <span class="bf-pill bf-pill-c10">10</span> | <code>subscriptionsAndRenewals.<wbr>poTRenewalsContractingFromOrders</code> |
+| <span class="bf-pill bf-pill-c11">11</span> | <code>subscriptionsAndRenewals.<wbr>legacyAmendRenewService</code> |
+| <span class="bf-pill bf-pill-c12">12</span> | <code>subscriptionsAndRenewals.<wbr>amendContractsInBackground</code> |
+| <span class="bf-pill bf-pill-c13">13</span> | <code>subscriptionsAndRenewals.<wbr>disableProductBundleSubTypeChecks</code> |
+| <span class="bf-pill bf-pill-c14">14</span> | <code>subscriptionsAndRenewals.<wbr>bypassPreserveBundleStructure</code> |
+| <span class="bf-pill bf-pill-c15">15</span> | <code>subscriptionsAndRenewals.<wbr>useCurrentSubscriptionOnAssets</code> |
+
+*Order*
+
+![Order](../assets/plugins/salesforce-cpq-config/order.webp)
+
+| Pill | Field |
+| ---- | ----- |
+| <span class="bf-pill bf-pill-c16">16</span> | <code>order.<wbr>requireApprovedQuote</code> |
+| <span class="bf-pill bf-pill-c17">17</span> | <code>order.<wbr>defaultOrderStartDate</code> |
+| <span class="bf-pill bf-pill-c18">18</span> | <code>order.<wbr>allowMultipleOrders</code> |
+| <span class="bf-pill bf-pill-c19">19</span> | <code>order.<wbr>createOrdersWithoutOpportunities</code> |
+
+*Groups*
+
+![Groups](../assets/plugins/salesforce-cpq-config/groups.webp)
+
+| Pill | Field |
+| ---- | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>groups.<wbr>requireGroupName</code> |
+
+*Additional Settings*
+
+![Additional Settings](../assets/plugins/salesforce-cpq-config/additional-settings.webp)
+
+| Pill | Field |
+| ---- | ----- |
+| <span class="bf-pill bf-pill-c2">2</span> | <code>additionalSettings.<wbr>triggersDisabled</code> |
+| <span class="bf-pill bf-pill-c3">3</span> | <code>additionalSettings.<wbr>quantityScale</code> |
+| <span class="bf-pill bf-pill-c4">4</span> | <code>additionalSettings.<wbr>sortProductsInMemory</code> |
+| <span class="bf-pill bf-pill-c5">5</span> | <code>additionalSettings.<wbr>multipleBundlesView</code> |
+| <span class="bf-pill bf-pill-c6">6</span> | <code>additionalSettings.<wbr>externalConfiguratorUrl</code> |
+| <span class="bf-pill bf-pill-c7">7</span> | <code>additionalSettings.<wbr>thirdPartyConfigurator</code> |
+| <span class="bf-pill bf-pill-c8">8</span> | <code>additionalSettings.<wbr>openSearchFilterByDefault</code> |
+| <span class="bf-pill bf-pill-c9">9</span> | <code>additionalSettings.<wbr>hideFeaturesWithHiddenOptions</code> |
+| <span class="bf-pill bf-pill-c10">10</span> | <code>additionalSettings.<wbr>hideProductSearchBar</code> |
+| <span class="bf-pill bf-pill-c11">11</span> | <code>additionalSettings.<wbr>productResultsGroupFieldName</code> |
+| <span class="bf-pill bf-pill-c12">12</span> | <code>additionalSettings.<wbr>productDescriptionField</code> |
+| <span class="bf-pill bf-pill-c13">13</span> | <code>additionalSettings.<wbr>theme</code> |
+| <span class="bf-pill bf-pill-c14">14</span> | <code>additionalSettings.<wbr>useGlobalHeaderPermission</code> |
+| <span class="bf-pill bf-pill-c15">15</span> | <code>additionalSettings.<wbr>serviceRegion</code> |
+| <span class="bf-pill bf-pill-c16">16</span> | <code>additionalSettings.<wbr>enableProductOptionDrawer</code> |
+| <span class="bf-pill bf-pill-c17">17</span> | <code>additionalSettings.<wbr>enableLargeConfigurations</code> |
+| <span class="bf-pill bf-pill-c18">18</span> | <code>additionalSettings.<wbr>nestedBundlesForExternalConfigurator</code> |
+
+## Use cases
+
+### Generate the quote documents on the opportunity
+
+Acme's sales reps send their quotes as PDF documents, and the sales managers want to find them on the opportunity, announced in its feed. Those choices are settings of the Salesforce CPQ package, stored in its protected custom settings: no Metadata API deployment can write them, only the settings page of the package can.
+
+On the **Documents** tab, the generated documents go to the **Quotes** folder, open in a **full page preview**, are attached to the **Opportunity** and **posted to its feed**. On the **Quote** tab, the primary quote keeps the **opportunity products**, and a new quote stays valid **30 days**. Each pill marks a field of the config, changed or not, so the config can describe the whole tab.
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+  "settings": {
+    "salesforceCpqConfig": {
+      "documents": {
+        "documentFolder": "Quotes",
+        "hideDocumentName": false,
+        "fullPagePreview": true,
+        "excludeHiddenLinesInGroupTotals": false,
+        "attachmentTarget": "Opportunity",
+        "postToFeed": true,
+        "enableMultiLanguageTranslations": false
+      },
+      "quote": {
+        "disableInitialQuoteSync": false,
+        "disableQuoteContactDefaulting": false,
+        "allowOptionDeletion": false,
+        "disableQuoteAddressDefaulting": false,
+        "primaryQuoteKeepsOpportunityProducts": true,
+        "defaultQuoteValidityDays": 30
+      }
+    }
+  }
+}
+```
+
+### Tune the quote line editor for large quotes
+
+Acme sells data center equipment: a quote holds hundreds of lines, grouped in bundles, and the quote line editor of Salesforce CPQ became slow and hard to read. Its settings belong to the protected custom settings of the package, which no Metadata API deployment can write: they are only set on the settings page of the package.
+
+This config turns on the **large quote experience**, shows the **product hierarchy** with **collapsed** bundles that users can **expand and collapse**, puts the actions on the **left**, allows deleting **several lines at once** and **resizing columns**, and shows the **Net Amount** as the total. The large quote threshold and the batch size are numbers. Every field of the tab carries a pill, changed or not.
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+  "settings": {
+    "salesforceCpqConfig": {
+      "lineEditor": {
+        "hideRenewedAssetsWhenEditing": false,
+        "visualizeProductHierarchy": true,
+        "preserveBundleStructure": true,
+        "keepBundleTogether": true,
+        "totalsField": "Net Amount",
+        "lineSubtotalsTotalField": "Default",
+        "largeQuoteThreshold": 300,
+        "quoteBatchSize": 50,
+        "actionsColumnPlacement": "Left",
+        "enableMultiLineDelete": true,
+        "productConfigurationInitializer": "",
+        "enableAssetUpgrades": false,
+        "groupSubtotalsField": "Default",
+        "wrapButtons": false,
+        "validateLargeQuotes": true,
+        "enableCompactMode": true,
+        "enableLargeQuoteExperience": true,
+        "enableColumnResizing": true,
+        "enableExpandCollapseBundles": true,
+        "defaultBundleSetting": "Collapsed"
+      }
+    }
+  }
+}
+```
+
+### Calculate prices faster
+
+The sales reps of Acme wait for the price calculation of every quote, and its "not calculated" warning confuses them while the background calculation runs. The pricing settings of Salesforce CPQ are protected custom settings of the package: no Metadata API deployment can write them, only its settings page can.
+
+On the **Pricing and Calculation** tab, this config turns on the **quick calculate** button and hides the **uncalculated quote warning**, keeping the calculation with the **integration user**. On the **Plugins** tab, the plugin fields to take the names of Apex classes or JavaScript plugins; empty values keep the standard behavior. Every field of both tabs carries a pill.
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+  "settings": {
+    "salesforceCpqConfig": {
+      "pricingAndCalculation": {
+        "currencySymbol": "",
+        "unitPriceScale": 2,
+        "enableQuickCalculate": true,
+        "allowNonConsecutiveCustomSegments": false,
+        "enablePricingGuidance": false,
+        "useLegacyCalculator": false,
+        "useInactivePrices": false,
+        "calculateImmediately": false,
+        "disableBackgroundCalculationRefresh": false,
+        "enableUsageBasedPricing": false,
+        "quoteLineEditsForUsageBasedPricing": false,
+        "hideUncalculatedQuoteWarning": true,
+        "useIntegrationUserForCalculations": true
+      },
+      "plugins": {
+        "legacyPageSecurityPlugin": "",
+        "electronicSignaturePlugin": "",
+        "billingPlugin": "",
+        "productSearchPlugin": "",
+        "recommendedProductsPlugin": "",
+        "legacyQuoteCalculatorPlugin": "",
+        "documentStorePlugin": "",
+        "quoteCalculatorPlugin": "",
+        "orderManagementPlugin": "",
+        "qleCustomActionPlugin": ""
+      }
+    }
+  }
+}
+```
+
+### Run subscriptions, renewals and orders the way the business does
+
+Acme sells software subscriptions that renew until the customer cancels, bills them to the day, and only ships orders from approved quotes. Those rules are settings of Salesforce CPQ, kept in protected custom settings of the package that no Metadata API deployment can write: they are set on the settings page of the package.
+
+On **Subscriptions and Renewals**, this config prorates to the **day**, enables **evergreen subscriptions** and **amends contracts in the background**. On **Order**, an order needs an **approved quote**, starts on the **quote start date** and a quote can be split into **several orders**. Every field of both tabs carries a pill.
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+  "settings": {
+    "salesforceCpqConfig": {
+      "subscriptionsAndRenewals": {
+        "renewalModel": "Contract Based",
+        "disableAddSubscriptions": false,
+        "allowRenewalQuotesWithoutAssets": false,
+        "subscriptionTermUnit": "Month",
+        "subscriptionProratePrecision": "Day",
+        "includeNetNewProductsInMaintenance": false,
+        "contractInForeground": false,
+        "reEvaluateBundleLogicOnRenewals": false,
+        "enableEvergreenSubscriptions": true,
+        "poTRenewalsContractingFromOrders": true,
+        "legacyAmendRenewService": false,
+        "amendContractsInBackground": true,
+        "disableProductBundleSubTypeChecks": false,
+        "bypassPreserveBundleStructure": false,
+        "useCurrentSubscriptionOnAssets": false
+      },
+      "order": {
+        "requireApprovedQuote": true,
+        "defaultOrderStartDate": "Quote Start Date",
+        "allowMultipleOrders": true,
+        "createOrdersWithoutOpportunities": false
+      }
+    }
+  }
+}
+```
+
+### Group quote lines by solution and tune the product selection
+
+A car dealer quotes several vehicles in one deal, and wants the quote lines grouped by vehicle, each group named. Its sales reps also browse a long product catalog and need the search filters open and the results grouped by product family. These are settings of Salesforce CPQ, protected custom settings of the package that no Metadata API deployment can write: only the settings page of the package sets them.
+
+On **Groups**, this config requires a **group name** for each group of quote lines. On **Additional Settings**, bundles open in the **Classic** view, the search filter is **open** and the results are grouped by **Product Family**. Every field of both tabs carries a pill.
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+  "settings": {
+    "salesforceCpqConfig": {
+      "groups": {
+        "requireGroupName": true
+      },
+      "additionalSettings": {
+        "triggersDisabled": false,
+        "quantityScale": 2,
+        "sortProductsInMemory": false,
+        "multipleBundlesView": "Classic",
+        "externalConfiguratorUrl": "",
+        "thirdPartyConfigurator": false,
+        "openSearchFilterByDefault": true,
+        "hideFeaturesWithHiddenOptions": false,
+        "hideProductSearchBar": false,
+        "productResultsGroupFieldName": "Product Family",
+        "productDescriptionField": "Product Description",
+        "theme": "-- None --",
+        "useGlobalHeaderPermission": false,
+        "serviceRegion": "Default",
+        "enableProductOptionDrawer": false,
+        "enableLargeConfigurations": false,
+        "nestedBundlesForExternalConfigurator": false
+      }
+    }
+  }
+}
+```
+
+### Turn on solution groups and choose their fields
+
+Contoso sells installation projects in which a quote holds several solutions: the hardware of a site, its cabling, its support contract. Sales reps want the quote line editor to group the lines of each solution.
+
+Ticking **Solution Groups Enabled** makes Salesforce CPQ ask where the groups live: the **Object** that stores them, here the `SBQQ__SolutionGroup__c` object of the package, and which of its fields gives the **name** and the **description** of a group. CPQ refuses to save the first without the three others. These are protected custom settings of the managed package: no Metadata API deployment can write them.
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+  "settings": {
+    "salesforceCpqConfig": {
+      "groups": {
+        "solutionGroupsEnabled": true,
+        "object": "SBQQ__SolutionGroup__c",
+        "nameField": "Group Name",
+        "descriptionField": "Description"
+      }
+    }
+  }
+}
+```
 
 ## Example
 
@@ -591,7 +962,7 @@ Sets the settings of the Salesforce CPQ package.
         }
       },
       "title": "SalesforceCpqConfig Settings",
-      "description": "Setup: **Installed Packages → Salesforce CPQ → Configure**\n\nSets the settings of the Salesforce CPQ package.\n\n![Salesforce CPQ settings](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/salesforce-cpq-config.png)",
+      "description": "Setup: **Installed Packages → Salesforce CPQ → Configure**\n\nSets the settings of the Salesforce CPQ package.\n\n![Salesforce CPQ settings](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/salesforce-cpq-config/documents.webp)",
       "examples": [
         {
           "documents": {

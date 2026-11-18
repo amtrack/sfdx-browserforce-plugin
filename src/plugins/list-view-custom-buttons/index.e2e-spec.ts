@@ -2,7 +2,8 @@ import assert from 'assert';
 import * as child from 'child_process';
 import { fileURLToPath } from 'node:url';
 import * as path from 'path';
-import { ListViewCustomButtons } from './index.js';
+import { ListViewCustomButtons, listViewCustomButtonsSchema } from './index.js';
+import { capture } from '../../../test/capture.js';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
@@ -60,6 +61,21 @@ describe(ListViewCustomButtons.name, function () {
     ]);
     assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
   });
+  it(
+    'should add the custom buttons to the list view of tasks @capture',
+    capture(listViewCustomButtonsSchema, {
+      config: [{ objectApiName: 'Task', buttons: ['TestListButton', 'TestListButton2'], removeOtherButtons: true }],
+      pages: {
+        screenshot: {
+          context: ['.bPageTitle', 'form .pbBody'],
+          pills: {
+            '[0].objectApiName': '.bPageTitle h2',
+            '[0].buttons': 'select#actionRefs_select_1',
+          },
+        },
+      },
+    }),
+  );
 
   it('should add both custom buttons to the list view', async () => {
     await plugin.apply(enableButtons);

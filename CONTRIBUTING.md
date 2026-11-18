@@ -162,9 +162,32 @@ generated from its schema. Write its `description` in the `.meta()` of the plugi
 
 - the Setup menu path and the URL of the page, e.g. ``Setup: **Email → Deliverability** (`/lightning/setup/OrgEmailSettings/home`)``;
 - what the setting does, and why the Metadata API cannot do it;
-- a screenshot of the Setup page, saved in `docs/assets/settings/` and referenced by its path from the repository
-  root: `![Deliverability](docs/assets/settings/email-deliverability.png)`. The documentation site shows it from
-  `docs/`, while `sf browserforce plugins list` and `schema.json` point it to its raw URL on GitHub.
+- its screenshot, referenced by its path from the repository root:
+  `![Deliverability](src/plugins/email-deliverability/screenshot.webp)`. The documentation site shows a copy
+  made by `npm run generate:docs`, while `sf browserforce plugins list` and `schema.json` point it to its raw URL on GitHub.
+
+#### Screenshots and use cases
+
+Below the description, the page shows the **screenshot** of the setting, where a numbered pill marks the control of
+each field, then its **use cases**, hand-written in `src/plugins/<folder>/use-cases.md` (one `##` heading, story and
+config per use case). The screenshot is taken by a step of the E2E test, tagged `@capture` in its title and wrapped by
+`capture()` from `test/capture.ts`: `it('should enable @capture', capture(mySettingSchema, { config, pages }))`. Each
+capture of `pages` (named `screenshot` when there is only one; it is the file name of the image) lists the selector of
+each field (reuse the selectors of the plugin) in the page that `retrieve()` of the plugin opens, or, when it opens
+none to show, the page an `open(doc)` function opens. It is shot after the step, or before it with
+`screenshot: 'before'`. `.claude/skills/document-setting/references/capture.md` describes the format in full.
+
+`npm run test:e2e` runs the step like any test. With `CAPTURE=true`, it also takes the screenshots, in a scratch org only
+(never your default org):
+
+```shell
+npm run test -- -g "screenshots"                                                        # check the screenshots, without an org
+CAPTURE=true SF_TARGET_ORG=browserforce-docs npm run test:e2e -- -g MySetting           # draw the images in src/plugins/my-setting/
+```
+
+The capture draws the numbered pills into the images right away; moving a pill (`positions`) means capturing again.
+A unit test checks that every setting has a screenshot, that its pills are fields of the setting and that its images
+exist. With Claude Code, `/document-setting mySetting` does all of this, including the scratch org.
 
 Multi-line descriptions are written as an array of lines joined with `'\n'` (an indented template literal would
 turn them into code blocks). Then regenerate the pages and commit what changed in `docs/`, `mkdocs.yml` and

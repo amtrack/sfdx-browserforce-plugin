@@ -16,6 +16,48 @@ Enables or disables history tracking on objects and on their fields (**Object Ma
 
 It closes a gap of the Metadata API, which cannot enable field history tracking on custom Person Account fields.
 
+## Screenshot
+
+![History Tracking](../assets/plugins/history-tracking/screenshot.webp)
+
+| Pill | Field |
+| ---- | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>[0].<wbr>objectApiName</code> |
+| <span class="bf-pill bf-pill-c2">2</span> | <code>[0].<wbr>enableHistoryTracking</code> |
+| <span class="bf-pill bf-pill-c3">3</span> | <code>[0].<wbr>fieldHistoryTracking</code> |
+
+## Use cases
+
+### Track the history of Person Account fields
+
+A wealth management firm keeps its private clients as Person Accounts, and its compliance officers must see who changed a client's birthdate or the custom fields of the person, and when. History tracking of a Person Account field is set on the Account, but the Metadata API only sets `trackHistory` on the Contact field, which does not reach its Person Account twin (`__pc`).
+
+This config turns on the history of **Account** with **Enable Account History**, then tracks the fields of the person: the standard Birthdate (`PersonBirthdate`) and the custom field `Test__pc`. Fields are named by their API name as seen from the Account, with the `__pc` suffix for the custom fields of the person.
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+  "settings": {
+    "historyTracking": [
+      {
+        "objectApiName": "Account",
+        "enableHistoryTracking": true,
+        "fieldHistoryTracking": [
+          {
+            "fieldApiName": "PersonBirthdate",
+            "enableHistoryTracking": true
+          },
+          {
+            "fieldApiName": "Test__pc",
+            "enableHistoryTracking": true
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
 ## Example
 
 ```json
@@ -58,7 +100,7 @@ In the field paths, `[]` stands for the items of a list and `*` for the entries 
     {
       "default": [],
       "title": "History Tracking",
-      "description": "Enables or disables history tracking on objects and on their fields (**Object Manager → Fields & Relationships → Set History Tracking**).\n\nIt closes a gap of the Metadata API, which cannot enable field history tracking on custom Person Account fields.",
+      "description": "Enables or disables history tracking on objects and on their fields (**Object Manager → Fields & Relationships → Set History Tracking**).\n\nIt closes a gap of the Metadata API, which cannot enable field history tracking on custom Person Account fields.\n\n![Set History Tracking](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/history-tracking/screenshot.webp)",
       "examples": [
         [
           {

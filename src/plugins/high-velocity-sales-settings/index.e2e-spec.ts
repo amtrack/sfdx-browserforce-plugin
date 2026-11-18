@@ -1,5 +1,11 @@
 import assert from 'assert';
-import { HighVelocitySalesSettingsConfig, HighVelocitySalesSettings } from './index.js';
+import {
+  HighVelocitySalesSettingsConfig,
+  HighVelocitySalesSettings,
+  highVelocitySalesSettingsSchema,
+} from './index.js';
+import { AUTOMATION_TAB_ITEM, HighVelocitySalesSetupPage } from './page.js';
+import { capture } from '../../../test/capture.js';
 
 describe(HighVelocitySalesSettings.name, function () {
   let plugin: HighVelocitySalesSettings;
@@ -14,9 +20,24 @@ describe(HighVelocitySalesSettings.name, function () {
     setUpAndEnable: false,
   };
 
-  it('should enable', async () => {
-    await plugin.run(configEnabled);
-  });
+  it(
+    'should enable @capture',
+    capture(highVelocitySalesSettingsSchema, {
+      config: { setUpAndEnable: true },
+      pages: {
+        screenshot: {
+          context: [':text-is("Turn on Sales Engagement")'],
+          height: 1300,
+          async open(doc) {
+            const page = await doc.open(HighVelocitySalesSetupPage.getUrl());
+            await doc.click(page, AUTOMATION_TAB_ITEM);
+            return page;
+          },
+          pills: { setUpAndEnable: 'button.setupAndEnableButton, #toggleHighVelocitySalesPref' },
+        },
+      },
+    }),
+  );
   it('should already be enabled', async () => {
     const res = await plugin.run(configEnabled);
     assert.deepStrictEqual(res, { message: 'no action necessary' });

@@ -15,6 +15,8 @@ describe(EinsteinConversationInsights.name, function () {
   const configDisabled: EinsteinConversationInsightsConfig = {
     enabled: false,
   };
+  // enabling, with its screenshots: the first test of CallSummaries, which needs it (the tests run in the order of
+  // their files, and Conversation Insights cannot be turned off again)
   it('should enable', async () => {
     await plugin.run(configEnabled);
   });

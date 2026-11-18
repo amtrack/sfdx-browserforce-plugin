@@ -2,7 +2,9 @@ import assert from 'assert';
 import { spawnSync } from 'node:child_process';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { CertificateAndKeyManagement } from './index.js';
+import { CertificateAndKeyManagement, CERT_PREFIX_PATH } from './index.js';
+import { securitySchema } from '../index.js';
+import { capture } from '../../../../test/capture.js';
 
 describe(CertificateAndKeyManagement.name, function () {
   let pluginCertificateManagement: CertificateAndKeyManagement;
@@ -34,6 +36,36 @@ describe(CertificateAndKeyManagement.name, function () {
     const sourceDeployCmd = spawnSync('sf', ['project', 'deploy', 'start', '-d', dir, '--json']);
     assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
   });
+  it('should delete the certificates of a previous run', async () => {
+    // a keystore cannot be imported over its certificate
+    await global.browserforce.connection.metadata.delete('Certificate', ['Dummy', 'AcmeSelfSigned']);
+  });
+  it(
+    'should import a certificate from a keystore and create a self-signed one @capture',
+    capture(securitySchema, {
+      config: {
+        certificateAndKeyManagement: {
+          importFromKeystore: [
+            {
+              name: 'Dummy',
+              filePath: './src/plugins/security/certificate-and-key-management/Dummy.jks',
+              password: '',
+            },
+          ],
+          certificates: [{ name: 'AcmeSelfSigned', label: 'Acme Self Signed', keysize: 2048, exportable: true }],
+        },
+      },
+      pages: {
+        certificates: {
+          open: (doc) => doc.open(CERT_PREFIX_PATH),
+          context: ['.bPageTitle', '.bRelatedList, .listRelatedObject, .bPageBlock'],
+          pills: {
+            'certificateAndKeyManagement.importFromKeystore[0].name': 'tr.dataRow:has(:text-matches("^dummy$", "i"))',
+          },
+        },
+      },
+    }),
+  );
   it('should create a self-signed certificate', async () => {
     await pluginCertificateManagement.apply(configCreatedCert);
   });

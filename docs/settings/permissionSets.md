@@ -14,6 +14,40 @@ Config key: `settings.permissionSets`
 
 Gives Permission Sets access to service presence statuses (Omni-Channel), by the API names of the statuses.
 
+## Screenshot
+
+![Permission Sets](../assets/plugins/permission-sets/screenshot.webp)
+
+| Pill | Field |
+| ---- | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>[0].<wbr>permissionSetName</code> |
+| <span class="bf-pill bf-pill-c2">2</span> | <code>[0].<wbr>servicePresenceStatuses</code> |
+
+## Use cases
+
+### Support agents get the presence statuses of their team
+
+Omni-Channel agents choose a presence status, such as "Available for cases" or "On a break", in the Omni-Channel widget, and they only see the statuses their profile or permission sets give access to. Litware gives them through the **permission set** of its support agents, and adds a status each time a new channel opens.
+
+The access of a permission set to service presence statuses is not part of the `PermissionSet` metadata. This config moves the statuses `TestStatus` and `TestStatus2` (the API names of the statuses, here those of the test fixtures of this plugin) to the **enabled statuses** of the permission set, and removes the ones not listed.
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+  "settings": {
+    "permissionSets": [
+      {
+        "permissionSetName": "ServicePresenceTest",
+        "servicePresenceStatuses": [
+          "TestStatus",
+          "TestStatus2"
+        ]
+      }
+    ]
+  }
+}
+```
+
 ## Example
 
 ```json
@@ -48,7 +82,7 @@ In the field paths, `[]` stands for the items of a list and `*` for the entries 
     {
       "default": [],
       "title": "Permission Sets",
-      "description": "Gives Permission Sets access to service presence statuses (Omni-Channel), by the API names of the statuses.",
+      "description": "Gives Permission Sets access to service presence statuses (Omni-Channel), by the API names of the statuses.\n\n![Service Presence Statuses Access](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/permission-sets/screenshot.webp)",
       "examples": [
         [
           {

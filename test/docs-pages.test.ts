@@ -12,6 +12,8 @@ import {
   renderLlmsTxt,
   renderSettingPage,
   renderSettingsIndex,
+  renderScreenshots,
+  renderUseCases,
   settingPageImage,
   settingPageMeta,
   settingsNav,
@@ -23,6 +25,7 @@ import {
 import { DOCS_URL, rawFileUrl } from '../src/docs.js';
 import type { PluginCatalogEntry } from '../src/plugin-catalog.js';
 import { deprecatedSettings } from '../src/plugins/deprecated.js';
+import { toUseCase, type UseCaseDefinition } from '../scripts/use-cases.js';
 
 const entry: PluginCatalogEntry = {
   key: 'densitySettings',
@@ -62,6 +65,69 @@ describe('documentation pages', () => {
       assert.strictEqual(settingPageImage('docs/assets/settings/a.png'), '../assets/settings/a.png');
       assert.strictEqual(settingPageImage('./docs/assets/a.png'), '../assets/a.png');
       assert.strictEqual(settingPageImage('examples/a.png'), rawFileUrl('examples/a.png'));
+      assert.strictEqual(
+        settingPageImage('src/plugins/slack/screenshot.webp'),
+        '../assets/plugins/slack/screenshot.webp',
+      );
+      assert.strictEqual(settingPageImage('src/plugins/slack/index.ts'), rawFileUrl('src/plugins/slack/index.ts'));
+    });
+  });
+
+  describe('renderScreenshots()', () => {
+    const shot = (pages: UseCaseDefinition<unknown>['pages']) =>
+      toUseCase('densitySettings', { config: { level: 'High' }, pages });
+
+    it('renders nothing without capture() test', () => {
+      assert.deepStrictEqual(renderScreenshots(entry, []), []);
+    });
+
+    it('shows the image of a capture and the field of each of its pills', () => {
+      assert.deepStrictEqual(renderScreenshots(entry, [shot({ screenshot: { pills: { level: 'select' } } })]), [
+        '## Screenshot',
+        '![My Setting](../assets/plugins/density-settings/screenshot.webp)\n\n' +
+          '| Pill | Field |\n| ---- | ----- |\n| <span class="bf-pill bf-pill-c1">1</span> | <code>level</code> |',
+      ]);
+    });
+
+    it('captions several captures with their titles', () => {
+      const markdown = renderScreenshots(entry, [
+        shot({ quote: { title: 'Quote', pills: { level: 'select' } } }),
+        shot({ order: { pills: {} } }),
+      ]).join('\n\n');
+      assert.ok(
+        markdown.startsWith('## Screenshots\n\n*Quote*\n\n![Quote](../assets/plugins/density-settings/quote.webp)'),
+      );
+      assert.ok(markdown.endsWith('*Order*\n\n![Order](../assets/plugins/density-settings/order.webp)'));
+    });
+  });
+
+  describe('renderUseCases()', () => {
+    it('includes the hand-written stories, one heading level down', () => {
+      assert.deepStrictEqual(renderUseCases('## Compact view\n\nStory.\n'), [
+        '## Use cases',
+        '### Compact view\n\nStory.',
+      ]);
+      assert.deepStrictEqual(renderUseCases(undefined), []);
+    });
+
+    it('leaves out the examples a use case already shows as its config', () => {
+      const story = (level: string) =>
+        `## Story\n\n\`\`\`json\n${JSON.stringify({ settings: { densitySettings: { level } } }, null, 2)}\n\`\`\`\n`;
+      const one = renderSettingPage(entry, { stories: story('High') });
+      assert.ok(one.includes('## Example\n'));
+      assert.ok(!one.includes('=== "Example'));
+      const all = renderSettingPage(entry, { stories: `${story('High')}\n${story('Low')}` });
+      assert.ok(!/## Examples?\n/.test(all));
+    });
+
+    it('places the screenshots after the description, then the stories, before the examples', () => {
+      const page = renderSettingPage(entry, {
+        useCases: [toUseCase('densitySettings', { config: {}, pages: { screenshot: { pills: {} } } })],
+        stories: '## Compact view\n',
+      });
+      assert.ok(page.indexOf('my-setting.png') < page.indexOf('## Screenshot'));
+      assert.ok(page.indexOf('## Screenshot') < page.indexOf('## Use cases'));
+      assert.ok(page.indexOf('## Use cases') < page.indexOf('## Examples'));
     });
   });
 

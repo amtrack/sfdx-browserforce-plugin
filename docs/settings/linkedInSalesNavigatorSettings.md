@@ -13,35 +13,45 @@ Setup: **Feature Settings → Sales → LinkedIn Sales Navigator** (`/lightning/
 
 Enables or disables the Sales Navigator integration.
 
-![LinkedIn Sales Navigator](../assets/settings/linkedin-sales-navigator-settings.png)
+## Screenshot
 
-## Examples
+![LinkedIn Sales Navigator Settings](../assets/plugins/linkedin-sales-navigator-settings/screenshot.webp)
 
-=== "Example 1"
+| Pill | Field |
+| ---- | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>enabled</code> |
 
-    ```json
-    {
-      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-      "settings": {
-        "linkedInSalesNavigatorSettings": {
-          "enabled": true
-        }
-      }
+## Use cases
+
+### Account executives research buyers without leaving Salesforce
+
+The account executives of Fabrikam use LinkedIn Sales Navigator to find the decision makers of their prospects. They switch between the two tools all day, and the contacts they find never reach the CRM.
+
+Turning on the **Sales Navigator integration** adds the Sales Navigator components to account, contact and lead pages, so reps see the buying committee and send InMails from the record. No Metadata API settings type holds this toggle, and turning it on also asks the admin to accept the terms of the integration: this config does both in every org of the team.
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+  "settings": {
+    "linkedInSalesNavigatorSettings": {
+      "enabled": true
     }
-    ```
+  }
+}
+```
 
-=== "Example 2"
+## Example
 
-    ```json
-    {
-      "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
-      "settings": {
-        "linkedInSalesNavigatorSettings": {
-          "enabled": false
-        }
-      }
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+  "settings": {
+    "linkedInSalesNavigatorSettings": {
+      "enabled": false
     }
-    ```
+  }
+}
+```
 
 ## Fields
 
@@ -61,7 +71,7 @@ Enables or disables the Sales Navigator integration.
         }
       },
       "title": "LinkedIn Sales Navigator Settings",
-      "description": "Setup: **Feature Settings → Sales → LinkedIn Sales Navigator** (`/lightning/setup/LinkedInSalesNavigatorPage/home`)\n\nEnables or disables the Sales Navigator integration.\n\n![LinkedIn Sales Navigator](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/docs/assets/settings/linkedin-sales-navigator-settings.png)",
+      "description": "Setup: **Feature Settings → Sales → LinkedIn Sales Navigator** (`/lightning/setup/LinkedInSalesNavigatorPage/home`)\n\nEnables or disables the Sales Navigator integration.\n\n![LinkedIn Sales Navigator](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/linkedin-sales-navigator-settings/screenshot.webp)",
       "examples": [
         {
           "enabled": true

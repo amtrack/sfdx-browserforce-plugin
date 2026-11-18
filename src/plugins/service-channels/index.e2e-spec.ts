@@ -2,8 +2,15 @@ import assert from 'assert';
 import * as child from 'child_process';
 import { fileURLToPath } from 'node:url';
 import * as path from 'path';
-import { ServiceChannels } from './index.js';
+import { ServiceChannels, serviceChannelsSchema } from './index.js';
 import { OmniChannelSettings } from '../omni-channel-settings/index.js';
+import {
+  CAPACITY_MODEL_SELECTOR,
+  STATUS_FIELD_SELECTOR,
+  STATUS_CHANGE_CAPACITY_SELECTOR,
+  OWNER_CHANGE_CAPACITY_SELECTOR,
+} from './capacity/index.js';
+import { capture } from '../../../test/capture.js';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
@@ -57,6 +64,37 @@ describe(ServiceChannels.name, function () {
     const omnniChannelPlugin = new OmniChannelSettings(global.browserforce);
     await omnniChannelPlugin.run({ enableStatusBasedCapacityModel: true });
   });
+  it(
+    'should count only the cases in progress against the capacity of the agents @capture',
+    capture(serviceChannelsSchema, {
+      config: [
+        {
+          serviceChannelDeveloperName: 'CaseTest',
+          capacity: {
+            capacityModel: 'StatusBased',
+            statusField: 'Case.Status',
+            valuesForInProgress: ['New', 'Working', 'Escalated'],
+            checkAgentCapacityOnReopenedWorkItems: true,
+            checkAgentCapacityOnReassignedWorkItems: true,
+          },
+        },
+      ],
+      pages: {
+        screenshot: {
+          positions: { '[0].capacity.valuesForInProgress': 'left' },
+          height: 1100,
+          context: ['.pbSubheader:has-text("Capacity Settings")'],
+          pills: {
+            '[0].capacity.capacityModel': CAPACITY_MODEL_SELECTOR,
+            '[0].capacity.statusField': STATUS_FIELD_SELECTOR,
+            '[0].capacity.valuesForInProgress': '#inProgressList',
+            '[0].capacity.checkAgentCapacityOnReopenedWorkItems': STATUS_CHANGE_CAPACITY_SELECTOR,
+            '[0].capacity.checkAgentCapacityOnReassignedWorkItems': OWNER_CHANGE_CAPACITY_SELECTOR,
+          },
+        },
+      },
+    }),
+  );
 
   it('should configure status based capacity model for service channels', async () => {
     await plugin.run(configureServiceChannels);

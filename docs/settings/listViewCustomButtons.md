@@ -13,6 +13,41 @@ Object Manager: **(object) → Search Layouts for Salesforce Classic → List Vi
 
 Manages the custom buttons selected in the list view button layout of any object. Buttons are identified by the API name of their WebLink, with an optional namespace prefix (`AssignTask` or `th_dev__AssignTask`).
 
+## Screenshot
+
+![List View Custom Buttons](../assets/plugins/list-view-custom-buttons/screenshot.webp)
+
+| Pill | Field |
+| ---- | ----- |
+| <span class="bf-pill bf-pill-c1">1</span> | <code>[0].<wbr>objectApiName</code> |
+| <span class="bf-pill bf-pill-c2">2</span> | <code>[0].<wbr>buttons</code> |
+
+## Use cases
+
+### Show the custom buttons of the task list views
+
+The support team of Acme works its tasks from list views, and its developers wrote two list buttons, **Test List Button** and **Test List Button 2**, that act on the selected tasks. The `listViewButtons` of the Metadata API (`searchLayouts` of an object) do not apply to tasks and events, so an admin had to add the buttons by hand, in each org.
+
+This config selects both buttons on the list views of **Task**, whose layout is the **Activities List View**, shared with events. The buttons are named by their API name, with their namespace prefix when they come from a package (`th_dev__AssignTask`). With `removeOtherButtons`, the **Selected Buttons** end up exactly as listed.
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/schema.json",
+  "settings": {
+    "listViewCustomButtons": [
+      {
+        "objectApiName": "Task",
+        "buttons": [
+          "TestListButton",
+          "TestListButton2"
+        ],
+        "removeOtherButtons": true
+      }
+    ]
+  }
+}
+```
+
 ## Example
 
 ```json
@@ -49,7 +84,7 @@ In the field paths, `[]` stands for the items of a list and `*` for the entries 
     {
       "default": [],
       "title": "List View Custom Buttons",
-      "description": "Object Manager: **(object) → Search Layouts for Salesforce Classic → List View**\n\nManages the custom buttons selected in the list view button layout of any object. Buttons are identified by the API name of their WebLink, with an optional namespace prefix (`AssignTask` or `th_dev__AssignTask`).",
+      "description": "Object Manager: **(object) → Search Layouts for Salesforce Classic → List View**\n\nManages the custom buttons selected in the list view button layout of any object. Buttons are identified by the API name of their WebLink, with an optional namespace prefix (`AssignTask` or `th_dev__AssignTask`).\n\n![List View Custom Buttons](https://raw.githubusercontent.com/amtrack/sfdx-browserforce-plugin/main/src/plugins/list-view-custom-buttons/screenshot.webp)",
       "examples": [
         [
           {

@@ -21,7 +21,7 @@ export const slackSchema = z
       '',
       'Agrees to the terms and conditions and enables the Sales Cloud for Slack app.',
       '',
-      '![Slack Apps Setup](docs/assets/settings/slack.png)',
+      '![Slack Apps Setup](src/plugins/slack/screenshot.webp)',
     ].join('\n'),
     examples: [{ agreeToTermsAndConditions: true, enableSalesCloudForSlack: true }],
   });
@@ -30,7 +30,7 @@ const BASE_PATH = '/lightning/setup/SlackSetupAssistant/home';
 
 const TOS_CHECKBOX = 'setup_service-slack-agree-to-terms input[type="checkbox"]';
 // unfortunately the divs intercept pointer events so we need to click on the label instead
-const TOS_CHECKBOX_TOGGLE = `setup_service-slack-agree-to-terms lightning-primitive-input-toggle`;
+export const TOS_CHECKBOX_TOGGLE = `setup_service-slack-agree-to-terms lightning-primitive-input-toggle`;
 const SALES_CLOUD_FOR_SLACK_CHECKBOX = 'input[type="checkbox"][name="SlkSetupStepSalesCloudForSlack"]';
 // unfortunately the divs intercept pointer events so we need to click on the label instead
 const SALES_CLOUD_FOR_SLACK_CHECKBOX_TOGGLE = `lightning-primitive-input-toggle:has(${SALES_CLOUD_FOR_SLACK_CHECKBOX})`;

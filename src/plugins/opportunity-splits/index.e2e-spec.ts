@@ -2,7 +2,8 @@ import assert from 'assert';
 import * as child from 'child_process';
 import { fileURLToPath } from 'node:url';
 import * as path from 'path';
-import { OpportunitySplits } from './index.js';
+import { OpportunitySplits, opportunitySplitsSchema } from './index.js';
+import { capture } from '../../../test/capture.js';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
@@ -31,9 +32,20 @@ describe(OpportunitySplits.name, function () {
     ]);
     assert.deepStrictEqual(sourceDeployCmd.status, 0, sourceDeployCmd.output.toString());
   });
-  it('should enable', async () => {
-    await plugin.run(configEnabled);
-  });
+  it(
+    'should enable @capture',
+    capture(opportunitySplitsSchema, {
+      config: { enabled: true },
+      pages: {
+        screenshot: {
+          context: [':text-is("Split Types Setup")'],
+          pills: {
+            enabled: 'input[value="Set Up Opportunity Splits"], table[id$=":splitTypeViewTable"]',
+          },
+        },
+      },
+    }),
+  );
   it('should be enabled', async () => {
     const state = await plugin.retrieve();
     assert.deepStrictEqual(state, configEnabled);

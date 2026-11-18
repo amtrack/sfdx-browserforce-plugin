@@ -20,7 +20,7 @@ export const lightningExperienceSettingsSchema = z
       '',
       'Activates a Lightning Experience theme. Although the Metadata API has an `activeThemeName` field in `LightningExperienceSettings`, it cannot activate the standard themes like `Lightning`, `LightningLite` or `SalesforceCosmos`.',
       '',
-      '![Themes and Branding](docs/assets/settings/lightning-experience-settings.png)',
+      '![Themes and Branding](src/plugins/lightning-experience-settings/screenshot.webp)',
     ].join('\n'),
     examples: [{ activeThemeName: 'Lightning' }],
   });

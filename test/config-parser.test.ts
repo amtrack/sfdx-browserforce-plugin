@@ -184,6 +184,21 @@ describe('ConfigParser', () => {
       });
     }
 
+    // the configs of the hand-written stories, shown on the documentation pages
+    const useCaseFiles = readdirSync('src/plugins', { recursive: true, encoding: 'utf8' })
+      .filter((f) => f.endsWith('use-cases.md'))
+      .map((f) => join('src/plugins', f).split('\\').join('/'));
+
+    for (const file of useCaseFiles) {
+      it(`should parse the configs of ${file}`, () => {
+        const blocks = [...readFileSync(file, 'utf8').matchAll(/^```json\n([\s\S]*?)^```$/gm)].map((m) => m[1]);
+        assert.ok(blocks.length > 0, 'no ```json block');
+        for (const block of blocks) {
+          assert.doesNotThrow(() => ConfigParser.parse(drivers, JSON.parse(block)));
+        }
+      });
+    }
+
     it('should fail parsing src/plugins/email-deliverability/invalid.json with an enum message', () => {
       const definition = JSON.parse(readFileSync('src/plugins/email-deliverability/invalid.json', 'utf8'));
       assert.throws(() => {

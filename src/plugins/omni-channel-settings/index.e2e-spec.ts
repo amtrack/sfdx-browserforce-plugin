@@ -1,5 +1,6 @@
 import assert from 'assert';
-import { OmniChannelSettings } from './index.js';
+import { OmniChannelSettings, omniChannelSettingsSchema, STATUS_CAPACITY_TOGGLE_SELECTOR } from './index.js';
+import { capture } from '../../../test/capture.js';
 
 describe(OmniChannelSettings.name, function () {
   this.timeout('10m');
@@ -15,9 +16,18 @@ describe(OmniChannelSettings.name, function () {
     enableStatusBasedCapacityModel: false,
   };
 
-  it('should enable status based capacity model', async () => {
-    await plugin.run(configEnableStatusBasedCapacityModel);
-  });
+  it(
+    'should enable status based capacity model @capture',
+    capture(omniChannelSettingsSchema, {
+      config: { enableStatusBasedCapacityModel: true },
+      pages: {
+        screenshot: {
+          context: ['.bPageTitle', '.bPageBlock'],
+          pills: { enableStatusBasedCapacityModel: STATUS_CAPACITY_TOGGLE_SELECTOR },
+        },
+      },
+    }),
+  );
 
   it('should verify status based capacity model is enabled', async () => {
     const res = await plugin.retrieve();

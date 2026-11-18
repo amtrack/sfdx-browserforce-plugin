@@ -26,3 +26,5 @@ trace-*.zip
 /site
 /.sf-docs-tooling
 /hardis-report
+/docs/assets/plugins
+

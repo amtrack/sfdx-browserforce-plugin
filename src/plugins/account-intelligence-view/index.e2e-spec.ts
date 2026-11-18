@@ -1,5 +1,6 @@
 import assert from 'assert';
-import { AccountIntelligenceView, type AccountIntelligenceViewConfig } from './index.js';
+import { AccountIntelligenceView, type AccountIntelligenceViewConfig, accountIntelligenceViewSchema } from './index.js';
+import { capture } from '../../../test/capture.js';
 
 describe(AccountIntelligenceView.name, function () {
   let plugin: AccountIntelligenceView;
@@ -14,9 +15,18 @@ describe(AccountIntelligenceView.name, function () {
     enable: false,
   };
 
-  it('should enable', async () => {
-    await plugin.run(configEnabled);
-  });
+  it(
+    'should enable @capture',
+    capture(accountIntelligenceViewSchema, {
+      config: { enable: true },
+      pages: {
+        screenshot: {
+          context: [':text-is("Set Up Account Intelligence View")'],
+          pills: { enable: 'lightning-input.pipelineInspectionToggle' },
+        },
+      },
+    }),
+  );
   it('should already be enabled', async () => {
     const res = await plugin.run(configEnabled);
     assert.deepStrictEqual(res, { message: 'no action necessary' });
