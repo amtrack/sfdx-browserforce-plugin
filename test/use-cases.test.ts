@@ -34,7 +34,7 @@ const DEFINITION: UseCaseDefinition<unknown> = {
     values: {
       title: 'Values',
       pills: { 'values[0].active': 'input' },
-      positions: { 'values[0].active': { px: 10 } },
+      positions: { 'values[0].active': 'left' },
     },
   },
 };
@@ -53,7 +53,7 @@ const WITHOUT_SCREENSHOT = new Set([
 
 describe('use cases', () => {
   describe('toUseCase()', () => {
-    it('numbers the pills of the pages, with their positions', () => {
+    it('numbers the pills of the pages', () => {
       const parsed = useCase();
       assert.strictEqual(parsed.folder, 'density-settings');
       assert.strictEqual(parsed.file, 'src/plugins/density-settings');
@@ -61,8 +61,7 @@ describe('use cases', () => {
         {
           name: 'values',
           title: 'Values',
-          clip: 'auto',
-          pills: [{ n: 1, field: 'values[0].active', capture: 'values', px: 10, py: undefined }],
+          pills: [{ n: 1, field: 'values[0].active', capture: 'values' }],
         },
       ]);
     });
@@ -87,7 +86,7 @@ describe('use cases', () => {
         pages: {
           values: {
             pills: { 'values[0].unknown': 'input' },
-            positions: { 'values[0].name': { px: 1 } },
+            positions: { 'values[0].name': 'left' },
           },
         },
       });

@@ -26,7 +26,7 @@ describe(Slack.name, function () {
       config: { agreeToTermsAndConditions: true, enableSalesCloudForSlack: true },
       pages: {
         screenshot: {
-          clip: { x: 262, y: 650, width: 1166, height: 440 },
+          context: [':text-is("Agree to Terms and Conditions")', ':text-is("Enable Slack Apps")'],
           height: 1400,
           pills: {
             agreeToTermsAndConditions: TOS_CHECKBOX_TOGGLE,

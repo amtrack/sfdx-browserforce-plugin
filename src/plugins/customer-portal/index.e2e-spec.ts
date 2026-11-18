@@ -273,20 +273,20 @@ describe('CustomerPortal', () => {
         pages: {
           dummy: {
             title: 'The custom object Dummy__c',
-            positions: { 'availableCustomObjects[0].available': { px: 47.3, py: 50 } },
             path: 'ObjectManager',
             height: 1400,
             pills: {
-              'availableCustomObjects[0].available': CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL_SELECTOR,
+              // the label: left of the checkbox is the edge of the Classic iframe
+              'availableCustomObjects[0].available': `label[for="${CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL_SELECTOR.slice(1)}"]`,
             },
           },
           'cpq-quote': {
             title: 'The Quote object of Salesforce CPQ (SBQQ__Quote__c)',
-            positions: { 'availableCustomObjects[1].available': { px: 47.3, py: 50 } },
             path: 'ObjectManager',
             height: 1400,
             pills: {
-              'availableCustomObjects[1].available': CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL_SELECTOR,
+              // the label: left of the checkbox is the edge of the Classic iframe
+              'availableCustomObjects[1].available': `label[for="${CUSTOM_OBJECT_AVAILABLE_FOR_CUSTOMER_PORTAL_SELECTOR.slice(1)}"]`,
             },
           },
         },

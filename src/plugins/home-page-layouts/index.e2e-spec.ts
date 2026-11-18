@@ -51,8 +51,8 @@ describe(HomePageLayouts.name, function () {
       pages: {
         screenshot: {
           positions: {
-            'homePageLayoutAssignments[0].profile': { px: 37.2, py: 46.2 },
-            'homePageLayoutAssignments[1].profile': { px: 33.2, py: 52.1 },
+            'homePageLayoutAssignments[0].profile': 'left',
+            'homePageLayoutAssignments[1].profile': 'left',
           },
           height: 2000,
           pills: {

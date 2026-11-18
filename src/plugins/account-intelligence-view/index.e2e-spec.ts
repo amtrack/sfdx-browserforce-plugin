@@ -21,7 +21,7 @@ describe(AccountIntelligenceView.name, function () {
       config: { enable: true },
       pages: {
         screenshot: {
-          clip: { x: 256, y: 140, width: 1184, height: 620 },
+          context: [':text-is("Set Up Account Intelligence View")'],
           pills: { enable: 'lightning-input.pipelineInspectionToggle' },
         },
       },

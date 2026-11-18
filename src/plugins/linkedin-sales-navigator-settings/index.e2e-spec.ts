@@ -25,7 +25,7 @@ describe(LinkedInSalesNavigatorSettings.name, function () {
       config: { enabled: true },
       pages: {
         screenshot: {
-          clip: { x: 256, y: 140, width: 1184, height: 800 },
+          context: [':text-is("Sales Navigator Integration")'],
           height: 1000,
           pills: {
             enabled:

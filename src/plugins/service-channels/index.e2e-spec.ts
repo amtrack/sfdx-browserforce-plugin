@@ -81,10 +81,9 @@ describe(ServiceChannels.name, function () {
       ],
       pages: {
         screenshot: {
-          clip: { x: 240, y: 722, width: 1180, height: 348 },
-          positions: { '[0].capacity.valuesForInProgress': { px: 18.2, py: 39.7 } },
+          positions: { '[0].capacity.valuesForInProgress': 'left' },
           height: 1100,
-          context: ['.bPageTitle', '.bPageBlock'],
+          context: ['.pbSubheader:has-text("Capacity Settings")'],
           pills: {
             '[0].capacity.capacityModel': CAPACITY_MODEL_SELECTOR,
             '[0].capacity.statusField': STATUS_FIELD_SELECTOR,

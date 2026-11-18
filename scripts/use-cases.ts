@@ -17,10 +17,7 @@ import type { Browserforce } from '../src/browserforce.js';
 import type { Field } from '../src/json-schema-utils.js';
 import { buildPluginCatalog } from '../src/plugin-catalog.js';
 import { schemas } from '../src/plugins/index.js';
-import { type Box, pluginDir } from './screenshots.js';
-
-/** A position of a pill center, in % of the final image, when the default one covers something. */
-export type PillPosition = { px?: number; py?: number };
+import { type PillPosition, pluginDir } from './screenshots.js';
 
 /**
  * A capture: one annotated screenshot of a page, by default the one `retrieve(config)` of the plugin opens, shot just
@@ -44,9 +41,7 @@ export type PageCapture = {
   hide?: string[];
   /** caption of the image when the setting has several captures */
   title?: string;
-  /** part of the viewport kept: around the pills (default), the whole viewport, or a box in CSS pixels */
-  clip?: 'auto' | 'viewport' | Box;
-  /** manual positions of pills, by field, when the default one covers something */
+  /** where a pill goes relative to its control, by field, when the default (right) covers something */
   positions?: Record<string, PillPosition>;
 };
 
@@ -79,8 +74,8 @@ export type UseCaseDefinition<C> = {
 /** What `capture()` attaches to the test function it returns, so it can be read without running it. */
 export type CaptureTestData = { key: string; definition: UseCaseDefinition<unknown> };
 
-/** A pill with its number and drawing options. */
-export type NumberedPill = PillPosition & {
+/** A pill with its number. */
+export type NumberedPill = {
   n: number;
   field: string;
   capture: string;
@@ -89,7 +84,6 @@ export type NumberedPill = PillPosition & {
 export type UseCaseCapture = {
   name: string;
   title?: string;
-  clip: 'auto' | 'viewport' | Box;
   pills: NumberedPill[];
 };
 
@@ -166,14 +160,7 @@ export function toUseCase(
   const captures: UseCaseCapture[] = Object.entries(definition.pages).map(([name, page]) => ({
     name,
     title: page.title,
-    clip: page.clip ?? 'auto',
-    pills: Object.keys(page.pills).map((field) => ({
-      n: ++n,
-      field,
-      capture: name,
-      px: page.positions?.[field]?.px,
-      py: page.positions?.[field]?.py,
-    })),
+    pills: Object.keys(page.pills).map((field) => ({ n: ++n, field, capture: name })),
   }));
   return { key, folder: folderOf(key), file, config: definition.config, captures, definition };
 }

@@ -38,7 +38,7 @@ describe(OpportunitySplits.name, function () {
       config: { enabled: true },
       pages: {
         screenshot: {
-          clip: { x: 240, y: 130, width: 1180, height: 530 },
+          context: [':text-is("Split Types Setup")'],
           pills: {
             enabled: 'input[value="Set Up Opportunity Splits"], table[id$=":splitTypeViewTable"]',
           },

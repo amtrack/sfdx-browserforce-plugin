@@ -42,7 +42,7 @@ describe(UserAccessPolicies.name, function () {
       config: { accessPolicies: [{ apiName: 'Grant_Permissions', active: true, on: 'Create', applyToAll: true }] },
       pages: {
         screenshot: {
-          clip: { x: 256, y: 140, width: 1184, height: 440 },
+          context: ['h1:has-text("Grant Permissions")'],
           async open(doc) {
             const id = await doc.recordId("SELECT Id FROM UserAccessPolicy WHERE DeveloperName = 'Grant_Permissions'");
             return doc.open(UserAccessPoliciesPage.getPolicyUrl(id));

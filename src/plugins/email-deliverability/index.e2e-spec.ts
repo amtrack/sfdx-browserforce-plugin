@@ -41,7 +41,7 @@ describe(EmailDeliverability.name, function () {
       config: { accessLevel: 'All email' },
       pages: {
         screenshot: {
-          clip: { x: 240, y: 120, width: 1180, height: 300 },
+          context: ['.bPageTitle'],
           pills: { accessLevel: ACCESS_LEVEL_SELECTOR },
         },
       },

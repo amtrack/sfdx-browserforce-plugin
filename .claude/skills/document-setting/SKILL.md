@@ -22,7 +22,7 @@ Read `CLAUDE.md` first. The tooling:
 | `capture(schema, definition, step?)`: the helper of the tests | `test/capture.ts` |
 | The `UseCaseDefinition` and `UseCaseDoc` API, checks, loading the `capture()` tests from the E2E tests | `scripts/use-cases.ts` |
 | Runtime: scratch org check, shooting the captures, drawing the pills into WebP images | `scripts/use-case-doc.ts`, `test/e2e-setup.ts` |
-| Palette, clip, pill placement | `scripts/screenshots.ts` |
+| Palette, crop, CSS of the pills (anchor positioning) | `scripts/screenshots.ts` |
 | Documentation images | `src/plugins/<folder>/*.webp` (generated, never edit them; `generate:docs` copies them to the git-ignored `docs/assets/plugins/`) |
 | Use cases (stories and config, Markdown) | `src/plugins/<folder>/use-cases.md` (hand-written) |
 | Page rendering | `renderScreenshots()`, `renderUseCases()` in `scripts/docs-pages.ts` |
@@ -96,8 +96,7 @@ it(
           defaultCurrencyIsoCode: CURRENCY_DROPDOWN_SELECTOR, // concrete path in config: a selector of the plugin
         },
         // title: 'Company Information', // caption, when the setting has several captures (default: from the name)
-        // clip: { x: 240, y: 130, width: 1180, height: 400 }, // default: around the pills and the context
-        // positions: { defaultCurrencyIsoCode: { px: 50, py: 20 } }, // of pills, in % of the image
+        // positions: { defaultCurrencyIsoCode: 'left' }, // side of the control: right (default), left, top, bottom, inside
       },
     },
   }),
@@ -122,8 +121,13 @@ it(
 - A Lightning page can show its controls before their values are loaded. Make the first pill wait for its content,
   e.g. `lightning-combobox:has-text("Compact")`, so the shot is not taken mid-loading.
 - A control below the fold fails with "outside the viewport": give the capture a larger `height`.
-- Reframing (`clip`, `positions`) needs a new capture: an explicit `clip` box applies to the screenshot of the whole
-  viewport.
+- The image is cropped around the pills and the `context` (at least 960×420): frame it with `context` selectors (a
+  heading, a section), never with coordinates. Pills are popovers anchored to their control (CSS anchor positioning):
+  right of it, else left, above, below when the viewport (or the Classic iframe of the control: a pill cannot leave
+  it) is too narrow; `positions` picks the side, without fallback, when the default covers a label or another pill
+  (`inside`: in the right end of a wide control, like a table row). When no side fits, point the pill at another
+  element of the field, like its `label[for="..."]`.
+- Reframing (`context`, `positions`) needs a new capture.
 - A setting a scratch org cannot show (an external app, a feature the scratch definition cannot enable) has no
   screenshot: add it to `WITHOUT_SCREENSHOT` in `test/use-cases.test.ts` with the reason.
 
@@ -155,14 +159,12 @@ take a screenshot.
 Open every produced image with the Read tool. A screenshot that was not looked at is not
 verified:
 
-- the right page, framed so the fields are legible (adjust `context`, `height`, `clip`);
+- the right page, framed so the fields are legible (adjust `context`, `height`);
 - every pill on the control its legend names;
 - no pill covering a label, a value or an icon (move it with `positions`, then capture again);
 - nothing personal: no real username or org of the user (scratch org names are fine). The runtime replaces the
   email and the username of the org user with `admin@example.com` in every page before each shot (the email of a
   scratch org user is the one of the Dev Hub user), but other personal data must be hidden with `hide`.
-
-An explicit `clip` can reveal more of the viewport than the automatic one: check what it shows.
 
 ## 6. Finish
 

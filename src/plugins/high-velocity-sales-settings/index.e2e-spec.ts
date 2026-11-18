@@ -26,7 +26,7 @@ describe(HighVelocitySalesSettings.name, function () {
       config: { setUpAndEnable: true },
       pages: {
         screenshot: {
-          clip: { x: 262, y: 520, width: 1168, height: 560 },
+          context: [':text-is("Turn on Sales Engagement")'],
           height: 1300,
           async open(doc) {
             const page = await doc.open(HighVelocitySalesSetupPage.getUrl());

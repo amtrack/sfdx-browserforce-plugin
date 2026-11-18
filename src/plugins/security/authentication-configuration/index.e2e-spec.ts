@@ -97,8 +97,8 @@ describe(AuthenticationConfiguration.name, function () {
         pages: {
           'authentication-configuration': {
             positions: {
-              'authenticationConfiguration.services[0].enabled': { px: 42.5, py: 57.9 },
-              'authenticationConfiguration.services[1].enabled': { px: 42.5, py: 41.7 },
+              'authenticationConfiguration.services[0].enabled': 'left',
+              'authenticationConfiguration.services[1].enabled': 'left',
             },
             height: 1200,
             hide: ['input[type="file"]'],

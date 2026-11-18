@@ -1,6 +1,6 @@
 /**
- * Pure helpers of the documentation screenshots taken by `CAPTURE=true npm run test:e2e`: the geometry and colours of
- * the numbered pills it draws into the images.
+ * Pure helpers of the documentation screenshots taken by `CAPTURE=true npm run test:e2e`: the crop, and the colours and
+ * CSS of the numbered pills it adds to the page before the shot.
  */
 
 /** Width of the viewport of every capture, in CSS pixels. */
@@ -65,15 +65,13 @@ export function renderPillsCss(): string {
 
 export type Box = { x: number; y: number; width: number; height: number };
 
-export type ShotPill = { n: number; field: string; box: Box };
-
 const PADDING = 40;
 const MIN_WIDTH = 960;
 const MIN_HEIGHT = 420;
 
 /**
- * Part of the viewport kept around the controls of both images (and the `context` of the capture): their union with a
- * margin for the pills, at least 960×420 and inside the viewport.
+ * Part of the viewport kept around the controls and their pills (and the `context` of the capture): their union with a
+ * margin, at least 960×420 and inside the viewport.
  */
 export function computeClip(pills: Box[], context: Box[], viewport: { width: number; height: number }): Box {
   if (pills.length + context.length === 0) {
@@ -89,13 +87,14 @@ export function computeClip(pills: Box[], context: Box[], viewport: { width: num
     })),
     ...context,
   ];
-  const span = (start: number, end: number, min: number, max: number): [number, number] => {
+  // below the minimum, the width grows on both sides, the height downwards: what is above is page chrome
+  const span = (start: number, end: number, min: number, max: number, centered: boolean): [number, number] => {
     let low = start;
     let high = end;
     if (high - low < min) {
       const missing = min - (high - low);
-      low -= missing / 2;
-      high += missing / 2;
+      low -= centered ? missing / 2 : 0;
+      high += centered ? missing / 2 : missing;
     }
     if (low < 0) {
       high -= low;
@@ -112,58 +111,76 @@ export function computeClip(pills: Box[], context: Box[], viewport: { width: num
     Math.max(...boxes.map((box) => box.x + box.width)),
     MIN_WIDTH,
     viewport.width,
+    true,
   );
   const [y1, y2] = span(
     Math.min(...boxes.map((box) => box.y)),
     Math.max(...boxes.map((box) => box.y + box.height)),
     MIN_HEIGHT,
     viewport.height,
+    false,
   );
   return { x: x1, y: y1, width: x2 - x1, height: y2 - y1 };
 }
 
-export const PILL_RADIUS = 13;
-const GAP = 6;
+/** Where a pill goes relative to its control: a side (a value of CSS `position-area`), or inside its right end. */
+export type PillPosition = 'right' | 'left' | 'top' | 'bottom' | 'inside';
 
-/** Width of a pill: a circle for one digit, a capsule for more. */
-export const pillWidth = (n: number): number =>
-  n < 10 ? 2 * PILL_RADIUS : 2 * PILL_RADIUS + 8 * (String(n).length - 1);
+const PLACEMENTS: Record<PillPosition, string> = {
+  right: 'position-area: right',
+  left: 'position-area: left',
+  top: 'position-area: top',
+  bottom: 'position-area: bottom',
+  inside: 'position-area: center; justify-self: unsafe end; align-self: unsafe center',
+};
 
-/** A pill as drawn on the clipped image: the box of its control and the center of the pill. */
-export type DrawnPill = { n: number; color: string; box: Box; cx: number; cy: number };
+/** Name of the CSS anchor of the control of pill `n`. */
+export const anchorName = (n: number): string => `--bf-pill-${n}`;
 
 /**
- * Where a pill goes on the clipped image: right of its control (the label of a Setup field is on its left), else left,
- * else above, else inside its top left corner, so it covers nothing the reader has to read; `px`/`py` (% of the
- * image) override it.
+ * CSS of pill `n`, a popover anchored to its control (CSS anchor positioning): at `position`, else right of the
+ * control (the label of a Setup field is on its left), or left, above, below when it overflows the viewport (or the
+ * Classic iframe of the control).
  */
-export function placePill(
-  pill: { n: number; box: Box; px?: number; py?: number },
-  image: { width: number; height: number },
-): DrawnPill {
-  const { box } = pill;
-  const half = pillWidth(pill.n) / 2;
-  const middle = box.y + Math.min(box.height / 2, PILL_RADIUS + 2);
-  const candidates: Array<[number, number]> = [
-    [box.x + box.width + GAP + half, middle],
-    [box.x - GAP - half, middle],
-    [box.x + half, box.y - GAP - PILL_RADIUS],
-  ];
-  const fits = ([cx, cy]: [number, number]): boolean =>
-    cx - half >= 0 && cx + half <= image.width && cy - PILL_RADIUS >= 0 && cy + PILL_RADIUS <= image.height;
-  let [cx, cy] = candidates.find(fits) ?? [box.x + half + 2, box.y + PILL_RADIUS + 2];
-  if (pill.px !== undefined) {
-    cx = (pill.px / 100) * image.width;
-  }
-  if (pill.py !== undefined) {
-    cy = (pill.py / 100) * image.height;
-  }
-  return { n: pill.n, color: pillColor(pill.n), box, cx: Math.round(cx), cy: Math.round(cy) };
+export function pillCss(n: number, position?: PillPosition): string {
+  return [
+    `position-anchor: ${anchorName(n)}`,
+    position ? PLACEMENTS[position] : `${PLACEMENTS.right}; position-try-fallbacks: left, top, bottom`,
+    'inset: auto',
+    'margin: 6px',
+    'box-sizing: border-box',
+    'min-width: 26px',
+    'height: 26px',
+    'padding: 0 4px',
+    'border: 2px solid #ffffff',
+    'border-radius: 13px',
+    `background: ${pillColor(n)}`,
+    'color: #ffffff',
+    'font: bold 15px/22px "Segoe UI", Arial, sans-serif',
+    'text-align: center',
+    'box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35)',
+    'overflow: visible',
+  ].join('; ');
 }
 
-/** Box of a control in the clipped image. */
-export function toClip(box: Box, clip: Box): Box {
-  return { x: box.x - clip.x, y: box.y - clip.y, width: box.width, height: box.height };
+/** CSS of the outline around the control of pill `n`, a popover anchored to it so no ancestor clips it. */
+export function outlineCss(n: number): string {
+  return [
+    `position-anchor: ${anchorName(n)}`,
+    'inset: auto',
+    'top: anchor(top)',
+    'left: anchor(left)',
+    'width: anchor-size(width)',
+    'height: anchor-size(height)',
+    'margin: 0',
+    'padding: 0',
+    'border: 0',
+    'background: transparent',
+    `outline: 3px solid ${pillColor(n)}`,
+    'outline-offset: 2px',
+    'border-radius: 4px',
+    'overflow: visible',
+  ].join('; ');
 }
 
 /** Quality of the WebP images of the documentation: text stays sharp, files are about 5 times smaller than PNG. */

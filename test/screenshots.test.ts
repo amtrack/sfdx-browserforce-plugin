@@ -1,12 +1,12 @@
 import assert from 'node:assert';
 import {
   computeClip,
+  outlineCss,
   PILL_PALETTE,
   pillColor,
   pillColorIndex,
-  placePill,
+  pillCss,
   renderPillsCss,
-  toClip,
 } from '../scripts/screenshots.js';
 
 const viewport = { width: 1440, height: 900 };
@@ -33,7 +33,7 @@ describe('screenshots', () => {
     it('frames the controls with a margin and a minimum size', () => {
       assert.deepStrictEqual(computeClip([{ x: 600, y: 400, width: 100, height: 20 }], [], viewport), {
         x: 170,
-        y: 200,
+        y: 360,
         width: 960,
         height: 420,
       });
@@ -55,38 +55,24 @@ describe('screenshots', () => {
     });
   });
 
-  describe('placePill()', () => {
-    const image = { width: 960, height: 420 };
-    it('puts the pill right of its control', () => {
-      const pill = placePill({ n: 1, box: { x: 100, y: 100, width: 200, height: 20 } }, image);
-      assert.deepStrictEqual([pill.cx, pill.cy, pill.color], [319, 110, pillColor(1)]);
+  describe('pillCss()', () => {
+    it('anchors the pill right of its control by default, with fallbacks', () => {
+      const css = pillCss(3);
+      assert.match(css, /position-anchor: --bf-pill-3;/);
+      assert.match(css, /position-area: right; position-try-fallbacks: left, top, bottom;/);
+      assert.match(css, new RegExp(`background: ${pillColor(3)};`));
     });
-    it('puts it left when the right side is out of the image, then above', () => {
-      const left = placePill({ n: 2, box: { x: 700, y: 100, width: 250, height: 20 } }, image);
-      assert.deepStrictEqual([left.cx, left.cy], [681, 110]);
-      const above = placePill({ n: 3, box: { x: 10, y: 100, width: 940, height: 20 } }, image);
-      assert.deepStrictEqual([above.cx, above.cy], [23, 81]);
-    });
-    it('falls back inside the top left corner of the control', () => {
-      const inside = placePill({ n: 4, box: { x: 0, y: 0, width: 960, height: 420 } }, image);
-      assert.deepStrictEqual([inside.cx, inside.cy], [15, 15]);
-    });
-    it('follows a manual position in percent', () => {
-      const manual = placePill({ n: 5, box: { x: 100, y: 100, width: 20, height: 20 }, px: 50, py: 10 }, image);
-      assert.deepStrictEqual([manual.cx, manual.cy], [480, 42]);
-    });
-    it('vertically centers small controls and aligns tall ones on their first line', () => {
-      const tall = placePill({ n: 1, box: { x: 100, y: 100, width: 200, height: 200 } }, image);
-      assert.strictEqual(tall.cy, 115);
+    it('follows the position of the capture, without fallbacks', () => {
+      assert.match(pillCss(1, 'left'), /position-area: left;/);
+      assert.doesNotMatch(pillCss(1, 'inside'), /position-try-fallbacks/);
+      assert.match(pillCss(1, 'inside'), /position-area: center; justify-self: unsafe end;/);
     });
   });
 
-  it('toClip() moves a box into the clipped image', () => {
-    assert.deepStrictEqual(toClip({ x: 300, y: 200, width: 10, height: 5 }, { x: 240, y: 150, width: 1, height: 1 }), {
-      x: 60,
-      y: 50,
-      width: 10,
-      height: 5,
-    });
+  it('outlineCss() covers the control of the pill in its colour', () => {
+    const css = outlineCss(2);
+    assert.match(css, /position-anchor: --bf-pill-2;/);
+    assert.match(css, /width: anchor-size\(width\);/);
+    assert.match(css, new RegExp(`outline: 3px solid ${pillColor(2)};`));
   });
 });

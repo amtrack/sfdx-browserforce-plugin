@@ -49,10 +49,7 @@ describe(AuthProviders.name, function () {
       config: { TestAuthProvider: { consumerKey: 'acme-portal-production', consumerSecret: '${PARTNER_SSO_SECRET}' } },
       pages: {
         screenshot: {
-          positions: {
-            'TestAuthProvider.consumerKey': { px: 34, py: 27.5 },
-            'TestAuthProvider.consumerSecret': { px: 34, py: 30.3 },
-          },
+          positions: { 'TestAuthProvider.consumerKey': 'inside', 'TestAuthProvider.consumerSecret': 'inside' },
           async open(doc) {
             return doc.open(
               `/${await doc.recordId("SELECT Id FROM AuthProvider WHERE DeveloperName = 'TestAuthProvider'")}`,

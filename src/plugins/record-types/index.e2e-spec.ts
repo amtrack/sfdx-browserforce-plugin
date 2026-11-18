@@ -68,13 +68,6 @@ describe(RecordTypes.name, function () {
       screenshot: 'before',
       pages: {
         screenshot: {
-          // from the right edge of the Object Manager navigation
-          clip: { x: 499, y: 237, width: 941, height: 420 },
-          positions: {
-            'deletions[0].fullName': { px: 85.5, py: 67.4 },
-            'deletions[0].replacement': { px: 85.5, py: 32.4 },
-            'deletions[1].fullName': { px: 85.5, py: 55.7 },
-          },
           open: (doc) => doc.open('/lightning/setup/ObjectManager/Vehicle__c/RecordTypes/view'),
           pills: {
             'deletions[0].fullName': 'tr:has(span.uiOutputText:text-is("Sports Car"))',

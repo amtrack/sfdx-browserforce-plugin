@@ -31,7 +31,6 @@ describe(CallSummaries.name, function () {
       config: { enabled: true },
       pages: {
         screenshot: {
-          clip: { x: 262, y: 250, width: 1166, height: 470 },
           open: (doc) => doc.open('/lightning/setup/CallCoachingSettings/home'),
           context: ['h2.title-header'],
           pills: { enabled: TURN_ON_TOGGLE },
@@ -47,7 +46,6 @@ describe(CallSummaries.name, function () {
       screenshot: 'before',
       pages: {
         screenshot: {
-          clip: { x: 256, y: 150, width: 1184, height: 550 },
           async open(doc) {
             const page = await doc.open(CallSummariesSetupPage.getUrl());
             // the steps to turn it on only show after Get Started, which changes nothing

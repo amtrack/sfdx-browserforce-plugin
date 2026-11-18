@@ -1,7 +1,8 @@
 /**
  * Runtime of the screenshots, taken by the E2E tests tagged `@capture` (`test/capture.ts`): the checks of the scratch
- * org, and the run of one `capture()` test: with CAPTURE=true, it shoots each capture, measures its controls and draws the pills into
- * the images of the documentation (`src/plugins/<folder>/`).
+ * org, and the run of one `capture()` test: with CAPTURE=true, it adds the numbered pills next to the controls of each
+ * capture (popovers anchored to them, placed by the browser), shoots it and writes the images of the documentation
+ * (`src/plugins/<folder>/`).
  */
 import { mkdirSync, writeFileSync } from 'node:fs';
 import type { Org } from '@salesforce/core';
@@ -10,15 +11,12 @@ import { Browserforce, type SalesforceUrlPath } from '../src/browserforce.js';
 import { type BrowserforcePlugin } from '../src/plugin.js';
 import { drivers, schemas } from '../src/plugins/index.js';
 import {
+  anchorName,
   type Box,
   computeClip,
-  type DrawnPill,
+  outlineCss,
+  pillCss,
   pluginDir,
-  PILL_RADIUS,
-  pillWidth,
-  placePill,
-  type ShotPill,
-  toClip,
   VIEWPORT_WIDTH,
   WEBP_QUALITY,
 } from './screenshots.js';
@@ -96,20 +94,29 @@ async function hideNoise(page: Page, hide: Locator[], identities: string[]): Pro
   }
 }
 
-const roundBox = (box: Box): Box => ({
-  x: Math.round(box.x),
-  y: Math.round(box.y),
-  width: Math.round(box.width),
-  height: Math.round(box.height),
-});
+/**
+ * Runs in the frame of a control: makes it a CSS anchor and adds a popover (top layer: no ancestor clips it) anchored
+ * to it, in its shadow root if any, since anchor names do not cross into a shadow tree; in the body for the synthetic
+ * shadow of Lightning Web Components, whose root does not connect what it gets (its nodes are in the document).
+ */
+function annotate(control: Element, { anchor, css, text }: { anchor: string; css: string; text: string }): void {
+  (control as HTMLElement).style.setProperty('anchor-name', anchor);
+  const annotation = control.ownerDocument.createElement('div');
+  annotation.setAttribute('data-bf-annotation', '');
+  annotation.popover = 'manual';
+  annotation.style.cssText = css;
+  annotation.textContent = text;
+  const root = control.getRootNode();
+  if (root instanceof ShadowRoot) {
+    root.append(annotation);
+  }
+  if (!annotation.isConnected) {
+    control.ownerDocument.body.append(annotation);
+  }
+  annotation.showPopover();
+}
 
-type Measured = {
-  name: string;
-  pills: ShotPill[];
-  buffer: Buffer;
-  context: Box[];
-  viewport: { width: number; height: number };
-};
+type Measured = { name: string; buffer: Buffer };
 
 function newPlugin(browserforce: Browserforce, key: string): BrowserforcePlugin {
   const Driver = drivers[key as keyof typeof drivers];
@@ -153,7 +160,7 @@ class Doc implements UseCaseDoc {
   }
 }
 
-/** Measures the controls of a capture in its page and takes its screenshot; its pills are numbered from `first`. */
+/** Adds the pills of a capture to its page, numbered from `first`, and takes its screenshot, cropped around them. */
 async function shoot(
   browserforce: Browserforce,
   useCase: UseCase,
@@ -163,7 +170,7 @@ async function shoot(
   const pills = Object.entries(capture.pills);
   const ui = await browserforce.waitForSelectorInFrameOrPage(page, capture.context?.[0] ?? pills[0]?.[1] ?? 'body');
   const viewport = page.viewportSize() ?? { width: VIEWPORT_WIDTH, height: 900 };
-  const measured: ShotPill[] = [];
+  const controls: Array<{ n: number; field: string; locator: Locator; box: Box }> = [];
   for (const [index, [field, selector]] of pills.entries()) {
     const n = first + index;
     const locator = ui.locator(selector).first();
@@ -184,17 +191,24 @@ async function shoot(
           `give the capture a larger height (now ${viewport.height})`,
       );
     }
-    measured.push({ n, field, box: roundBox(box) });
+    controls.push({ n, field, locator, box });
   }
   const context: Box[] = [];
   for (const selector of capture.context ?? []) {
-    // eslint-disable-next-line no-await-in-loop
-    const box = await ui.locator(selector).first().boundingBox();
+    let box: Box | null = null;
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      box = await ui.locator(selector).first().boundingBox({ timeout: 30_000 });
+    } catch (error) {
+      throw new Error(
+        `${useCase.file}, capture "${name}": context "${selector}" not found: ${(error as Error).message.split('\n')[0]}`,
+      );
+    }
     if (box) {
       // the part inside the viewport
       const bottom = Math.min(box.y + box.height, viewport.height);
       const right = Math.min(box.x + box.width, viewport.width);
-      context.push(roundBox({ x: box.x, y: box.y, width: right - box.x, height: bottom - box.y }));
+      context.push({ x: box.x, y: box.y, width: right - box.x, height: bottom - box.y });
     }
   }
   await hideNoise(
@@ -202,8 +216,34 @@ async function shoot(
     (capture.hide ?? []).map((selector) => ui.locator(selector)),
     identities,
   );
-  const buffer = await page.screenshot({ type: 'png', animations: 'disabled', caret: 'hide' });
-  return { name, pills: measured, buffer, context, viewport };
+  // the outlines first, so no outline covers a pill
+  for (const { n, locator } of controls) {
+    // eslint-disable-next-line no-await-in-loop
+    await locator.evaluate(annotate, { anchor: anchorName(n), css: outlineCss(n), text: '' });
+  }
+  for (const { n, field, locator } of controls) {
+    // eslint-disable-next-line no-await-in-loop
+    await locator.evaluate(annotate, {
+      anchor: anchorName(n),
+      css: pillCss(n, capture.positions?.[field]),
+      text: `${n}`,
+    });
+  }
+  const annotations = await Promise.all(
+    (await ui.locator('[data-bf-annotation]').all()).map((annotation) => annotation.boundingBox()),
+  );
+  const clip = computeClip(
+    [...controls.map((control) => control.box), ...annotations.filter((box): box is Box => box !== null)],
+    context,
+    viewport,
+  );
+  const buffer = await page.screenshot({
+    type: 'png',
+    clip,
+    animations: 'disabled',
+    caret: 'hide',
+  });
+  return { name, buffer };
 }
 
 /**
@@ -265,87 +305,27 @@ async function shootAll(browserforce: Browserforce, useCase: UseCase, identities
   return captures.map(([name]) => shots.get(name)!);
 }
 
-type DrawInput = {
-  source: string;
-  clip: Box;
-  pills: DrawnPill[];
-  radius: number;
-  widths: Record<number, number>;
-  quality: number;
-};
-
-/** Runs in the browser: crops the screenshot, outlines each control, draws its pill, returns a WebP data URL. */
-async function draw(input: DrawInput): Promise<string> {
+/** Runs in the browser: encodes a PNG screenshot as WebP, which Playwright does not take. */
+async function toWebp({ source, quality }: { source: string; quality: number }): Promise<string> {
   const image = new Image();
-  image.src = input.source;
+  image.src = source;
   await image.decode();
   const canvas = document.createElement('canvas');
-  canvas.width = input.clip.width;
-  canvas.height = input.clip.height;
-  const context = canvas.getContext('2d')!;
-  const { x, y, width, height } = input.clip;
-  context.drawImage(image, x, y, width, height, 0, 0, width, height);
-  const roundedRect = (rx: number, ry: number, rw: number, rh: number, radius: number): void => {
-    context.beginPath();
-    context.roundRect(rx, ry, rw, rh, radius);
-  };
-  for (const pill of input.pills) {
-    roundedRect(pill.box.x - 3, pill.box.y - 3, pill.box.width + 6, pill.box.height + 6, 4);
-    context.lineWidth = 3;
-    context.strokeStyle = pill.color;
-    context.stroke();
-  }
-  for (const pill of input.pills) {
-    const pillW = input.widths[pill.n];
-    roundedRect(pill.cx - pillW / 2, pill.cy - input.radius, pillW, 2 * input.radius, input.radius);
-    context.shadowColor = 'rgba(0, 0, 0, 0.35)';
-    context.shadowBlur = 4;
-    context.shadowOffsetY = 1;
-    context.fillStyle = pill.color;
-    context.fill();
-    context.shadowColor = 'transparent';
-    context.lineWidth = 2;
-    context.strokeStyle = '#ffffff';
-    context.stroke();
-    context.fillStyle = '#ffffff';
-    context.font = 'bold 15px "Segoe UI", Arial, sans-serif';
-    context.textAlign = 'center';
-    context.textBaseline = 'middle';
-    context.fillText(String(pill.n), pill.cx, pill.cy + 1);
-  }
-  return canvas.toDataURL('image/webp', input.quality);
+  canvas.width = image.naturalWidth;
+  canvas.height = image.naturalHeight;
+  canvas.getContext('2d')!.drawImage(image, 0, 0);
+  return canvas.toDataURL('image/webp', quality);
 }
 
-/** Draws the image of each capture into `src/plugins/<folder>/<capture>.webp`. */
-async function drawImages(browserforce: Browserforce, useCase: UseCase, shots: Measured[]): Promise<void> {
+/** Writes the image of each capture into `src/plugins/<folder>/<capture>.webp`. */
+async function writeImages(browserforce: Browserforce, useCase: UseCase, shots: Measured[]): Promise<void> {
   const dir = new URL(`${pluginDir(useCase.folder)}/`, root);
   mkdirSync(dir, { recursive: true });
   await using page = await browserforce.browserContext.newPage();
   for (const shot of shots) {
-    const layout = useCase.definition.pages[shot.name];
-    const clip =
-      layout.clip === 'viewport'
-        ? { x: 0, y: 0, ...shot.viewport }
-        : typeof layout.clip === 'object'
-          ? layout.clip
-          : computeClip(
-              shot.pills.map((pill) => pill.box),
-              shot.context,
-              shot.viewport,
-            );
-    const pills = shot.pills.map((pill) =>
-      placePill(
-        { n: pill.n, box: toClip(pill.box, clip), ...layout.positions?.[pill.field] },
-        { width: clip.width, height: clip.height },
-      ),
-    );
     // eslint-disable-next-line no-await-in-loop
-    const dataUrl = await page.evaluate(draw, {
+    const dataUrl = await page.evaluate(toWebp, {
       source: `data:image/png;base64,${shot.buffer.toString('base64')}`,
-      clip,
-      pills,
-      radius: PILL_RADIUS,
-      widths: Object.fromEntries(pills.map((pill) => [pill.n, pillWidth(pill.n)])),
       quality: WEBP_QUALITY,
     });
     writeFileSync(new URL(`${shot.name}.webp`, dir), Buffer.from(dataUrl.slice(dataUrl.indexOf(',') + 1), 'base64'));
@@ -354,7 +334,7 @@ async function drawImages(browserforce: Browserforce, useCase: UseCase, shots: M
 
 /**
  * Runs the step of an E2E test tagged `@capture`: apply `config` (or the step passed to `capture()`).
- * With `capture`, it shoots each capture after the step (or before it with `screenshot: 'before'`) and draws its
+ * With `capture`, it shoots each capture after the step (or before it with `screenshot: 'before'`) and writes its
  * image. Returns what the step returned.
  */
 export async function runCapture(
@@ -377,6 +357,6 @@ export async function runCapture(
   const before = useCase.definition.screenshot === 'before';
   const shots = before ? await shootAll(browserforce, useCase, options.identities) : undefined;
   const result = await step();
-  await drawImages(browserforce, useCase, shots ?? (await shootAll(browserforce, useCase, options.identities)));
+  await writeImages(browserforce, useCase, shots ?? (await shootAll(browserforce, useCase, options.identities)));
   return result;
 }

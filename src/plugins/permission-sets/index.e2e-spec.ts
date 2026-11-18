@@ -50,7 +50,7 @@ describe(PermissionSets.name, function () {
       config: [{ permissionSetName: 'ServicePresenceTest', servicePresenceStatuses: ['TestStatus', 'TestStatus2'] }],
       pages: {
         screenshot: {
-          clip: { x: 236, y: 106, width: 1184, height: 600 },
+          context: ['.bPageTitle', '.bPageBlock'],
           pills: {
             '[0].permissionSetName': '.bPageTitle h2',
             '[0].servicePresenceStatuses': VALUES_ENABLED_SELECTOR,

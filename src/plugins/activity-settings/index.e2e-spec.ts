@@ -22,7 +22,7 @@ describe(ActivitySettings.name, function () {
         config: { allowUsersToRelateMultipleContactsToTasksAndEvents: true },
         pages: {
           screenshot: {
-            positions: { allowUsersToRelateMultipleContactsToTasksAndEvents: { px: 1.6 } },
+            positions: { allowUsersToRelateMultipleContactsToTasksAndEvents: 'left' },
             context: ['.bPageTitle', '.bPageBlock'],
             pills: {
               allowUsersToRelateMultipleContactsToTasksAndEvents: 'input[id="thePage:theForm:theBlock:manyWhoPref"]',

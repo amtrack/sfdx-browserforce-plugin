@@ -22,7 +22,12 @@ function tab(name: string, fields: string[], height = 1400): PageCapture {
       await doc.click(page, `td[id="${formConfig[name].id}"]`);
       return page;
     },
-    context: ['[id="page:form:pb"]'],
+    // the header and the tab bar, from Documents to Additional Settings, frame every tab the same way
+    context: [
+      `td[id="${formConfig.documents.id}"]`,
+      `td[id="${formConfig.additionalSettings.id}"]`,
+      ':text-is("Settings Editor")',
+    ],
     pills: Object.fromEntries(fields.map((field) => [`${name}.${field}`, selector(field)])),
   };
 }
@@ -110,8 +115,6 @@ describeOrSkip(SalesforceCpqConfig.name, function () {
             'enableMultiLanguageTranslations',
           ]),
           title: 'Documents',
-          // from the Settings Editor header to just below the last pill, the same top on every tab
-          clip: { x: 240, y: 130, width: 1180, height: 339 },
         },
         quote: {
           ...tab('quote', [
@@ -123,8 +126,6 @@ describeOrSkip(SalesforceCpqConfig.name, function () {
             'defaultQuoteValidityDays',
           ]),
           title: 'Quote',
-          // from the Settings Editor header to just below the last pill, the same top on every tab
-          clip: { x: 240, y: 130, width: 1180, height: 300 },
         },
       },
     }),
@@ -181,8 +182,6 @@ describeOrSkip(SalesforceCpqConfig.name, function () {
             'defaultBundleSetting',
           ]),
           title: 'Line Editor',
-          // from the Settings Editor header to just below the last pill, the same top on every tab
-          clip: { x: 240, y: 130, width: 1180, height: 570 },
         },
       },
     }),
@@ -237,8 +236,6 @@ describeOrSkip(SalesforceCpqConfig.name, function () {
             'useIntegrationUserForCalculations',
           ]),
           title: 'Pricing and Calculation',
-          // from the Settings Editor header to just below the last pill, the same top on every tab
-          clip: { x: 240, y: 130, width: 1180, height: 483 },
         },
         plugins: {
           ...tab('plugins', [
@@ -254,8 +251,6 @@ describeOrSkip(SalesforceCpqConfig.name, function () {
             'qleCustomActionPlugin',
           ]),
           title: 'Plugins',
-          // from the Settings Editor header to just below the last pill, the same top on every tab
-          clip: { x: 240, y: 130, width: 1180, height: 381 },
         },
       },
     }),
@@ -308,8 +303,6 @@ describeOrSkip(SalesforceCpqConfig.name, function () {
             'useCurrentSubscriptionOnAssets',
           ]),
           title: 'Subscriptions and Renewals',
-          // from the Settings Editor header to just below the last pill, the same top on every tab
-          clip: { x: 240, y: 130, width: 1180, height: 585 },
         },
         order: {
           ...tab('order', [
@@ -319,8 +312,6 @@ describeOrSkip(SalesforceCpqConfig.name, function () {
             'createOrdersWithoutOpportunities',
           ]),
           title: 'Order',
-          // from the Settings Editor header to just below the last pill, the same top on every tab
-          clip: { x: 240, y: 130, width: 1180, height: 313 },
         },
       },
     }),
@@ -354,8 +345,6 @@ describeOrSkip(SalesforceCpqConfig.name, function () {
         groups: {
           ...tab('groups', ['requireGroupName']),
           title: 'Groups',
-          // from the Settings Editor header to just below the last pill, the same top on every tab
-          clip: { x: 240, y: 130, width: 1180, height: 300 },
         },
         'additional-settings': {
           ...tab('additionalSettings', [
@@ -378,8 +367,6 @@ describeOrSkip(SalesforceCpqConfig.name, function () {
             'nestedBundlesForExternalConfigurator',
           ]),
           title: 'Additional Settings',
-          // from the Settings Editor header to just below the last pill, the same top on every tab
-          clip: { x: 240, y: 130, width: 1180, height: 536 },
         },
       },
     }),

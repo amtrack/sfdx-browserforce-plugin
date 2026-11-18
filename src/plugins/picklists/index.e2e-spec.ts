@@ -67,6 +67,19 @@ describe(Picklists.name, function () {
     ],
   };
 
+  // the deployment of ContractStatus fails while the value added by the @capture step of a previous run is there
+  it('should delete the contract status added by a previous run', async () => {
+    await plugin.run({
+      picklistValues: [
+        {
+          metadataType: 'StandardValueSet',
+          metadataFullName: 'ContractStatus',
+          value: 'Under Legal Review',
+          absent: true,
+        },
+      ],
+    });
+  });
   it('should deploy a CustomObject for testing', () => {
     const sourceDeployCmd = child.spawnSync('sf', [
       'project',
@@ -101,9 +114,9 @@ describe(Picklists.name, function () {
       pages: {
         'contract-status': {
           positions: {
-            'picklistValues[0].metadataFullName': { px: 1.7, py: 34.9 },
-            'picklistValues[0].newValue': { px: 21.4, py: 64.3 },
-            'picklistValues[0].statusCategory': { px: 47.8, py: 64.3 },
+            'picklistValues[0].metadataFullName': 'left',
+            'picklistValues[0].newValue': 'inside',
+            'picklistValues[0].statusCategory': 'inside',
           },
           height: 1000,
           context: [VALUES_LIST],
@@ -173,13 +186,28 @@ describe(Picklists.name, function () {
   it('should replace and deactivate a picklist value', async () => {
     await plugin.run({
       picklistValues: [
-        { metadataType: 'CustomField', metadataFullName: 'Vehicle__c.Features__c', value: 'AUX', active: true },
+        {
+          metadataType: 'CustomField',
+          metadataFullName: 'Vehicle__c.Features__c',
+          value: 'AUX',
+          active: true,
+        },
       ],
     });
     await plugin.run({
       picklistValues: [
-        { metadataType: 'CustomField', metadataFullName: 'Vehicle__c.Features__c', value: 'AUX', newValue: 'Media' },
-        { metadataType: 'CustomField', metadataFullName: 'Vehicle__c.Features__c', value: 'AUX', active: false },
+        {
+          metadataType: 'CustomField',
+          metadataFullName: 'Vehicle__c.Features__c',
+          value: 'AUX',
+          newValue: 'Media',
+        },
+        {
+          metadataType: 'CustomField',
+          metadataFullName: 'Vehicle__c.Features__c',
+          value: 'AUX',
+          active: false,
+        },
       ],
     });
   });
@@ -250,7 +278,10 @@ describe(Picklists.name, function () {
   describe('rename', function () {
     const configRename = readJsonFile('./rename.json').settings.picklists;
     const configRenameBack = readJsonFile('./rename-back.json').settings.picklists;
-    const features = { metadataType: 'CustomField' as const, metadataFullName: 'Vehicle__c.Features__c' };
+    const features = {
+      metadataType: 'CustomField' as const,
+      metadataFullName: 'Vehicle__c.Features__c',
+    };
     let leadId: string;
     const leadSource = async () =>
       (await global.browserforce.connection.sobject('Lead').retrieve(leadId)).LeadSource as string;
@@ -266,7 +297,9 @@ describe(Picklists.name, function () {
             throw error;
           }
           const { metadataType, metadataFullName, value } = action;
-          await plugin.run({ picklistValues: [{ metadataType, metadataFullName, value, absent: true }] });
+          await plugin.run({
+            picklistValues: [{ metadataType, metadataFullName, value, absent: true }],
+          });
         });
       }
       const lead = await global.browserforce.connection
@@ -293,7 +326,9 @@ describe(Picklists.name, function () {
       assert.deepStrictEqual(res, { message: 'no action necessary' });
     });
     it('should only change the label of a renamed value', async () => {
-      await plugin.run({ picklistValues: [{ ...configRename.picklistValues[1], newLabel: 'Satnav' }] });
+      await plugin.run({
+        picklistValues: [{ ...configRename.picklistValues[1], newLabel: 'Satnav' }],
+      });
       const state = await plugin.retrieve(configRename);
       assert.deepStrictEqual(state.picklistValues[1].newLabel, 'Satnav');
     });
@@ -306,13 +341,19 @@ describe(Picklists.name, function () {
     });
     it('should fail when the new API name is used by another value', async () => {
       await assert.rejects(
-        () => plugin.run({ picklistValues: [{ ...features, value: 'Navigation', newApiName: 'Media' }] }),
+        () =>
+          plugin.run({
+            picklistValues: [{ ...features, value: 'Navigation', newApiName: 'Media' }],
+          }),
         /another value has this API name/,
       );
     });
     it('should fail when the value does not exist', async () => {
       await assert.rejects(
-        () => plugin.run({ picklistValues: [{ ...features, value: 'NON_EXISTING_VALUE', newApiName: 'Other' }] }),
+        () =>
+          plugin.run({
+            picklistValues: [{ ...features, value: 'NON_EXISTING_VALUE', newApiName: 'Other' }],
+          }),
         /no value has this API name/,
       );
     });
@@ -338,15 +379,18 @@ describe(Picklists.name, function () {
     it(
       'should unset a field dependency @capture',
       capture(picklistsSchema, {
-        config: { fieldDependencies: [{ object: 'Vehicle__c', dependentField: 'Gears__c', controllingField: null }] },
+        config: {
+          fieldDependencies: [{ object: 'Vehicle__c', dependentField: 'Gears__c', controllingField: null }],
+        },
         // the dependency before its removal
         screenshot: 'before',
         pages: {
           'field-dependencies': {
             height: 1000,
             async open(doc) {
+              // the newest: the fields of a deleted Vehicle__c of a previous run keep their name
               const id = await doc.recordId(
-                "SELECT Id FROM CustomField WHERE DeveloperName = 'Transmission' AND NamespacePrefix = null",
+                "SELECT Id FROM CustomField WHERE DeveloperName = 'Transmission' AND NamespacePrefix = null ORDER BY CreatedDate DESC",
                 { tooling: true },
               );
               return doc.open(`/${id}`);
