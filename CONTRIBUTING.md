@@ -175,7 +175,7 @@ config per use case). The screenshot is taken by a step of the E2E test, tagged 
 capture of `pages` (named `screenshot` when there is only one; it is the file name of the image) lists the selector of
 each field (reuse the selectors of the plugin) in the page that `retrieve()` of the plugin opens, or, when it opens
 none to show, the page an `open(doc)` function opens. It is shot after the step, or before it with
-`screenshot: 'before'`. The skill `.claude/skills/document-setting/SKILL.md` describes the format in full.
+`screenshot: 'before'`. `.claude/skills/document-setting/references/capture.md` describes the format in full.
 
 `npm run test:e2e` runs the step like any test. With `CAPTURE=true`, it also takes the screenshots, in a scratch org only
 (never your default org):

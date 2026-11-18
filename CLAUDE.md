@@ -60,7 +60,7 @@ CI (`.github/workflows/default.yml`) runs unit tests, format check, `generate:sc
 - `/analyze`: reads the code, then asks the user questions until the change is fully specified (setting, Setup page, config JSON, idempotency, org prerequisites).
 - `/design`: turns the analysis into a tech spec (schema, retrieve/diff/apply, selectors and save signals, tests, commit message). No code.
 - `/implement`: implements, runs build + unit tests + format, runs e2e tests only on a scratch default org (asks otherwise), runs `/document-setting` for the new or changed settings, then runs `/code-review high --fix`, re-verifies and proposes the commit message.
-- `/document-setting [keys]`: captures the annotated screenshots of settings and writes their use cases in the scratch org `browserforce-docs` (created from a local Dev Hub; scratch orgs of orgfarm Dev Hubs may be deleted to free a slot).
+- `/document-setting [keys]`: captures the annotated screenshots of settings and writes their use cases in the scratch org `browserforce-docs`.
 
 ## Other notes
 
